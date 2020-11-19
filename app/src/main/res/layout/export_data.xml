@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rlt_export_ventes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/exportt_vente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exportation ventes"
+            android:textSize="18dp"
+            android:clickable="false"
+            android:textColor="@color/black_overlay"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/descrip_export_vente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ça vous permet d'exporter les bons de ventes vers le serveur distant"
+            android:layout_below="@+id/exportt_vente"
+            android:textSize="12dp"
+            android:clickable="false"
+            android:textColor="@color/gray"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlt_export_commandes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/exportt_commande"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exportation commandes"
+            android:textSize="18dp"
+            android:clickable="false"
+            android:textColor="@color/black_overlay"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/descrip_export_commande"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ça vous permet d'exporter les bons de commandes vers le serveur distant"
+            android:layout_below="@+id/exportt_commande"
+            android:textSize="12dp"
+            android:clickable="false"
+            android:textColor="@color/gray"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlt_export_inventaires"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/exportt_inventaire"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exportation inventaire"
+            android:textSize="18dp"
+            android:clickable="false"
+            android:textColor="@color/black_overlay"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/descrip_export_inventaire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ça vous permet d'exporter tous les inventaires vers le serveur distant"
+            android:layout_below="@+id/exportt_inventaire"
+            android:textSize="12dp"
+            android:clickable="false"
+            android:textColor="@color/gray"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+
+    <View
+        android:id="@+id/view1"
+        android:layout_marginTop="5dp"
+        android:background="@color/gray"
+        android:layout_below="@+id/descrip_import_client"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"/>
+</LinearLayout>

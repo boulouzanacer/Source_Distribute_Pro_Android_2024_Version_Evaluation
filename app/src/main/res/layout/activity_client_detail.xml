@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.safesoft.pro.distribute.activities.ActivityClientDetail">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="5dp"
+                android:background="@color/gray"
+                android:src="@mipmap/client" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/client_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:text="BOULOUZA NASSER" />
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/tel"
+                    android:text="  0552725211"
+                    android:typeface="monospace"
+                    android:textStyle="bold"
+                    android:drawableLeft="@mipmap/phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/lat"
+                        android:text="0.0"
+                        android:textSize="17sp"
+                        android:drawableLeft="@mipmap/latitude"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/log"
+                        android:text="0.0"
+                        android:textSize="17sp"
+                        android:drawableLeft="@mipmap/latitude"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/adresse"
+                android:drawableLeft="@mipmap/home"
+                android:text="  10500, Cité les HLM, Oran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/client_detail_band"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="140dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/code_client"
+                    android:text="CODE : 104582"
+                    android:textColor="@color/bgContentTop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/mode_tarif"
+                    android:text="0"
+                    android:textColor="@color/carot"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:padding="5dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/achat"
+                    android:text=" 0.00"
+                    android:layout_marginRight="20dp"
+                    android:drawableLeft="@mipmap/achat"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/verser"
+                    android:text=" 0.00"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:drawableLeft="@mipmap/verser1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <TextView
+                    android:id="@+id/solde"
+                    android:text=" 0.00"
+                    android:drawableLeft="@mipmap/solde"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:background="@drawable/client_detail_band"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/btnCall"
+                android:src="@mipmap/call"
+                android:background="@color/white"
+                android:onClick="onClick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true" />
+
+
+            <ImageButton
+                android:id="@+id/btnVerser"
+                android:src="@mipmap/verser"
+                android:onClick="onClick"
+                android:background="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:layout_toEndOf="@+id/btnCall" />
+
+            <ImageButton
+                android:id="@+id/btnVente"
+                android:src="@mipmap/sale"
+                android:onClick="onClick"
+                android:background="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/btnPosition"
+                android:layout_marginEnd="35dp" />
+
+            <ImageButton
+                android:id="@+id/btnPosition"
+                android:src="@mipmap/position_icon"
+                android:onClick="onClick"
+                android:background="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:padding="4dp"
+            android:background="@drawable/client_detail_band"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:text="Situations" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/all_versement_lnr"
+            android:layout_marginTop="10sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rtl_header_versement"
+                android:background="@color/blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/montant_versement_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10sp"
+                    android:layout_toStartOf="@+id/date_versement_title"
+                    android:text="Montant (DA)" />
+
+                <TextView
+                    android:id="@+id/date_versement_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="118dp"
+                    android:textStyle="bold"
+                    android:text="Date et Heure" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rtl_footer_versement"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

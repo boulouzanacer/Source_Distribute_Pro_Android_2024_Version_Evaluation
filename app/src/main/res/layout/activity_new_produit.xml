@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.emmasuzuki.easyform.EasyForm xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp"
+
+    app:showErrorOn="unfocus">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+    <com.emmasuzuki.easyform.EasyTextInputLayout
+        android:id="@+id/pcode_barre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+
+        android:hint="Code Produit"
+        app:errorMessage="@string/error_message_empty"
+        app:errorType="empty" />
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/pref"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pcode_barre"
+                android:inputType="number"
+
+                android:hint="Ref Produit"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty" />
+
+
+
+    <com.emmasuzuki.easyform.EasyTextInputLayout
+        android:id="@+id/pdesignation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:layout_below="@+id/pcode_barre"
+        android:hint="Designation"
+        android:inputType="text"
+        app:errorMessage="@string/error_message_empty"
+        app:errorType="empty" />
+
+    <com.emmasuzuki.easyform.EasyTextInputLayout
+        android:id="@+id/pprix_achat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pdesignation"
+        android:hint="Prix Achat"
+
+        android:inputType="numberDecimal"
+        app:errorMessage="@string/error_message_empty"
+        app:errorType="empty" />
+    <com.emmasuzuki.easyform.EasyTextInputLayout
+        android:id="@+id/pprix_vente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pprix_achat"
+        android:hint="Prix Vente"
+
+        android:inputType="numberDecimal"
+        app:errorMessage="@string/error_message_empty"
+        app:errorType="empty" />
+
+    <Button
+        android:id="@+id/sender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+     android:layout_below="@+id/pprix_vente"
+        android:background="@color/sandy_brown"
+        android:onClick="onClickButton"
+        android:text="Ajouter"
+        android:textColor="@android:color/white" />
+        </LinearLayout>
+    </ScrollView>
+
+</com.emmasuzuki.easyform.EasyForm>

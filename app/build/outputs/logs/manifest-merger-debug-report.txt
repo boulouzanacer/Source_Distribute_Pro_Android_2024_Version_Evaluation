@@ -1,0 +1,638 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+MERGED from [com.android.support:multidex:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\multidex-1.0.2.aar\64ef2c4daea37a0a946141da5aafc044\AndroidManifest.xml:17:1-22:12
+MERGED from [de.keyboardsurfer.android.widget:crouton:1.8.5] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\crouton-1.8.5.aar\b9fbca637ddca6b913f325a9e82e0515\AndroidManifest.xml:17:1-26:12
+MERGED from [com.haozhang.libary:android-slanted-textview:1.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\android-slanted-textview-1.2.aar\16bf6a88754f48127ea2cfc581d3aaeb\AndroidManifest.xml:2:1-17:12
+MERGED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-32:12
+MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\checkbox-1.0.1.aar\f2a34d546b46bdd2becb22adbe210a23\AndroidManifest.xml:2:1-17:12
+MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\easyform-1.1.0.aar\2fe5f4da4b1f2eb2aa1c5562f9413bbf\AndroidManifest.xml:2:1-18:12
+MERGED from [eu.inloop:simplerecycleradapter:0.3.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\simplerecycleradapter-0.3.1.aar\795a79f4ac92ff4134b3718aedaedeab\AndroidManifest.xml:2:1-11:12
+MERGED from [com.jzxiang.pickerview:TimePickerDialog:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\TimePickerDialog-1.0.1.aar\40b534e50177ab7a73b418bf862805da\AndroidManifest.xml:2:1-16:12
+MERGED from [com.weiwangcn.betterspinner:library-material:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-material-1.1.0.aar\2fe52678b9ad822ceabb9f603973fe84\AndroidManifest.xml:2:1-16:12
+MERGED from [pl.coreorb:selection-dialogs:0.9.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\selection-dialogs-0.9.1.aar\d9d5346cc2847afc8097dd1ad8237722\AndroidManifest.xml:2:1-14:12
+MERGED from [co.lemonlabs:expandable-button-menu:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandable-button-menu-1.0.0.aar\9703f02798b58870592528b9999e5c96\AndroidManifest.xml:2:1-13:12
+MERGED from [com.github.florent37:singledateandtimepicker:1.2.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\singledateandtimepicker-1.2.2.aar\b3739fe27872a1036297b07d1af130a1\AndroidManifest.xml:2:1-12:12
+MERGED from [com.rengwuxian.materialedittext:library:2.0.3] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-2.0.3.aar\659d9cf59abeaec05b151deff43b1823\AndroidManifest.xml:2:1-10:12
+MERGED from [:sweet_alert_dialog_library] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\sweet_alert_dialog_library\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-11:12
+MERGED from [com.pnikosis:materialish-progress:1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialish-progress-1.0.aar\b10cb9b07a6f114a1c59c7404f7dcd0d\AndroidManifest.xml:2:1-17:12
+MERGED from [com.android.support:design:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\design-27.1.0.aar\e93ca8ce32c74cc7cd33bbaaa665f11c\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:appcompat-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.1.0.aar\29fd594312ba16bb836723865dd723d9\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:cardview-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\cardview-v7-27.1.0.aar\b12c8909bdc3fc1c43ab2896cde4647e\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\4f7fbf9a97659780c353a5ac8cf56fbb\AndroidManifest.xml:2:1-11:12
+MERGED from [com.amulyakhare:com.amulyakhare.textdrawable:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\com.amulyakhare.textdrawable-1.0.1.aar\f34513b932823f948eb9c93995c5c88d\AndroidManifest.xml:2:1-14:12
+MERGED from [com.labo.kaji:swipeawaydialog:0.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\swipeawaydialog-0.1.0.aar\56f33ace8e6cc02d29b93ac4aa9ef770\AndroidManifest.xml:2:1-16:12
+MERGED from [com.baoyz.swipemenulistview:library:1.3.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-1.3.0.aar\901fe77fe14d6dd0a51311a809408a14\AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:16:1-25:12
+MERGED from [com.github.paolorotolo:expandableheightlistview:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandableheightlistview-1.0.0.aar\939c10547be8fa479d7dfec7a84bbfde\AndroidManifest.xml:2:1-11:12
+MERGED from [com.victor:lib:1.0.4] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\lib-1.0.4.aar\b39e5e4ae8ca9b09bf27fa0b8f10446f\AndroidManifest.xml:2:1-16:12
+MERGED from [me.grantland:autofittextview:0.2.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\autofittextview-0.2.1.aar\3460bea6e93f4b751473b4d103756349\AndroidManifest.xml:2:1-11:12
+MERGED from [com.jakewharton:butterknife:8.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\butterknife-8.0.1.aar\374f18d9835a4f7be4959ff6430ba2bf\AndroidManifest.xml:2:1-7:12
+MERGED from [com.rilixtech:entypo-typeface:1.0.0.3] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\entypo-typeface-1.0.0.3.aar\8c33cbd761c1fa3020b36c5318fc7a67\AndroidManifest.xml:2:1-12:12
+MERGED from [com.rilixtech:materialfancybuttons:1.8.7] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialfancybuttons-1.8.7.aar\50f897255a01690fb779e046e0fe8aa7\AndroidManifest.xml:2:1-12:12
+MERGED from [com.google.android.gms:play-services-vision:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-11.6.0.aar\b725afa5782ab0012cb7373d5a81d794\AndroidManifest.xml:2:1-5:12
+MERGED from [me.dm7.barcodescanner:zbar:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\zbar-1.9.8.aar\36c5d4b55f666a3b198bd54fdb0b667e\AndroidManifest.xml:2:1-13:12
+MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\core-1.9.8.aar\c269395d0e478daaa21a886595557252\AndroidManifest.xml:2:1-13:12
+MERGED from [:folding-cell] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\folding-cell\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-12:12
+MERGED from [:lib_badge] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\lib_badge\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-11:12
+MERGED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-14:12
+MERGED from [:SpinKitLib] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\SpinKitLib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.android.gms:play-services-vision-common:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-11.6.0.aar\611d8b934eaa61d6d7a6fb50f5dac63f\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:16:1-21:12
+MERGED from [com.google.android.gms:play-services-tasks:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.6.0.aar\eb02ce63a04c58290d6a39f08a3230cd\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.6.0.aar\06f1099933b8310c95147da2160e1145\AndroidManifest.xml:16:1-23:12
+MERGED from [com.android.support:support-v4:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-v4-27.1.0.aar\3d993b079884613718cf0a7e9b78e4d4\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-fragment:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-fragment-27.1.0.aar\53e56636f6d42b4f645f4f665df3a525\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:animated-vector-drawable:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.1.0.aar\99feae0ae733c3b41036cf1ba536f2c6\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:recyclerview-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-27.1.0.aar\217980475f960ada81a79dd41891b503\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-ui:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.1.0.aar\151ec09068a918dd0fff3eb878cd3eda\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-utils:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.1.0.aar\21bae7c70d4fc71e6c85be7f2e217149\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-27.1.0.aar\520985a6dbe1bfb433c9e21c749276b1\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-media-compat:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-media-compat-27.1.0.aar\e2197a355d1ce9ee6e9bcf0eb56be7cf\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:transition:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\transition-27.1.0.aar\f010a9946c65fdaf0cbc9673c02e0f4f\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-compat:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-compat-27.1.0.aar\20353dd2357b90de6b835e7df22260ea\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-maps-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-license-11.6.0.aar\f247c5de9095e22d41baddfa4f80f11f\AndroidManifest.xml:2:1-6:12
+MERGED from [com.balysv:material-ripple:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\material-ripple-1.0.2.aar\126e4d26f9a99074271d2fa18fc76610\AndroidManifest.xml:2:1-14:12
+MERGED from [com.google.android.gms:play-services-vision-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-license-11.6.0.aar\fecd4fa3c6fbe0cc314fdffff3a80ad9\AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-base-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-license-11.6.0.aar\69f7cdf6fbb226d027391ca75750d59c\AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-basement-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-license-11.6.0.aar\e5951b1e2100b35e1be110deac7e40b7\AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-vision-common-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-license-11.6.0.aar\f724f8c2f9dcffbb4468aa7354099839\AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-tasks-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-license-11.6.0.aar\7e4b0211e0dd6bf6e0aa9e48b3654737\AndroidManifest.xml:2:1-6:12
+MERGED from [android.arch.lifecycle:livedata-core:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\livedata-core-1.1.0.aar\930cacc16bb849149dbc4cbcfb1f6400\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:viewmodel:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\viewmodel-1.1.0.aar\03d9b2aa49c2dc3b04988715dbcbb655\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:runtime:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\runtime-1.1.0.aar\c0b136bf963ac87717f070f063b8022e\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.core:runtime:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\runtime-1.1.0.aar\4956a548d020cbc9ad01e32676c3fee3\AndroidManifest.xml:17:1-22:12
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+	package
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:4:5-42
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:1-161:12
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:8:5-67
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:20:5-66
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:8:22-64
+uses-permission#android.permission.CAMERA
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:9:5-65
+MERGED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:13:5-65
+MERGED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:13:5-65
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:9:22-62
+uses-permission#android.permission.VIBRATE
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:10:5-66
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:10:22-63
+uses-permission#android.permission.BLUETOOTH
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:11:5-68
+MERGED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-68
+MERGED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-68
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:11:22-65
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:12:5-74
+MERGED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:8:5-74
+MERGED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:8:5-74
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:12:22-71
+uses-permission#android.permission.CALL_PHONE
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:13:5-69
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:13:22-66
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:14:5-81
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:14:22-78
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:15:5-79
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:15:22-76
+uses-permission#android.permission.READ_PHONE_STATE
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:16:5-75
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:16:22-72
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:17:5-79
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:19:5-78
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:19:5-78
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:17:22-76
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:18:5-80
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:18:22-78
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:19:5-80
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:19:22-77
+uses-feature#android.hardware.usb.host
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:22:5-24:36
+	android:required
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:24:9-33
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:23:9-49
+application
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:26:5-159:19
+MERGED from [com.haozhang.libary:android-slanted-textview:1.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\android-slanted-textview-1.2.aar\16bf6a88754f48127ea2cfc581d3aaeb\AndroidManifest.xml:11:5-15:19
+MERGED from [com.haozhang.libary:android-slanted-textview:1.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\android-slanted-textview-1.2.aar\16bf6a88754f48127ea2cfc581d3aaeb\AndroidManifest.xml:11:5-15:19
+MERGED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:15:5-30:19
+MERGED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:15:5-30:19
+MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\checkbox-1.0.1.aar\f2a34d546b46bdd2becb22adbe210a23\AndroidManifest.xml:11:5-15:19
+MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\checkbox-1.0.1.aar\f2a34d546b46bdd2becb22adbe210a23\AndroidManifest.xml:11:5-15:19
+MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\easyform-1.1.0.aar\2fe5f4da4b1f2eb2aa1c5562f9413bbf\AndroidManifest.xml:11:5-16:19
+MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\easyform-1.1.0.aar\2fe5f4da4b1f2eb2aa1c5562f9413bbf\AndroidManifest.xml:11:5-16:19
+MERGED from [com.jzxiang.pickerview:TimePickerDialog:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\TimePickerDialog-1.0.1.aar\40b534e50177ab7a73b418bf862805da\AndroidManifest.xml:11:5-14:19
+MERGED from [com.jzxiang.pickerview:TimePickerDialog:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\TimePickerDialog-1.0.1.aar\40b534e50177ab7a73b418bf862805da\AndroidManifest.xml:11:5-14:19
+MERGED from [com.weiwangcn.betterspinner:library-material:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-material-1.1.0.aar\2fe52678b9ad822ceabb9f603973fe84\AndroidManifest.xml:11:5-14:19
+MERGED from [com.weiwangcn.betterspinner:library-material:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-material-1.1.0.aar\2fe52678b9ad822ceabb9f603973fe84\AndroidManifest.xml:11:5-14:19
+MERGED from [pl.coreorb:selection-dialogs:0.9.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\selection-dialogs-0.9.1.aar\d9d5346cc2847afc8097dd1ad8237722\AndroidManifest.xml:12:5-20
+MERGED from [pl.coreorb:selection-dialogs:0.9.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\selection-dialogs-0.9.1.aar\d9d5346cc2847afc8097dd1ad8237722\AndroidManifest.xml:12:5-20
+MERGED from [co.lemonlabs:expandable-button-menu:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandable-button-menu-1.0.0.aar\9703f02798b58870592528b9999e5c96\AndroidManifest.xml:11:5-20
+MERGED from [co.lemonlabs:expandable-button-menu:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandable-button-menu-1.0.0.aar\9703f02798b58870592528b9999e5c96\AndroidManifest.xml:11:5-20
+MERGED from [:sweet_alert_dialog_library] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\sweet_alert_dialog_library\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:9:5-20
+MERGED from [:sweet_alert_dialog_library] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\sweet_alert_dialog_library\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:9:5-20
+MERGED from [com.pnikosis:materialish-progress:1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialish-progress-1.0.aar\b10cb9b07a6f114a1c59c7404f7dcd0d\AndroidManifest.xml:11:5-15:19
+MERGED from [com.pnikosis:materialish-progress:1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialish-progress-1.0.aar\b10cb9b07a6f114a1c59c7404f7dcd0d\AndroidManifest.xml:11:5-15:19
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\4f7fbf9a97659780c353a5ac8cf56fbb\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\4f7fbf9a97659780c353a5ac8cf56fbb\AndroidManifest.xml:9:5-20
+MERGED from [com.amulyakhare:com.amulyakhare.textdrawable:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\com.amulyakhare.textdrawable-1.0.1.aar\f34513b932823f948eb9c93995c5c88d\AndroidManifest.xml:12:5-20
+MERGED from [com.amulyakhare:com.amulyakhare.textdrawable:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\com.amulyakhare.textdrawable-1.0.1.aar\f34513b932823f948eb9c93995c5c88d\AndroidManifest.xml:12:5-20
+MERGED from [com.labo.kaji:swipeawaydialog:0.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\swipeawaydialog-0.1.0.aar\56f33ace8e6cc02d29b93ac4aa9ef770\AndroidManifest.xml:11:5-14:19
+MERGED from [com.labo.kaji:swipeawaydialog:0.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\swipeawaydialog-0.1.0.aar\56f33ace8e6cc02d29b93ac4aa9ef770\AndroidManifest.xml:11:5-14:19
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:24:5-19
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:24:5-19
+MERGED from [com.victor:lib:1.0.4] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\lib-1.0.4.aar\b39e5e4ae8ca9b09bf27fa0b8f10446f\AndroidManifest.xml:11:5-14:19
+MERGED from [com.victor:lib:1.0.4] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\lib-1.0.4.aar\b39e5e4ae8ca9b09bf27fa0b8f10446f\AndroidManifest.xml:11:5-14:19
+MERGED from [com.google.android.gms:play-services-vision:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-11.6.0.aar\b725afa5782ab0012cb7373d5a81d794\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-vision:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-11.6.0.aar\b725afa5782ab0012cb7373d5a81d794\AndroidManifest.xml:4:5-19
+MERGED from [me.dm7.barcodescanner:zbar:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\zbar-1.9.8.aar\36c5d4b55f666a3b198bd54fdb0b667e\AndroidManifest.xml:11:5-20
+MERGED from [me.dm7.barcodescanner:zbar:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\zbar-1.9.8.aar\36c5d4b55f666a3b198bd54fdb0b667e\AndroidManifest.xml:11:5-20
+MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\core-1.9.8.aar\c269395d0e478daaa21a886595557252\AndroidManifest.xml:11:5-20
+MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\core-1.9.8.aar\c269395d0e478daaa21a886595557252\AndroidManifest.xml:11:5-20
+MERGED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:10:5-12:19
+MERGED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:10:5-12:19
+MERGED from [com.google.android.gms:play-services-vision-common:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-11.6.0.aar\611d8b934eaa61d6d7a6fb50f5dac63f\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-vision-common:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-11.6.0.aar\611d8b934eaa61d6d7a6fb50f5dac63f\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:18:5-20:19
+MERGED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:18:5-20:19
+MERGED from [com.google.android.gms:play-services-tasks:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.6.0.aar\eb02ce63a04c58290d6a39f08a3230cd\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-tasks:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.6.0.aar\eb02ce63a04c58290d6a39f08a3230cd\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-basement:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.6.0.aar\06f1099933b8310c95147da2160e1145\AndroidManifest.xml:19:5-21:19
+MERGED from [com.google.android.gms:play-services-basement:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.6.0.aar\06f1099933b8310c95147da2160e1145\AndroidManifest.xml:19:5-21:19
+MERGED from [com.google.android.gms:play-services-maps-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-license-11.6.0.aar\f247c5de9095e22d41baddfa4f80f11f\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-maps-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-license-11.6.0.aar\f247c5de9095e22d41baddfa4f80f11f\AndroidManifest.xml:5:5-20
+MERGED from [com.balysv:material-ripple:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\material-ripple-1.0.2.aar\126e4d26f9a99074271d2fa18fc76610\AndroidManifest.xml:12:5-20
+MERGED from [com.balysv:material-ripple:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\material-ripple-1.0.2.aar\126e4d26f9a99074271d2fa18fc76610\AndroidManifest.xml:12:5-20
+MERGED from [com.google.android.gms:play-services-vision-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-license-11.6.0.aar\fecd4fa3c6fbe0cc314fdffff3a80ad9\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-vision-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-license-11.6.0.aar\fecd4fa3c6fbe0cc314fdffff3a80ad9\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-base-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-license-11.6.0.aar\69f7cdf6fbb226d027391ca75750d59c\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-base-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-license-11.6.0.aar\69f7cdf6fbb226d027391ca75750d59c\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-license-11.6.0.aar\e5951b1e2100b35e1be110deac7e40b7\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-license-11.6.0.aar\e5951b1e2100b35e1be110deac7e40b7\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-vision-common-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-license-11.6.0.aar\f724f8c2f9dcffbb4468aa7354099839\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-vision-common-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-license-11.6.0.aar\f724f8c2f9dcffbb4468aa7354099839\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-license-11.6.0.aar\7e4b0211e0dd6bf6e0aa9e48b3654737\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-license-11.6.0.aar\7e4b0211e0dd6bf6e0aa9e48b3654737\AndroidManifest.xml:5:5-20
+	android:supportsRtl
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:31:9-35
+	android:label
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:29:9-41
+	android:roundIcon
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:30:9-54
+	android:icon
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:28:9-43
+		REJECTED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\easyform-1.1.0.aar\2fe5f4da4b1f2eb2aa1c5562f9413bbf\AndroidManifest.xml:13:9-43
+		REJECTED from [com.pnikosis:materialish-progress:1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialish-progress-1.0.aar\b10cb9b07a6f114a1c59c7404f7dcd0d\AndroidManifest.xml:13:9-45
+	android:allowBackup
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:27:9-35
+	android:theme
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:32:9-40
+	tools:replace
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:34:9-37
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:33:9-68
+activity#com.safesoft.pro.distribute.MainActivity
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:37:9-39:15
+	android:theme
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:38:13-72
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:37:19-47
+activity#com.safesoft.pro.distribute.splashscreen.splashScreen
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:42:9-50:20
+	android:theme
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:44:13-69
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:43:13-54
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:45:13-49:29
+action#android.intent.action.MAIN
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:46:17-69
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:46:25-66
+category#android.intent.category.LAUNCHER
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:48:17-77
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:48:27-74
+activity#com.safesoft.pro.distribute.activation.ActivityActivation
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:53:9-67
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:53:19-64
+activity#com.safesoft.pro.distribute.activities.ActivityClients
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:57:9-64
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:57:19-61
+activity#com.safesoft.pro.distribute.activities.ActivityClientDetail
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:58:9-69
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:58:19-66
+activity#com.safesoft.pro.distribute.activities.ActivityNewClient
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:59:9-66
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:59:19-63
+activity#com.safesoft.pro.distribute.activities.ActivityProduits
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:62:9-65
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:62:19-62
+activity#com.safesoft.pro.distribute.activities.ActivityProduitDetail
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:63:9-70
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:63:19-67
+activity#com.safesoft.pro.distribute.activities.ActivityTransfer1
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:66:9-66
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:66:19-63
+activity#com.safesoft.pro.distribute.activities.ActivityTransfert2Detail
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:67:9-73
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:67:19-70
+activity#com.safesoft.pro.distribute.activities.ActivityImportsExport
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:70:9-70
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:70:19-67
+activity#com.safesoft.pro.distribute.activities.ActivitySetting
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:71:9-64
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:71:19-61
+activity#com.safesoft.pro.distribute.activities.ActivityExportedVentes
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:72:9-71
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:72:19-68
+activity#com.safesoft.pro.distribute.activities.ActivityInventaireAchat
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:73:9-72
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:73:19-69
+activity#com.safesoft.pro.distribute.activities.login.ActivityLogin
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:77:9-79:52
+	android:theme
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:79:13-49
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:78:13-59
+activity#com.safesoft.pro.distribute.activities.login.ActivityChangePwd
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:80:9-82:52
+	android:theme
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:82:13-49
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:81:13-63
+activity#com.safesoft.pro.distribute.activities.achats.ActivityAchat
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:85:9-69
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:85:19-66
+activity#com.safesoft.pro.distribute.activities.achats.ActivityNewAchat
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:86:9-72
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:86:19-69
+activity#com.safesoft.pro.distribute.activities.achats.ActivityAchatDetails
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:87:9-76
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:87:19-73
+activity#com.safesoft.pro.distribute.activities.inventaire.ActivityInventaire
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:91:9-78
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:91:19-75
+activity#com.safesoft.pro.distribute.activities.inventaire.ActivityNewInventory
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:92:9-80
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:92:19-77
+activity#com.safesoft.pro.distribute.activities.inventaire.ActivityInventaireDetails
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:93:9-85
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:93:19-82
+activity#com.safesoft.pro.distribute.scanner.FullScannerActivity
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:96:9-97:58
+	android:theme
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:97:13-56
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:96:19-62
+activity#com.safesoft.pro.distribute.scanner.BaseScannerActivity
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:98:9-65
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:98:19-62
+activity#com.safesoft.pro.distribute.activities.vente.ActivityNewSale
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:101:9-70
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:101:19-67
+activity#com.safesoft.pro.distribute.activities.vente.ActivityAddProduct
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:102:9-73
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:102:19-70
+activity#com.safesoft.pro.distribute.activities.ActivityVersement
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:103:9-66
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:103:19-63
+activity#com.safesoft.pro.distribute.activities.vente.ActivityVentes
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:104:9-69
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:104:19-66
+activity#com.safesoft.pro.distribute.activities.vente.ActivityEditSale
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:105:9-71
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:105:19-68
+activity#com.safesoft.pro.distribute.activities.vente.ActivityBon2
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:106:9-67
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:106:19-64
+activity#com.safesoft.pro.distribute.activities.commande.ActivityCommandes
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:109:9-75
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:109:19-72
+activity#com.safesoft.pro.distribute.activities.commande.ActivityNewCommande
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:110:9-77
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:110:19-74
+activity#com.safesoft.pro.distribute.activities.commande.ActivityAddProduct_Commande
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:111:9-85
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:111:19-82
+activity#com.safesoft.pro.distribute.activities.commande.ActivityEditCommande
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:112:9-78
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:112:19-75
+activity#com.safesoft.pro.distribute.activities.commande.ActivityCommande2
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:113:9-75
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:113:19-72
+activity#com.safesoft.pro.distribute.dropBox.ActivityDropBoxSend
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:116:9-118:60
+	android:configChanges
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:118:13-57
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:117:13-56
+activity#com.safesoft.pro.distribute.dropBox.ActivityDropBoxSend_Commande
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:119:9-121:60
+	android:configChanges
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:121:13-57
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:120:13-65
+activity#com.safesoft.pro.distribute.dropBox.ActivityDropBoxRead_Transfert
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:122:9-124:60
+	android:configChanges
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:124:13-57
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:123:13-66
+activity#com.dropbox.client2.android.AuthActivity
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:125:9-139:20
+	android:launchMode
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:128:13-44
+	android:configChanges
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:127:13-57
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:126:13-68
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:scheme:db-oqzeht4nuhmlmap
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:129:13-138:29
+data
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:132:17-61
+	android:scheme
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:132:23-58
+action#android.intent.action.VIEW
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:134:17-69
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:134:25-66
+category#android.intent.category.BROWSABLE
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:136:17-78
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:136:27-75
+category#android.intent.category.DEFAULT
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:137:17-76
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:137:27-73
+service#com.safesoft.pro.distribute.services.ServiceDistribute
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:142:9-144:45
+	android:label
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:144:13-42
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:143:13-55
+service#com.safesoft.pro.distribute.gps.ServiceLocation
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:145:9-56
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:145:18-53
+activity#com.safesoft.pro.distribute.activities.ActivityMaps
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:148:9-151:59
+	android:label
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:151:13-56
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:149:13-52
+activity#com.safesoft.pro.distribute.activities.ActivityEtatV
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:152:9-62
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:152:19-59
+meta-data#com.google.android.geo.API_KEY
+ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:155:9-157:55
+	android:value
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:157:13-52
+	android:name
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml:156:13-58
+uses-sdk
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+MERGED from [com.android.support:multidex:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\multidex-1.0.2.aar\64ef2c4daea37a0a946141da5aafc044\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:multidex:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\multidex-1.0.2.aar\64ef2c4daea37a0a946141da5aafc044\AndroidManifest.xml:20:5-43
+MERGED from [de.keyboardsurfer.android.widget:crouton:1.8.5] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\crouton-1.8.5.aar\b9fbca637ddca6b913f325a9e82e0515\AndroidManifest.xml:22:5-24:41
+MERGED from [de.keyboardsurfer.android.widget:crouton:1.8.5] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\crouton-1.8.5.aar\b9fbca637ddca6b913f325a9e82e0515\AndroidManifest.xml:22:5-24:41
+MERGED from [com.haozhang.libary:android-slanted-textview:1.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\android-slanted-textview-1.2.aar\16bf6a88754f48127ea2cfc581d3aaeb\AndroidManifest.xml:7:5-9:41
+MERGED from [com.haozhang.libary:android-slanted-textview:1.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\android-slanted-textview-1.2.aar\16bf6a88754f48127ea2cfc581d3aaeb\AndroidManifest.xml:7:5-9:41
+MERGED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\checkbox-1.0.1.aar\f2a34d546b46bdd2becb22adbe210a23\AndroidManifest.xml:7:5-9:41
+MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\checkbox-1.0.1.aar\f2a34d546b46bdd2becb22adbe210a23\AndroidManifest.xml:7:5-9:41
+MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\easyform-1.1.0.aar\2fe5f4da4b1f2eb2aa1c5562f9413bbf\AndroidManifest.xml:7:5-9:41
+MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\easyform-1.1.0.aar\2fe5f4da4b1f2eb2aa1c5562f9413bbf\AndroidManifest.xml:7:5-9:41
+MERGED from [eu.inloop:simplerecycleradapter:0.3.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\simplerecycleradapter-0.3.1.aar\795a79f4ac92ff4134b3718aedaedeab\AndroidManifest.xml:7:5-9:41
+MERGED from [eu.inloop:simplerecycleradapter:0.3.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\simplerecycleradapter-0.3.1.aar\795a79f4ac92ff4134b3718aedaedeab\AndroidManifest.xml:7:5-9:41
+MERGED from [com.jzxiang.pickerview:TimePickerDialog:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\TimePickerDialog-1.0.1.aar\40b534e50177ab7a73b418bf862805da\AndroidManifest.xml:7:5-9:41
+MERGED from [com.jzxiang.pickerview:TimePickerDialog:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\TimePickerDialog-1.0.1.aar\40b534e50177ab7a73b418bf862805da\AndroidManifest.xml:7:5-9:41
+MERGED from [com.weiwangcn.betterspinner:library-material:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-material-1.1.0.aar\2fe52678b9ad822ceabb9f603973fe84\AndroidManifest.xml:7:5-9:41
+MERGED from [com.weiwangcn.betterspinner:library-material:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-material-1.1.0.aar\2fe52678b9ad822ceabb9f603973fe84\AndroidManifest.xml:7:5-9:41
+MERGED from [pl.coreorb:selection-dialogs:0.9.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\selection-dialogs-0.9.1.aar\d9d5346cc2847afc8097dd1ad8237722\AndroidManifest.xml:8:5-10:41
+MERGED from [pl.coreorb:selection-dialogs:0.9.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\selection-dialogs-0.9.1.aar\d9d5346cc2847afc8097dd1ad8237722\AndroidManifest.xml:8:5-10:41
+MERGED from [co.lemonlabs:expandable-button-menu:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandable-button-menu-1.0.0.aar\9703f02798b58870592528b9999e5c96\AndroidManifest.xml:7:5-9:41
+MERGED from [co.lemonlabs:expandable-button-menu:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandable-button-menu-1.0.0.aar\9703f02798b58870592528b9999e5c96\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.florent37:singledateandtimepicker:1.2.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\singledateandtimepicker-1.2.2.aar\b3739fe27872a1036297b07d1af130a1\AndroidManifest.xml:8:5-10:41
+MERGED from [com.github.florent37:singledateandtimepicker:1.2.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\singledateandtimepicker-1.2.2.aar\b3739fe27872a1036297b07d1af130a1\AndroidManifest.xml:8:5-10:41
+MERGED from [com.rengwuxian.materialedittext:library:2.0.3] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-2.0.3.aar\659d9cf59abeaec05b151deff43b1823\AndroidManifest.xml:6:5-8:41
+MERGED from [com.rengwuxian.materialedittext:library:2.0.3] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-2.0.3.aar\659d9cf59abeaec05b151deff43b1823\AndroidManifest.xml:6:5-8:41
+MERGED from [:sweet_alert_dialog_library] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\sweet_alert_dialog_library\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-43
+MERGED from [:sweet_alert_dialog_library] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\sweet_alert_dialog_library\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-43
+MERGED from [com.pnikosis:materialish-progress:1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialish-progress-1.0.aar\b10cb9b07a6f114a1c59c7404f7dcd0d\AndroidManifest.xml:7:5-9:41
+MERGED from [com.pnikosis:materialish-progress:1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialish-progress-1.0.aar\b10cb9b07a6f114a1c59c7404f7dcd0d\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:design:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\design-27.1.0.aar\e93ca8ce32c74cc7cd33bbaaa665f11c\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:design:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\design-27.1.0.aar\e93ca8ce32c74cc7cd33bbaaa665f11c\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.1.0.aar\29fd594312ba16bb836723865dd723d9\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.1.0.aar\29fd594312ba16bb836723865dd723d9\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\cardview-v7-27.1.0.aar\b12c8909bdc3fc1c43ab2896cde4647e\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\cardview-v7-27.1.0.aar\b12c8909bdc3fc1c43ab2896cde4647e\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\4f7fbf9a97659780c353a5ac8cf56fbb\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\4f7fbf9a97659780c353a5ac8cf56fbb\AndroidManifest.xml:5:5-7:41
+MERGED from [com.amulyakhare:com.amulyakhare.textdrawable:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\com.amulyakhare.textdrawable-1.0.1.aar\f34513b932823f948eb9c93995c5c88d\AndroidManifest.xml:8:5-10:41
+MERGED from [com.amulyakhare:com.amulyakhare.textdrawable:1.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\com.amulyakhare.textdrawable-1.0.1.aar\f34513b932823f948eb9c93995c5c88d\AndroidManifest.xml:8:5-10:41
+MERGED from [com.labo.kaji:swipeawaydialog:0.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\swipeawaydialog-0.1.0.aar\56f33ace8e6cc02d29b93ac4aa9ef770\AndroidManifest.xml:7:5-9:41
+MERGED from [com.labo.kaji:swipeawaydialog:0.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\swipeawaydialog-0.1.0.aar\56f33ace8e6cc02d29b93ac4aa9ef770\AndroidManifest.xml:7:5-9:41
+MERGED from [com.baoyz.swipemenulistview:library:1.3.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-1.3.0.aar\901fe77fe14d6dd0a51311a809408a14\AndroidManifest.xml:7:5-9:41
+MERGED from [com.baoyz.swipemenulistview:library:1.3.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\library-1.3.0.aar\901fe77fe14d6dd0a51311a809408a14\AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:23:5-43
+MERGED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:23:5-43
+MERGED from [com.github.paolorotolo:expandableheightlistview:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandableheightlistview-1.0.0.aar\939c10547be8fa479d7dfec7a84bbfde\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.paolorotolo:expandableheightlistview:1.0.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\expandableheightlistview-1.0.0.aar\939c10547be8fa479d7dfec7a84bbfde\AndroidManifest.xml:7:5-9:41
+MERGED from [com.victor:lib:1.0.4] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\lib-1.0.4.aar\b39e5e4ae8ca9b09bf27fa0b8f10446f\AndroidManifest.xml:7:5-9:41
+MERGED from [com.victor:lib:1.0.4] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\lib-1.0.4.aar\b39e5e4ae8ca9b09bf27fa0b8f10446f\AndroidManifest.xml:7:5-9:41
+MERGED from [me.grantland:autofittextview:0.2.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\autofittextview-0.2.1.aar\3460bea6e93f4b751473b4d103756349\AndroidManifest.xml:7:5-9:41
+MERGED from [me.grantland:autofittextview:0.2.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\autofittextview-0.2.1.aar\3460bea6e93f4b751473b4d103756349\AndroidManifest.xml:7:5-9:41
+MERGED from [com.jakewharton:butterknife:8.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\butterknife-8.0.1.aar\374f18d9835a4f7be4959ff6430ba2bf\AndroidManifest.xml:5:5-43
+MERGED from [com.jakewharton:butterknife:8.0.1] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\butterknife-8.0.1.aar\374f18d9835a4f7be4959ff6430ba2bf\AndroidManifest.xml:5:5-43
+MERGED from [com.rilixtech:entypo-typeface:1.0.0.3] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\entypo-typeface-1.0.0.3.aar\8c33cbd761c1fa3020b36c5318fc7a67\AndroidManifest.xml:8:5-10:41
+MERGED from [com.rilixtech:entypo-typeface:1.0.0.3] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\entypo-typeface-1.0.0.3.aar\8c33cbd761c1fa3020b36c5318fc7a67\AndroidManifest.xml:8:5-10:41
+MERGED from [com.rilixtech:materialfancybuttons:1.8.7] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialfancybuttons-1.8.7.aar\50f897255a01690fb779e046e0fe8aa7\AndroidManifest.xml:8:5-10:41
+MERGED from [com.rilixtech:materialfancybuttons:1.8.7] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\materialfancybuttons-1.8.7.aar\50f897255a01690fb779e046e0fe8aa7\AndroidManifest.xml:8:5-10:41
+MERGED from [com.google.android.gms:play-services-vision:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-11.6.0.aar\b725afa5782ab0012cb7373d5a81d794\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-vision:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-11.6.0.aar\b725afa5782ab0012cb7373d5a81d794\AndroidManifest.xml:3:5-43
+MERGED from [me.dm7.barcodescanner:zbar:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\zbar-1.9.8.aar\36c5d4b55f666a3b198bd54fdb0b667e\AndroidManifest.xml:7:5-9:41
+MERGED from [me.dm7.barcodescanner:zbar:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\zbar-1.9.8.aar\36c5d4b55f666a3b198bd54fdb0b667e\AndroidManifest.xml:7:5-9:41
+MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\core-1.9.8.aar\c269395d0e478daaa21a886595557252\AndroidManifest.xml:7:5-9:41
+MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\core-1.9.8.aar\c269395d0e478daaa21a886595557252\AndroidManifest.xml:7:5-9:41
+MERGED from [:folding-cell] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\folding-cell\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:folding-cell] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\folding-cell\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:lib_badge] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\lib_badge\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:lib_badge] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\lib_badge\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:SpinKitLib] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\SpinKitLib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:SpinKitLib] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\SpinKitLib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.gms:play-services-vision-common:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-11.6.0.aar\611d8b934eaa61d6d7a6fb50f5dac63f\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-vision-common:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-11.6.0.aar\611d8b934eaa61d6d7a6fb50f5dac63f\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tasks:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.6.0.aar\eb02ce63a04c58290d6a39f08a3230cd\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-tasks:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.6.0.aar\eb02ce63a04c58290d6a39f08a3230cd\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-basement:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.6.0.aar\06f1099933b8310c95147da2160e1145\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-basement:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.6.0.aar\06f1099933b8310c95147da2160e1145\AndroidManifest.xml:17:5-43
+MERGED from [com.android.support:support-v4:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-v4-27.1.0.aar\3d993b079884613718cf0a7e9b78e4d4\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-v4-27.1.0.aar\3d993b079884613718cf0a7e9b78e4d4\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-fragment-27.1.0.aar\53e56636f6d42b4f645f4f665df3a525\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-fragment-27.1.0.aar\53e56636f6d42b4f645f4f665df3a525\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.1.0.aar\99feae0ae733c3b41036cf1ba536f2c6\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.1.0.aar\99feae0ae733c3b41036cf1ba536f2c6\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-27.1.0.aar\217980475f960ada81a79dd41891b503\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-27.1.0.aar\217980475f960ada81a79dd41891b503\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.1.0.aar\151ec09068a918dd0fff3eb878cd3eda\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.1.0.aar\151ec09068a918dd0fff3eb878cd3eda\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.1.0.aar\21bae7c70d4fc71e6c85be7f2e217149\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.1.0.aar\21bae7c70d4fc71e6c85be7f2e217149\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-27.1.0.aar\520985a6dbe1bfb433c9e21c749276b1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-27.1.0.aar\520985a6dbe1bfb433c9e21c749276b1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-media-compat-27.1.0.aar\e2197a355d1ce9ee6e9bcf0eb56be7cf\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-media-compat-27.1.0.aar\e2197a355d1ce9ee6e9bcf0eb56be7cf\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\transition-27.1.0.aar\f010a9946c65fdaf0cbc9673c02e0f4f\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\transition-27.1.0.aar\f010a9946c65fdaf0cbc9673c02e0f4f\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-compat-27.1.0.aar\20353dd2357b90de6b835e7df22260ea\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:27.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\support-compat-27.1.0.aar\20353dd2357b90de6b835e7df22260ea\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-maps-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-license-11.6.0.aar\f247c5de9095e22d41baddfa4f80f11f\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-maps-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-license-11.6.0.aar\f247c5de9095e22d41baddfa4f80f11f\AndroidManifest.xml:4:5-43
+MERGED from [com.balysv:material-ripple:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\material-ripple-1.0.2.aar\126e4d26f9a99074271d2fa18fc76610\AndroidManifest.xml:8:5-10:41
+MERGED from [com.balysv:material-ripple:1.0.2] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\material-ripple-1.0.2.aar\126e4d26f9a99074271d2fa18fc76610\AndroidManifest.xml:8:5-10:41
+MERGED from [com.google.android.gms:play-services-vision-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-license-11.6.0.aar\fecd4fa3c6fbe0cc314fdffff3a80ad9\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-vision-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-license-11.6.0.aar\fecd4fa3c6fbe0cc314fdffff3a80ad9\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-base-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-license-11.6.0.aar\69f7cdf6fbb226d027391ca75750d59c\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-base-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-license-11.6.0.aar\69f7cdf6fbb226d027391ca75750d59c\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-license-11.6.0.aar\e5951b1e2100b35e1be110deac7e40b7\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-license-11.6.0.aar\e5951b1e2100b35e1be110deac7e40b7\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-vision-common-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-license-11.6.0.aar\f724f8c2f9dcffbb4468aa7354099839\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-vision-common-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-vision-common-license-11.6.0.aar\f724f8c2f9dcffbb4468aa7354099839\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-license-11.6.0.aar\7e4b0211e0dd6bf6e0aa9e48b3654737\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks-license:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-tasks-license-11.6.0.aar\7e4b0211e0dd6bf6e0aa9e48b3654737\AndroidManifest.xml:4:5-43
+MERGED from [android.arch.lifecycle:livedata-core:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\livedata-core-1.1.0.aar\930cacc16bb849149dbc4cbcfb1f6400\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\livedata-core-1.1.0.aar\930cacc16bb849149dbc4cbcfb1f6400\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\viewmodel-1.1.0.aar\03d9b2aa49c2dc3b04988715dbcbb655\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\viewmodel-1.1.0.aar\03d9b2aa49c2dc3b04988715dbcbb655\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\runtime-1.1.0.aar\c0b136bf963ac87717f070f063b8022e\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\runtime-1.1.0.aar\c0b136bf963ac87717f070f063b8022e\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\runtime-1.1.0.aar\4956a548d020cbc9ad01e32676c3fee3\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\runtime-1.1.0.aar\4956a548d020cbc9ad01e32676c3fee3\AndroidManifest.xml:20:5-44
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+		ADDED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+		INJECTED from D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\app\src\main\AndroidManifest.xml
+uses-feature#android.hardware.camera
+ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:11:5-60
+	android:name
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:11:19-57
+meta-data#com.google.android.gms.version
+ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:18:9-20:69
+MERGED from [com.google.android.gms:play-services-basement:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.6.0.aar\06f1099933b8310c95147da2160e1145\AndroidManifest.xml:20:9-121
+MERGED from [com.google.android.gms:play-services-basement:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.6.0.aar\06f1099933b8310c95147da2160e1145\AndroidManifest.xml:20:9-121
+	android:value
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:20:13-66
+	android:name
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:19:13-58
+meta-data#com.google.android.gms.vision.DEPENDENCIES
+ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:21:9-23:39
+	android:value
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:23:13-36
+	android:name
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:22:13-70
+activity#com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerActivity
+ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:25:9-29:20
+	android:label
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:27:13-49
+	android:theme
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:28:13-56
+	android:name
+		ADDED from [:materialbarcodescanner] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\materialbarcodescanner\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:26:13-99
+uses-feature#0x00020000
+ADDED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:21:5-77
+	android:glEsVersion
+		ADDED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:21:19-51
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-maps-11.6.0.aar\16354b0a64b0579170842e4ca5cfb63b\AndroidManifest.xml:21:52-75
+activity#app.akexorcist.bluetotohspp.library.DeviceList
+ADDED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:11:9-83
+	android:name
+		ADDED from [:library_bth] D:\P-VENTE\ANDROID PROJECTS\Distribute-Android\library_bth\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:11:19-80
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:19:9-172
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:19:146-170
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:19:86-145
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:11.6.0] C:\Users\SEBTI-PC\.gradle\caches\transforms-1\files-1.1\play-services-base-11.6.0.aar\fe619455d4f5362834735e9390515b23\AndroidManifest.xml:19:19-85

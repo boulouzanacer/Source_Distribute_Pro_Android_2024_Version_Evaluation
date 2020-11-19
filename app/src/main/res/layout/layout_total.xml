@@ -1,0 +1,281 @@
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.vente.ActivityNewSale"
+    android:background="@android:color/white"
+    android:padding="16dp"
+    >
+    <!--
+        * TableLayout is a layout that arranges its children into rows and columns.
+        * A TableLayout consists of a number of TableRow objects, each defining a row.
+        * Each row has zero or more cells.
+        * Each cell can hold one View object.
+        * TableLayout containers do not display border lines for their rows, columns, or cells.
+        * The table has as many columns as the row with the most cells.
+        * A table can leave cells empty. Cells can span columns.
+        * The width of a column is defined by the row with the widest cell in that column.
+        * TableLayout can specify certain columns as shrinkable or stretchable
+          by calling setColumnShrinkable() or setColumnStretchable().
+        * In this example code we generate border for table and its columns, rows and cells.
+    -->
+    <TableRow
+        android:id="@+id/tr_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/table_row_bg"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/table_cell_bg"
+            android:paddingRight="10dp"
+            android:text="Total HT" />
+
+        <TextView
+            android:id="@+id/total_ht"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="0.00 DA" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tr_item_1"
+        android:background="@drawable/table_row_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_product_item_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tva"
+            android:background="@drawable/table_cell_bg"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:id="@+id/tva"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00 DA"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:paddingLeft="10dp" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tr_item_5"
+        android:background="@drawable/table_row_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_product_item_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Timbre"
+            android:background="@drawable/table_cell_bg"
+            android:paddingRight="10dp" />
+
+
+        <TextView
+            android:id="@+id/timbre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00 DA"
+            android:paddingLeft="10dp"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="right" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tr_item_2"
+        android:background="@drawable/table_row_last_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_product_item_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total TTC"
+            android:background="@drawable/table_cell_bg"
+            android:paddingRight="10dp" />
+
+
+        <TextView
+            android:id="@+id/total_ttc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00 DA"
+            android:paddingLeft="10dp"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="right" />
+
+    </TableRow>
+
+
+
+    <TableRow
+        android:id="@+id/tr_item_3"
+        android:background="@drawable/table_row_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_product_item_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remise"
+            android:background="@drawable/table_cell_bg"
+            android:paddingRight="10dp" />
+
+
+        <EditText
+            android:id="@+id/edt_remise"
+            android:visibility="visible"
+            android:layout_width="129dp"
+            android:layout_height="wrap_content"
+            android:selectAllOnFocus="true"
+            android:text="0.00"
+            android:textSize="15dp"
+            android:textAlignment="viewEnd"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="end"
+            android:inputType="numberDecimal" />
+
+    </TableRow>
+
+
+    <TableRow
+        android:id="@+id/tr_item_4"
+        android:background="@drawable/table_row_last_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_product_item_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total TTC"
+            android:background="@drawable/table_cell_bg"
+            android:paddingRight="10dp" />
+
+
+        <TextView
+            android:id="@+id/total_ttc_remise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00 DA"
+            android:paddingLeft="10dp"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="right" />
+
+    </TableRow>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp">
+
+        <LinearLayout
+            android:id="@+id/vvv"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/remise_text">
+
+            <CheckBox
+                android:id="@+id/checkbox_remise"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/remise_text"
+            style="@style/TitleBadgeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REMISE :" />
+
+        <LinearLayout
+            android:id="@+id/eeeee"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/timbre_text">
+
+            <CheckBox
+                android:id="@+id/checkbox_timbre"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/timbre_text"
+            style="@style/TitleBadgeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:text="TIMBRE :" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/vvv"
+            android:layout_marginTop="5dp"
+            android:background="@color/gray" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:text="Observation : "
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+
+    <EditText
+        android:id="@+id/note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:maxCharacters="150"
+        tools:exceededTextColor="#ff0000" />
+
+</TableLayout>

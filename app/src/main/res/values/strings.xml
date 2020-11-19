@@ -1,0 +1,137 @@
+<resources>
+    <string name="app_name">Distribute PRO</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="code_barre_produit" translatable="false"># 6130000054882</string>
+    <string name="tva_badje" translatable="false">TVA</string>
+    <string name="tva" translatable="false">0%</string>
+    <string name="requests_count_mock" translatable="false">5</string>
+    <string name="requests_count_badge" translatable="false">REQUESTS</string>
+    <string name="prix_achat_montant" translatable="false">5000 DA</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="mode_tarif" translatable="false"></string>
+    <string name="mode_tarif_text" translatable="false">MODE TARIF</string>
+    <string name="prix_achat" translatable="false">PRIX ACHAT</string>
+    <string name="prix_vente" translatable="false">PRIX VENTE</string>
+    <string name="pledge_mock" translatable="false">$150</string>
+    <string name="pledge_badge" translatable="false">PLEDGE</string>
+    <string name="produit_badge" translatable="false">PRODUIT </string>
+    <string name="reference_badge" translatable="false">REFERENCE </string>
+    <string name="codebarre_badge" translatable="false">CODEBARRE </string>
+    <string name="client_name_mock" translatable="false">Edward Norton</string>
+    <string name="rating_mock" translatable="false">(26)</string>
+    <string name="pv1" translatable="false">PRIX V1 HT</string>
+    <string name="pv2" translatable="false">PRIX V2 HT</string>
+    <string name="pv3" translatable="false">PRIX V3 HT</string>
+    <string name="DETAILLE" translatable="false">DETAILLE</string>
+    <string name="pv3_prix" translatable="false">0.00 DA</string>
+    <string name="delivery_date_mock" translatable="false">May 16, 2016</string>
+    <string name="stock" translatable="false">STOCK</string>
+    <string name="stock_qte" translatable="false">231</string>
+    <string name="panier_btn_text" translatable="false">AJOUTER AU PANIER</string>
+    <string name="btn_annotation_mock" translatable="false">5 people have sent a request</string>
+    <string name="pv1_prix">0.00 DA</string>
+    <string name="content_from2_mock">New York, NY 10025</string>
+    <string name="pv2_prix">0.00 DA</string>
+    <string name="content_to2_mock">Woodside, NY 11101</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="qte_string">QTE</string>
+    <string name="produit_string">PRODUIT</string>
+    <string-array name="sample_array">
+        <item>single choice item 1</item>
+        <item>single choice item quite long and seamless text 2</item>
+        <item>single choice item 3</item>
+        <item>single choice item long text 4</item>
+    </string-array>
+
+    <!-- Print -->
+    <string name="print_test">Print Test</string>
+    <string name="printer_version">Printer Version：</string>
+    <string name="bar_code">Barcode:</string>
+    <string name="print_bar_code">Print Barcode</string>
+    <string name="D_bar_code">Qrcode:</string>
+    <string name="print_2D_barcode">Print Qrcode</string>
+    <string name="walk_paper_lines">Walk Paper Lines:</string>
+    <string name="walk_paper_test">Walk Paper</string>
+    <string name="left_margin">Left Margin:</string>
+    <string name="right_margin">Right Margin</string>
+    <string name="row_space">Row Space:</string>
+    <string name="font_size">Font Size：</string>
+    <string name="gray_level">Gray Level:</string>
+    <string name="print_content">Print Content：</string>
+    <string name="chinese_example">ZH Example</string>
+    <string name="english_example">EN Example</string>
+    <string name="clear_text">Clear</string>
+    <string name="print_text">Print Text</string>
+    <string name="printing_wait">Printing, please wait……</string>
+    <string name="printing_wait1">Connection, patientez svp……</string>
+    <string name="activation_wait">Connexion, patientez svp……</string>
+    <string name="D_barcode_loading">Qrcode loading</string>
+    <string name="generate_barcode_wait">Generating barcode, please wait……</string>
+    <string name="input_print_data">Please input print data</string>
+    <string name="maker_search_distance">Walk Paper For Search Black Block:</string>
+    <string name="maker_walk_distance">Walk Paper After Haved Search:</string>
+    <string name="maker_walk_distance_range">(0-255)</string>
+    <string name="maker">Black Block Detection</string>
+    <string name="maker_error">maker input value not fit</string>
+    <string name="maker_not_find">Cannot Find Black Block</string>
+    <string name="papercut">Paper Cut</string>
+    <string name="walk_paper_intput_value">walk paper intput value not fit</string>
+    <string name="print_picture">Print Picture</string>
+    <string name="sure">sure</string>
+    <string name="not_find_picture">not find picture</string>
+    <string name="input_command">Please Input Command</string>
+    <string name="execute_command">Execute Command</string>
+    <string name="watting">Please wait while checking driver version</string>
+    <string name="noPaper">No paper</string>
+    <string name="noPaperNotice">No paper, please put paper in and retry</string>
+    <string name="LowBattery">Low battery, please connect the charger!</string>
+    <string name="overTemp">over temp !</string>
+    <string name="ptintInit">Printer initialing... Please try again after a few seconds.</string>
+    <string name="outOfLeft">Beyond the left margin！</string>
+    <string name="outOfLine">Beyond the row space！</string>
+    <string name="outOfFont">Beyond the font size！</string>
+    <string name="outOfGray">Beyond the gray level！</string>
+    <string name="outOfCharSpace">Beyond The Char Space！</string>
+    <string name="empty">The content is empty！</string>
+    <string name="lengthNotEnougth">The length is not enough！</string>
+    <string name="index_text">Print Text</string>
+    <string name="index_pic">Picture/Qrcode</string>
+    <string name="index_comm">Print Command</string>
+    <string name="input_content">input content</string>
+    <string name="dialog_comfirm">ConFirm</string>
+    <string name="operation_result">Result</string>
+    <string name="bl_dy">Print</string>
+    <string name="bl_dy1">Connection</string>
+    <string name="leading_activation">Connexion</string>
+    <string name="print_waring">Tip: If the SDK provides the function of can not meet your printing needs, you can send the print instruction way for implementation</string>
+    <string name="char_space">Char Space:</string>
+    <string name="printer_type_common">SerialPort Printer</string>
+    <string name="printer_type_usb">USB Printer</string>
+    <string name="printer_type_select">Select Printer Type</string>
+
+
+    <string name="error_message_empty">Ce champ est obligatoire</string>
+    <string name="error_message_nom_client">le nom de client est obligatoire</string>
+    <string name="title_activity_maps">Map</string>
+
+
+    <string name="nom_client_hint">Nom client</string>
+    <string name="revendeur_hint">Revendeur</string>
+    <string name="code_client_hint">Code client</string>
+    <string name="phone_client_hint">Num Téléphone Client</string>
+
+    <string name="error_message_code_client">Enter un valid code client</string>
+
+
+    <string name="flash_on">Flash [ON]</string>
+    <string name="flash_off">Flash [OFF]</string>
+    <string name="auto_focus_on">Auto Focus [ON]</string>
+    <string name="auto_focus_off">Auto Focus [OFF]</string>
+    <string name="formats">Formats</string>
+    <string name="choose_formats">Choose Formats</string>
+    <string name="select_camera">Select a Camera</string>
+</resources>

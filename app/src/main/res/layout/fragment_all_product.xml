@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:id="@+id/result_scan_space"
+        android:layout_centerHorizontal="true">
+
+        <ListView
+            android:id="@+id/list_produit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:footerDividersEnabled="false"
+
+            android:layout_below="@+id/search_field">
+        </ListView>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:ems="10"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:hint="Search product.."
+            android:inputType="textVisiblePassword"
+            android:id="@+id/search_field"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+    </RelativeLayout>
+</RelativeLayout>

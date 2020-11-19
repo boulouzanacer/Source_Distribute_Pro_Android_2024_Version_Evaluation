@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/search_produit"
+        android:title="List produit"
+        android:orderInCategory="2"
+        android:icon="@mipmap/ic_menu_search_produit"
+        android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/export_produit"
+        android:title="Export inventaire"
+        android:icon="@mipmap/bluetooth_not_connected"
+        android:showAsAction="always"
+        android:orderInCategory="1"
+        tools:ignore="AppCompatResource" />
+
+</menu>

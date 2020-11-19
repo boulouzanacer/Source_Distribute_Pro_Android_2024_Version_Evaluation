@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+	<Button 
+      android:id="@+id/clear_button"
+	  android:text="Dissocier Dropbox"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/logged_in_display" 
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+		android:weightSum="1">
+
+
+		<ListView
+			android:id="@+id/list_file_dropbox"
+			android:layout_width="match_parent"
+			android:layout_height="404dp"
+			android:layout_weight="1"></ListView>
+
+
+		<LinearLayout
+		    android:orientation="horizontal"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content">
+
+			<Button
+		      android:id="@+id/export_button"
+		      android:text="Exporter"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_weight="1"
+		      />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+	      

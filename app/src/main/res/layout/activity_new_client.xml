@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context="com.safesoft.pro.distribute.activities.ActivityNewClient">
+
+
+        <com.emmasuzuki.easyform.EasyTextInputLayout
+            android:id="@+id/nom_client_check_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nom Client"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:layout_below="@+id/code_client_check_edittext"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <com.emmasuzuki.easyform.EasyTextInputLayout
+            android:id="@+id/adresse_client_check_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:hint="Adresse client"
+            android:layout_below="@+id/nom_client_check_edittext"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <com.emmasuzuki.easyform.EasyTextInputLayout
+            android:id="@+id/phone_client_check_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorMessage="@string/error_message_empty"
+            android:inputType="number"
+            android:hint="Numéro de téléphone"
+            app:errorType="empty"
+            android:layout_below="@+id/adresse_client_check_edittext"
+            android:layout_alignLeft="@+id/adresse_client_check_edittext"
+            android:layout_alignStart="@+id/adresse_client_check_edittext" />
+
+
+        <com.emmasuzuki.easyform.EasyTextInputLayout
+            android:id="@+id/rc_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorMessage="@string/error_message_empty"
+            android:inputType="number"
+            android:hint="Registe commerce"
+            app:errorType="empty"
+            android:layout_below="@+id/phone_client_check_edittext"
+            android:layout_alignLeft="@+id/phone_client_check_edittext"
+            android:layout_alignStart="@+id/phone_client_check_edittext" />
+
+        <com.emmasuzuki.easyform.EasyTextInputLayout
+            android:id="@+id/if_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorMessage="@string/error_message_empty"
+            android:inputType="number"
+            android:hint="Numéro d'identification fiscal"
+            app:errorType="empty"
+            android:layout_below="@+id/rc_edittext"
+            android:layout_alignLeft="@+id/rc_edittext"
+            android:layout_alignStart="@+id/rc_edittext" />
+
+        <com.emmasuzuki.easyform.EasyTextInputLayout
+            android:id="@+id/rib_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorMessage="@string/error_message_empty"
+            android:inputType="number"
+            android:hint="R.I.B"
+            app:errorType="empty"
+            android:layout_below="@+id/rc_edittext"
+            android:layout_alignLeft="@+id/rc_edittext"
+            android:layout_alignStart="@+id/rc_edittext" />
+
+
+        <Button
+            android:id="@+id/sender"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@color/sandy_brown"
+            android:text="Ajouter"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:onClick="onClickButton"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/numero_serie_check_edittext"
+            android:layout_alignLeft="@+id/numero_serie_check_edittext"
+            android:layout_alignStart="@+id/numero_serie_check_edittext" />
+
+</LinearLayout>

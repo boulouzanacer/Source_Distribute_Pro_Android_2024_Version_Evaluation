@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.safesoft.pro.distribute.activities.ActivitySetting">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/bt1"
+                android:textStyle="italic"
+                android:textColor="@color/accent"
+                android:background="@drawable/parametre_rounded"
+                android:text="Parametre Connexion"
+                android:layout_height="match_parent" />
+
+            <include layout="@layout/sub_layout_connexion" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/bt3"
+                android:textStyle="italic"
+
+                android:textColor="@color/accent"
+                android:background="@drawable/parametre_rounded"
+                android:text="Paramètres d'imprimente"
+                android:layout_height="match_parent" />
+            <include layout="@layout/zpref_printer" />
+            <include layout="@layout/zpref_scanner" />
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/bt10"
+                android:textStyle="italic"
+
+                android:textColor="@color/accent"
+                android:background="@drawable/parametre_rounded"
+                android:text="Sauvegarde des données"
+                android:layout_height="match_parent" />
+            <include layout="@layout/sub_backup" />
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/bt11"
+                android:textStyle="italic"
+
+                android:textColor="@color/accent"
+                android:background="@drawable/parametre_rounded"
+                android:text="Réinitialisation des données"
+                android:layout_height="match_parent" />
+            <include layout="@layout/sub_reset" />
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/bt2"
+                android:textStyle="italic"
+
+                android:textColor="@color/accent"
+                android:background="@drawable/parametre_rounded"
+                android:text="Parametre divers"
+                android:layout_height="match_parent" />
+
+            <include layout="@layout/param_divers" />
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="testRunner" value="PLATFORM" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/SpinKitLib" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/folding-cell" />
+            <option value="$PROJECT_DIR$/lib_badge" />
+            <option value="$PROJECT_DIR$/library_bth" />
+            <option value="$PROJECT_DIR$/materialbarcodescanner" />
+            <option value="$PROJECT_DIR$/sweet_alert_dialog_library" />
+          </set>
+        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
+        <option name="useQualifiedModuleNames" value="true" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

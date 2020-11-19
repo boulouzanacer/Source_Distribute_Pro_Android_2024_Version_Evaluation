@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="nom du depot"
+            android:textSize="16dp"
+            android:id="@+id/depot" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/rouge"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="code depot"
+            android:textSize="16dp"
+            android:id="@+id/code_depot" />
+
+
+    </LinearLayout>
+</LinearLayout>

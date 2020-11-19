@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/title_versement"
+            android:text="Réglement situation"
+            android:textAlignment="center"
+            android:typeface="monospace"
+            android:padding="10sp"
+            android:textColor="@color/white"
+            android:background="@color/blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="30dp"
+            android:layout_below="@+id/title_versement"
+            android:layout_centerHorizontal="true">
+
+
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/montant_versement_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Montant Versement :"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:inputType="numberSigned|numberDecimal"
+                android:layout_alignParentStart="true" />
+
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/observation_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:inputType="textMultiLine"
+                android:hint="Observation : "
+                android:layout_below="@+id/montant_versement_edittext"
+                android:layout_alignParentStart="true" />
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_spotify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                app:mfb_radius="15dp"
+                app:mfb_text="Versement"
+                android:layout_marginTop="30sp"
+                android:layout_below="@+id/observation_edittext"
+                app:mfb_textColor="#FFFFFF" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

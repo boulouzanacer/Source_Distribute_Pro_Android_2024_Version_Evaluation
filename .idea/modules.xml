@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Distribute-Android.iml" filepath="$PROJECT_DIR$/Distribute-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SpinKitLib/Distribute-Android.SpinKitLib.iml" filepath="$PROJECT_DIR$/.idea/modules/SpinKitLib/Distribute-Android.SpinKitLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Distribute-Android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Distribute-Android.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/folding-cell/Distribute-Android.folding-cell.iml" filepath="$PROJECT_DIR$/.idea/modules/folding-cell/Distribute-Android.folding-cell.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib_badge/Distribute-Android.lib_badge.iml" filepath="$PROJECT_DIR$/.idea/modules/lib_badge/Distribute-Android.lib_badge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library_bth/Distribute-Android.library_bth.iml" filepath="$PROJECT_DIR$/.idea/modules/library_bth/Distribute-Android.library_bth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/materialbarcodescanner/Distribute-Android.materialbarcodescanner.iml" filepath="$PROJECT_DIR$/.idea/modules/materialbarcodescanner/Distribute-Android.materialbarcodescanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sweet_alert_dialog_library/Distribute-Android.sweet_alert_dialog_library.iml" filepath="$PROJECT_DIR$/.idea/modules/sweet_alert_dialog_library/Distribute-Android.sweet_alert_dialog_library.iml" />
+    </modules>
+  </component>
+</project>

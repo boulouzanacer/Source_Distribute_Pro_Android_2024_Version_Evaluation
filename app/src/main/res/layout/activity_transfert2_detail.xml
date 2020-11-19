@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    tools:context="com.safesoft.pro.distribute.activities.ActivityTransfert2Detail">
+
+    <RelativeLayout
+        android:id="@+id/rlt_header"
+        android:background="@color/contentDividerLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/produit"
+            android:text="@string/produit_string"
+            android:layout_marginRight="10dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/quantite" />
+
+        <TextView
+            android:id="@+id/quantite"
+            android:text="@string/qte_string"
+            android:textStyle="bold"
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+
+    <View
+        android:background="@color/vert"
+        android:layout_below="@+id/rlt_header"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/view" />
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/view" />
+</RelativeLayout>

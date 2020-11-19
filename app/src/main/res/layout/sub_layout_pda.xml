@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:clickable="true"
+        android:id="@+id/param_pda"
+        android:background="@color/white"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/pda_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Parametre PDA"
+            android:textSize="18dp"
+            android:textColor="@color/black_overlay"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/descrip_code_depot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Saisissez ici le code depot pour cette appareil, veuillez bien confirmer le code pour éviter plutard le conflis entre les depots"
+            android:layout_below="@+id/pda_title"
+            android:textSize="12sp"
+            android:textColor="@color/gray"
+            android:layout_alignParentStart="true" />
+
+        <LinearLayout
+            android:id="@+id/code_depot_lnr"
+            android:layout_below="@+id/descrip_code_depot"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClickListener"
+            android:background="@drawable/import_export_selector"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/code_depot_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CODE DEPOT : "
+                android:textSize="17sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black_overlay"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+            <TextView
+                android:id="@+id/code_depot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="000001"
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black_overlay"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/code_vendeur_lnr"
+            android:layout_below="@+id/code_depot_lnr"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClickListener"
+            android:background="@drawable/import_export_selector"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/code_vendeur_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CODE VENDEUR : "
+                android:textSize="17sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black_overlay"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+            <TextView
+                android:id="@+id/code_vendeur"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="000001"
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black_overlay"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view"
+            android:layout_marginTop="5dp"
+            android:background="@color/gray"
+            android:layout_below="@+id/code_depot_lnr"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+
+        <LinearLayout
+            android:id="@+id/mode_tarif_lnr"
+            android:layout_below="@+id/code_vendeur_lnr"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClickListener"
+            android:background="@drawable/import_export_selector"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <pl.coreorb.selectiondialogs.views.SelectedItemView
+                android:id="@+id/mode_tarif_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hint="MODE DE TARIFICATION"
+                app:itemIcon="@drawable/pv1"
+                app:itemName="Prix vente 1" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/stock_moins_lnr"
+            android:layout_below="@+id/mode_tarif_lnr"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClickListener"
+            android:background="@drawable/import_export_selector"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/chkbx_stock_moins"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:text="VENTE AVEC STOCK MOINS"
+                android:textColor="@color/black_overlay"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/achats_show_lnr"
+            android:layout_below="@+id/stock_moins_lnr"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClickListener"
+            android:background="@drawable/import_export_selector"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <CheckBox
+                android:id="@+id/chkbx_achats_show"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="AFFICHER LES ACHATS CLIENT: "
+                android:textSize="17sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black_overlay"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

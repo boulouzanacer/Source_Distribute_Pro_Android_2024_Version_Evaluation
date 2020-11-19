@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.safesoft.pro.distribute.activities.ActivityImportsExport">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rlt_inventaire"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:onClick="onRelativeClick"
+                android:background="@drawable/import_export_selector"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    android:id="@+id/exportted_vente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Inventaire"
+                    android:textSize="18dp"
+                    android:clickable="false"
+                    android:textColor="@color/black_overlay"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:id="@+id/descrip_exported_vente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cette rublique vous permet de faire des inventaires à l'aide d'un scanner code barre via bluetooth ou un scanner intégré avec l'appariel"
+                    android:layout_below="@+id/exportted_vente"
+                    android:textSize="12dp"
+                    android:clickable="false"
+                    android:textColor="@color/gray"
+                    android:layout_alignParentStart="true" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rlt_achat"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:visibility="visible"
+                android:onClick="onRelativeClick"
+                android:background="@drawable/import_export_selector"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    android:id="@+id/etat_v"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Achat"
+                    android:textSize="18dp"
+                    android:clickable="false"
+                    android:textColor="@color/black_overlay"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:id="@+id/descrip_etat_v"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cette rubrique vous permet de faire vos achats à l'aide d'un scanner code barre via bluetooth ou un scanner intégré avec l'appariel"
+                    android:layout_below="@+id/etat_v"
+                    android:textSize="12dp"
+                    android:clickable="false"
+                    android:textColor="@color/gray"
+                    android:layout_alignParentStart="true" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

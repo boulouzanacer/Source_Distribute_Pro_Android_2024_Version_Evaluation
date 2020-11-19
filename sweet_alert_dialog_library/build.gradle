@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+
+version = "1.0"
+project.group = "com.safesoft.uk2015.restopro"
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion 9
+    }
+
+    lintOptions {
+
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation 'com.pnikosis:materialish-progress:1.0'
+}

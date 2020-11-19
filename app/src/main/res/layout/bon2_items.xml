@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    tools:context="com.safesoft.pro.distribute.activities.ActivityTransfert2Detail">
+
+    <TextView
+        android:id="@+id/produit"
+        android:text="PRODUIT"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/quantite" />
+
+    <TextView
+        android:id="@+id/quantite"
+        android:text="58"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewEnd"
+        android:layout_marginEnd="41dp"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/prix_u" />
+
+
+    <TextView
+        android:id="@+id/prix_u"
+        android:text="200.00"
+        android:layout_alignParentRight="true"
+        android:textAlignment="viewEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

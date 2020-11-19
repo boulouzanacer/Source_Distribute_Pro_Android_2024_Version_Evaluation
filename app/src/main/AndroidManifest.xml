@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.safesoft.pro.distribute">
+
+
+    <!-- Permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:name="android.support.multidex.MultiDexApplication"
+        tools:replace="android:icon">
+
+        <!-- Main classes -->
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            />
+
+
+        <activity
+            android:name=".splashscreen.splashScreen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Activation classes -->
+        <activity android:name=".activation.ActivityActivation" />
+
+
+        <!-- Client classes -->
+        <activity android:name=".activities.ActivityClients" />
+        <activity android:name=".activities.ActivityClientDetail" />
+        <activity android:name=".activities.ActivityNewClient" />
+
+        <!-- Produits classes -->
+        <activity android:name=".activities.ActivityProduits" />
+        <activity android:name=".activities.ActivityProduitDetail" />
+
+        <!-- Transfer classes -->
+        <activity android:name=".activities.ActivityTransfer1" />
+        <activity android:name=".activities.ActivityTransfert2Detail" />
+
+        <!-- Autre classes -->
+        <activity android:name=".activities.ActivityImportsExport" />
+        <activity android:name=".activities.ActivitySetting" />
+        <activity android:name=".activities.ActivityExportedVentes" />
+        <activity android:name=".activities.ActivityInventaireAchat" />
+
+
+        <!-- login parametres classes -->
+        <activity
+            android:name=".activities.login.ActivityLogin"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".activities.login.ActivityChangePwd"
+            android:theme="@style/AppTheme.Dark" />
+
+        <!-- Achat classes -->
+        <activity android:name=".activities.achats.ActivityAchat" />
+        <activity android:name=".activities.achats.ActivityNewAchat" />
+        <activity android:name=".activities.achats.ActivityAchatDetails" />
+
+
+        <!-- Inventaire classes -->
+        <activity android:name=".activities.inventaire.ActivityInventaire" />
+        <activity android:name=".activities.inventaire.ActivityNewInventory" />
+        <activity android:name=".activities.inventaire.ActivityInventaireDetails" />
+
+        <!-- Scanner classes -->
+        <activity android:name=".scanner.FullScannerActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".scanner.BaseScannerActivity" />
+
+        <!-- vente classes -->
+        <activity android:name=".activities.vente.ActivityNewSale" />
+        <activity android:name=".activities.vente.ActivityAddProduct" />
+        <activity android:name=".activities.ActivityVersement" />
+        <activity android:name=".activities.vente.ActivityVentes" />
+        <activity android:name=".activities.vente.ActivityEditSale" />
+        <activity android:name=".activities.vente.ActivityBon2" />
+
+        <!-- Commade classes -->
+        <activity android:name=".activities.commande.ActivityCommandes" />
+        <activity android:name=".activities.commande.ActivityNewCommande" />
+        <activity android:name=".activities.commande.ActivityAddProduct_Commande" />
+        <activity android:name=".activities.commande.ActivityEditCommande" />
+        <activity android:name=".activities.commande.ActivityCommande2" />
+
+        <!-- DropBox classes -->
+        <activity
+            android:name=".dropBox.ActivityDropBoxSend"
+            android:configChanges="orientation|keyboard" />
+        <activity
+            android:name=".dropBox.ActivityDropBoxSend_Commande"
+            android:configChanges="orientation|keyboard" />
+        <activity
+            android:name=".dropBox.ActivityDropBoxRead_Transfert"
+            android:configChanges="orientation|keyboard" />
+        <activity
+            android:name="com.dropbox.client2.android.AuthActivity"
+            android:configChanges="orientation|keyboard"
+            android:launchMode="singleTask">
+            <intent-filter>
+
+                <!-- Change this to be db- followed by your app key -->
+                <data android:scheme="db-oqzeht4nuhmlmap" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Services -->
+        <service
+            android:name=".services.ServiceDistribute"
+            android:label="Local Service" />
+        <service android:name=".gps.ServiceLocation" />
+
+        <!-- Maps-->
+        <activity
+            android:name=".activities.ActivityMaps"
+
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".activities.ActivityEtatV" />
++
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+    </application>
+
+</manifest>

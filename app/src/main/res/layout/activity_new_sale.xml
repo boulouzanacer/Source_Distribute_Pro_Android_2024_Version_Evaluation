@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.safesoft.pro.distribute.activities.vente.ActivityNewSale">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rtvl_client"
+                    android:background="@drawable/client_selector2"
+                    android:clickable="true"
+                    android:onClick="onClickEvent"
+                    android:focusableInTouchMode="true"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/client"
+                        android:textSize="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="NOM CLIENT" />
+
+                    <TextView
+                        android:id="@+id/descrip_import"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/client"
+                        android:text="Cliquez ici pour choisir un client"
+                        android:textColor="@color/gray"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+
+
+                <ImageView
+                    android:id="@+id/separator_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/separator_vente"
+                    android:layout_marginEnd="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/create" />
+
+                <Button
+                    android:id="@+id/create"
+                    android:text="Créer"
+                    android:onClick="onClickEvent"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_bg"
+                    android:padding="10dp"
+                    android:drawableLeft="@mipmap/new_client_png"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true" />
+
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray"
+                    android:layout_below="@+id/create"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/mode_tarif"
+                    style="@style/TitleBadgeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/mode_tarif_text"
+                    android:layout_centerVertical="true"
+                    android:textStyle="italic"
+                    android:text="@string/mode_tarif" />
+
+                <TextView
+                    android:id="@+id/mode_tarif_text"
+                    style="@style/TitleBadgeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_tarif_text" />
+
+                <Button
+                    android:id="@+id/addProduct"
+                    android:textColor="@color/white"
+                    android:text="  Produit"
+                    android:background="@drawable/button_bg"
+                    android:drawableLeft="@mipmap/add_product_png"
+                    android:padding="10dp"
+                    android:onClick="onClickEvent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true" />
+
+                <View
+                    android:id="@+id/view1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_below="@+id/addProduct"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray" />
+
+            </RelativeLayout>
+
+
+            <include layout="@layout/layout_list_produit_vente"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/layout_total"/>
+
+            </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/valide_facture"
+                android:text="Valider"
+                android:background="@drawable/selector_button_validate"
+                android:textColor="@color/white"
+
+                android:textStyle="bold"
+                android:onClick="onClickEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

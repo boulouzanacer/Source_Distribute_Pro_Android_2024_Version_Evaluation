@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="?selectableItemBackground"
+              android:orientation="horizontal"
+              android:padding="8dp">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/title"
+            android:layout_width="185sp"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Title"
+            android:maxLines="2"
+            tools:minTextSize="16sp" />
+
+        <TextView
+            android:id="@+id/montant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="180.00 DA"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/quantite"
+            android:text="30.00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
+</LinearLayout>

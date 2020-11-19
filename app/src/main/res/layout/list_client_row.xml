@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="nom de client"
+            android:textSize="16dp"
+            android:id="@+id/client" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/rouge"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="code client"
+            android:textSize="16dp"
+            android:id="@+id/code_client" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_marginRight="5dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="0.00"
+            android:textSize="16dp"
+            android:id="@+id/stock_t" />
+    </LinearLayout>
+</LinearLayout>

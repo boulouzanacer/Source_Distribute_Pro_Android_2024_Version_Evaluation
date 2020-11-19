@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/first"
+            android:layout_marginTop="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:text="12/12/2012 12:12"
+                android:clickable="true"
+                android:background="@drawable/selector_date_hours"
+                android:id="@+id/beginsession_date"
+                android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:text="Debut session"
+                android:id="@+id/beginsession"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginLeft="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/second"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/endsession_date"
+                android:text="12/12/2015 15:15"
+                android:textSize="15sp"
+                android:clickable="true"
+                android:background="@drawable/selector_date_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="11dp"
+                android:layout_marginEnd="11dp" />
+
+            <TextView
+                android:id="@+id/endsession"
+                android:text="Fin session"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginLeft="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/userText"
+            android:text="Svp séléctionner client "
+            android:textSize="15sp"
+            android:textColor="@color/carot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+            android:id="@+id/android_material_design_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Client : "
+            android:textColorHint="#05ab9a"
+            app:met_floatingLabel="normal" />
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/valid"
+        android:text="Valider"
+        android:background="?actionModeBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

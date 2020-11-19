@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2012 Steven Rudenko
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:background="@color/white"
+    android:id="@+id/param_objectif"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/HeaderText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:textColor="@color/black_overlay"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="Paramètres système objectif" />
+    <TextView
+        android:id="@+id/descrip_code_depot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ça vous permet de definir une somme objective a atteindre apères des ventes faites"
+        android:layout_below="@+id/pda_title"
+        android:textSize="12dp"
+        android:textColor="@color/gray"
+        android:layout_alignParentStart="true" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_large_size"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:id="@+id/prefSpacingType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background_holo_light"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dip" >
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/edit_objectif"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:inputType="numberDecimal"
+                app:hintAnimationEnabled="true"
+                android:hint="Objectif montant"
+                android:layout_below="@+id/nom_client_check_edittext"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/BtnObjectif" />
+
+
+            <Button
+                android:id="@+id/BtnObjectif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Valider"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/button_bg"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_size"
+        android:background="@color/divider" />
+</LinearLayout>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="library_name">MaterialBarcodeScanner</string>
+    <string name="permission_camera_rationale">L\'acces de la camera est demandé pour detecter le codebarre.</string>
+    <string name="no_camera_permission">On peut pas démarrer le lecteur codebarre parceque tu n\'as pas encore authorisé l\'utilisation de la camera.</string>
+</resources>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context="com.safesoft.pro.distribute.activities.inventaire.ActivityNewInventory">
+
+
+
+        <com.emmasuzuki.easyform.EasyTextInputLayout
+            android:id="@+id/nom_inventaire_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nom inventaire"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30sp"
+            android:textStyle="bold"
+            android:text="Date :"/>
+
+        <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+            android:id="@+id/date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            tools:picker_curved="true"
+            android:layout_marginTop="5sp"
+            tools:picker_cyclic="true"
+            app:picker_curved="true"
+            app:picker_selectedTextColor="@color/colorPrimary"
+            app:picker_displayMinutes="true"
+            tools:picker_canBeOnPast="false"
+            tools:picker_visibleItemCount="7"
+            />
+
+        <Button
+            android:id="@+id/sender"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@color/sandy_brown"
+            android:text="Ajouter"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:onClick="onClickButton"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/numero_serie_check_edittext"
+            android:layout_alignLeft="@+id/numero_serie_check_edittext"
+            android:layout_alignStart="@+id/numero_serie_check_edittext" />
+
+</LinearLayout>
