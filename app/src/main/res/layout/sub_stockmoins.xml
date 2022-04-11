@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -13,7 +14,9 @@
         android:id="@+id/param_pda"
         android:background="@color/white"
         android:paddingRight="15dp"
-        android:paddingTop="15dp">
+        android:paddingTop="15dp"
+        android:focusable="true"
+        tools:ignore="UselessParent">
 
 
 
@@ -23,7 +26,8 @@
             android:background="@color/gray"
             android:layout_below="@+id/code_depot_lnr"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"/>
+            android:layout_height="0.5dp"
+            tools:ignore="UnknownIdInLayout" />
 
 
         <LinearLayout
@@ -36,7 +40,8 @@
             android:background="@drawable/import_export_selector"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="UnknownIdInLayout,UsingOnClickInXml">
 
 
             <pl.coreorb.selectiondialogs.views.SelectedItemView
@@ -60,14 +65,15 @@
             android:background="@drawable/import_export_selector"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="UsingOnClickInXml">
 
             <CheckBox
                 android:id="@+id/chkbx_stock_moins"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                android:text="VENTE AVEC STOCK MOINS"
+                android:text="@string/vente_avec_stock_moins"
                 android:textColor="@color/black_overlay"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>
@@ -83,14 +89,15 @@
             android:background="@drawable/import_export_selector"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="UsingOnClickInXml">
 
 
             <CheckBox
                 android:id="@+id/chkbx_achats_show"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="AFFICHER LES ACHATS CLIENT: "
+                android:text="@string/afficher_les_achats_client"
                 android:textSize="17sp"
                 android:layout_marginTop="5dp"
                 android:textColor="@color/black_overlay"
@@ -106,15 +113,15 @@
             android:background="@drawable/import_export_selector"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="UsingOnClickInXml">
 
             <CheckBox
                 android:id="@+id/chkbx_photo_pr"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                android:text="AFFICHER PHOTO PRODUIT
-                 dans la vente"
+                android:text="@string/afficher_photo_produit_dans_la_vente"
                 android:textColor="@color/black_overlay"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>

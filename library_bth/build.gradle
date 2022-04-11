@@ -1,12 +1,7 @@
 apply plugin: 'com.android.library'
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
 
-    defaultConfig {
-        versionCode 1
-        versionName "1.0"
-    }
 
     sourceSets {
         main {
@@ -15,7 +10,6 @@ android {
             res.srcDirs = ['src/main/res']
         }
     }
-    buildToolsVersion '28.0.3'
 }
 
 dependencies {

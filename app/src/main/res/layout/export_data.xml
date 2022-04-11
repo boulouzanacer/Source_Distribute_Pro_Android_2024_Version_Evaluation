@@ -18,11 +18,11 @@
             android:id="@+id/exportt_vente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exportation ventes"
-            android:textSize="18dp"
             android:clickable="false"
+            android:text="Exportation ventes"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textSize="18dp" />
 
         <TextView
             android:id="@+id/descrip_export_vente"

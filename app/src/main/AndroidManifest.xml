@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.safesoft.pro.distribute">
+    package="com.safesoft.proapp.distribute">
 
 
     <!-- Permission -->
@@ -9,13 +9,17 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 
@@ -25,23 +29,19 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication"
         tools:replace="android:icon">
 
         <!-- Main classes -->
-        <activity android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-            />
-
-
         <activity
-            android:name=".splashscreen.splashScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:name="com.safesoft.proapp.distribute.MainActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,80 +49,90 @@
             </intent-filter>
         </activity>
 
+
+        <activity
+            android:exported="true"
+            android:name="com.safesoft.proapp.distribute.splashscreen.splashScreen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+
         <!-- Activation classes -->
-        <activity android:name=".activation.ActivityActivation" />
+        <activity android:name="com.safesoft.proapp.distribute.activation.ActivityActivation" />
 
 
         <!-- Client classes -->
-        <activity android:name=".activities.ActivityClients" />
-        <activity android:name=".activities.ActivityClientDetail" />
-        <activity android:name=".activities.ActivityNewClient" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityClients" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityClientDetail" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityNewClient" />
 
         <!-- Produits classes -->
-        <activity android:name=".activities.ActivityProduits" />
-        <activity android:name=".activities.ActivityProduitDetail" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityProduits" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityProduitDetail" />
 
         <!-- Transfer classes -->
-        <activity android:name=".activities.ActivityTransfer1" />
-        <activity android:name=".activities.ActivityTransfert2Detail" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityTransfer1" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityTransfert2Detail" />
 
         <!-- Autre classes -->
-        <activity android:name=".activities.ActivityImportsExport" />
-        <activity android:name=".activities.ActivitySetting" />
-        <activity android:name=".activities.ActivityExportedVentes" />
-        <activity android:name=".activities.ActivityInventaireAchat" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityImportsExport" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivitySetting" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityExportedVentes" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityInventaireAchat" />
 
 
         <!-- login parametres classes -->
         <activity
-            android:name=".activities.login.ActivityLogin"
+            android:name="com.safesoft.proapp.distribute.activities.login.ActivityLogin"
             android:theme="@style/AppTheme.Dark" />
         <activity
-            android:name=".activities.login.ActivityChangePwd"
+            android:name="com.safesoft.proapp.distribute.activities.login.ActivityChangePwd"
             android:theme="@style/AppTheme.Dark" />
 
         <!-- Achat classes -->
-        <activity android:name=".activities.achats.ActivityAchat" />
-        <activity android:name=".activities.achats.ActivityNewAchat" />
-        <activity android:name=".activities.achats.ActivityAchatDetails" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.achats.ActivityAchat" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.achats.ActivityNewAchat" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.achats.ActivityAchatDetails" />
 
 
         <!-- Inventaire classes -->
-        <activity android:name=".activities.inventaire.ActivityInventaire" />
-        <activity android:name=".activities.inventaire.ActivityNewInventory" />
-        <activity android:name=".activities.inventaire.ActivityInventaireDetails" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.inventaire.ActivityNewInventory" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaireDetails" />
 
         <!-- Scanner classes -->
-        <activity android:name=".scanner.FullScannerActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".scanner.BaseScannerActivity" />
+        <activity
+            android:name="com.safesoft.proapp.distribute.scanner.FullScannerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.safesoft.proapp.distribute.scanner.BaseScannerActivity" />
 
         <!-- vente classes -->
-        <activity android:name=".activities.vente.ActivityNewSale" />
-        <activity android:name=".activities.vente.ActivityAddProduct" />
-        <activity android:name=".activities.ActivityVersement" />
-        <activity android:name=".activities.vente.ActivityVentes" />
-        <activity android:name=".activities.vente.ActivityEditSale" />
-        <activity android:name=".activities.vente.ActivityBon2" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivityNewSale" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivityAddProduct" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityVersement" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivityVentes" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivityEditSale" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivityBon2" />
 
-        <!-- Commade classes -->
-        <activity android:name=".activities.commande.ActivityCommandes" />
-        <activity android:name=".activities.commande.ActivityNewCommande" />
-        <activity android:name=".activities.commande.ActivityAddProduct_Commande" />
-        <activity android:name=".activities.commande.ActivityEditCommande" />
-        <activity android:name=".activities.commande.ActivityCommande2" />
+        <!-- Commande classes -->
+        <activity android:name="com.safesoft.proapp.distribute.activities.commande.ActivityCommandes" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.commande.ActivityNewCommande" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.commande.ActivityAddProduct_Commande" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.commande.ActivityEditCommande" />
+        <activity android:name="com.safesoft.proapp.distribute.activities.commande.ActivityCommande2" />
 
         <!-- DropBox classes -->
         <activity
-            android:name=".dropBox.ActivityDropBoxSend"
+            android:name="com.safesoft.proapp.distribute.dropBox.ActivityDropBoxSend"
             android:configChanges="orientation|keyboard" />
         <activity
-            android:name=".dropBox.ActivityDropBoxSend_Commande"
+            android:name="com.safesoft.proapp.distribute.dropBox.ActivityDropBoxSend_Commande"
             android:configChanges="orientation|keyboard" />
         <activity
-            android:name=".dropBox.ActivityDropBoxRead_Transfert"
+            android:name="com.safesoft.proapp.distribute.dropBox.ActivityDropBoxRead_Transfert"
             android:configChanges="orientation|keyboard" />
         <activity
+            android:exported="true"
             android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask">
@@ -140,17 +150,15 @@
 
         <!-- Services -->
         <service
-            android:name=".services.ServiceDistribute"
+            android:name="com.safesoft.proapp.distribute.services.ServiceDistribute"
             android:label="Local Service" />
-        <service android:name=".gps.ServiceLocation" />
+        <service android:name="com.safesoft.proapp.distribute.gps.ServiceLocation" />
 
         <!-- Maps-->
         <activity
-            android:name=".activities.ActivityMaps"
-
+            android:name="com.safesoft.proapp.distribute.activities.ActivityMaps"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".activities.ActivityEtatV" />
-+
+        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityEtatV" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright 2012 Steven Rudenko
-  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-    http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:background="@color/white"
     android:layout_width="match_parent"
@@ -28,11 +14,9 @@
         android:id="@+id/descrip_security"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ça vous permet de changer le mot de passe du paramètres général !"
-        android:layout_below="@+id/pda_title"
-        android:textSize="12dp"
-        android:textColor="@color/gray"
-        android:layout_alignParentStart="true" />
+        android:text="@string/a_vous_permet_de_changer_le_mot_de_passe_du_param_tres_g_n_ral"
+        android:textSize="12sp"
+        android:textColor="@color/gray" />
 
     <View
         android:layout_width="match_parent"
@@ -49,7 +33,8 @@
         android:onClick="onClickListener"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingLeft="8dip" >
+        android:paddingStart="8dip"
+        tools:ignore="RtlSymmetry,UsingOnClickInXml">
 
         <TextView
             android:layout_width="0dip"
@@ -57,7 +42,7 @@
             android:layout_weight="1"
             android:fadingEdge="horizontal"
             android:textColor="@color/black"
-            android:text="Changer mot de passe"
+            android:text="@string/changer_mot_de_passe"
             android:clickable="false"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -67,11 +52,9 @@
         android:id="@+id/descrip_reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ça vous permet de réinitialiser l'appareil ! Attention cette opération va supprimer touts vos données sur l'appareil"
-        android:layout_below="@+id/pda_title"
-        android:textSize="12dp"
-        android:textColor="@color/gray"
-        android:layout_alignParentStart="true" />
+        android:text="@string/a_vous_permet_de_r_initialiser_l_appareil_attention_cette_op_ration_va_supprimer_touts_vos_donn_es_sur_l_appareil"
+        android:textSize="12sp"
+        android:textColor="@color/gray" />
 
     <View
         android:id="@+id/divider"
@@ -89,7 +72,8 @@
         android:onClick="onClickListener"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingLeft="8dip" >
+        android:paddingStart="8dip"
+        tools:ignore="RtlSymmetry,UsingOnClickInXml">
 
         <TextView
             android:layout_width="0dip"
@@ -99,7 +83,7 @@
             android:fadingEdge="horizontal"
             android:textColor="@color/black"
             android:singleLine="true"
-            android:text="Réinitialiser"
+            android:text="@string/r_initialiser"
             android:clickable="false"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 

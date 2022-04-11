@@ -17,6 +17,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:background="@color/white"
     android:id="@+id/param_objectif"
@@ -28,19 +29,17 @@
         style="@style/HeaderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres système objectif" />
+        android:text="@string/param_tres_syst_me_objectif" />
     <TextView
         android:id="@+id/descrip_code_depot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ça vous permet de definir une somme objective a atteindre apères des ventes faites"
-        android:layout_below="@+id/pda_title"
-        android:textSize="12dp"
-        android:textColor="@color/gray"
-        android:layout_alignParentStart="true" />
+        android:text="@string/a_vous_permet_de_definir_une_somme_objective_a_atteindre_ap_res_des_ventes_faites"
+        android:textSize="12sp"
+        android:textColor="@color/gray" />
 
     <View
         android:id="@+id/divider"
@@ -54,7 +53,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/item_background_holo_light"
         android:gravity="center_vertical"
-        android:paddingLeft="8dip" >
+        android:paddingStart="8dip"
+        tools:ignore="RtlSymmetry">
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -70,9 +70,7 @@
                 app:errorType="empty"
                 android:inputType="numberDecimal"
                 app:hintAnimationEnabled="true"
-                android:hint="Objectif montant"
-                android:layout_below="@+id/nom_client_check_edittext"
-                android:layout_alignParentLeft="true"
+                android:hint="@string/objectif_montant"
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@+id/BtnObjectif" />
 
@@ -81,8 +79,8 @@
                 android:id="@+id/BtnObjectif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Valider"
-                android:layout_marginLeft="10dp"
+                android:text="@string/valider"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/button_bg"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true" />

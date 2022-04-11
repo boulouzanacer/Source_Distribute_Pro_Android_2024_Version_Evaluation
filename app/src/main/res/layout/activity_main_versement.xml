@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.safesoft.pro.distribute.activities.ActivityVersement">
+    tools:context="com.safesoft.proapp.distribute.activities.ActivityVersement">
 
     <TextView
         android:text="Versement"

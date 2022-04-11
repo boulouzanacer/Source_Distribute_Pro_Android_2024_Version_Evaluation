@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.safesoft.pro.distribute.activities.ActivityImportsExport">
+    tools:context="com.safesoft.proapp.distribute.activities.ActivityImportsExport">
 
     <ScrollView
         android:layout_width="match_parent"

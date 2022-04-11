@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright 2012 Steven Rudenko
-  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-    http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="20dp"
@@ -24,20 +9,19 @@
     android:orientation="vertical" >
 
 
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="20dp"
-        android:alpha="0.5"
-        android:text="Séléctionnez le scanner qui vous permetra du scanner le codebarre, qrcode ." />
-
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_size"
         android:background="@color/divider" />
 
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginStart="20dp"
+        android:alpha="0.5"
+        android:text="@string/s_l_ctionnez_le_scanner_qui_vous_permetra_du_scanner_le_codebarre_qrcode" />
 
     <LinearLayout
         android:id="@+id/prefSpacingPrin"
@@ -47,14 +31,16 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingLeft="8dip" >
+        android:paddingStart="8dip"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:fadingEdge="horizontal"
-            android:text="Séléctionner Scanner"
+            android:text="@string/s_l_ctionner_scanner"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
@@ -62,22 +48,23 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
+            android:gravity="end"
             android:textAlignment="center"
             android:fadingEdge="horizontal"
-            android:layout_marginLeft="40dp"
-            android:textAppearance="?android:attr/textAppearanceMedium">
+            android:layout_marginStart="40dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:ignore="RtlCompat">
 
 
             <RadioButton
-                android:text="Intégrer"
+                android:text="@string/int_grer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/radioScanner_integrer" />
 
             <RadioButton
-                android:text="Camera"
+                android:text="@string/camera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"

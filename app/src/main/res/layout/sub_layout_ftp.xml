@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/param_ftp"
+    android:visibility="gone"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rlt_cnx"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="5dp">
+
+        <LinearLayout
+            android:id="@+id/rtv2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_width="90dp"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:text="@string/serveur_ftp" />
+
+
+            <EditText
+                android:layout_marginStart="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/serveur_ftp"
+                android:hint="@string/serveur_ftp"
+                android:textColor="@color/cardview_dark_background"
+                android:layout_gravity="center"
+                tools:ignore="Autofill"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/rtv3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rtv2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center"
+                android:text="@string/n_de_port"
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/port_ftp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:hint="@string/n_de_port"
+                android:inputType="number"
+                android:textColor="@color/cardview_dark_background"
+                tools:ignore="Autofill" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rtv5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rtv3"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="90dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:text="@string/utilisateur" />
+
+            <EditText
+                android:layout_marginStart="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/utilisateur_ftp"
+                android:hint="@string/utilisateur"
+                android:textColor="@color/cardview_dark_background"
+                android:layout_gravity="center"
+                tools:ignore="Autofill"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rtv6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rtv5"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center"
+                android:text="@string/mot_de_passe"
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/pwd_ftp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:hint="@string/mot_de_passe"
+                android:inputType="text"
+                android:textColor="@color/cardview_dark_background"
+                tools:ignore="Autofill" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:clickable="true"
+        android:background="@color/white"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/descrip_exp_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/nom_du_dossier_ftp_des_exportations_des_donn_es"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/exp_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/descrip_exp_ftp"
+            android:layout_gravity="center"
+            android:hint="@string/nom_du_dossier_ftp_des_exportations_des_donn_es"
+            android:inputType="text"
+            android:text="@string/imp"
+            android:textColor="@color/cardview_dark_background"
+            tools:ignore="Autofill" />
+
+        <TextView
+            android:id="@+id/descrip_imp_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/exp_ftp"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/nom_du_dossier_ftp_des_importations_des_donn_es"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/imp_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/descrip_imp_ftp"
+            android:layout_gravity="center"
+            android:hint="@string/nom_du_dossier_ftp_des_importations_des_donn_es"
+            android:inputType="text"
+            android:text="@string/exp"
+            android:textColor="@color/cardview_dark_background"
+            tools:ignore="Autofill" />
+    </RelativeLayout>
+    <Button
+        android:id="@+id/save_ftp"
+        style="@style/dialog_blue_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/enregistrer_les_param_tres_ftp" />
+</LinearLayout>

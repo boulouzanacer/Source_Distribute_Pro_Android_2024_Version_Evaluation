@@ -5,7 +5,6 @@ project.group = "com.safesoft.uk2015.restopro"
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 9

@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright 2012 Steven Rudenko
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:background="@color/white"
     android:layout_width="match_parent"
@@ -27,20 +12,11 @@
         style="@style/HeaderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres imporation/exportation" />
+        android:text="@string/param_tres_imporation_exportation" />
 
-    <TextView
-        android:id="@+id/descrip_code_depot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ça vous permet d'activer ou désactiver l'importation et l'exportation des bons de transferts, produits, clients , ventes et commandes online ou local"
-        android:layout_below="@+id/pda_title"
-        android:textSize="12dp"
-        android:textColor="@color/gray"
-        android:layout_alignParentStart="true" />
 
     <View
         android:id="@+id/divider"
@@ -56,7 +32,9 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingLeft="8dip" >
+        android:paddingStart="8dip"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:layout_width="0dip"
@@ -65,14 +43,15 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:text="Importation online"
+            android:text="@string/importation_online"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Switch
             android:id="@+id/switch_import"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
     </LinearLayout>
@@ -89,7 +68,9 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingLeft="8dip" >
+        android:paddingStart="8dip"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:layout_width="0dip"
@@ -98,12 +79,13 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:text="Exportation online"
+            android:text="@string/exportation_online"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Switch
             android:id="@+id/switch_export"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
     </LinearLayout>
 </LinearLayout>

@@ -86,9 +86,10 @@ public class BluetoothSPP {
         public void onNewConnection(String name, String address);
     }
     
+    @SuppressLint("HardwareIds")
     public boolean isBluetoothAvailable() {
         try {
-            if (mBluetoothAdapter == null || mBluetoothAdapter.getAddress().equals(null))
+            if (mBluetoothAdapter == null || mBluetoothAdapter.getAddress() == null)
                 return false;
         } catch (NullPointerException e) {
              return false;

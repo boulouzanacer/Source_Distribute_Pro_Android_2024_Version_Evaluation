@@ -1,5 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/drawable-xxhdpi/remise_item_border.xml" value="0.2845" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/drawable/button_bg.xml" value="0.328" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/drawable/client_detail_band.xml" value="0.328" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/drawable/produit_item_border.xml" value="0.328" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/drawable/table_cell_bg.xml" value="0.3671875" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/drawable/table_row_bg.xml" value="0.3671875" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_activation.xml" value="0.18" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_add_product.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_bon2.xml" value="0.5" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_client_detail.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_clients.xml" value="0.3296296296296296" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_codebarre_scan.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_ddddd.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_dropbox_send.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_etat_v.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_full_scanner.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_imports_export.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_inventaire.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_inventaire_achat.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_inventaire_details.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_login.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_main.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_main__distribute.xml" value="0.25" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_main_printer.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_main_versement.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_maps.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_new_achat.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_new_client.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_new_inventory.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_new_produit.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_new_sale.xml" value="0.5" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_new_sale_test.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_produit_detail.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_produits.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_setting.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_ventes.xml" value="0.1895734597156398" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/app_bar_main.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/bon2_items.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/bon_exported.xml" value="0.2734375" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/content_main.xml" value="0.3296296296296296" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/content_mainn.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/custom_cruton_style.xml" value="0.3296296296296296" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/export_data.xml" value="0.2677083333333333" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_all_product.xml" value="0.5" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_remise.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_remise_test.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_versement.xml" value="0.42256410256410254" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/import_num_bon.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_achat1_list.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_bon1_list.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_header.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_header_total.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_inv1_list.xml" value="0.25" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_list.xml" value="0.5" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_list_situation.xml" value="0.3296296296296296" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_listfournis.xml" value="0.3333333333333333" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_mydata.xml" value="0.3296296296296296" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_mydata_objectif.xml" value="0.3296296296296296" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_product_select.xml" value="0.5" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_transfer1_list.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/layout_list_produit_vente.xml" value="0.5" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/layout_panier.xml" value="0.5" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/layout_total.xml" value="0.3101851851851852" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/list_produits_row2.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/list_selected_bon_row.xml" value="0.3101851851851852" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/message_cruton_style.xml" value="0.3101851851851852" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/param_divers.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_backup.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_layout_connexion.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_layout_ftp.xml" value="0.2635416666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_layout_gps.xml" value="0.23385416666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_layout_import_export.xml" value="0.23385416666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_layout_objectif.xml" value="0.23385416666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_layout_sound.xml" value="0.23385416666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_reset.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_sale_header.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/sub_stockmoins.xml" value="0.23385416666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/test.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/transfert2_items.xml" value="0.2682291666666667" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/zpref_printer.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/zpref_scanner.xml" value="0.27760416666666665" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/menu/activity_main_drawer.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/menu/main.xml" value="0.2677083333333333" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/menu/menu_addproduit.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/menu/menu_bon_vente_commande.xml" value="0.2677083333333333" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/menu/menu_listv.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/menu/menu_maps.xml" value="0.21979166666666666" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/menu/menu_ventes.xml" value="0.2677083333333333" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
@@ -26,7 +120,7 @@
     </option>
     <option name="myNotNulls">
       <value>
-        <list size="14">
+        <list size="15">
           <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
           <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
           <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
@@ -41,9 +135,10 @@
           <item index="11" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.NonNull" />
           <item index="12" class="java.lang.String" itemvalue="io.reactivex.annotations.NonNull" />
           <item index="13" class="java.lang.String" itemvalue="io.reactivex.rxjava3.annotations.NonNull" />
+          <item index="14" class="java.lang.String" itemvalue="lombok.NonNull" />
         </list>
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

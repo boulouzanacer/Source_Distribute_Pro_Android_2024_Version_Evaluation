@@ -1,34 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/splashScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    android:paddingTop="30dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingEnd="10dp"
     android:orientation="vertical">
 
-
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:id="@+id/imageView"
-        android:src="@mipmap/splash_distrubution"
-        android:layout_marginBottom="41dp"
-        android:layout_above="@+id/textsplash"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/ImageSplash"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/textsplash"
-        android:text=" Safe \n Distribute PRO"
-        android:textSize="40sp"
-        android:textColor="#fff"
-        android:layout_marginBottom="56dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="start"
+        android:contentDescription="@null"
+        android:src="@drawable/splash_pme_pro_distribute"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/logo_revendeur"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_safe_soft_500_100"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ImageSplash"
+        />
+    <LinearLayout
+        android:id="@+id/linear_layout_revendeur"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:weightSum="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo_revendeur">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/InfoRevendeur1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+            android:text="@string/INFO_GLOBAL_TECH1"
+            android:textColor="@color/color_pme_pro_distribute"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/InfoRevendeur2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+            android:text="@string/INFO_GLOBAL_TECH2"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/InfoRevendeur3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+
+            android:text="@string/INFO_GLOBAL_TECH3"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/InfoRevendeur4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+            android:text="@string/INFO_GLOBAL_TECH4"
+            android:textColor="@color/color_pme_pro_distribute"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="2"
+            android:background="@color/color_pme_pro_distribute"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/textsplash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="2"
+            android:background="@color/color_pme_pro_distribute"
+            android:visibility="gone" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,21 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
-    tools:context="com.safesoft.pro.distribute.activities.ActivityTransfert2Detail">
+    tools:context="com.safesoft.proapp.distribute.activities.ActivityTransfert2Detail">
 
     <TextView
         android:id="@+id/produit"
-        android:text="PRODUIT"
-        android:layout_marginRight="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@+id/quantite" />
+        android:layout_marginEnd="15dp"
+        android:layout_toStartOf="@+id/quantite"
+        android:text="@string/produit" />
 
     <TextView
         android:id="@+id/quantite"
-        android:text="200.00"
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="200.00" />
 
 </RelativeLayout>

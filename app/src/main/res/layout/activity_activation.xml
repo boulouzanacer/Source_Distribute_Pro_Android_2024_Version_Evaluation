@@ -1,12 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.safesoft.pro.distribute.activation.ActivityActivation">
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/QR_CODE_IM"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/LAB_SERIAL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/LAB_SERIAL"
+        android:textAllCaps="false"
+        android:textColor="#A84B3A"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/QR_CODE_IM" />
+    <TextView
+        android:id="@+id/NUM_SERIAL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/NUM_SERIAL"
+        android:textAllCaps="false"
+        android:textColor="#A84B3A"
+        android:textIsSelectable="true"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LAB_SERIAL" />
+
+    <EditText
+        android:id="@+id/CODE_ACTIVATION"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="Code activation"
+        android:gravity="center_horizontal"
+        android:hint="@string/CODE_ACTIVATION"
+        android:inputType="number"
+        android:textColor="#45A83A"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/BTN_ACTIVATION"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NUM_SERIAL"
+        tools:ignore="MissingConstraints"
+        android:layout_marginStart="16dp" />
+
+    <Button
+        android:id="@+id/BTN_ACTIVATION"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_horizontal"
+        android:hapticFeedbackEnabled="false"
+        android:onClick="onClick_Btn_Activation"
+        android:text="@string/BTN_ACTIVATION"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/CODE_ACTIVATION"
+        app:layout_constraintTop_toBottomOf="@+id/NUM_SERIAL"
+        tools:ignore="UsingOnClickInXml" />
+
+    <Button
+        android:id="@+id/BTN_START"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_horizontal"
+        android:onClick="onClick_Btn_Start"
+        android:text="@string/BTN_START"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CODE_ACTIVATION"
+        tools:ignore="UsingOnClickInXml" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="vertical"
+        android:weightSum="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/BTN_START">
+
+        <TextView
+            android:id="@+id/InfoRevendeur1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+            android:text="@string/INFO_SAFE_SOFT1"
+            android:textColor="@color/color_pme_pro_distribute"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/InfoRevendeur2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+            android:text="@string/INFO_CHERRATA_SOFT2"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/InfoRevendeur3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+
+            android:text="@string/INFO_CHERRATA_SOFT3"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/InfoRevendeur4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+            android:text="@string/INFO_CHERRATA_SOFT4"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </LinearLayout>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.safesoft.proapp.distribute.activation.ActivityActivation"
+        android:visibility="gone" >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -101,4 +260,6 @@
         </RelativeLayout>
     </LinearLayout>
 
-</LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright 2012 Steven Rudenko
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:background="@color/white"
     android:layout_width="match_parent"
@@ -27,19 +12,17 @@
         style="@style/HeaderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres GPS" />
+        android:text="@string/param_tres_gps" />
     <TextView
         android:id="@+id/descrip_code_depot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ça vous permet d'activer ou désactiver la localisation GPS, cette option autorise l'appareil a récupérer sa postion."
-        android:layout_below="@+id/pda_title"
-        android:textSize="12dp"
-        android:textColor="@color/gray"
-        android:layout_alignParentStart="true" />
+        android:text="@string/a_vous_permet_d_activer_ou_d_sactiver_la_localisation_gps_cette_option_autorise_l_appareil_a_r_cup_rer_sa_postion"
+        android:textSize="12sp"
+        android:textColor="@color/gray" />
 
     <View
         android:id="@+id/divider"
@@ -55,7 +38,9 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingLeft="8dip" >
+        android:paddingStart="8dip"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:layout_width="0dip"
@@ -64,14 +49,15 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:text="localisation"
+            android:text="@string/localisation"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Switch
             android:id="@+id/switch_gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
     </LinearLayout>

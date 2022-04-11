@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.safesoft.pro.distribute.activities.ActivitySetting">
+    tools:context="com.safesoft.proapp.distribute.activities.ActivitySetting">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,19 +13,29 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <Button
-                android:layout_width="match_parent"
                 android:id="@+id/bt1"
-                android:textStyle="italic"
-                android:textColor="@color/accent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/parametre_rounded"
-                android:text="Parametre Connexion"
-                android:layout_height="match_parent" />
+                android:text="@string/parametre_connexion"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
 
             <include layout="@layout/sub_layout_connexion" />
+            <Button
+                android:id="@+id/bt4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/parametre_rounded"
+                android:text="@string/param_tres_serveur_ftp"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
 
+            <include layout="@layout/sub_layout_ftp" />
             <Button
                 android:layout_width="match_parent"
                 android:id="@+id/bt3"
@@ -33,7 +43,7 @@
 
                 android:textColor="@color/accent"
                 android:background="@drawable/parametre_rounded"
-                android:text="Paramètres d'imprimente"
+                android:text="@string/param_tres_d_imprimente"
                 android:layout_height="match_parent" />
             <include layout="@layout/zpref_printer" />
             <include layout="@layout/zpref_scanner" />
@@ -46,7 +56,7 @@
 
                 android:textColor="@color/accent"
                 android:background="@drawable/parametre_rounded"
-                android:text="Sauvegarde des données"
+                android:text="@string/sauvegarde_des_donn_es"
                 android:layout_height="match_parent" />
             <include layout="@layout/sub_backup" />
             <Button
@@ -56,7 +66,7 @@
 
                 android:textColor="@color/accent"
                 android:background="@drawable/parametre_rounded"
-                android:text="Réinitialisation des données"
+                android:text="@string/r_initialisation_des_donn_es"
                 android:layout_height="match_parent" />
             <include layout="@layout/sub_reset" />
             <Button
@@ -66,7 +76,7 @@
 
                 android:textColor="@color/accent"
                 android:background="@drawable/parametre_rounded"
-                android:text="Parametre divers"
+                android:text="@string/parametre_divers"
                 android:layout_height="match_parent" />
 
             <include layout="@layout/param_divers" />

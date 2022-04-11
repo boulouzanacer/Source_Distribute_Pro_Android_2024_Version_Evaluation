@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/blue"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:weightSum="5"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/title_remise"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/blue"
+            android:text="@string/remise_montant"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:typeface="monospace" />
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/montant_avant_remise"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:hint="@string/montant_avant_remise"
+                android:inputType="none"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                app:hintTextColor="@color/blue" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="3"
+            android:baselineAligned="false"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/montant_remise"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:inputType="numberSigned|numberDecimal"
+                android:textAlignment="textEnd"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:hint="@string/montant_remise"
+                app:hintTextColor="@color/blue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/montant_avant_remise"
+                tools:ignore="NestedWeights" />
+
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/taux_remise"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:inputType="numberSigned|numberDecimal"
+                android:textAlignment="textEnd"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:hint="@string/taux_remise"
+                app:hintTextColor="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/montant_avant_remise" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.emmasuzuki.easyform.EasyTextInputLayout
+                android:id="@+id/montant_apres_remise"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="textEnd"
+                android:hint="@string/montant_apres_remise"
+                app:hintTextColor="@color/blue"
+                android:clickable="false"
+                android:inputType="none"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/montant_remise"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:padding="10dp"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:layout_height="0dp">
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_remise"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/blue"
+                android:layout_marginEnd="5sp"
+                app:mfb_text="Valider"
+                app:mfb_textColor="#FFFFFF" />
+
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:background="@color/blue"
+                app:mfb_text="Annuler"
+                app:mfb_textColor="#FFFFFF" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
