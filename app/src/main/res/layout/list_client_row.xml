@@ -1,41 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1">
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:padding="10dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:weightSum="5"
+        android:padding="5dp"
+        android:orientation="horizontal"
+        android:layout_height="100dp"
+        android:background="@drawable/client_selector">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="nom de client"
-            android:textSize="16dp"
-            android:id="@+id/client" />
+        <ImageView
+            android:id="@+id/img_client"
+            android:src="@mipmap/user_profile"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:layout_width="0dp"
+            android:layout_marginEnd="20dp"
+            android:layout_height="match_parent"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/rouge"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="code client"
-            android:textSize="16dp"
-            android:id="@+id/code_client" />
+        <LinearLayout
+            android:layout_weight="3"
+            android:weightSum="3"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:layout_marginRight="5dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="0.00"
-            android:textSize="16dp"
-            android:id="@+id/stock_t" />
+            <TextView
+                android:id="@+id/nom_client"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="start|bottom"
+                android:textColor="@color/black"
+                android:layout_weight="2"
+                android:text="Nom Client"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <TextView
+                android:id="@+id/code_client"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:gravity="start"
+                android:textColor="@color/gray"
+                android:layout_weight="1"
+                android:text="52552555258854848"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="3"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/solde_title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textStyle="bold"
+                android:textSize="9sp"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:text="SOLDE"
+                android:gravity="center|bottom"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <TextView
+                android:id="@+id/sold_client"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/emerald"
+                android:layout_weight="2"
+                android:text="10600.22"
+                android:gravity="center|top"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+
+        </LinearLayout>
+
     </LinearLayout>
-</LinearLayout>
+
+</androidx.cardview.widget.CardView>

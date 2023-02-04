@@ -89,17 +89,14 @@ public class ActivityMaps extends AppCompatActivity implements LocationListener 
         myProgress.show();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("List PV visité");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.black)));
 
-        ConnectionDetector = new ConnectionDetector(
-                getApplicationContext());
+        ConnectionDetector = new ConnectionDetector(getApplicationContext());
 
-        SupportMapFragment mapFragment
-                = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         geocoder = new Geocoder(this, Locale.getDefault());
         controller = new DATABASE(this);
         // Set callback listener, on Google Map ready.
+        assert mapFragment != null;
         mapFragment.getMapAsync(new OnMapReadyCallback() {
 
             @Override
@@ -120,7 +117,6 @@ public class ActivityMaps extends AppCompatActivity implements LocationListener 
 
     public ArrayList<PostData_Position> getItems() {
         positions = new ArrayList<>();
-        positions.clear();
 
         String querry = "SELECT " +
                 "Position.LAT, " +
@@ -194,8 +190,8 @@ public class ActivityMaps extends AppCompatActivity implements LocationListener 
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -254,14 +250,10 @@ public class ActivityMaps extends AppCompatActivity implements LocationListener 
 
             try {
                 // This code need permissions (Asked above ***)
-                locationManager.requestLocationUpdates(
-                        locationProvider,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+                locationManager.requestLocationUpdates(locationProvider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,  this);
                 // Getting Location.
                 // Lấy ra vị trí.
-                myLocation = locationManager
-                        .getLastKnownLocation(locationProvider);
+                myLocation = locationManager.getLastKnownLocation(locationProvider);
             }
             // With Android API >= 23, need to catch SecurityException.
             catch (SecurityException e) {

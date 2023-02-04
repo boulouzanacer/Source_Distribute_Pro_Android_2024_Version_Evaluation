@@ -10,12 +10,18 @@ public class PostData_Bon2 implements Serializable{
   public String num_bon;
   public String codebarre;
   public String produit = " ";
-  public String qte;
-  public String tva;
-  public String p_u;
+  public Double nbr_colis;
+  public Double colissage;
+  public Double qte;
+  public Double gratuit;
+  public Double tva;
+  public Double p_u;
   public String code_depot;
-  public String pa_ht;
-  public String montant_produit;
-  public String stock_produit;
+  public Double pa_ht;
+  public Double stock_produit;
+  public String destock_type;
+  public String destock_code_barre;
+  public Double destock_qte;
+
   public Boolean checked = false;
 }

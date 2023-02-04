@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 public class ActivityChangePwd extends AppCompatActivity {
 
     private static final String TAG = "ActivityChangePwd";
-    private String PREFS_LOGIN = "ConfigPassword";
+    private String PREFS = "ALL_PREFS";
 
     private EditText _oldpasswordText;
     private EditText _passwordText;
@@ -63,7 +63,7 @@ public class ActivityChangePwd extends AppCompatActivity {
 
         _signupButton.setEnabled(false);
 
-        SharedPreferences.Editor editor = getSharedPreferences(PREFS_LOGIN, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.putString("PASSWORD", _passwordText.getText().toString());
         editor.commit();
 
@@ -104,9 +104,9 @@ public class ActivityChangePwd extends AppCompatActivity {
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        SharedPreferences prefs_login = getSharedPreferences(PREFS_LOGIN, MODE_PRIVATE);
+        SharedPreferences prefs_login = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        if(!(prefs_login.getString("PASSWORD", "0000").toString().equals(oldpassword)) && !(prefs_login.getString("PASSWORD", "0000").toString().equals("0000"))){
+        if(!(prefs_login.getString("PASSWORD", "safesoft").equals(oldpassword)) && !(prefs_login.getString("PASSWORD", "safesoft").equals("safesoft"))){
             valid = false;
             _oldpasswordText.setError("Remettre l'ancien mot de passe");
         }else{

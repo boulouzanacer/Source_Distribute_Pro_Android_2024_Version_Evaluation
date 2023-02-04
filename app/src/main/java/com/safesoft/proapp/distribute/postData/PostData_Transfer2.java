@@ -8,7 +8,7 @@ public class PostData_Transfer2 {
   public String num_bon;
   public String code_barre;
   public String produit;
-  public String qte;
+  public Double qte;
   public double nbr_colis;
   public double colissage;
 }

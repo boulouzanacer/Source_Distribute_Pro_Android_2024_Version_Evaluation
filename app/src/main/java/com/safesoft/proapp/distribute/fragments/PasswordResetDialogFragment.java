@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -15,6 +16,9 @@ import android.widget.EditText;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -28,6 +32,7 @@ public class PasswordResetDialogFragment extends DialogFragment {
   private EditText mPassword;
   private Button reset;
   private DATABASE controller;
+  private String MY_PREF_NAME = "T";
 
   public PasswordResetDialogFragment() {
     // Empty constructor is required for DialogFragment
@@ -64,7 +69,7 @@ public class PasswordResetDialogFragment extends DialogFragment {
     reset.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if(mPassword.getText().toString().equals("safesoft") || mPassword.getText().toString().equals("SAFESOFT")){
+        if(mPassword.getText().toString().equalsIgnoreCase("safesoft")){
           new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                   .setTitleText("Réinitialisation")
                   .setContentText("Voulez-vous vraiment réinitialiser cette appareil, attention cette opération supprimera tous vos données?!")
@@ -81,6 +86,15 @@ public class PasswordResetDialogFragment extends DialogFragment {
                   .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
+
+
+                      SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                      Date currentDateTime = Calendar.getInstance().getTime();
+                      String currentDateTimeString = sdf.format(currentDateTime);
+                      SharedPreferences pref = getActivity().getSharedPreferences(MY_PREF_NAME, 0);
+                      SharedPreferences.Editor editor = pref.edit();
+                      editor.putString("date_time", currentDateTimeString);
+                      editor.apply();
 
                       controller.ResetPda();
                       sDialog.dismiss();

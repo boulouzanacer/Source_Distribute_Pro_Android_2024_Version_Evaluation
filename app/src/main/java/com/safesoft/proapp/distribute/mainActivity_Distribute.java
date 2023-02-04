@@ -5,6 +5,7 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -12,15 +13,17 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.activities.ActivityClients;
 import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.activities.ActivityInventaireAchat;
 import com.safesoft.proapp.distribute.activities.ActivityProduits;
+import com.safesoft.proapp.distribute.activities.ActivitySetting;
 import com.safesoft.proapp.distribute.activities.ActivityTransfer1;
-import com.safesoft.proapp.distribute.activities.commande.ActivityCommandes;
+import com.safesoft.proapp.distribute.activities.commande.ActivityOrders;
 import com.safesoft.proapp.distribute.activities.login.ActivityLogin;
-import com.safesoft.proapp.distribute.activities.vente.ActivityVentes;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 
 public class mainActivity_Distribute extends Fragment implements View.OnClickListener{
 
@@ -29,7 +32,7 @@ public class mainActivity_Distribute extends Fragment implements View.OnClickLis
   public static int REQUEST_ACTIVITY_PRODUITS = 3000;
   public static int REQUEST_ACTIVITY_CLIENTS = 4000;
   public static int REQUEST_ACTIVITY_IMPORT_EXPORT = 5000;
-  public static int REQUEST_ACTIVITY_COMMANDE = 6000;
+  public static int REQUEST_ACTIVITY_ORDER = 6000;
   public static int REQUEST_ACTIVITY_INVENTAIRE_ACHAT = 7000;
   public static int REQUEST_ACTIVITY_PARAMETRES = 8000;
 
@@ -41,9 +44,8 @@ public class mainActivity_Distribute extends Fragment implements View.OnClickLis
     // Required empty public constructor
   }
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
-    v= inflater.inflate(R.layout.activity_main__distribute,container,false);
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    v = inflater.inflate(R.layout.activity_main__distribute,container,false);
 
     BtnVente  = v.findViewById(R.id.btnventes);
     BtnBonReception= v.findViewById(R.id.btn_b_reception);
@@ -54,11 +56,11 @@ public class mainActivity_Distribute extends Fragment implements View.OnClickLis
     BtnInventaireAchat= v.findViewById(R.id.btn_inventaire_achat);
     BtnParametre= v.findViewById(R.id.btnparametres);
     BtnVente.setOnClickListener(this);
-      BtnBonReception.setOnClickListener(this);
+    BtnBonReception.setOnClickListener(this);
     BtnProduit.setOnClickListener(this);
     BtnClient.setOnClickListener(this);
     BtnImportExport.setOnClickListener(this);
-     BtnCommande.setOnClickListener(this);
+    BtnCommande.setOnClickListener(this);
     BtnInventaireAchat.setOnClickListener(this);
     BtnParametre.setOnClickListener(this);
     return v;
@@ -78,11 +80,11 @@ public class mainActivity_Distribute extends Fragment implements View.OnClickLis
     switch (v.getId()){
       case R.id.btnventes:
         BtnVente.startAnimation(fadeIn);
-        startActivity(ActivityVentes.class, REQUEST_ACTIVITY_VENTES);
+        startActivity(ActivitySales.class, REQUEST_ACTIVITY_VENTES);
         break;
       case R.id.btn_b_reception:
         BtnBonReception.startAnimation(fadeIn);
-        BtnBonReception.playSoundEffect(0);
+        BtnBonReception.playSoundEffect(SoundEffectConstants.CLICK);
         startActivity(ActivityTransfer1.class, REQUEST_ACTIVITY_BON_RECEPTION);
         break;
       case R.id.btnproduits:
@@ -98,8 +100,10 @@ public class mainActivity_Distribute extends Fragment implements View.OnClickLis
         startActivity(ActivityImportsExport.class, REQUEST_ACTIVITY_IMPORT_EXPORT);
         break;
       case R.id.btncommande:
-        BtnCommande.startAnimation(fadeIn);
-        startActivity(ActivityCommandes.class, REQUEST_ACTIVITY_COMMANDE);
+        //BtnCommande.startAnimation(fadeIn);
+        //startActivity(ActivityCommandes.class, REQUEST_ACTIVITY_COMMANDE);
+        startActivity(ActivityOrders.class, REQUEST_ACTIVITY_ORDER);
+       // Toast.makeText(requireActivity(), "Cette rubrique est en cours de dévelopement !", Toast.LENGTH_LONG ).show();
         break;
       case R.id.btn_inventaire_achat:
         BtnInventaireAchat.startAnimation(fadeIn);
@@ -108,7 +112,8 @@ public class mainActivity_Distribute extends Fragment implements View.OnClickLis
         break;
       case R.id.btnparametres:
         BtnParametre.startAnimation(fadeIn);
-        startActivity(ActivityLogin.class, REQUEST_ACTIVITY_PARAMETRES);
+        //startActivity(ActivityLogin.class, REQUEST_ACTIVITY_PARAMETRES);
+        startActivity(ActivitySetting.class, REQUEST_ACTIVITY_PARAMETRES);
         break;
     }
   }

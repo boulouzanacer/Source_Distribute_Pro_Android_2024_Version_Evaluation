@@ -30,8 +30,6 @@ public class ActivityTransfert2Detail extends AppCompatActivity {
 
     controller = new DATABASE(this);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-            .getColor(R.color.black)));
     NUM_BON = getIntent().getStringExtra("NUM_BON");
     getSupportActionBar().setTitle("Bon Transfert : " + NUM_BON);
     initView();

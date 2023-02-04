@@ -9,4 +9,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="divider_large_size">1dp</dimen>
     <dimen name="divider_size">.9dp</dimen>
+
+    <dimen name="text_size_large">24sp</dimen>
+    <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
 </resources>

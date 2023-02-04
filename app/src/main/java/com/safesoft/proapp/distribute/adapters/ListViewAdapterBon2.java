@@ -59,7 +59,7 @@ public class ListViewAdapterBon2 extends ArrayAdapter<PostData_Bon2> {
 
 
     viewHolder.produit.setText(bon2.produit);
-    viewHolder.quantite.setText(bon2.qte);
+    viewHolder.quantite.setText(String.valueOf(bon2.qte));
 
     viewHolder.prix_u.setText(new DecimalFormat("###,##0.00").format(Double.valueOf(bon2.p_u)));
 

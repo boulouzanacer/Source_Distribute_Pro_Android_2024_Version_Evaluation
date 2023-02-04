@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_root"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_root_produit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
@@ -12,7 +13,8 @@
         android:weightSum="5"
         android:orientation="horizontal"
         android:layout_height="100dp"
-        android:background="@drawable/client_selector">
+        android:background="@drawable/client_selector"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_weight="1"
@@ -21,170 +23,88 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageId"
+                android:id="@+id/img_product"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/ic_camera_24" />
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_weight="2.8"
             android:layout_width="0dp"
-            android:weightSum="3"
+            android:weightSum="6"
             android:layout_marginEnd="3dp"
-            android:background="@drawable/produit_item_border"
             android:orientation="vertical"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_weight="2"
+                android:layout_weight="3.5"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:weightSum="6"
-                android:layout_height="0dp">
-
-                <TextView
-                android:id="@+id/produit_text"
-                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="0dp"
-                android:src="@mipmap/ic_launcher"
-                android:textColor="@color/white"
-                android:layout_weight="1.5"
-                android:text="Produit"
-                android:textAlignment="center"
-                android:background="@android:color/holo_blue_dark"
-                android:textSize="8dp"
-                android:textStyle="bold" />
+                tools:ignore="NestedWeights">
 
                 <TextView
                     android:id="@+id/produit"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_alignBottom="@+id/imageId"
-                    android:layout_alignParentTop="true"
+                    android:layout_height="match_parent"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:padding="3dp"
+                    android:maxLines="2"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_toStartOf="@+id/stockP"
-                    android:layout_toEndOf="@+id/imageId"
-                    android:gravity="center"
-                    android:textSize="15dp"
-                    android:layout_weight="4.5"
-                    android:text=" ezdfezf dfvredvrevre erfverfrefre erferferfre erferffdgdsgsdfgdsgdsfgdgfdsgfdgd "
-                    android:textAlignment="textStart"
+                    android:textSize="18sp"
+                    android:text="Produit"
+                    android:gravity="center|start"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_weight="1"
-                android:id="@+id/layout_colissage"
-                android:orientation="vertical"
-                android:background="@drawable/produit_item_border"
+                android:layout_weight="2.5"
+                android:weightSum="3"
                 android:layout_width="match_parent"
-                android:visibility="visible"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/colissage_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="0dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:textColor="@color/white"
+
+                <LinearLayout
                     android:layout_weight="1"
-                    android:text="Colissage"
-                    android:textAlignment="center"
-                    android:background="@color/jumbo"
-                    android:textSize="6dp"
-                    android:textStyle="bold" />
+                    android:id="@+id/layout_colissage"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
+                    <TextView
+                        android:id="@+id/colissage_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/colis"
+                        android:textAlignment="center"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        tools:ignore="NestedWeights,SmallSp" />
 
-                <TextView
-                    android:id="@+id/colissage"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_launcher"
-                    android:textSize="12dp"
-                    android:text="4552"
-                    android:layout_weight="2"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_weight="1.2"
-            android:weightSum="3"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:background="@drawable/produit_item_border"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_weight="2"
-                android:orientation="vertical"
-                android:weightSum="6"
-                android:layout_height="0dp">
-
-                <TextView
-                    android:id="@+id/stock_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="0dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:textColor="@color/white"
-                    android:layout_weight="1.5"
-                    android:text="Stock"
-                    android:textAlignment="center"
-                    android:background="@android:color/holo_blue_dark"
-                    android:textSize="8dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/stock"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_launcher"
-                    android:textSize="18dp"
-                    android:text="1233"
-                    android:layout_weight="4.5"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:weightSum="2"
-                android:id="@+id/layout_stock_colis"
-                android:visibility="visible"
-                android:layout_height="0dp">
+                    <TextView
+                        android:id="@+id/colissage"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:textSize="18sp"
+                        android:text="12"
+                        android:layout_weight="2"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_weight="1"
                     android:weightSum="3"
                     android:layout_width="0dp"
-                    android:background="@drawable/produit_item_border"
                     android:orientation="vertical"
                     android:layout_height="match_parent">
 
@@ -192,39 +112,30 @@
                         android:id="@+id/colis_title"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="0dp"
-                        android:src="@mipmap/ic_launcher"
-                        android:textColor="@color/white"
                         android:layout_weight="1"
-                        android:text="Colis"
+                        android:text="@string/Stock_colis"
                         android:textAlignment="center"
-                        android:background="@color/jumbo"
-                        android:textSize="6dp"
-                        android:textStyle="bold" />
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        tools:ignore="NestedWeights,SmallSp" />
 
                     <TextView
-                        android:id="@+id/colis"
+                        android:id="@+id/stock_colis"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/ic_launcher"
-                        android:textSize="12dp"
+                        android:textSize="18sp"
                         android:text="120"
+                        android:textColor="@color/lightcoral"
                         android:layout_weight="2"
                         android:textAlignment="center"
                         android:gravity="center"
                         android:textStyle="bold" />
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:layout_weight="1"
                     android:weightSum="3"
                     android:layout_width="0dp"
-                    android:background="@drawable/produit_item_border"
                     android:orientation="vertical"
                     android:layout_height="match_parent">
 
@@ -232,33 +143,108 @@
                         android:id="@+id/vrac_title"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_marginTop="0dp"
-                        android:src="@mipmap/ic_launcher"
-                        android:textColor="@color/white"
                         android:layout_weight="1"
-                        android:text="Vrac"
+                        android:text="@string/Stock_vrac"
                         android:textAlignment="center"
-                        android:background="@color/jumbo"
-                        android:textSize="6dp"
-                        android:textStyle="bold" />
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        tools:ignore="NestedWeights,SmallSp" />
 
                     <TextView
                         android:id="@+id/vrac"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/ic_launcher"
-                        android:textSize="12dp"
+                        android:textSize="18sp"
                         android:text="3"
+                        android:textColor="@color/lightcoral"
                         android:layout_weight="2"
                         android:textAlignment="center"
                         android:gravity="center"
                         android:textStyle="bold" />
                 </LinearLayout>
 
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1.2"
+            android:weightSum="6"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="3.5"
+                android:orientation="vertical"
+                android:weightSum="3"
+                android:layout_height="0dp"
+                tools:ignore="NestedWeights">
+
+                <TextView
+                    android:id="@+id/pu_title"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="0dp"
+                    android:text="@string/p_u"
+                    android:textAlignment="center"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:id="@+id/pu"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:src="@mipmap/ic_launcher"
+                    android:textSize="16sp"
+                    android:text="1233"
+                    android:textColor="@color/emerald"
+                    android:layout_weight="2"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2.5"
+                android:weightSum="3"
+                android:id="@+id/layout_stock_colis"
+                android:visibility="visible"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/stock_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/Stock_unite"
+                    android:textAlignment="center"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    tools:ignore="NestedWeights,SmallSp" />
+
+                <TextView
+                    android:id="@+id/qte_r"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textSize="18sp"
+                    android:text="3"
+                    android:textColor="@color/color_pme_pro_distribute"
+
+                    android:layout_weight="2"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>

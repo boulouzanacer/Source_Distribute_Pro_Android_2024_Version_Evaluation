@@ -18,17 +18,17 @@
             android:id="@+id/exportted_vente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bons de vente déja exportés"
-            android:textSize="18dp"
             android:clickable="false"
+            android:text="Bons de vente déja exportés"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textSize="18dp" />
 
         <TextView
             android:id="@+id/descrip_exported_vente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ça vous permet d'afficher les bons déja exportés avec la possibilité de suppression"
+            android:text="ça vous permet d'afficher les bons de livraison déja exportés avec la possibilité de suppression"
             android:layout_below="@+id/exportted_vente"
             android:textSize="12dp"
             android:clickable="false"
@@ -37,6 +37,41 @@
 
     </RelativeLayout>
 
+
+    <RelativeLayout
+        android:id="@+id/rlt_exported_commandes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+
+        <TextView
+            android:id="@+id/exportted_commande"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="Bons de commandes déja exportés"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/descrip_exported_commande"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ça vous permet d'afficher les bons de commandes déja exportés avec la possibilité de suppression"
+            android:layout_below="@+id/exportted_commande"
+            android:textSize="12dp"
+            android:clickable="false"
+            android:textColor="@color/gray"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rlt_etatv"

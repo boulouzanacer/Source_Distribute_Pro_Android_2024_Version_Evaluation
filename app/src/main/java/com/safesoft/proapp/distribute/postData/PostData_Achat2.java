@@ -10,15 +10,15 @@ public class PostData_Achat2 {
   public String reference;
   public String produit;
   public String codebarre;
-  public String pa_ht;
-  public String qte;
-public String quantity;
-  public String tva;
+  public Double pa_ht;
+  public Double qte;
+  public Double quantity;
+  public Double tva;
   public String num_achat;
-  public String p_u;
+  public Double p_u;
   public String code_depot;
-  public String montant_produit;
-  public String stock_produit;
+  public Double montant_produit;
+  public Double stock_produit;
   public Boolean checked = false;
   public Boolean exist;
 }

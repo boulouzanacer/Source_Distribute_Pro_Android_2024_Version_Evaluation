@@ -13,13 +13,19 @@ import android.widget.TextView;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer2;
 import com.safesoft.proapp.distribute.R;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by UK2016 on 23/03/2017.
  */
 
 public class ListViewAdapterTransfert2 extends ArrayAdapter<PostData_Transfer2> {
+
+    private NumberFormat nf;
+
 
     public ListViewAdapterTransfert2(@NonNull Context context, @LayoutRes int resource, @NonNull List<PostData_Transfer2> objects) {
         super(context, resource, objects);
@@ -28,11 +34,15 @@ public class ListViewAdapterTransfert2 extends ArrayAdapter<PostData_Transfer2> 
     public static class ViewHolder{
         TextView produit;
         TextView quantite;
+
     }
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         PostData_Transfer2 transfert2 = getItem(position);
+        nf = NumberFormat.getInstance(Locale.US);
+        ((DecimalFormat) nf).applyPattern("###,##0.00");
+
         ViewHolder viewHolder; // view lookup cache stored in tag
         if (convertView == null) {
             // If there's no view to re-use, inflate a brand new view for row
@@ -49,8 +59,10 @@ public class ListViewAdapterTransfert2 extends ArrayAdapter<PostData_Transfer2> 
         }
         // Populate the data from the data object via the viewHolder object
         // into the template view.
+
         viewHolder.produit.setText(transfert2.produit);
-        viewHolder.quantite.setText(transfert2.qte);
+        viewHolder.quantite.setText(nf.format(transfert2.qte));
+
         // Return the completed view to render on screen
         return convertView;
     }

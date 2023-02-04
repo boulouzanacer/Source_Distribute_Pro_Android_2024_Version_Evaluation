@@ -16,11 +16,15 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.safesoft.proapp.distribute.activities.vente.ActivityNewSale;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter;
 import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
+import com.safesoft.proapp.distribute.fragments.FragmentNewClient;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -32,6 +36,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     ArrayList<PostData_Client> clients;
     DATABASE controller;
     private  MediaPlayer mp;
+    private EventBus bus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,25 +44,19 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         setContentView(R.layout.activity_clients);
 
         controller = new DATABASE(this);
+        bus = EventBus.getDefault();
+        // Register as a subscriber
+        bus.register(this);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("List Clients");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.black)));
 
-       /*
-        try {
-            controller.copyAppDbToDownloadFolder();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        */
     }
 
     private void initViews() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_client);
     }
 
     @Override
@@ -71,10 +70,12 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     }
 
     private void setRecycle(String text_search) {
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapter(this, getItems(text_search));
         recyclerView.setAdapter(adapter);
+
     }
 
     public ArrayList<PostData_Client> getItems(String qqry) {
@@ -91,6 +92,12 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         }
 
         return clients;
+    }
+
+
+    @Subscribe
+    public void onClientSelected(SelectedClientEvent clientEvent){
+        setRecycle("");
     }
 
     @Override
@@ -178,8 +185,8 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
             startActivity(new Intent(ActivityClients.this, ActivityMaps.class));
         }
         if(item.getItemId() == R.id.new_client){
-            Intent intentAddClient = new Intent(ActivityClients.this, ActivityNewClient.class);
-            startActivityForResult(intentAddClient, REQUEST_ACTIVITY_NEW_CLIENT);
+            FragmentNewClient fragmentnewclient = new FragmentNewClient();
+            fragmentnewclient.showDialogbox(ActivityClients.this, getBaseContext());
         }
 
         return super.onOptionsItemSelected(item);
@@ -194,5 +201,11 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     public void Sound(int SourceSound){
         mp = MediaPlayer.create(this, SourceSound);
         mp.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        bus.unregister(this);
+        super.onDestroy();
     }
 }

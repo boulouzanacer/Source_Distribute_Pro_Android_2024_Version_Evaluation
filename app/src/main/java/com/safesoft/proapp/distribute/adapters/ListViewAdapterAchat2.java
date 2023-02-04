@@ -51,7 +51,7 @@ public class ListViewAdapterAchat2 extends ArrayAdapter<PostData_Achat2> {
         // Populate the data from the data object via the viewHolder object
         // into the template view.
         viewHolder.produit.setText(achat2.produit);
-        viewHolder.quantite.setText(achat2.qte);
+        viewHolder.quantite.setText(String.valueOf(achat2.qte));
         // Return the completed view to render on screen
         return convertView;
     }

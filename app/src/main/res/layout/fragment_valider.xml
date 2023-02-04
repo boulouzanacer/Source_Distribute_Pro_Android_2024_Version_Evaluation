@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/blue"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:weightSum="6"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/title_versement"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/blue"
+            android:text="@string/versement"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:typeface="monospace" />
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:baselineAligned="false"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:id="@+id/ancien_soldLayout"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="1"
+                app:errorType="empty"
+                app:hintTextColor="@color/blue"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="  "
+                android:hint="@string/ancien_solde">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ancien_sold"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:enabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:id="@+id/montant_bon_actuelLayout"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="1"
+                app:errorType="empty"
+                app:hintTextColor="@color/blue"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="  "
+                android:hint="@string/montant_bon_actuel">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/montant_bon_actuel"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:enabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/sold_actuelLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:hint="@string/solde_actuel"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="   ">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/solde_actuel"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:id="@+id/versementLayout"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                app:hintTextColor="@color/blue"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="   "
+                android:hint="@string/versement">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/versement"
+                    android:gravity="center"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:id="@+id/nouveau_soldeLayout"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                app:hintTextColor="@color/blue"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="  "
+                android:hint="@string/nouveau_solde">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nouveau_solde"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:padding="10dp"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:layout_height="0dp">
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_remise"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/blue"
+                android:layout_marginEnd="5sp"
+                app:mfb_text="Valider"
+                app:mfb_textColor="#FFFFFF" />
+
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:background="@color/blue"
+                app:mfb_text="Annuler"
+                app:mfb_textColor="#FFFFFF" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

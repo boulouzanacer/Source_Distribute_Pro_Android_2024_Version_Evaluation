@@ -10,18 +10,20 @@ public class PostData_Produit implements Serializable {
     public String code_barre;
     public String ref_produit;
     public String produit;
-    public String pa_ht;
-    public String tva;
-    public String pv1_ht;
-    public String pv2_ht;
-    public String pv3_ht;
+    public double pa_ht;
+    public double tva;
+    public double pv1_ht;
+    public double pv2_ht;
+    public double pv3_ht;
     public double colissage;
     public int stock_colis;
     public int stock_vrac;
-    public String stock;
+    public double stock;
     public String qte_produit;
     public byte[]  photo;
     public Boolean exist;
-    public Boolean checked = false;
     public String DETAILLE;
+    public String destock_type;
+    public String destock_code_barre;
+    public double destock_qte;
 }

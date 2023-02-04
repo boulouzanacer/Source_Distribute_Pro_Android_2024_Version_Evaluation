@@ -2,7 +2,6 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center"
     app:cardBackgroundColor="@color/blue"
     android:layout_width="match_parent"
@@ -34,55 +33,96 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/montant_avant_remise"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/montant_avant_remiseLayout"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:contextClickable="false"
-                android:hint="@string/montant_avant_remise"
-                android:inputType="none"
                 app:errorMessage="@string/error_message_empty"
                 app:errorType="empty"
-                app:hintTextColor="@color/blue" />
+                android:hint="@string/montant_avant_remise"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="@string/montant_avant_remise">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/montant_avant_remise"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
         </LinearLayout>
         <LinearLayout
             android:layout_weight="1"
-            android:weightSum="3"
+            android:weightSum="4"
             android:baselineAligned="false"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/montant_remise"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="match_parent"
-                android:inputType="numberSigned|numberDecimal"
-                android:textAlignment="textEnd"
+                android:id="@+id/montant_remiseLayout"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="2.5"
                 app:errorMessage="@string/error_message_empty"
                 app:errorType="empty"
-                android:hint="@string/montant_remise"
                 app:hintTextColor="@color/blue"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/montant_avant_remise"
-                tools:ignore="NestedWeights" />
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="@string/montant_remise"
+                android:hint="@string/montant_remise">
 
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/taux_remise"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/montant_remise"
+                    android:gravity="center"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:inputType="numberSigned|numberDecimal"
-                android:textAlignment="textEnd"
+                android:id="@+id/taux_remiseLayout"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="1.5"
                 app:errorMessage="@string/error_message_empty"
                 app:errorType="empty"
-                android:hint="@string/taux_remise"
                 app:hintTextColor="@color/blue"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/montant_avant_remise" />
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="@string/taux_remise"
+                android:hint="@string/taux_remise">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/taux_remise"
+                    android:gravity="center"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </LinearLayout>
@@ -91,19 +131,34 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/montant_apres_remise"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAlignment="textEnd"
-                android:hint="@string/montant_apres_remise"
-                app:hintTextColor="@color/blue"
-                android:clickable="false"
-                android:inputType="none"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/montant_remise"
+                android:id="@+id/montant_apres_remiseLayout"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
                 app:errorMessage="@string/error_message_empty"
-                app:errorType="empty" />
+                app:errorType="empty"
+                app:hintTextColor="@color/blue"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="@string/montant_apres_remise"
+                android:hint="@string/montant_apres_remise">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/montant_apres_remise"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
         </LinearLayout>
         <LinearLayout

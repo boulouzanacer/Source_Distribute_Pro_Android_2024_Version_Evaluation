@@ -8,13 +8,15 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
-import com.safesoft.proapp.distribute.fragments.FragmentListClient;
+import androidx.appcompat.app.AlertDialog;
+
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -27,9 +29,9 @@ public class ListViewAdapterListClient extends BaseAdapter {
   ArrayList<PostData_Client> temp_list = new ArrayList<>();
   private static LayoutInflater inflater = null;
   Context context;
-  private FragmentListClient fragment;
   private EventBus bus = EventBus.getDefault();
   SelectedClientEvent event = null;
+  AlertDialog dialog;
 
   public interface ProduitSelectedEventListener {
     public void ProduitSelectedEvent(String s, PostData_Client client);
@@ -37,14 +39,13 @@ public class ListViewAdapterListClient extends BaseAdapter {
 
   ProduitSelectedEventListener produitSelectedListener;
 
-  public ListViewAdapterListClient(Context mainActivity, ArrayList<PostData_Client> itemList, FragmentListClient InstnceFrag) {
+  public ListViewAdapterListClient(Context mainActivity, ArrayList<PostData_Client> itemList, AlertDialog dialog) {
     // TODO Auto-generated constructor P
     list_clients = itemList;
     temp_list.addAll(list_clients);
     context = mainActivity;
+    this.dialog = dialog;
     inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-    this.fragment = InstnceFrag;
 
   }
 
@@ -69,7 +70,7 @@ public class ListViewAdapterListClient extends BaseAdapter {
   private class ViewHolder {
     TextView client;
     TextView code_client;
-    TextView stock_t;
+    TextView solde_client;
   }
 
 
@@ -80,26 +81,21 @@ public class ListViewAdapterListClient extends BaseAdapter {
     if (convertView == null) {
       holder = new ViewHolder();
       convertView = inflater.inflate(R.layout.list_client_row, null);
-      holder.client = (TextView) convertView.findViewById(R.id.client);
+      holder.client = (TextView) convertView.findViewById(R.id.nom_client);
       holder.code_client = (TextView) convertView.findViewById(R.id.code_client);
-      holder.stock_t = (TextView) convertView.findViewById(R.id.stock_t);
+      holder.solde_client = (TextView) convertView.findViewById(R.id.sold_client);
 
       convertView.setTag(holder);
+
     } else {
       holder = (ViewHolder) convertView.getTag();
     }
 
-    if(position % 2 == 0 ){
-      convertView.setBackgroundResource(R.drawable.drawable_backg_row_listproduit_1);
-    }else{
-      convertView.setBackgroundResource(R.drawable.drawable_backg_row_listproduit_2);
-    }
-
     holder.client.setText(list_clients.get(position).client);
     holder.code_client.setText(list_clients.get(position).code_client);
-    // holder.stock_t.setText(new DecimalFormat("##,##0.00").format(Double.valueOf(list_produits.get(position).quantity_old)));
+    holder.solde_client.setText(new DecimalFormat("##,##0.00").format(Double.valueOf(list_clients.get(position).solde_montant)));
 
-    convertView.setBackgroundResource(R.drawable.selector_listview_client_row);
+   // convertView.setBackgroundResource(R.drawable.selector_listview_client_row);
     //On item click event
     convertView.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -107,30 +103,10 @@ public class ListViewAdapterListClient extends BaseAdapter {
         event = new SelectedClientEvent(list_clients.get(position));
         // Post the event
         bus.post(event);
-        fragment.finich_fragment();
+        dialog.dismiss();
       }
     });
 
     return convertView;
-  }
-
-  // Filter Class
-  public void filter(String charText) {
-    charText = charText.toLowerCase(Locale.getDefault());
-    list_clients.clear();
-    if (charText.length() == 0) {
-      list_clients.addAll(temp_list);
-    }
-    else
-    {
-      for (int i =0;i<temp_list.size();i++)
-      {
-        if (temp_list.get(i).client.toLowerCase(Locale.getDefault()).contains(charText))
-        {
-          list_clients.add(temp_list.get(i));
-        }
-      }
-    }
-    notifyDataSetChanged();
   }
 }

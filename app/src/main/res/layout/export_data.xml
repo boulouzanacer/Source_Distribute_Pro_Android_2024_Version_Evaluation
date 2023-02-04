@@ -28,16 +28,50 @@
             android:id="@+id/descrip_export_vente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ça vous permet d'exporter les bons de ventes vers le serveur distant"
             android:layout_below="@+id/exportt_vente"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            android:text="Vous permet d'exporter les bons de ventes vers le serveur distant"
+            android:textColor="@color/gray"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/rlt_export_ventes_ftp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/exportt_vente_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="Exportation ventes via FTP"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/descrip_export_vente_ftp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vous permet d'exporter les bons de ventes vers le serveur FTP"
+            android:layout_below="@+id/exportt_vente_ftp"
             android:textSize="12dp"
             android:clickable="false"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>
-
-
     <RelativeLayout
         android:id="@+id/rlt_export_commandes"
         android:layout_width="fill_parent"

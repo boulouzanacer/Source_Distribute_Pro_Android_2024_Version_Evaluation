@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.labo.kaji.swipeawaydialog.SwipeAwayDialogFragment;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterListSelectedBon;
@@ -21,6 +22,8 @@ public class FragmentSelectedBonTransfert extends SwipeAwayDialogFragment {
   private ListView listview;
   private ListViewAdapterListSelectedBon adapter;
   private ArrayList<String> list_bons_t;
+  private String title;
+  private TextView title_list_bon;
 
 
 
@@ -34,6 +37,7 @@ public class FragmentSelectedBonTransfert extends SwipeAwayDialogFragment {
 
     list_bons_t = new ArrayList<>();
     list_bons_t = this.getArguments().getStringArrayList("LIST_SELECTED_TRANSFERT_BON");
+    title = this.getArguments().getString("TITLE");
 
   }
 
@@ -41,9 +45,10 @@ public class FragmentSelectedBonTransfert extends SwipeAwayDialogFragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
     View rootView = inflater.inflate(R.layout.fragment_selected_bon_transfert, container, false);
-    getDialog().setTitle("Bons transfert séléctionner !");
 
     listview = (ListView) rootView.findViewById(R.id.listview_bon_t);
+    title_list_bon = (TextView) rootView.findViewById(R.id.title_list_bon);
+    title_list_bon.setText(title);
     adapter = new ListViewAdapterListSelectedBon(getActivity(), list_bons_t, FragmentSelectedBonTransfert.this);
     listview.setAdapter(adapter);
 

@@ -39,7 +39,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
   private Button valid;
   private String selected_user;
   private PostData_Client code_user;
-  private String code_user_;
+  private String code_client;
 
 
   private String Date_From;
@@ -64,6 +64,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
 
     View rootView = inflater.inflate(R.layout.fragment_select_user, container, false);
     code_user = new PostData_Client();
+
     mContext = getActivity();
     getDialog().setTitle("Sélectionner");
     valid = (Button) rootView.findViewById(R.id.valid);
@@ -95,37 +96,37 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
         valid.setBackgroundColor(getResources().getColor(R.color.nephritis));
         if(materialDesignSpinner.getText().toString().equals("Tous")){
           selected_user = "%";
-          code_user_= null;
+          code_client= null;
         }else{
           selected_user = materialDesignSpinner.getText().toString();
           code_user = controller.select_client_etat_from_database(selected_user);
-          code_user_=code_user.code_client;
+          code_client = code_user.code_client;
 
 
         }
-        EventBus.getDefault().post(new EtatZSelection_Event(selected_user, Date_From, Date_To,code_user_));
+        EventBus.getDefault().post(new EtatZSelection_Event(selected_user, Date_From, Date_To, code_client));
         getDialog().dismiss();
       }
     });
 
     Calendar c = Calendar.getInstance();
-    SimpleDateFormat df_affiche = new SimpleDateFormat("dd-MM-yyyy");
-    SimpleDateFormat df_select = new SimpleDateFormat("MM/dd/yyyy");
+    SimpleDateFormat df_affiche = new SimpleDateFormat("dd/MM/yyyy");
+//
 
     c.add(Calendar.DAY_OF_YEAR, -1);
     Date newDate = c.getTime();
     String yesterday = df_affiche.format(newDate);
 
     beginsession_date = (TextView) rootView.findViewById(R.id.beginsession_date);
-    beginsession_date.setText(yesterday + " " + "00:00");
-    Date_From = df_select.format(c.getTime()) + " 00:00";
+    beginsession_date.setText(yesterday);
+    Date_From = df_affiche.format(c.getTime());
 
     c.add(Calendar.DAY_OF_YEAR, +1);
     Date nextDate = c.getTime();
     String today = df_affiche.format(c.getTime());
     endsession_date = (TextView) rootView.findViewById(R.id.endsession_date);
-    endsession_date.setText(today + " " + "23:59");
-    Date_To = df_select.format(nextDate) + " 23:59";
+    endsession_date.setText(today);
+    Date_To = df_affiche.format(nextDate);
 
 
     beginsession_date.setOnClickListener(new View.OnClickListener() {
@@ -150,18 +151,18 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
             .setCallBack(this)
             .setCancelStringId("Annuler")
             .setSureStringId("Valider")
-            .setTitleStringId("Séléction date time")
+            .setTitleStringId("Date debut")
             .setYearText("")
             .setMonthText("")
             .setDayText("")
-            .setHourText("H")
-            .setMinuteText("mn")
+            //.setHourText("H")
+            //.setMinuteText("mn")
             .setCyclic(false)
             .setMinMillseconds(System.currentTimeMillis() - tenYears)
             .setMaxMillseconds(System.currentTimeMillis()+ oneday)
             .setCurrentMillseconds(System.currentTimeMillis())
-            .setThemeColor(getResources().getColor(R.color.timepicker_dialog_bg))
-            .setType(Type.ALL)
+            .setThemeColor(getResources().getColor(R.color.nephritis))
+            .setType(Type.YEAR_MONTH_DAY)
             .setWheelItemTextNormalColor(getResources().getColor(R.color.timetimepicker_default_text_color))
             .setWheelItemTextSelectorColor(getResources().getColor(R.color.timepicker_toolbar_bg))
             .setWheelItemTextSize(12)
@@ -172,18 +173,18 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
             .setCallBack(this)
             .setCancelStringId("Annuler")
             .setSureStringId("Valider")
-            .setTitleStringId("Séléction date time")
+            .setTitleStringId("Date fin")
             .setYearText("")
             .setMonthText("")
             .setDayText("")
-            .setHourText("H")
-            .setMinuteText("mn")
+           // .setHourText("H")
+           // .setMinuteText("mn")
             .setCyclic(false)
             .setMinMillseconds(System.currentTimeMillis() - tenYears)
             .setMaxMillseconds(System.currentTimeMillis())
             .setCurrentMillseconds(System.currentTimeMillis())
-            .setThemeColor(getResources().getColor(R.color.timepicker_dialog_bg))
-            .setType(Type.ALL)
+            .setThemeColor(getResources().getColor(R.color.nephritis))
+            .setType(Type.YEAR_MONTH_DAY)
             .setWheelItemTextNormalColor(getResources().getColor(R.color.timetimepicker_default_text_color))
             .setWheelItemTextSelectorColor(getResources().getColor(R.color.timepicker_toolbar_bg))
             .setWheelItemTextSize(12)
@@ -211,19 +212,17 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
   @Override
   public void onDateSet(TimePickerDialog timePickerView, long millseconds) {
     Date selected_date;
-    SimpleDateFormat df_affiche = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    SimpleDateFormat df_selection = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+    SimpleDateFormat df_affiche = new SimpleDateFormat("dd/MM/yyyy");
 
-    if(timePickerView.getTag().toString().equals("begin")){
-
+    if(timePickerView.getTag().equals("begin")){
       selected_date = new Date(millseconds);
       beginsession_date.setText(df_affiche.format(selected_date));
-      Date_From = df_selection.format(selected_date);
+      Date_From = df_affiche.format(selected_date);
 
-    }else if(timePickerView.getTag().toString().equals("end")){
+    }else if(timePickerView.getTag().equals("end")){
       selected_date = new Date(millseconds);
       endsession_date.setText(df_affiche.format(selected_date));
-      Date_To = df_selection.format(selected_date);
+      Date_To = df_affiche.format(selected_date);
     }
   }
 }

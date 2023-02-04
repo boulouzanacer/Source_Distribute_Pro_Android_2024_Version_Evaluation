@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
@@ -27,8 +28,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 
 import java.util.ArrayList;
-
-import static com.safesoft.proapp.distribute.activities.vente.ActivityAddProduct.BARCODE_KEY;
+import java.util.Objects;
 
 public class ActivityProduits extends AppCompatActivity implements RecyclerAdapterProduits.ItemClick {
 
@@ -37,13 +37,15 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     ArrayList<PostData_Produit> produits;
     DATABASE controller;
     private Barcode barcodeResult;
-
     private MediaPlayer mp;
+    public static final String BARCODE_KEY = "BARCODE";
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_produits);
+
         if (savedInstanceState != null) {
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
             if (restoredBarcode != null) {
@@ -56,8 +58,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         // setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("List Produits");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.black)));
 
         controller = new DATABASE(this);
 
@@ -68,10 +68,16 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
     private void initViews() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_produit);
     }
 
     private void setRecycle(String text_search, boolean isscan) {
+        if(isscan){
+
+           // searchView.setIconified(false);
+            searchView.onActionViewExpanded();
+            searchView.setQuery(text_search, false);
+        }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan));
@@ -79,50 +85,36 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     }
 
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {
-        if (isScan) {
-            if (produits.size() > 0) {
+        if(isScan){
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "'";
+            produits = controller.select_produits_from_database(querry);
 
-                produits = new ArrayList<>();
-                String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, " +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS ," +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC " +
-                        "FROM Produit  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "'";
-                produits = controller.select_produits_from_database(querry);
-
-            } else {
-
-                produits = new ArrayList<>();
-
-                String querry1 = "SELECT * FROM Codebarre WHERE CODE_BARRE_SYN = '" + querry_search + "'";
+            if(produits.size() == 0){
+                String querry1 = "SELECT * FROM Codebarre WHERE CODE_BARRE_SYN = '"+querry_search+"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, " +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS ," +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC " +
-                        "FROM Produit WHERE CODE_BARRE = '" + code_barre + "'";
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                        "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
                 produits = controller.select_produits_from_database(querry2);
-
-
             }
-        } else {
-            if (querry_search.length() > 0) {
-
-                produits = new ArrayList<>();
-                String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, " +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS ," +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC " +
-                        "FROM Produit WHERE PRODUIT LIKE \"%" + querry_search + "%\" OR CODE_BARRE LIKE \"%" + querry_search + "%\" OR REF_PRODUIT LIKE \"%" + querry_search + "%\" ORDER BY PRODUIT";
+        }else{
+            if(querry_search.length() >0){
+                String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE,DESTOCK_TYPE, " +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                        "FROM PRODUIT WHERE PRODUIT LIKE \"%" + querry_search + "%\" OR CODE_BARRE LIKE \"%" + querry_search + "%\" OR REF_PRODUIT LIKE \"%" + querry_search + "%\" ORDER BY PRODUIT";
                 produits = controller.select_produits_from_database(querry);
-
-            } else {
-
-                produits = new ArrayList<>();
-                String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, " +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS ," +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC " +
-                        "FROM Produit ORDER BY PRODUIT";
+            }else {
+                String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                        "FROM PRODUIT ORDER BY PRODUIT";
                 produits = controller.select_produits_from_database(querry);
-
             }
         }
         return produits;
@@ -144,6 +136,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         intent.putExtra("PV3_HT", produits.get(position).pv3_ht);
         intent.putExtra("STOCK", produits.get(position).stock);
         intent.putExtra("COLISSAGE", produits.get(position).colissage);
+        intent.putExtra("STOCK_COLIS", produits.get(position).stock_colis);
+        intent.putExtra("STOCK_VRAC", produits.get(position).stock_vrac);
         intent.putExtra("PHOTO", produits.get(position).photo);
         intent.putExtra("DETAILLE", produits.get(position).DETAILLE);
 
@@ -153,20 +147,26 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater inflater = getMenuInflater();
-        //   inflater.inflate(R.menu.menu_select_product, menu);
-        inflater.inflate(R.menu.menu_bon_vente_commande, menu);
-        final SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
-        searchView.setQueryHint("Rechercher");
-
-//////////////////////////////////////////////////////////////////////
-///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
-//////////////////////////////////////////////////////////////////////
+        searchView = new SearchView(Objects.requireNonNull(getSupportActionBar()).getThemedContext());
 
         menu.add(Menu.NONE, Menu.NONE, 0, "Rechercher")
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS );
+
+        searchView.setQueryHint("Rechercher");
+
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_bon_vente_commande, menu);
+
+
+
+
+        //////////////////////////////////////////////////////////////////////
+        ///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
+        //////////////////////////////////////////////////////////////////////
+
 
         // final Context cntx = this;
 
@@ -201,6 +201,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             }
         });
 
+        searchView.setIconified(false);
+
         return true;
     }
 
@@ -208,7 +210,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
-        } else if (item.getItemId() == R.id.menu_scan) {
+        } else if (item.getItemId() == R.id.scan) {
 
             startScan();
         }

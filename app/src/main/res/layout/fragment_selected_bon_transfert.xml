@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -12,11 +13,24 @@
         android:id="@+id/result_scan_space"
         android:layout_centerHorizontal="true">
 
+        <TextView
+            android:id="@+id/title_list_bon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue"
+            android:padding="10dp"
+            android:text="Bons de transfers"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
         <ListView
             android:id="@+id/listview_bon_t"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/search_field">
+            android:divider="@color/gray"
+            android:dividerHeight="1dp"
+            android:layout_below="@+id/title_list_bon">
         </ListView>
 
     </RelativeLayout>

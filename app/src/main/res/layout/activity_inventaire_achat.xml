@@ -77,12 +77,12 @@
                     android:id="@+id/descrip_etat_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cette rubrique vous permet de faire vos achats à l'aide d'un scanner code barre via bluetooth ou un scanner intégré avec l'appariel"
                     android:layout_below="@+id/etat_v"
-                    android:textSize="12dp"
+                    android:layout_alignParentStart="true"
                     android:clickable="false"
+                    android:text="Cette rubrique vous permet de faire vos achats à l'aide d'un scanner code barre via bluetooth ou un scanner intégré avec l'appariel"
                     android:textColor="@color/gray"
-                    android:layout_alignParentStart="true" />
+                    android:textSize="12dp" />
 
             </RelativeLayout>
         </LinearLayout>

@@ -2,7 +2,6 @@ package com.safesoft.proapp.distribute.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
-import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire;
+import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,8 +34,6 @@ public class ActivityInventaireAchat extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Inventaires/Achats");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.black)));
         initViews();
 
     }
@@ -56,7 +53,7 @@ public class ActivityInventaireAchat extends AppCompatActivity {
     public void onRelativeClick(View v) throws ExecutionException, InterruptedException {
         switch (v.getId()){
             case R.id.rlt_inventaire:
-                lunchActivity(ActivityInventaire.class);
+                lunchActivity(ActivityInventaires.class);
                 break;
             case R.id.rlt_achat:
                 lunchActivity(ActivityAchat.class);

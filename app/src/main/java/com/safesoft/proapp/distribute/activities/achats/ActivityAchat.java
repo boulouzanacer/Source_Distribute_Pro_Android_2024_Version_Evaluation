@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,13 +50,11 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventaire);
+        setContentView(R.layout.activity_inventaires);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Les achats");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.black)));
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
         controller = new DATABASE(this);
@@ -68,7 +65,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterA
 
     private void initViews() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_inv);
 
         ///////////////////
         SharedPreferences prefs2 = getSharedPreferences(PARAMS_PREFS_CODE_DEPOT, MODE_PRIVATE);
@@ -118,10 +115,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterA
     public void onClick(View v, int position) {
 
         Sound(R.raw.beep);
-        Intent editIntent = new Intent(ActivityAchat.this, ActivityAchatDetails.class);
-        editIntent.putExtra("NUM_ACHAT", achat1s.get(position).num_achat);
-        editIntent.putExtra("NOM_ACHAT", achat1s.get(position).nom_achat);
-        startActivity(editIntent);
+
     }
 
 
@@ -139,7 +133,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterA
                 switch (item){
                     case 0:
                         new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Supprission")
+                                .setTitleText("Suppression")
                                 .setContentText("Voulez-vous vraiment supprimer l'achat " + achat1s.get(position).nom_achat + " ?!")
                                 .setCancelText("Anuuler")
                                 .setConfirmText("Supprimer")
@@ -192,7 +186,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterA
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
         }else if(item.getItemId() == R.id.new_inventaire){
-            startActivityForResult(new Intent(ActivityAchat.this, ActivityNewAchat.class), 5000);
+
         }
         return super.onOptionsItemSelected(item);
     }

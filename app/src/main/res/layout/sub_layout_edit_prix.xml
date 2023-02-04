@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="10dp"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:id="@+id/param_gps"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        style="@style/HeaderText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/black_overlay"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="@string/param_tres_edit_price" />
+    <TextView
+        android:id="@+id/descrip_code_depot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+    android:text="ça vous permettre d'activer ou desactiver la modification de prix de vente"
+        android:textSize="12sp"
+        android:textColor="@color/gray" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_large_size"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:id="@+id/prefSpacingType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background_holo_light"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:paddingStart="8dip"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
+
+        <Switch
+            android:id="@+id/switch_edit_prix"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/desactiver_modification_prix"
+            android:textAlignment="textStart"
+            android:checked="false"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_size"
+        android:background="@color/divider" />
+</LinearLayout>

@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.emmasuzuki.easyform.EasyTextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.eventsClasses.RemiseEvent;
@@ -36,10 +37,10 @@ import java.util.Locale;
 public class FragmentRemise {
 
     MaterialFancyButton btn_remise, btn_cancel;
-    private EasyTextInputLayout montant_avant_remise;
-    private EasyTextInputLayout montant_remise;
-    private EasyTextInputLayout taux_remise;
-    private EasyTextInputLayout montant_apres_remise;
+    private TextInputEditText montant_avant_remise;
+    private TextInputEditText montant_remise;
+    private TextInputEditText taux_remise;
+    private TextInputEditText montant_apres_remise;
     private Context mContext;
     private double val_avant_remise = 0.00, t = 0.00, val_taux = 0.00, val_apres_remise = 0.00, val_remise = 0.00;
     String str;
@@ -95,14 +96,14 @@ public class FragmentRemise {
         val_avant_remise = sent_montant_av_remise;
         val_remise = sent_montant_remise;
 
-        montant_avant_remise.getEditText().setText(nf.format(val_avant_remise));
-        montant_remise.getEditText().setText(String.valueOf(val_remise));
+        montant_avant_remise.setText(nf.format(val_avant_remise));
+        montant_remise.setText(String.valueOf(val_remise));
 
         onMontantRemiseChange();
 
         btn_remise.setOnClickListener(v -> {
 
-            if(montant_avant_remise.getEditText().getText().length() > 0){
+            if(montant_avant_remise.getText().length() > 0){
 
                 RemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
                 // Post the event
@@ -111,7 +112,7 @@ public class FragmentRemise {
                 dialog.dismiss();
 
             }else {
-                montant_avant_remise.getEditText().setError("Montant obligatoire!!");
+                montant_avant_remise.setError("Montant obligatoire!!");
             }
         });
 
@@ -120,7 +121,7 @@ public class FragmentRemise {
         });
 
 
-        montant_remise.getEditText().addTextChangedListener(new TextWatcher() {
+        montant_remise.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -135,7 +136,7 @@ public class FragmentRemise {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!taux_remise.getEditText().isFocused()){
+                if(!taux_remise.isFocused()){
                     try{
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
@@ -143,8 +144,8 @@ public class FragmentRemise {
                         onMontantRemiseChange();
 
                     }catch (Exception e){
-                        montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        taux_remise.getEditText().getText().clear();
+                        montant_apres_remise.setText(nf.format(montant_avant_remise.getText().toString()));
+                        taux_remise.getText().clear();
                     }
                 }
 
@@ -153,7 +154,7 @@ public class FragmentRemise {
 
 
 
-        taux_remise.getEditText().addTextChangedListener(new TextWatcher() {
+        taux_remise.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -166,7 +167,7 @@ public class FragmentRemise {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!montant_remise.getEditText().isFocused()){
+                if(!montant_remise.isFocused()){
                     try{
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
@@ -176,8 +177,8 @@ public class FragmentRemise {
 
 
                     }catch (Exception e){
-                        montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        montant_remise.getEditText().getText().clear();
+                        montant_apres_remise.setText(nf.format(montant_avant_remise.getText().toString()));
+                        montant_remise.getText().clear();
                     }
                 }
 
@@ -188,27 +189,34 @@ public class FragmentRemise {
 
 
     void onMontantRemiseChange(){
-        if(montant_remise.getEditText().getText().toString().isEmpty()){
+        if(montant_remise.getText().toString().isEmpty()){
             val_remise = 0.00;
         }else {
-            val_remise = Double.parseDouble(montant_remise.getEditText().getText().toString());
+            val_remise = Double.parseDouble(montant_remise.getText().toString());
         }
         val_apres_remise  = val_avant_remise - val_remise;
-        montant_apres_remise.getEditText().setText(nf.format(val_apres_remise));
-        val_taux = 100 - ((val_avant_remise - val_remise) / val_avant_remise * 100);
-        taux_remise.getEditText().setText(nf.format(val_taux));
+        montant_apres_remise.setText(nf.format(val_apres_remise));
+
+        if(val_avant_remise == 0){
+            val_taux = 0;
+            taux_remise.setText("0.00");
+        }else {
+            val_taux = 100 - ((val_avant_remise - val_remise) / val_avant_remise * 100);
+            taux_remise.setText(nf.format(val_taux));
+        }
+
     }
 
     void onTauxChanged(){
-        if(taux_remise.getEditText().getText().toString().isEmpty()){
+        if(taux_remise.getText().toString().isEmpty()){
             val_taux = 0.00;
         }else {
-            val_taux = Double.parseDouble(taux_remise.getEditText().getText().toString());
+            val_taux = Double.parseDouble(taux_remise.getText().toString());
         }
         val_remise = val_taux * val_avant_remise / 100;
-        montant_remise.getEditText().setText(nf.format(val_remise));
+        montant_remise.setText(nf.format(val_remise));
         val_apres_remise = val_avant_remise - (val_taux * val_avant_remise / 100);
-        montant_apres_remise.getEditText().setText(nf.format(val_apres_remise));
+        montant_apres_remise.setText(nf.format(val_apres_remise));
     }
 
 }

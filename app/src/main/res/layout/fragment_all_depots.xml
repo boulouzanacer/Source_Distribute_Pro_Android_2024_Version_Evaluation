@@ -20,17 +20,16 @@
         </ListView>
 
         <EditText
+            android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:drawableLeft="@android:drawable/ic_menu_search"
-            android:hint="Search Depot.."
-            android:inputType="textVisiblePassword"
-            android:id="@+id/search_field"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_marginBottom="5dp"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:ems="10"
+            android:hint="Search Depot.."
+            android:inputType="textVisiblePassword" />
 
 
     </RelativeLayout>

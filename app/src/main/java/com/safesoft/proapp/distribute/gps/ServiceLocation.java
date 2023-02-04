@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.gps;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -21,7 +22,7 @@ public class ServiceLocation extends Service
 {
   private static final String TAG = "TRACKKK";
   private LocationManager mLocationManager = null;
-  private static final int LOCATION_INTERVAL = 1000;
+  private static final int LOCATION_INTERVAL = 5000;
   private static final float LOCATION_DISTANCE = 10f;
   private DATABASE controller;
 
@@ -43,7 +44,7 @@ public class ServiceLocation extends Service
     {
       mLastLocation.reset();
       mLastLocation.set(location);
-      event= new LocationEvent(mLastLocation);
+      event = new LocationEvent(mLastLocation);
       Log.e(TAG, "onLocationChanged: " +  mLastLocation.getLatitude() + "  //  " + mLastLocation.getLongitude());
 
       // Post the event
@@ -112,6 +113,7 @@ public class ServiceLocation extends Service
     }
   }
 
+
   @Override
   public void onDestroy()
   {
@@ -128,10 +130,11 @@ public class ServiceLocation extends Service
     }
   }
 
+
   private void initializeLocationManager() {
     Log.e(TAG, "initializeLocationManager");
     if (mLocationManager == null) {
-      mLocationManager = (LocationManager) getApplicationContext().getSystemService(this.LOCATION_SERVICE);
+      mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
     }
   }
 

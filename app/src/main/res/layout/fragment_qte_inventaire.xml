@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardBackgroundColor="@color/blue"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:weightSum="5"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:background="@color/blue"
+            android:layout_height="0dp">
+
+            <TextView
+                android:id="@+id/produit_title"
+                android:text="1/2 BENTOUMIA"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="23sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/stockavantLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:contextClickable="false"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:hint="@string/qt_en_stock_unit"
+                app:expandedHintEnabled="false"
+                app:helperText="  "
+                android:layout_margin="5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/stockavant"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/stockavantLayout_colis"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="1"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:visibility="visible"
+                android:hint="@string/qt_en_stock_colis"
+                app:expandedHintEnabled="false"
+                app:helperText="  "
+                android:layout_margin="5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/stockavant_colis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/part_3_qteinv_Layout"
+            android:layout_weight="1"
+            android:weightSum="4"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nbrColisLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
+                android:hint="@string/n_colis"
+                app:expandedHintEnabled="false"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nbrColis"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/colissageLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
+                android:hint="@string/colis"
+                app:expandedHintEnabled="false"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/colissage"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/qteLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
+                android:hint="@string/qt"
+                app:expandedHintEnabled="false"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/qte_theorique"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/vracLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
+                android:hint="@string/Stock_vrac"
+                app:expandedHintEnabled="false"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/vrac"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/ecartLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="1"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:hint="@string/ecart_unit"
+                android:layout_margin="5dp"
+                app:helperText="  "
+                app:expandedHintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ecart"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/ecartLayout_colis"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="1"
+                android:visibility="visible"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                android:hint="@string/ecart_colis"
+                android:layout_margin="5dp"
+                app:helperText="  "
+                app:expandedHintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ecart_colis"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_remise"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/blue"
+                android:layout_marginEnd="5sp"
+                app:mfb_text="Valider"
+                app:mfb_textColor="#FFFFFF" />
+
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:background="@color/blue"
+                app:mfb_text="Annuler"
+                app:mfb_textColor="#FFFFFF" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

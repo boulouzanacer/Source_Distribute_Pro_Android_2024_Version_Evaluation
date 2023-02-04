@@ -7,10 +7,10 @@
     android:paddingLeft="7dp"
     android:background="@drawable/font_black"
     android:paddingRight="7dp"
-    tools:context="com.safesoft.proapp.distribute.activities.vente.ActivityVentes">
+    tools:context="com.safesoft.proapp.distribute.activities.vente.ActivitySales">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recycler_view_vente"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

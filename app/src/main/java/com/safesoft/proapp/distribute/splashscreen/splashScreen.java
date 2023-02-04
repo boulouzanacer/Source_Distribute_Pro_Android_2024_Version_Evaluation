@@ -25,16 +25,18 @@ import java.util.TimerTask;
 
 public class splashScreen extends AppCompatActivity {
 
-    private String PREFS_ACTIVATION = "PREFES_ACTIVATION";
+    private String PREFS = "ALL_PREFS";
     public static final String NUM_SERIE = "INFO_ACTIVATION";
 
-    //public static final String revendeur = "SAFE SOFT";
+    public static final String revendeur = "SAFE SOFT";
     //public static final String revendeur = "TIEMPO SOFT";
-    public static final String revendeur = "CHERRATA SOFT";
+    //public static final String revendeur = "CHERRATA SOFT";
     //public static final String revendeur = "TECH POS";
     //public static final String revendeur = "CAM PLUS";
     //public static final String revendeur = "GLOBAL TECH";
     //public static final String revendeur = "VAST SOFT";
+    //public static final String revendeur = "TIFAWT TECHNOLOGIE";
+    //public static final String revendeur = "EASY SOFT";
 
     ImageView imagesplash,logo_revendeur;
     LinearLayout linear_layout_revendeur;
@@ -83,7 +85,7 @@ public class splashScreen extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                SharedPreferences prefs = getSharedPreferences(PREFS_ACTIVATION, MODE_PRIVATE);
+                SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
                 code_activation = prefs.getInt("CODE_ACTIVATION",0);
                 if (codeactivation == code_activation ) {
                     startActivity(new Intent(splashScreen.this, MainActivity.class));
@@ -97,7 +99,7 @@ public class splashScreen extends AppCompatActivity {
 
                 //finish();
             }
-        },1000);
+        },2000);
 
 
 //        TextView test_spash = (TextView) findViewById(R.id.textsplash);
@@ -170,6 +172,13 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur2.setText(R.string.INFO_CAM_PLUS2);
             inforevenedeur3.setText(R.string.INFO_CAM_PLUS3);
             inforevenedeur4.setText(R.string.INFO_CAM_PLUS4);
+        }
+        if (revendeur.equals("TIFAWT TECHNOLOGIE")) {
+            logo_revendeur.setImageResource(R.drawable.logo_tifawt_500_100);
+            inforevenedeur1.setText(R.string.INFO_TIFAWT_TECHNOLOGIE1);
+            inforevenedeur2.setText(R.string.INFO_TIFAWT_TECHNOLOGIE2);
+            inforevenedeur3.setText(R.string.INFO_TIFAWT_TECHNOLOGIE3);
+            inforevenedeur4.setText(R.string.INFO_TIFAWT_TECHNOLOGIE4);
         }
     }
 }

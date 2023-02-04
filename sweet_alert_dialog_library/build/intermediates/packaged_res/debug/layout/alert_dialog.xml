@@ -157,4 +157,5 @@
             style="@style/dialog_blue_button"
             android:text="@string/dialog_ok" />
     </LinearLayout>
+
 </LinearLayout>

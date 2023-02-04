@@ -1,17 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray"
-    android:id="@+id/root_view"
-    tools:context="com.safesoft.proapp.distribute.activities.vente.ActivityAddProduct">
+    android:id="@+id/root_view">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <RelativeLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:id="@+id/result_scan_space">
+
+
+        <LinearLayout
+            android:weightSum="5"
+            android:padding="5dp"
+            android:id="@+id/layout_header"
+            android:orientation="horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <EditText
+                android:layout_weight="3.5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:hint="@string/search_product"
+                android:inputType="text"
+                android:id="@+id/search_field"
+                android:autofillHints="" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:layout_weight="0.75"
+                android:id="@+id/scan"
+                android:src="@drawable/ic_codebarre_scan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:layout_weight="0.75"
+                android:id="@+id/cancel"
+                android:src="@drawable/met_ic_clear"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_add_produit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_header"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:scrollbars="vertical" />
+
+
+
+
+    </RelativeLayout>
+
 
 </LinearLayout>
 

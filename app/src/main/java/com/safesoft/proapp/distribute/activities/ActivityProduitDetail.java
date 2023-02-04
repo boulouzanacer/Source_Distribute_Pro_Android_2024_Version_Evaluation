@@ -1,11 +1,14 @@
 package com.safesoft.proapp.distribute.activities;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.printing.PrinterVente;
 
 import java.text.DecimalFormat;
 
@@ -34,8 +38,6 @@ public class ActivityProduitDetail extends AppCompatActivity {
     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-            .getColor(R.color.black)));
 
     produit = new PostData_Produit();
 
@@ -43,12 +45,12 @@ public class ActivityProduitDetail extends AppCompatActivity {
     produit.code_barre = getIntent().getStringExtra("CODE_BARRE");
     produit.ref_produit = getIntent().getStringExtra("REF_PRODUIT");
     produit.produit = getIntent().getStringExtra("PRODUIT");
-    produit.pa_ht = getIntent().getStringExtra("PA");
-    produit.tva = getIntent().getStringExtra("TVA");
-    produit.pv1_ht = getIntent().getStringExtra("PV1_HT");
-    produit.pv2_ht = getIntent().getStringExtra("PV2_HT");
-    produit.pv3_ht = getIntent().getStringExtra("PV3_HT");
-    produit.stock = getIntent().getStringExtra("STOCK");
+    produit.pa_ht = getIntent().getDoubleExtra("PA",0);
+    produit.tva = getIntent().getDoubleExtra("TVA",0);
+    produit.pv1_ht = getIntent().getDoubleExtra("PV1_HT",0);
+    produit.pv2_ht = getIntent().getDoubleExtra("PV2_HT",0);
+    produit.pv3_ht = getIntent().getDoubleExtra("PV3_HT",0);
+    produit.stock = getIntent().getDoubleExtra("STOCK",0);
     produit.colissage = getIntent().getDoubleExtra("COLISSAGE", 0);
     produit.photo = getIntent().getByteArrayExtra("PHOTO");
     produit.DETAILLE = getIntent().getStringExtra("DETAILLE");
@@ -110,23 +112,23 @@ public class ActivityProduitDetail extends AppCompatActivity {
       TvPv3.setVisibility(View.VISIBLE);
     }
 
-    if (produit.pv1_ht != null)
-      TvPv1.setText(" "+produit.pv1_ht.toString());
+    //if (produit.pv1_ht != null)
+      TvPv1.setText(" "+produit.pv1_ht);
 
-    if (produit.pv2_ht != null)
-      TvPv2.setText(" "+produit.pv2_ht.toString());
+    //if (produit.pv2_ht != null)
+      TvPv2.setText(" "+produit.pv2_ht);
 
-    if (produit.pv3_ht != null)
-      TvPv3.setText(" "+produit.pv3_ht.toString());
+    //if (produit.pv3_ht != null)
+      TvPv3.setText(" "+produit.pv3_ht);
 
 
-    if (produit.tva != null)
-      TvTva.setText(" "+ produit.tva.toString());
+    //if (produit.tva != null)
+      TvTva.setText(" "+ produit.tva);
 
-    if (produit.stock != null)
-      TvAStock.setText(" "+ new DecimalFormat("##,##0.00").format(Double.valueOf(produit.stock.toString())));
+    //if (produit.stock != null)
+      TvAStock.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(produit.stock)));
 
-    Colissage.setText(" "+ new DecimalFormat("##,##0.00").format(produit.colissage));
+    Colissage.setText(" "+ new DecimalFormat("##,##0.##").format(produit.colissage));
 
     if (produit.DETAILLE != null) {
       DETAILLE.setText(" " + produit.DETAILLE.toString());
@@ -147,9 +149,25 @@ public class ActivityProduitDetail extends AppCompatActivity {
   }
 
   @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu_produit_details, menu);
+
+    // return true so that the menu pop up is opened
+    return true;
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if(item.getItemId() == android.R.id.home){
       onBackPressed();
+    }else if(item.getItemId() == R.id.print){
+      Activity bactivity;
+      bactivity = ActivityProduitDetail.this;
+
+      PrinterVente printer = new PrinterVente();
+      printer.start_print_etiquette(bactivity, produit );
+
     }
     return super.onOptionsItemSelected(item);
   }

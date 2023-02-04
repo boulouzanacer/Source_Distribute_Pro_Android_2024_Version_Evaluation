@@ -44,8 +44,8 @@ public class ServiceDistribute extends Service {
     super.onCreate();
 
     SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-    Server = prefs.getString("ip", "192.168.1.10");
-    Path = prefs.getString("path", "D:/P-VENTE/DATA/PME PRO/PMEPRO");
+    Server = prefs.getString("ip", "192.168.1.6");
+    Path = prefs.getString("path", "D:/P-VENTE/DATA/PME PRO/DISTRIBUTE");
     Username = prefs.getString("username", "SYSDBA");
     Password = prefs.getString("password", "masterkey");
     // Path = "C:/P-VENTE/DATA/RESTO PRO/"+ Database +".FDB";
@@ -160,7 +160,7 @@ public class ServiceDistribute extends Service {
           transfer2.num_bon = rs1.getString("NUM_BON");
           transfer2.code_barre = rs1.getString("CODE_BARRE");
           transfer2.produit = rs1.getString("PRODUIT");
-          transfer2.qte =  rs1.getString("QTE");
+          transfer2.qte =  rs1.getDouble("QTE");
           transfer2s.add(transfer2);
         }
         controller.ExecuteTransactionTrasfer(transfer1s, transfer2s);

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/delete"
+    <item android:id="@+id/edit_produit"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/modifier_produit" />
+
+    <item android:id="@+id/delete_produit"
+        app:showAsAction="always"
         android:icon="@android:drawable/ic_delete"
-        android:title="Supprimer produit" />
+        android:title="@string/supprimer_produit" />
 
 </menu>

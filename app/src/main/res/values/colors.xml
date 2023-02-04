@@ -59,4 +59,16 @@
     <color name="iron">#CCCCCC</color>
     <color name="primary">#E43F3F</color>
     <color name="color_pme_pro_distribute">#0094d6</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <color name="tag_blue_bg">#5f9cff</color>
+    <color name="tag_orange_bg">#ff9a57</color>
+    <color name="tag_red_bg">#ff6d5f</color>
+    <color name="tag_green_bg">#40d189</color>
+    <color name="tag_blue_light_bg">#33befa</color>
 </resources>

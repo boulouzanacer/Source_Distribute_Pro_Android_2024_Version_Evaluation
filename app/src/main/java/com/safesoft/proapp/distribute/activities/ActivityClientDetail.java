@@ -1,94 +1,65 @@
 package com.safesoft.proapp.distribute.activities;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
+import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.BatteryManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter_Situation;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.fragments.FragmentVersement;
+import com.safesoft.proapp.distribute.fragments.FragmentVersementClient;
 import com.safesoft.proapp.distribute.gps.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
-import com.telpo.tps550.api.TelpoException;
-import com.telpo.tps550.api.printer.ThermalPrinter;
-import com.telpo.tps550.api.util.StringUtil;
-import com.telpo.tps550.api.util.SystemUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
 
-import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import app.akexorcist.bluetotohspp.library.BluetoothState;
-import app.akexorcist.bluetotohspp.library.DeviceList;
+import cn.nekocode.badge.BadgeDrawable;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class ActivityClientDetail extends AppCompatActivity implements RecyclerAdapter_Situation.ItemClick {
 
-  ////////////////////////////////////////
-  private final int NOPAPER = 3;
-  private final int LOWBATTERY = 4;
-  private final int PRINTVERSION = 5;
-  private final int PRINTCONTENT = 9;
-  private final int CANCELPROMPT = 10;
-  private final int PRINTERR = 11;
-  private final int OVERHEAT = 12;
-  private final int PRINTPICTURE = 14;
 
-  private String Result;
-  private Boolean nopaper = false;
-  private boolean LowBattery = false;
-  private ProgressDialog progressDialog;
-  private ProgressDialog progressDialog_wait_connecte;
-  private final static int MAX_LEFT_DISTANCE = 255;
-  private ProgressDialog dialog;
-  private MyHandler_Integrate handler_Integrate;
-  private MyHandler_Bluetooth handler_Bluetooth;
 
-  private BluetoothSPP bt;
   private String PREFS_PRINTER = "ConfigPrinter";
   private String PREFS_AUTRE = "ConfigAutre";
   Boolean printer_mode_integrate = true;
@@ -96,18 +67,18 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
   private PostData_Client client;
   private TextView TvClient, TvTel, TvLat, TvLog, TvAdresse, TvCodeClient, TvModeT, TvAchat, TvVerser, TvSolde;
-  private ImageButton BtnCall, BtnVerser, BtnVente, BtnPosition;
+  private ImageView imgv_client_map;
+  private FancyButton Btn_itenerary, Btn_Call, Btn_update_position, BtnVerser, BtnVente;
 
-  private  MediaPlayer mp;
+  private MediaPlayer mp;
 
   private EventBus bus = EventBus.getDefault();
 
   private static final int ACCES_FINE_LOCATION = 2;
+  private static final int BLUETOOTH_CONNECT = 3;
   private Boolean checkPermission = false;
 
   private Intent intent_location;
-
-  private Boolean position_yet = false;
 
   private ProgressDialog progress;
 
@@ -117,13 +88,13 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   RecyclerAdapter_Situation adapter;
   ArrayList<PostData_Carnet_c> carnet_cs;
   private String CODE_CLIENT;
+  String url_static_map;
 
   private PostData_Client client_print;
   private ArrayList<PostData_Carnet_c> carnet_c_print;
 
 
-
-
+  @RequiresApi(api = Build.VERSION_CODES.S)
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -131,9 +102,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle("Détails Client");
-    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-            .getColor(R.color.black)));
+    getSupportActionBar().setTitle("Situation Client");
+   // getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.blue)));
 
 
     // client.client = getIntent().getStringExtra("CLIENT");
@@ -162,58 +132,25 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     // Register as a subscriber
     bus.register(this);
     intent_location = new Intent(this, ServiceLocation.class);
-    if(checkPermission){
+    if (checkPermission) {
       startService(intent_location);
     }
 
-    //////////////////////////////////// PRINTING DECLARATION //////////////////////////////////
-
-    IntentFilter pIntentFilter = new IntentFilter();
-    pIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-    pIntentFilter.addAction("android.intent.action.BATTERY_CAPACITY_EVENT");
-    registerReceiver(printReceive, pIntentFilter);
-
-
-    bt = new BluetoothSPP(this);
-
-    if(!bt.isBluetoothAvailable()) {
-      Toast.makeText(getApplicationContext(), "Bluetooth is not available", Toast.LENGTH_SHORT).show();
-      //finish();
-    }
-
-    bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
-
-      public void onDeviceDisconnected() {
-        if (progressDialog_wait_connecte != null && !ActivityClientDetail.this.isFinishing()) {
-          progressDialog_wait_connecte.dismiss();
-          progressDialog_wait_connecte = null;
-        }
-        Crouton.makeText(ActivityClientDetail.this, "Imprimente bluetooth non connecté ", Style.ALERT).show();
-      }
-
-      public void onDeviceConnectionFailed() {
-        if (progressDialog_wait_connecte != null && !ActivityClientDetail.this.isFinishing()) {
-          progressDialog_wait_connecte.dismiss();
-          progressDialog_wait_connecte = null;
-        }
-        Crouton.makeText(ActivityClientDetail.this, "Imprimente connection erroné ", Style.ALERT).show();
-      }
-
-      public void onDeviceConnected(String name, String address) {
-        if (progressDialog_wait_connecte != null && !ActivityClientDetail.this.isFinishing()) {
-          progressDialog_wait_connecte.dismiss();
-          progressDialog_wait_connecte = null;
-        }
-        Crouton.makeText(ActivityClientDetail.this, "Imprimente connecté à  "+ name, Style.CONFIRM).show();
-        prepareBon_Bluetooth();
-      }
-
-    });
-
-    //////////////////////////////// FIN PRINTING DECLARATION ////////////////////////////////////
+    setStaticMap(client.latitude, client.longitude);
   }
 
-  protected void getClient(){
+
+
+  private void setStaticMap(double latitude, double longitude){
+    int zoom = 15;
+    String label = "P";
+    url_static_map = "https://maps.googleapis.com/maps/api/staticmap?center="+ latitude + "," + longitude + "&zoom="+ zoom +"&size=1200x300&markers=color:red%7Clabel:" + label + "%7C" + latitude + "," + longitude + "&key=AIzaSyAzMUqTnhsnrXuog5ZjSrnSYMPM-XShfRA";
+    if(latitude != 0 && longitude != 0){
+      new DownloadImageTask(imgv_client_map).execute();
+    }
+
+  }
+  protected void getClient() {
     client = new PostData_Client();
     client = controller.select_client_from_database(CODE_CLIENT);
     iniData(client);
@@ -223,22 +160,10 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   protected void onStart() {
 
     SharedPreferences prefs1 = getSharedPreferences(PREFS_PRINTER, MODE_PRIVATE);
-    if(prefs1.getString("PRINTER", "INTEGRATE").toString().equals("INTEGRATE")){
+    if (prefs1.getString("PRINTER", "INTEGRATE").toString().equals("INTEGRATE")) {
       printer_mode_integrate = true;
-    }else {
+    } else {
       printer_mode_integrate = false;
-    }
-
-    if(!printer_mode_integrate){
-      if (!bt.isBluetoothEnabled()) {
-        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
-      } else {
-        if(!bt.isServiceAvailable()) {
-          bt.setupService();
-          bt.startService(BluetoothState.DEVICE_ANDROID);
-        }
-      }
     }
 
     super.onStart();
@@ -255,8 +180,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     //TextView
     TvClient = (TextView) findViewById(R.id.client_name);
     TvTel = (TextView) findViewById(R.id.tel);
-    TvLat = (TextView) findViewById(R.id.lat);
-    TvLog = (TextView) findViewById(R.id.log);
+   // TvLat = (TextView) findViewById(R.id.lat);
+   // TvLog = (TextView) findViewById(R.id.log);
     TvAdresse = (TextView) findViewById(R.id.adresse);
     TvCodeClient = (TextView) findViewById(R.id.code_client);
     TvModeT = (TextView) findViewById(R.id.mode_tarif);
@@ -265,13 +190,40 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     TvSolde = (TextView) findViewById(R.id.solde);
 
     //Button
-    BtnCall = (ImageButton) findViewById(R.id.btnCall);
-    BtnVerser = (ImageButton) findViewById(R.id.btnVerser);
-    BtnVente = (ImageButton) findViewById(R.id.btnVente);
-    BtnPosition = (ImageButton) findViewById(R.id.btnPosition);
+   // BtnCall = (ImageButton) findViewById(R.id.btnCall);
+    BtnVerser = (FancyButton) findViewById(R.id.btnVerser);
+    BtnVente = (FancyButton) findViewById(R.id.btnVente);
+    Btn_itenerary = (FancyButton) findViewById(R.id.btn_itenerary);
+    Btn_update_position = (FancyButton) findViewById(R.id.btn_update_pos);
+    Btn_Call = (FancyButton) findViewById(R.id.btnCall);
 
+    Btn_itenerary.setIconResource(getResources().getDrawable(R.drawable.ic_baseline_itenerary_24));
+    Btn_update_position.setIconResource(getResources().getDrawable(R.drawable.ic_baseline_update_location_24));
+    Btn_Call.setIconResource(getResources().getDrawable(R.drawable.ic_baseline_local_phone_white_24));
+
+    Btn_itenerary.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+
+        if(client.latitude != 0 && client.longitude != 0){
+          Intent intent = new Intent(ActivityClientDetail.this, ActivityItenerary.class);
+          intent.putExtra("LATITUDE", client.latitude);
+          intent.putExtra("LONGITUDE", client.longitude);
+          intent.putExtra("CLIENT", client.client);
+          intent.putExtra("ADRESSE", client.adresse);
+          intent.putExtra("TEL", client.tel);
+          startActivity(intent);
+        }else{
+          Crouton.makeText(ActivityClientDetail.this, "Client n'a pas de position gps", Style.ALERT).show();
+        }
+
+      }
+    });
+
+    //ImageView
+    imgv_client_map = findViewById(R.id.imgv_client_map);
     //RecycleViews
-    recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+    recyclerView = (RecyclerView) findViewById(R.id.recycler_view_client_detail);
   }
 
   private void setRecycle() {
@@ -293,9 +245,13 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
             "Client.LONGITUDE, " +
             "Client.TEL, " +
+            "Client.CLIENT, " +
             "Client.ADRESSE, " +
             "Client.RC, " +
             "Client.IFISCAL, " +
+            "Client.AI, " +
+            "Client.NIS, " +
+            "Client.MODE_TARIF, " +
 
             "Carnet_c.HEURE, " +
             "Carnet_c.ACHATS, " +
@@ -324,21 +280,35 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
   protected void iniData(PostData_Client client) {
 
-    TvClient.setText(client.client);
+    TvClient.setText(" "+client.client);
     TvTel.setText(client.tel);
     if (client.latitude != null)
-      TvLat.setText(client.latitude.toString());
+     // TvLat.setText(client.latitude.toString());
 
     if (client.longitude != null)
-      TvLog.setText(client.longitude.toString());
+    //  TvLog.setText(client.longitude.toString());
 
     if (client.adresse != null)
       TvAdresse.setText(" "+client.adresse);
 
     TvCodeClient.setText(client.code_client);
 
-    if (client.mode_tarif != null)
-      TvModeT.setText(client.mode_tarif);
+
+    if (client.mode_tarif != null){
+      if(client.mode_tarif.equals("0")){
+        TvModeT.setText("LIBRE");
+      }else if(client.mode_tarif.equals("1")){
+        TvModeT.setText("1");
+
+      }else if(client.mode_tarif.equals("2")){
+        TvModeT.setText("2");
+
+      }else if(client.mode_tarif.equals("3")){
+        TvModeT.setText("3");
+      }
+
+    }
+
 
     SharedPreferences prefs3 = getSharedPreferences(PREFS_AUTRE, MODE_PRIVATE);
     if (prefs3.getBoolean("ACHATS_SHOW", false)) {
@@ -347,15 +317,69 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
       TvAchat.setVisibility(View.GONE);
     }
 
-    if (client.achat_montant != null)
-      TvAchat.setText(" "+ new DecimalFormat("##,##0.00").format(Double.valueOf(client.achat_montant.toString())));
+    if (client.achat_montant != null){
+      final BadgeDrawable drawable6 =
+              new BadgeDrawable.Builder()
+                      .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
+                      .badgeColor(0xff303F9F)
+                      .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.achat_montant.toString())))
+                      .text2(" DA ")
+                      .build();
+      SpannableString spannableString6 = new SpannableString(TextUtils.concat(drawable6.toSpannable()));
+      TvAchat.setText(spannableString6);
+    }
 
-    if (client.verser_montant != null)
+    if (client.verser_montant != null) {
+      final BadgeDrawable drawable7 =
+              new BadgeDrawable.Builder()
+                      .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
+                      .badgeColor(0xff303F9F)
+                      .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.verser_montant.toString())))
+                      .text2(" DA ")
+                      .build();
+      SpannableString spannableString7 = new SpannableString(TextUtils.concat(drawable7.toSpannable()));
+      TvVerser.setText(spannableString7);
+    }
 
-      TvVerser.setText(" "+   new DecimalFormat("##,##0.00").format(Double.valueOf(client.verser_montant.toString())));
+    if (client.solde_montant != null){
+      final BadgeDrawable drawable8 =
+              new BadgeDrawable.Builder()
+                      .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
+                      .badgeColor(0xff303F9F)
+                      .text1( new DecimalFormat("##,##0.00").format(Double.valueOf(client.solde_montant.toString())))
+                      .text2(" DA " )
+                      .build();
+      SpannableString spannableString8 = new SpannableString(TextUtils.concat(drawable8.toSpannable()));
+      TvSolde.setText(spannableString8);
+    }
 
-    if (client.solde_montant != null)
-      TvSolde.setText(" "+   new DecimalFormat("##,##0.00").format(Double.valueOf(client.solde_montant.toString())));
+
+  }
+
+  private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap> {
+    ImageView bmImage;
+
+    public DownloadImageTask(ImageView bmImage) {
+      this.bmImage = bmImage;
+    }
+
+    protected Bitmap doInBackground(Void... urls) {
+      String urldisplay = url_static_map;
+      Bitmap mIcon11 = null;
+      try {
+        InputStream in = new java.net.URL(urldisplay).openStream();
+        mIcon11 = BitmapFactory.decodeStream(in);
+      } catch (Exception e) {
+        Log.e("Error", e.getMessage());
+        e.printStackTrace();
+        mIcon11 = BitmapFactory.decodeResource(getResources(), R.mipmap.noimg);
+      }
+      return mIcon11;
+    }
+
+    protected void onPostExecute(Bitmap result) {
+      bmImage.setImageBitmap(result);
+    }
   }
 
   public void onClick(View v) {
@@ -363,39 +387,37 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
       case R.id.btnCall:
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + client.tel));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-          // TODO: Consider calling
-          //    ActivityCompat#requestPermissions
-          // here to request the missing permissions, and then overriding
-          //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-          //                                          int[] grantResults)
-          // to handle the case where the user grants the permission. See the documentation
-          // for ActivityCompat#requestPermissions for more details.
           return;
         }
         startActivity(intent);
         break;
       case R.id.btnVerser:
-        showFragmentVersement(false);
+        FragmentVersementClient fragmentversementclient= new FragmentVersementClient();
+        fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, 0, "" , client.code_client, false, "");
         break;
       case R.id.btnVente:
 
         break;
-      case R.id.btnPosition:
+      case R.id.btn_update_pos:
+        startService(intent_location);
+
+         progress = new ProgressDialog(ActivityClientDetail.this);
+         progress.setTitle("Position");
+         progress.setMessage("Recherche position...");
+         progress.setIndeterminate(true);
+         progress.setCancelable(true);
+         progress.show();
 
         if(client.latitude != null){
-          TvLat.setText(client.latitude.toString());
-          position_yet = true;
+          //TvLat.setText(client.latitude.toString());
           //start loading
-          progress = new ProgressDialog(ActivityClientDetail.this);
-          progress.setTitle("Position");
-          progress.setMessage("Recherche position...");
-          progress.setIndeterminate(true);
-          progress.setCancelable(true);
-          progress.show();
+
         }
 
         if(client.longitude != null)
-          TvLog.setText(client.longitude.toString());
+          //TvLog.setText(client.longitude.toString());
+
+
 
         break;
     }
@@ -434,16 +456,20 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   }
 
 
+  @RequiresApi(api = Build.VERSION_CODES.S)
   public void requestPermission(){
 /*
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, RECIEVE_SMS);
         }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION);
-        }
 */
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, BLUETOOTH_CONNECT);
+          checkPermission = false;
+        }else {
+          checkPermission = true;
+        }
+
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
       ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCES_FINE_LOCATION);
       checkPermission = false;
@@ -476,26 +502,19 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     client.latitude = event.getLocationData().getLatitude();
     client.longitude = event.getLocationData().getLongitude();
 
-    if(position_yet){
-      if(client.latitude != null)
-        TvLat.setText(client.latitude.toString());
-      if(client.longitude != null)
-        TvLog.setText(client.longitude.toString());
 
-      controller.update_client(client.latitude, client.longitude, client.code_client);
+    if(client.latitude != null)
+      //TvLat.setText(client.latitude.toString());
+    if(client.longitude != null)
+      //TvLog.setText(client.longitude.toString());
+
+    controller.update_client(client.latitude, client.longitude, client.code_client);
+    if(progress != null){
       progress.dismiss();
-      position_yet  =false;
     }
-  }
 
-  protected void showFragmentVersement(Boolean IfEdit){
-    android.app.FragmentManager fm = getFragmentManager();
-    DialogFragment dialog = new FragmentVersement(); // creating new object
-    Bundle args = new Bundle();
-    args.putString("CODE_CLIENT",  client.code_client);
-    args.putBoolean("IS_EDIT",  IfEdit);
-    dialog.setArguments(args);
-    dialog.show(fm, "dialog");
+    setStaticMap(event.getLocationData().getLatitude(), event.getLocationData().getLongitude());
+
   }
 
 
@@ -503,95 +522,53 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     getClient();
     setRecycle();
   }
+
   @Override
-  public void onClick(View v, int position) {
+  public void onClick(View v, int position, final  PostData_Carnet_c carnet_c) {
 
+    switch (v.getId()) {
+      case R.id.btn_edit_situation:
+
+        new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Situation")
+                .setContentText("Voulez-vous vraiment modifier cette situation?!")
+                .setCancelText("Non")
+                .setConfirmText("Modifier")
+                .showCancelButton(true)
+                .setCancelClickListener(Dialog::dismiss)
+                .setConfirmClickListener(sDialog -> {
+
+                  FragmentVersementClient fragmentversementclient= new FragmentVersementClient();
+                  fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, carnet_c.carnet_versement, carnet_c.carnet_remarque , client.code_client, true, carnet_c.recordid);
+
+                  sDialog.dismiss();
+                })
+                .show();
+        break;
+      case R.id.btn_remove_situation:
+
+        new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Suppression")
+                .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_c.recordid + " ?!")
+                .setCancelText("Anuuler")
+                .setConfirmText("Supprimer")
+                .showCancelButton(true)
+                .setCancelClickListener(Dialog::dismiss)
+                .setConfirmClickListener(sDialog -> {
+
+                  if(controller.Delete_versement(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)){
+                    Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
+                  }else {
+                    Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
+                  }
+                  Update_client_details();
+
+                  sDialog.dismiss();
+
+                }).show();
+        break;
+    }
   }
-
-
-
-  /*@Override
-  public void onLongClick(View v, final int position) {
-
-
-    // PostData_Carnet_c ddd = (PostData_Carnet_c) v.get
-
-    recyclerView.getChildItemId(v);
-
-    final CharSequence[] items = {"Modifier", "Supprimer", "Imprimer" };
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle("Séléctionner action");
-    builder.setItems(items, new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialog, int item) {
-        switch (item){
-          case 0:
-
-            new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Situation")
-                    .setContentText("Voulez-vous vraiment modifier cette situation ?!")
-                    .setCancelText("Non")
-                    .setConfirmText("Modifier")
-                    .showCancelButton(true)
-                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                      @Override
-                      public void onClick(SweetAlertDialog sDialog) {
-                        sDialog.dismiss();
-                      }
-                    })
-                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                      @Override
-                      public void onClick(SweetAlertDialog sDialog) {
-
-                        showFragmentVersement(true);
-                                       /* Intent editIntent = new Intent(ActivityClientDetail.this, ActivityEditSale.class);
-                                        editIntent.putExtra("NUM_BON", bon1s.get(position).num_bon);
-                                        editIntent.putExtra("VALIDATED", "TRUE");
-                                        startActivity(editIntent);
-*/
-                    //    sDialog.dismiss();
-                   //   }
-                //    })
-                //    .show();
-
-
-
-         ///   break;
-       ///   case 1:
-         //   new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                 //   .setTitleText("Supprission")
-                 //   .setContentText("Voulez-vous vraiment supprimer cette situation ?!")
-                  //  .setCancelText("Anuuler")
-                  //  .setConfirmText("Supprimer")
-                  //  .showCancelButton(true)
-                  //  .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                   //   @Override
-                    //  public void onClick(SweetAlertDialog sDialog) {
-                     //   sDialog.dismiss();
-                    //  }
-                   // })
-                //    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                   //   @Override
-                    //  public void onClick(SweetAlertDialog sDialog) {
-
-                      //  controller.delete_versement(carnet_cs.get(position));
-                      //  setRecycle();
-                     //   getClient();
-
-                      //  sDialog.dismiss();
-                    //  }
-                  //  })
-                   // .show();
-
-         //   break;
-        //  case 2:
-         //   Print_versement();
-          //  break;
-     //   }
-     // }
-  //  });
-   // builder.show();
- // }*
 
   protected void Print_versement(){
 
@@ -607,9 +584,13 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
             "Client.LONGITUDE, " +
             "Client.TEL, " +
+            "Client.CLIENT, " +
             "Client.ADRESSE, " +
             "Client.RC, " +
             "Client.IFISCAL, " +
+            "Client.AI, " +
+            "Client.NIS, " +
+            "Client.MODE_TARIF, " +
 
             "Carnet_c.HEURE, " +
             "Carnet_c.ACHATS, " +
@@ -632,227 +613,11 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
     if(printer_mode_integrate){
       // prepareBon_IntegratePrinter();
-    }else{
-      if(bt.getServiceState() == BluetoothState.STATE_CONNECTED){
-        // print
-        Toast.makeText(ActivityClientDetail.this, " ImprEssion ..." , Toast.LENGTH_SHORT).show();
-        prepareBon_Bluetooth();
-
-      }else{
-        bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-        Intent intent = new Intent(getApplicationContext(), DeviceList.class);
-        startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
-      }
-    }
-  }
-
-  protected void prepareBon_Bluetooth(){
-
-    handler_Bluetooth = new MyHandler_Bluetooth();
-    if (LowBattery == true) {
-      handler_Bluetooth.sendMessage(handler_Bluetooth.obtainMessage(LOWBATTERY, 1, 0, null));
-    } else {
-      if (!nopaper) {
-        progressDialog = ProgressDialog.show(ActivityClientDetail.this, getString(R.string.bl_dy), getString(R.string.printing_wait));
-        handler_Bluetooth.sendMessage(handler_Bluetooth.obtainMessage(PRINTCONTENT, 1, 0, null));
-      } else {
-        Toast.makeText(ActivityClientDetail.this, getString(R.string.ptintInit), Toast.LENGTH_LONG).show();
-      }
-    }
-  }
-
-  private class MyHandler_Bluetooth extends Handler {
-    @Override
-    public void handleMessage(Message msg) {
-      switch (msg.what) {
-        case PRINTVERSION:
-          dialog.dismiss();
-          if (msg.obj.equals("1")) {
-            // textPrintVersion.setText(printVersion);
-          } else {
-            Toast.makeText(ActivityClientDetail.this, "Operation failed", Toast.LENGTH_LONG).show();
-          }
-          break;
-        case PRINTCONTENT:
-          new contentPrintThread_Bluetooth().start();
-          break;
-        case CANCELPROMPT:
-          if (progressDialog != null && !ActivityClientDetail.this.isFinishing()) {
-            progressDialog.dismiss();
-            progressDialog = null;
-          }
-          break;
-        case OVERHEAT:
-          AlertDialog.Builder overHeatDialog = new AlertDialog.Builder(ActivityClientDetail.this);
-          overHeatDialog.setTitle(R.string.operation_result);
-          overHeatDialog.setMessage(getString(R.string.overTemp));
-          overHeatDialog.setPositiveButton(getString(R.string.dialog_comfirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-          });
-          overHeatDialog.show();
-          break;
-        default:
-          Toast.makeText(ActivityClientDetail.this, "Print Error!", Toast.LENGTH_LONG).show();
-          break;
-      }
-    }
-  }
-
-  //Class thread printing
-  private class contentPrintThread_Bluetooth extends Thread {
-    @Override
-    public void run() {
-      super.run();
-
-      try {
-
-
-        byte[] arrayOfByte1 = { 27, 33, 0 };
-        byte[] format = { 27, 33, 0 };
-        // format[2] = ((byte) (0x20 | arrayOfByte1[2]));
-
-        byte[] format_normal = {27, 15, 0 }; // manipulate your font size in the second parameter
-        byte[] format01 = {27, 33, 18 }; // manipulate your font size in the second parameter
-        byte[] center =  { 0x1b, 'a', 0x01 }; // center alignment
-        byte[] left =  { 0x1b, 'a', 0x00 }; // center alignment
-
-        // Underline
-        // format[2] = ((byte)(0x80 | arrayOfByte1[2]));
-
-        bt.send(format, true);
-
-        SharedPreferences prefs = getSharedPreferences(PREFS_PRINTER, MODE_PRIVATE);
-        if(prefs.getBoolean("ENTETE_SHOW", false)){
-          bt.send(center, true);
-
-          bt.send(prefs.getString("COMPANY_NAME", ""), true);
-          bt.send(prefs.getString("ACTIVITY_NAME", ""), true);
-          bt.send(prefs.getString("ADRESSE", ""), true);
-          bt.send("-------------------------------------", true);
-
-        }
-
-        ////////////////////////////////
-        //bt.send(center, true);
-        bt.send(left, true);
-
-        format[2] = ((byte) (0x20 | arrayOfByte1[2]));
-        bt.send(format, true);
-        bt.send("    VERSEMENT CLIENT", true);
-        //bt.send("------------------------------------------------", true);
-
-        ////////////////////////////////
-        format[2] = ((byte)(0x0 | arrayOfByte1[2]));
-        bt.send(format, true);
-        bt.send("CLIENT : " + client_print.client, true);
-        bt.send("TEL : " + client.tel, true);
-
-        bt.send("CODE CLIENT : " + client_print.code_client, true);
-        bt.send("          ************", true);
-
-
-        SimpleDateFormat df_show = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat df_save = new SimpleDateFormat("MM/dd/yyyy");
-        Date myDate = null;
-        try {
-          myDate = df_save.parse(carnet_c_print.get(0).carnet_date);
-
-        } catch (ParseException e) {
-          e.printStackTrace();
-        }
-        String formattedDate_Show = df_show.format(myDate);
-
-
-        // bt.send(format_normal, true);
-        //bt.send("CODE_DEPOT : " + final_bon1_prepared.code_depot, true);
-        bt.send("DATE HEURE : " + formattedDate_Show + " " + carnet_c_print.get(0).carnet_heure, true);
-        bt.send("------------------------------------------------", true);
-
-
-        ///////////////////////
-
-        ///////////////////////////
-
-        format[2] = ((byte)(0x10 | arrayOfByte1[2]));
-        bt.send(format, true);
-
-        for(int b= 0; b<carnet_c_print.size(); b++){
-
-          String observation = carnet_c_print.get(b).carnet_remarque;
-
-          bt.send( "Montant versement : "+carnet_c_print.get(b).carnet_versement + " DA" , true);
-          bt.send( "Observation :  "+observation , true);
-          bt.send( "" , true);
-        }
-
-        format[2] = ((byte)(0x0 | arrayOfByte1[2]));
-        bt.send(format, true);
-
-        bt.send("------------------------------------------------", true);
-
-
-
-
-/*
-                String walk ="";
-                Double current_solde = (Double.valueOf(final_bon1_prepared.solde_ancien) + Double.valueOf(final_bon1_prepared.montant_bon));
-                String solde_actuel = "SOLDE ACTUEL: "  +  nf.format(current_solde)+ " DA";
-                for(int a = 0; a < 48 - solde_actuel.length(); a++){
-                    walk = walk + " ";
-                }
-                bt.send(walk + solde_actuel, true);
-
-
-                walk ="";
-                String versement = "VERSEMENT : "  + nf.format(Double.valueOf(final_bon1_prepared.verser))+ " DA";
-                for(int a = 0; a < 48 - versement.length(); a++){
-                    walk = walk + " ";
-                }
-                bt.send(walk + versement, true);
-
-
-                walk ="";
-                String reste = "NOUVEAU SOLDE : "  +  nf.format(Double.valueOf(final_bon1_prepared.reste)) + " DA";
-                for(int a = 0; a < 48 - reste.length(); a++){
-                    walk = walk + " ";
-                }
-                bt.send(walk + reste, true);
-
-                bt.send("\n", true);
-                */
-
-      } catch (Exception e) {
-        e.printStackTrace();
-        Result = e.toString();
-        handler_Bluetooth.sendMessage(handler_Bluetooth.obtainMessage(PRINTERR, 1, 0, null));
-
-      } finally {
-        handler_Bluetooth.sendMessage(handler_Bluetooth.obtainMessage(CANCELPROMPT, 1, 0, null));
-      }
     }
   }
 
   @Override
   protected void onDestroy() {
-    // Unregister
-    bus.unregister(this);
-    if (progressDialog != null && !ActivityClientDetail.this.isFinishing()) {
-      progressDialog.dismiss();
-      progressDialog = null;
-    }
-
-    unregisterReceiver(printReceive);
-
-//    try {
-//            ThermalPrinter.stop();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-    if(bt != null)
-      bt.stopService();
 
     bus.unregister(this);
     stopService(intent_location);
@@ -860,295 +625,4 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     super.onDestroy();
   }
 
-  ////////////////////////////////////////// START INTEGRETED PRINTER //////////////////////////////////
-
-
-  private class MyHandler_Integrate extends Handler {
-    @Override
-    public void handleMessage(Message msg) {
-      switch (msg.what) {
-        case NOPAPER:
-          noPaperDlg();
-          break;
-        case LOWBATTERY:
-          AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityClientDetail.this);
-          alertDialog.setTitle(R.string.operation_result);
-          alertDialog.setMessage(getString(R.string.LowBattery));
-          alertDialog.setPositiveButton(getString(R.string.dialog_comfirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-          });
-          alertDialog.show();
-          break;
-        case PRINTVERSION:
-          dialog.dismiss();
-          if (msg.obj.equals("1")) {
-            // textPrintVersion.setText(printVersion);
-          } else {
-            Toast.makeText(ActivityClientDetail.this, "Operation failed", Toast.LENGTH_LONG).show();
-          }
-          break;
-        case PRINTCONTENT:
-          new contentPrintThread_Integrate().start();
-          break;
-        case PRINTPICTURE:
-          //   new printPicture().start();
-          break;
-        case CANCELPROMPT:
-          if (progressDialog != null && !ActivityClientDetail.this.isFinishing()) {
-            progressDialog.dismiss();
-            progressDialog = null;
-          }
-          break;
-        case OVERHEAT:
-          AlertDialog.Builder overHeatDialog = new AlertDialog.Builder(ActivityClientDetail.this);
-          overHeatDialog.setTitle(R.string.operation_result);
-          overHeatDialog.setMessage(getString(R.string.overTemp));
-          overHeatDialog.setPositiveButton(getString(R.string.dialog_comfirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-          });
-          overHeatDialog.show();
-          break;
-        default:
-          Toast.makeText(ActivityClientDetail.this, "Print Error!", Toast.LENGTH_LONG).show();
-          break;
-      }
-    }
-  }
-
-
-  private final BroadcastReceiver printReceive = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      String action = intent.getAction();
-      if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
-        int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING);
-        int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-        int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 0);
-
-        //TPS390 can not print,while in low battery,whether is charging or not charging
-        LowBattery = false;
-//        if(SystemUtil.getDeviceType() == StringUtil.DeviceModelEnum.TPS390.ordinal()){
-//          if (level * 5 <= scale) {
-//            LowBattery = true;
-//          } else {
-//            LowBattery = false;
-//          }
-//        }else {
-          if (status != BatteryManager.BATTERY_STATUS_CHARGING) {
-            if (level * 5 <= scale) {
-              LowBattery = true;
-            } else {
-              LowBattery = false;
-            }
-          } else {
-            LowBattery = false;
-          }
-        //}
-      }
-      //Only use for TPS550MTK devices
-      else if (action.equals("android.intent.action.BATTERY_CAPACITY_EVENT")) {
-        int status = intent.getIntExtra("action", 0);
-        int level = intent.getIntExtra("level", 0);
-        if(status == 0){
-          if(level < 1){
-            LowBattery = true;
-          }else {
-            LowBattery = false;
-          }
-        }else {
-          LowBattery = false;
-        }
-      }
-    }
-  };
-
-  @Override
-  public boolean onKeyDown(int keyCode, KeyEvent event) {
-    if (keyCode == KeyEvent.KEYCODE_BACK) {
-      finish();
-    }
-    return super.onKeyDown(keyCode, event);
-  }
-
-  private void noPaperDlg() {
-    AlertDialog.Builder dlg = new AlertDialog.Builder(ActivityClientDetail.this);
-    dlg.setTitle(getString(R.string.noPaper));
-    dlg.setMessage(getString(R.string.noPaperNotice));
-    dlg.setCancelable(false);
-    dlg.setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialogInterface, int i) {
-        ThermalPrinter.stop(ActivityClientDetail.this);
-      }
-    });
-    dlg.show();
-  }
-
-
-  //Class thread printing
-  private class contentPrintThread_Integrate extends Thread {
-    @Override
-    public void run() {
-      super.run();
-
-      try {
-        ThermalPrinter.start(ActivityClientDetail.this);
-        ThermalPrinter.reset();
-        ThermalPrinter.setAlgin(ThermalPrinter.ALGIN_LEFT);
-        /////////////////////////////
-        ThermalPrinter.reset();
-        ThermalPrinter.setLeftIndent(0);
-        ThermalPrinter.setLineSpace(28);
-        ThermalPrinter.setFontSize(2);
-        ThermalPrinter.setGray(12);
-
-        SharedPreferences prefs = getSharedPreferences(PREFS_PRINTER, MODE_PRIVATE);
-        if(prefs.getBoolean("ENTETE_SHOW", false)){
-
-          ThermalPrinter.addString(prefs.getString("COMPANY_NAME", "") + "\n");
-          ThermalPrinter.addString(prefs.getString("ACTIVITY_NAME", "") + "\n");
-          ThermalPrinter.addString(prefs.getString("ADRESSE", "") + "\n");
-          ThermalPrinter.addString("--------------------------------");
-          ThermalPrinter.printString();
-        }
-
-        ThermalPrinter.reset();
-        ThermalPrinter.setLeftIndent(0);
-        ThermalPrinter.setLineSpace(28);
-        ThermalPrinter.setFontSize(2);
-        ThermalPrinter.enlargeFontSize(2, 2);
-        ThermalPrinter.setGray(12);
-        ////////////////////////////////
-        //  ThermalPrinter.setBold(true);
-        ThermalPrinter.addString(" BON DE VERSEMENT\n");
-        ThermalPrinter.addString("----------------");
-        ThermalPrinter.printString();
-        /////////////////////////////
-        ThermalPrinter.reset();
-        ThermalPrinter.setLeftIndent(0);
-        ThermalPrinter.setLineSpace(28);
-        ThermalPrinter.setFontSize(2);
-        ThermalPrinter.setGray(12);
-        ////////////////////////////////
-        ThermalPrinter.addString("CLIENT : " + client.client);
-        ThermalPrinter.printString();
-        ThermalPrinter.addString("CODE CLIENT : " + client.code_client);
-        ThermalPrinter.printString();
-        ThermalPrinter.addString("          ************");
-        ThermalPrinter.printString();
-        ThermalPrinter.addString("DATE HEURE : " + carnet_cs.get(0).carnet_date + " " + carnet_cs.get(0).carnet_heure);
-        ThermalPrinter.printString();
-        ThermalPrinter.addString("--------------------------------");
-        ThermalPrinter.printString();
-        ///////////////////////
-        ThermalPrinter.reset();
-        ThermalPrinter.setLeftIndent(0);
-        ThermalPrinter.setLineSpace(28);
-        ThermalPrinter.setFontSize(1);
-        ThermalPrinter.enlargeFontSize(1, 2);
-        ThermalPrinter.setGray(12);
-        ///////////////////////////
-
-
-        for(int b= 0; b<carnet_cs.size(); b++){
-
-          ThermalPrinter.addString(carnet_cs.get(b).carnet_versement);
-          ThermalPrinter.printString();
-
-          String observation = carnet_cs.get(b).carnet_remarque;
-
-          ThermalPrinter.addString("Montant versement : "+carnet_cs.get(b).carnet_versement + " DA");
-          ThermalPrinter.printString();
-          ThermalPrinter.addString("Observation : "+carnet_cs.get(b).carnet_remarque);
-          ThermalPrinter.printString();
-        }
-
-        ThermalPrinter.addString("------------------------------------------------");
-        ThermalPrinter.printString();
-        /////////////////////////////
-        ThermalPrinter.reset();
-        ThermalPrinter.setLeftIndent(0);
-        ThermalPrinter.setLineSpace(28);
-        ThermalPrinter.setFontSize(2);
-        ThermalPrinter.setGray(12);
-        /////////////////////////////////////////////
-
-
-
-
-                /*
-
-
-                walk ="";
-                String Actuelsolde = "SOLDE ACTUEL: "  +  nf.format(Double.valueOf(final_bon1_prepared.solde_ancien) + Double.valueOf(final_bon1_prepared.montant_bon)) + " DA";
-                for(int a = 0; a < 32 - Actuelsolde.length(); a++){
-                    walk = walk + " ";
-                }
-                ThermalPrinter.addString(walk + Actuelsolde);
-                ThermalPrinter.printString();
-
-
-                walk ="";
-                String versement = "VERSEMENT : "  + nf.format(Double.valueOf(final_bon1_prepared.verser))+ " DA";
-                for(int a = 0; a < 32 - versement.length(); a++){
-                    walk = walk + " ";
-                }
-                ThermalPrinter.addString(walk + versement);
-                ThermalPrinter.printString();
-
-                walk ="";
-                String reste = "NOUVEAU SOLDE : "  +  nf.format(Double.valueOf(final_bon1_prepared.reste)) + " DA";
-                for(int a = 0; a < 32 - reste.length(); a++){
-                    walk = walk + " ";
-                }
-                ThermalPrinter.addString(walk + reste);
-                ThermalPrinter.printString();
-*/
-
-        ThermalPrinter.walkPaper(100);
-
-      } catch (TelpoException e) {
-        e.printStackTrace();
-        Result = e.toString();
-        if (Result.equals("com.telpo.tps550.api.printer.NoPaperException")) {
-          nopaper = true;
-        } else if (Result.equals("com.telpo.tps550.api.printer.OverHeatException")) {
-          handler_Integrate.sendMessage(handler_Integrate.obtainMessage(OVERHEAT, 1, 0, null));
-        } else {
-          handler_Integrate.sendMessage(handler_Integrate.obtainMessage(PRINTERR, 1, 0, null));
-        }
-      } finally {
-        handler_Integrate.sendMessage(handler_Integrate.obtainMessage(CANCELPROMPT, 1, 0, null));
-        if (nopaper){
-          handler_Integrate.sendMessage(handler_Integrate.obtainMessage(NOPAPER, 1, 0, null));
-          nopaper = false;
-          return;
-        }
-        ThermalPrinter.stop(ActivityClientDetail.this);
-      }
-    }
-  }
-
-  ////////////////////////////////////////// FIN INTEGRETED PRINTER //////////////////////////////////
-
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if(requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-      if(resultCode == Activity.RESULT_OK){
-        bt.connect(data);
-        progressDialog_wait_connecte = ProgressDialog.show(ActivityClientDetail.this, getString(R.string.bl_dy1), getString(R.string.printing_wait1));
-      }
-    } else if(requestCode == BluetoothState.REQUEST_ENABLE_BT) {
-      if(resultCode == Activity.RESULT_OK) {
-        bt.setupService();
-        bt.startService(BluetoothState.DEVICE_ANDROID);
-      } else {
-        Toast.makeText(getApplicationContext(), "Bluetooth was not enabled.", Toast.LENGTH_SHORT).show();
-        finish();
-      }
-    }
-  }
 }

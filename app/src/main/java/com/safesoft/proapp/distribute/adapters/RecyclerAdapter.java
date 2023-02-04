@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
-import com.safesoft.proapp.distribute.util.ColorGeneratorModified;
+import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -36,6 +36,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     TextView ClientN;
     CardView cardView;
     ImageView image;
+    ImageView img_pos_client;
     TextView Tel_clientN;
     TextView Sld_clientN;
 
@@ -47,6 +48,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
       Tel_clientN = (TextView) view.findViewById(R.id.tel_client);
       Sld_clientN = (TextView) view.findViewById(R.id.sld_client);
       image = (ImageView) view.findViewById(R.id.imageId);
+      img_pos_client = (ImageView) view.findViewById(R.id.img_pos_client);
     }
   }
 
@@ -62,8 +64,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
   @Override
   public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
   {
-    View v = LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.item_listfournis, parent, false);
+    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_listfournis, parent, false);
     itemClick =(ItemClick) parent.getContext();
 
 
@@ -79,10 +80,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     holder.ClientN.setTypeface(null, Typeface.BOLD);
     holder.ClientN.setText(item.client);
 
-    holder.Tel_clientN.setText(item.tel);
+    holder.Tel_clientN.setText("TEL : "+ item.tel);
 
     holder.Sld_clientN.setTypeface(null, Typeface.BOLD);
-    holder.Sld_clientN.setText("Solde :"+item.solde_montant);
+    holder.Sld_clientN.setText("Solde : "+item.solde_montant);
 
     if(item.solde_montant == null)
     {
@@ -94,6 +95,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     }
 
+    if(item.latitude == 0.0){
+       holder.img_pos_client.setImageResource(R.drawable.ic_baseline_wrong_location_24);
+    }else {
+      holder.img_pos_client.setImageResource(R.drawable.ic_baseline_location_on_24);
+    }
     holder.cardView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {

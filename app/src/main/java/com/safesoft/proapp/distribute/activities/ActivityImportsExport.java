@@ -16,6 +16,7 @@ import android.os.IBinder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,9 +25,8 @@ import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.eventsClasses.SelectedBonTransfertEvent;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.dropBox.ActivityDropBoxSend;
-import com.safesoft.proapp.distribute.dropBox.ActivityDropBoxSend_Commande;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedBonTransfert;
+import com.safesoft.proapp.distribute.ftp.Ftp_export;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
@@ -49,13 +49,18 @@ import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class ActivityImportsExport extends AppCompatActivity {
@@ -65,25 +70,21 @@ public class ActivityImportsExport extends AppCompatActivity {
     private String Server;
     private String Username;
     private String Password;
-    private String MY_PREFS_NAME = "ConfigNetwork";
-    private String MY_PREF_NAME = "T";
-
-    private String PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
-    private String PARAMS_PREFS_IMPORT_EXPORT = "IMPORT_EXPORT";
+    private final String PREFS = "ALL_PREFS";
     private String Path;
     private DATABASE controller;
     private ProgressDialog mProgressDialog;
     private ProgressDialog mProgressDialog_Free;
     private RelativeLayout Import_bon, Import_client, Import_produit, Export_vente, Export_commande, Export_inventaire, EtatV, BonExported;
     private String code_depot, code_vendeur;
-    Date currentTime;
     String currentDateTimeString = null;
     private Context mContext;
     SharedPreferences.Editor editor;
 
-    SharedPreferences p;
+    SharedPreferences prefs;
     private MediaPlayer mp;
     private EventBus bus = EventBus.getDefault();
+    private NumberFormat nf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,16 +94,24 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Import/Export");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.black)));
+
         initViews();
 
 
         // Register as a subscriber
         bus.register(this);
-        p = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-        code_depot = p.getString("CODE_DEPOT", "000000");
-        code_vendeur = p.getString("CODE_VENDEUR", "000000");
+
+
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        Server = prefs.getString("ip", "192.168.1.94");
+        Path = prefs.getString("path", "C:/PMEPRO1122");
+        Username = prefs.getString("username", "SYSDBA");
+        Password = prefs.getString("password", "masterkey");
+
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        code_depot = prefs.getString("CODE_DEPOT", "000000");
+        code_vendeur = prefs.getString("CODE_VENDEUR", "000000");
 
 
     }
@@ -113,95 +122,71 @@ public class ActivityImportsExport extends AppCompatActivity {
         Intent intent = new Intent(this, ServiceDistribute.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-
     }
 
     protected void initViews() {
-        Import_bon = (RelativeLayout) findViewById(R.id.rlt_import_bon);
-        Import_client = (RelativeLayout) findViewById(R.id.rlt_import_client);
-        Export_vente = (RelativeLayout) findViewById(R.id.rlt_export_ventes);
-        Export_commande = (RelativeLayout) findViewById(R.id.rlt_export_commandes);
-        Export_inventaire = (RelativeLayout) findViewById(R.id.rlt_export_inventaires);
-        BonExported = (RelativeLayout) findViewById(R.id.rlt_exported_ventes);
-        EtatV = (RelativeLayout) findViewById(R.id.rlt_etatv);
+        //Import_bon = (RelativeLayout) findViewById(R.id.rlt_import_bon);
+        //Import_client = (RelativeLayout) findViewById(R.id.rlt_import_client);
+        //Export_vente = (RelativeLayout) findViewById(R.id.rlt_export_ventes);
+        //Export_commande = (RelativeLayout) findViewById(R.id.rlt_export_commandes);
+        //Export_inventaire = (RelativeLayout) findViewById(R.id.rlt_export_inventaires);
+        //BonExported = (RelativeLayout) findViewById(R.id.rlt_exported_ventes);
+        //EtatV = (RelativeLayout) findViewById(R.id.rlt_etatv);
         mContext = this;
     }
 
-    public void onRelativeClick(View v) throws ExecutionException, InterruptedException {
-        SharedPreferences prefs3 = getSharedPreferences(PARAMS_PREFS_IMPORT_EXPORT, MODE_PRIVATE);
+    public void onRelativeClick(View v) throws ExecutionException, InterruptedException, ParseException {
+        SharedPreferences prefs3 = getSharedPreferences(PREFS, MODE_PRIVATE);
         switch (v.getId()) {
             case R.id.rlt_import_bon:
                 // 1 check connection
                 // 2 get all transfer bon for this deport
                 // 3 propose those not exist in local database
 
-
                 Check_connection_bon_server_task check_connection = new Check_connection_bon_server_task();
                 check_connection.execute();
 
-                //    Toast.makeText(getApplicationContext(),"Mode automatic",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rlt_import_bon_retour:
-                // 1 check connection
-                // 2 get all transfer bon for this deport
-                // 3 propose those not exist in local database
-
-                // if(prefs3.getBoolean("IMPORT_ONLINE", false)){
-                //    Intent dropbox_intent = new Intent(ActivityImportsExport.this, ActivityDropBoxRead_Transfert.class);
-                //   startActivity(dropbox_intent);
-                // }else
-                // {
                 Check_connection_bon_retour_server_task checkk_connection = new Check_connection_bon_retour_server_task();
                 checkk_connection.execute();
-                // }
-                //    Toast.makeText(getApplicationContext(),"Mode automatic",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rlt_import_client:
-                // 1 check connection
-                // 2 synchronisation la list des client
-                // 3 propose those not exist in local database
-
                 Check_connection_client_server_for_sychronisation_client checkkk_connection = new Check_connection_client_server_for_sychronisation_client();
                 checkkk_connection.execute();
-
                 break;
-
             case R.id.rlt_import_produit:
-                // 1 check connection
-                // 2 synchronisation la list des client
-                // 3 propose those not exist in local database
 
                 Check_connection_produit_server_for_sychronisation_produit check_connection_produit = new Check_connection_produit_server_for_sychronisation_produit();
                 check_connection_produit.execute();
 
-                //  Toast.makeText(getApplicationContext(),"Veuillez importer les bons de transferts",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rlt_import_parametre:
+                Check_connection_parametres_server_for_sychronisation_parametres check_connection_parametres = new Check_connection_parametres_server_for_sychronisation_parametres();
+                check_connection_parametres.execute();
                 break;
             case R.id.rlt_export_ventes:
 
 
-                if (prefs3.getBoolean("EXPORT_ONLINE", false)) {
-                    Intent dropbox_intent = new Intent(ActivityImportsExport.this, ActivityDropBoxSend.class);
-                    startActivity(dropbox_intent);
-                } else {
-                    Check_connection_export_server check_connection_export_data = new Check_connection_export_server("VENTE");
-                    check_connection_export_data.execute();
+                Check_connection_export_server check_connection_export_data_vente = new Check_connection_export_server("VENTE");
+                check_connection_export_data_vente.execute();
 
-                }
+                break;
+            case R.id.rlt_export_ventes_ftp:
+
+                Activity bactivity;
+                bactivity = ActivityImportsExport.this;
+
+                Ftp_export export_ftp = new Ftp_export();
+                export_ftp.start(bactivity);
 
                 break;
             case R.id.rlt_export_commandes:
 
-
-                if (prefs3.getBoolean("EXPORT_ONLINE", false)) {
-                    Intent dropbox_intent = new Intent(ActivityImportsExport.this, ActivityDropBoxSend_Commande.class);
-                    startActivity(dropbox_intent);
-                } else {
-                    Check_connection_export_server check_connection_export_data = new Check_connection_export_server("COMMANDE");
-                    check_connection_export_data.execute();
-                }
+                Check_connection_export_server check_connection_export_data_commande = new Check_connection_export_server("COMMANDE");
+                check_connection_export_data_commande.execute();
 
                 break;
-
 
             case R.id.rlt_export_inventaires:
                 if (prefs3.getBoolean("EXPORT_ONLINE", false)) {
@@ -209,15 +194,24 @@ public class ActivityImportsExport extends AppCompatActivity {
                     //  startActivity(dropbox_intent);
                     Toast.makeText(ActivityImportsExport.this, " Cette option est en cours de developpement, \n vous pouvez desactiver l'option (Exportation en ligne) dans les paramètres,\n  pour pouvoir exporter les inventaires localement !", Toast.LENGTH_LONG).show();
                 } else {
-                    Check_connection_export_server check_connection_export_data = new Check_connection_export_server("INVENTAIRE");
-                    check_connection_export_data.execute();
+                    Check_connection_export_server check_connection_export_data_inventaire = new Check_connection_export_server("INVENTAIRE");
+                    check_connection_export_data_inventaire.execute();
                 }
 
                 break;
             case R.id.rlt_exported_ventes:
 
                 Intent exported_ventes_intent = new Intent(ActivityImportsExport.this, ActivityExportedVentes.class);
+                exported_ventes_intent.putExtra("SOURCE", "SALE");
                 startActivity(exported_ventes_intent);
+
+                break;
+
+            case R.id.rlt_exported_commandes:
+
+                Intent exported_commandes_intent = new Intent(ActivityImportsExport.this, ActivityExportedVentes.class);
+                exported_commandes_intent.putExtra("SOURCE", "ORDER");
+                startActivity(exported_commandes_intent);
 
                 break;
             case R.id.rlt_etatv:
@@ -237,14 +231,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
 
 
-        public Check_connection_bon_server_task() {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-        }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -262,7 +248,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
                 flag = 1;
 
@@ -307,14 +293,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
 
 
-        public Check_connection_bon_retour_server_task() {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-        }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -332,7 +310,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
                 flag = 1;
 
@@ -376,16 +354,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
         ArrayList<String> transfer1s;
 
-        public Import_BonTransfert2_retour_server_task() {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-            prefs = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-            code_depot = prefs.getString("CODE_DEPOT", "000000");
-        }
 
         @Override
         protected void onPreExecute() {
@@ -404,81 +372,34 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
 
                 //============================ GET Trasfer1 ===========================================
-                //  String sql1 = "SELECT  TRANSFERT1.NUM_BON, TRANSFERT1.DATE_BON, TRANSFERT1.CODE_DEPOT_SOURCE, DEPOT1.NOM_DEPOT, coalesce(TRANSFERT1.NBR_P,0) AS NBR_P FROM TRANSFERT1 LEFT JOIN DEPOT1 ON (TRANSFERT1.CODE_DEPOT_SOURCE = DEPOT1.NOM_DEPOT_DEST) WHERE CODE_DEPOT_DEST = '" + code_depot + "' UNION ALL SELECT  TRANSFERT1.NUM_BON, TRANSFERT1.DATE_BON, TRANSFERT1.CODE_DEPOT_DEST, DEPOT1.NOM_DEPOT, coalesce(TRANSFERT1.NBR_P,0) AS NBR_P FROM TRANSFERT1 LEFT JOIN DEPOT1 ON (TRANSFERT1.CODE_DEPOT_DEST = DEPOT1.NOM_DEPOT) WHERE CODE_DEPOT_DEST = '" + code_depot + "'";
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df_show = new SimpleDateFormat("MM/dd/yyyy");
-
-                c.add(Calendar.DAY_OF_YEAR, 0);
-                String week_before = df_show.format(c.getTime());
-
 
                 //Date midnightDate = new Date(midnight);
-                SharedPreferences pref = getSharedPreferences(MY_PREF_NAME, 0);
-                String test = pref.getString("time", null);
-                String sql1;
-                if (test != null) {
-                    currentDateTimeString = pref.getString("time", null);
-                    sql1 = "select \n" +
-                            "    transfert1.num_bon,\n" +
-                            "    transfert1.date_bon,\n" +
-                            "    transfert1.heure,\n" +
-                            "    transfert1.code_depot_source,\n" +
-                            "    dep_source.nom_depot as nom_depot_source,\n" +
-                            "    transfert1.code_depot_dest,\n" +
-                            "    dep_dest.nom_depot as nom_depot_dest,\n" +
-                            "   coalesce(TRANSFERT1.NBR_P,0) AS NBR_P\n" +
-                            "\n" +
-                            "from transfert1\n" +
-                            "left join depot1 as dep_source on ( dep_source.code_depot = transfert1.code_depot_source)\n" +
-                            "left join depot1 as dep_dest on ( dep_dest.code_depot = transfert1.code_depot_dest)\n" +
-                            "WHERE ( CODE_DEPOT_SOURCE = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( transfert1.date_bon >= '" + week_before + "' ) AND ( transfert1.heure >= '" + currentDateTimeString + "' ) ";
+                SharedPreferences pref = getSharedPreferences(PREFS, 0);
+                currentDateTimeString = pref.getString("date_time", null);
+                String sql1 = "select " +
+                            " transfert1.num_bon" +
+                            " from transfert1 " +
+                            " WHERE ( CODE_DEPOT_SOURCE = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( CAST( transfert1.date_bon || ' ' || transfert1.heure AS timestamp) > '" + currentDateTimeString + "' ) ";
 
-                } else {
-                    sql1 = "select \n" +
-                            "    transfert1.num_bon,\n" +
-                            "    transfert1.date_bon,\n" +
-                            "    transfert1.heure,\n" +
-                            "    transfert1.code_depot_source,\n" +
-                            "    dep_source.nom_depot as nom_depot_source,\n" +
-                            "    transfert1.code_depot_dest,\n" +
-                            "    dep_dest.nom_depot as nom_depot_dest,\n" +
-                            "   coalesce(TRANSFERT1.NBR_P,0) AS NBR_P\n" +
-                            "\n" +
-                            "from transfert1\n" +
-                            "left join depot1 as dep_source on ( dep_source.code_depot = transfert1.code_depot_source)\n" +
-                            "left join depot1 as dep_dest on ( dep_dest.code_depot = transfert1.code_depot_dest)\n" +
-                            "WHERE ( CODE_DEPOT_SOURCE = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( transfert1.date_bon >= '" + week_before + "' ) ";
-
-                }
-
-
-                //  "WHERE ( CODE_DEPOT_DEST = '" + code_depot + "' OR CODE_DEPOT_SOURCE = '"+ code_depot + "' ) AND BLOCAGE = 'F' ";
 
                 ResultSet rs1 = stmt.executeQuery(sql1);
-                PostData_Transfer1 transfer1;
+
                 DecimalFormat df = new DecimalFormat("#.##");
 
                 df.setRoundingMode(RoundingMode.HALF_UP);
 
                 while (rs1.next()) {
 
-                    transfer1 = new PostData_Transfer1();
-                    transfer1.num_bon = rs1.getString("NUM_BON");
-                    transfer1.date_bon = rs1.getString("DATE_BON");
-                    transfer1.code_depot_s = rs1.getString("CODE_DEPOT_SOURCE");
-                    transfer1.nom_depot_s = rs1.getString("NOM_DEPOT_SOURCE");
-                    transfer1.code_depot_d = rs1.getString("CODE_DEPOT_DEST");
-                    transfer1.nom_depot_d = rs1.getString("NOM_DEPOT_DEST");
-                    transfer1.nbr_p = rs1.getString("NBR_P");
+                   String num_bon = rs1.getString("NUM_BON");
 
-                    if (!controller.check_transfer1_if_exist(transfer1.num_bon))
-                        transfer1s.add(transfer1.num_bon);
+                    if (!controller.check_transfer1_if_exist(num_bon))
+                        transfer1s.add(num_bon);
 
                 }
 
@@ -508,7 +429,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     //show dialog
                     mProgressDialog_Free.dismiss();
                     //propose list
-                    showListBons(transfer1s);
+                    showListBons(transfer1s, "Bons de retour");
 
                 }
 
@@ -531,16 +452,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
         ArrayList<String> transfer1s;
 
-        public Import_BonTransfert2_server_task() {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-            prefs = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-            code_depot = prefs.getString("CODE_DEPOT", "000000");
-        }
 
         @Override
         protected void onPreExecute() {
@@ -559,82 +470,32 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
 
                 //============================ GET Trasfer1 ===========================================
-                //  String sql1 = "SELECT  TRANSFERT1.NUM_BON, TRANSFERT1.DATE_BON, TRANSFERT1.CODE_DEPOT_SOURCE, DEPOT1.NOM_DEPOT, coalesce(TRANSFERT1.NBR_P,0) AS NBR_P FROM TRANSFERT1 LEFT JOIN DEPOT1 ON (TRANSFERT1.CODE_DEPOT_SOURCE = DEPOT1.NOM_DEPOT_DEST) WHERE CODE_DEPOT_DEST = '" + code_depot + "' UNION ALL SELECT  TRANSFERT1.NUM_BON, TRANSFERT1.DATE_BON, TRANSFERT1.CODE_DEPOT_DEST, DEPOT1.NOM_DEPOT, coalesce(TRANSFERT1.NBR_P,0) AS NBR_P FROM TRANSFERT1 LEFT JOIN DEPOT1 ON (TRANSFERT1.CODE_DEPOT_DEST = DEPOT1.NOM_DEPOT) WHERE CODE_DEPOT_DEST = '" + code_depot + "'";
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df_show = new SimpleDateFormat("MM/dd/yyyy");
-
-                c.add(Calendar.DAY_OF_YEAR, 0);
-                String week_before = df_show.format(c.getTime());
-
 
                 //Date midnightDate = new Date(midnight);
-                SharedPreferences pref = getSharedPreferences(MY_PREF_NAME, 0);
-                String test = pref.getString("time", null);
-                String sql1;
-                if (test != null) {
-                    currentDateTimeString = pref.getString("time", null);
-                    sql1 = "select \n" +
-                            "    transfert1.num_bon,\n" +
-                            "    transfert1.date_bon,\n" +
-                            "    transfert1.heure,\n" +
-                            "    transfert1.code_depot_source,\n" +
-                            "    dep_source.nom_depot as nom_depot_source,\n" +
-                            "    transfert1.code_depot_dest,\n" +
-                            "    dep_dest.nom_depot as nom_depot_dest,\n" +
-                            "   coalesce(TRANSFERT1.NBR_P,0) AS NBR_P\n" +
-                            "\n" +
-                            "from transfert1\n" +
-                            "left join depot1 as dep_source on ( dep_source.code_depot = transfert1.code_depot_source)\n" +
-                            "left join depot1 as dep_dest on ( dep_dest.code_depot = transfert1.code_depot_dest)\n" +
-                            "WHERE ( CODE_DEPOT_DEST = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( transfert1.date_bon >= '" + week_before + "' );";
+                SharedPreferences pref = getSharedPreferences(PREFS, 0);
+                currentDateTimeString = pref.getString("date_time", null);
+                String sql1 = "select " +
+                            " transfert1.num_bon " +
+                            " from transfert1 " +
+                            " WHERE ( CODE_DEPOT_DEST = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( CAST( transfert1.date_bon || ' ' || transfert1.heure AS timestamp) > '" + currentDateTimeString + "' )";
 
-                } else {
-                    sql1 = "select \n" +
-                            "    transfert1.num_bon,\n" +
-                            "    transfert1.date_bon,\n" +
-                            "    transfert1.heure,\n" +
-                            "    transfert1.code_depot_source,\n" +
-                            "    dep_source.nom_depot as nom_depot_source,\n" +
-                            "    transfert1.code_depot_dest,\n" +
-                            "    dep_dest.nom_depot as nom_depot_dest,\n" +
-                            "   coalesce(TRANSFERT1.NBR_P,0) AS NBR_P\n" +
-                            "\n" +
-                            "from transfert1\n" +
-                            "left join depot1 as dep_source on ( dep_source.code_depot = transfert1.code_depot_source)\n" +
-                            "left join depot1 as dep_dest on ( dep_dest.code_depot = transfert1.code_depot_dest)\n" +
-                            "WHERE ( CODE_DEPOT_DEST = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( transfert1.date_bon >= '" + week_before + "' ) ";
-
-                }
-
-
-                //  "WHERE ( CODE_DEPOT_DEST = '" + code_depot + "' OR CODE_DEPOT_SOURCE = '"+ code_depot + "' ) AND BLOCAGE = 'F' ";
 
                 ResultSet rs1 = stmt.executeQuery(sql1);
-                PostData_Transfer1 transfer1;
                 DecimalFormat df = new DecimalFormat("#.##");
 
                 df.setRoundingMode(RoundingMode.HALF_UP);
 
                 while (rs1.next()) {
 
-                    transfer1 = new PostData_Transfer1();
-                    transfer1.num_bon = rs1.getString("NUM_BON");
-                    transfer1.date_bon = rs1.getString("DATE_BON");
-                    transfer1.code_depot_s = rs1.getString("CODE_DEPOT_SOURCE");
-                    transfer1.nom_depot_s = rs1.getString("NOM_DEPOT_SOURCE");
-                    transfer1.code_depot_d = rs1.getString("CODE_DEPOT_DEST");
-                    transfer1.nom_depot_d = rs1.getString("NOM_DEPOT_DEST");
-                    transfer1.nbr_p = rs1.getString("NBR_P");
-
-                    if (!controller.check_transfer1_if_exist(transfer1.num_bon))
-                        transfer1s.add(transfer1.num_bon);
-
+                    String num_bon = rs1.getString("NUM_BON");
+                    if (!controller.check_transfer1_if_exist(num_bon))
+                        transfer1s.add(num_bon);
                 }
 
                 flag = 1;
@@ -663,7 +524,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     //show dialog
                     mProgressDialog_Free.dismiss();
                     //propose list
-                    showListBons(transfer1s);
+                    showListBons(transfer1s, "Bons de transfers");
 
                 }
 
@@ -680,11 +541,12 @@ public class ActivityImportsExport extends AppCompatActivity {
     }
     //===========================================================================================
 
-    protected void showListBons(ArrayList<String> transfert1s) {
+    protected void showListBons(ArrayList<String> transfert1s, String title) {
         android.app.FragmentManager fm = getFragmentManager();
         DialogFragment dialog = new FragmentSelectedBonTransfert(); // creating new object
         Bundle args = new Bundle();
         args.putStringArrayList("LIST_SELECTED_TRANSFERT_BON", transfert1s);
+        args.putString("TITLE", title);
         dialog.setArguments(args);
         dialog.show(fm, "dialog");
 
@@ -750,6 +612,15 @@ public class ActivityImportsExport extends AppCompatActivity {
         mProgressDialog.show();
     }
 
+    public void progressDialogConfigParametres() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("Synchronisation paramètres...");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.show();
+    }
+
     public void progressDialogConfigProduit() {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Importation produits...");
@@ -780,14 +651,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         String num_bon;
 
         public Import_bonTransfer_from_server_task(String _num_bon) {
-
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
             num_bon = _num_bon;
-
         }
 
         @Override
@@ -801,40 +665,26 @@ public class ActivityImportsExport extends AppCompatActivity {
             try {
 
                 ArrayList<PostData_Transfer1> transfer1s = new ArrayList<>();
-                ArrayList<PostData_Client> clients = new ArrayList<>();
                 transfer2s = new ArrayList<>();
-                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
 
                 Intent intent;
 
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
 
-                //=====================================
-                String sql10 = "SELECT  TRANSFERT1.NUM_BON FROM TRANSFERT1";
-                ResultSet rs10 = stmt.executeQuery(sql10);
-                while (rs10.next()) {
-                    allrows++;
-                }
-
-                String sql11 = "SELECT  TRANSFERT2.NUM_BON FROM TRANSFERT2";
+                String sql11 = "SELECT  TRANSFERT2.NUM_BON FROM TRANSFERT2 WHERE NUM_BON =  '" + num_bon + "'";
                 ResultSet rs11 = stmt.executeQuery(sql11);
 
                 while (rs11.next()) {
                     allrows++;
                 }
-              /*  String sql12 = "SELECT  CLIENTS.CODE_CLIENT FROM CLIENTS";
-                ResultSet rs12 = stmt.executeQuery(sql12);
 
-                while (rs12.next()) {
-                    allrows ++;
-                }*/
-                First = true;
+               // First = true;
                 publishProgress(1);
 
                 //============================ GET Trasfer1 ===========================================
@@ -869,6 +719,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     transfer1.code_depot_d = rs1.getString("CODE_DEPOT_DEST");
                     transfer1.nom_depot_d = rs1.getString("NOM_DEPOT_DEST");
                     transfer1.nbr_p = rs1.getString("NBR_P");
+
                     transfer1s.add(transfer1);
 
                     compt++;
@@ -876,7 +727,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 }
 
                 //============================ GET Trasfer2 ===========================================
-                String sql2 = "SELECT  TRANSFERT2.NUM_BON, TRANSFERT2.CODE_BARRE, PRODUIT.PRODUIT AS PRODUIT, PRODUIT.NBRE_COLIS, PRODUIT.COLISSAGE, coalesce(TRANSFERT2.QTE,0) AS QTE FROM TRANSFERT2, PRODUIT WHERE (TRANSFERT2.CODE_BARRE = PRODUIT.CODE_BARRE) AND NUM_BON = '" + num_bon + "'";
+                String sql2 = "SELECT  TRANSFERT2.NUM_BON, TRANSFERT2.CODE_BARRE, PRODUIT.PRODUIT AS PRODUIT, TRANSFERT2.NBRE_COLIS, TRANSFERT2.COLISSAGE, coalesce(TRANSFERT2.QTE,0) AS QTE FROM TRANSFERT2, PRODUIT WHERE (TRANSFERT2.CODE_BARRE = PRODUIT.CODE_BARRE) AND NUM_BON = '" + num_bon + "'";
                 ResultSet rs2 = stmt.executeQuery(sql2);
 
 
@@ -887,9 +738,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                     transfer2.num_bon = rs2.getString("NUM_BON");
                     transfer2.code_barre = rs2.getString("CODE_BARRE");
                     transfer2.produit = rs2.getString("PRODUIT");
-                    transfer2.qte = rs2.getString("QTE");
+                    transfer2.qte = rs2.getDouble("QTE");
                     transfer2.nbr_colis = rs2.getDouble("NBRE_COLIS");
                     transfer2.colissage = rs2.getDouble("COLISSAGE");
+
                     transfer2s.add(transfer2);
 
                     compt++;
@@ -897,27 +749,26 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 }
 
-                First = false;
+                //First = false;
                 publishProgress(1);
                 compt = 0;
 
                 Boolean executed = controller.ExecuteTransactionTrasfer(transfer1s, transfer2s);
 
-                transfer2s.clear();
-                transfer2s = controller.select_transfer2_from_database("SELECT * FROM Transfer2 WHERE NUM_BON = '" + num_bon + "' GROUP BY CODE_BARRE ");
+               // transfer2s.clear();
+               // transfer2s = controller.select_transfer2_from_database("SELECT * FROM Transfer2 WHERE NUM_BON = '" + num_bon + "' GROUP BY CODE_BARRE ");
 
-                PostData_Produit produit_check_exist;
+                PostData_Produit produit;
 
                 for (int i = 0; i < transfer2s.size(); i++) {
-                    produit_check_exist = new PostData_Produit();
-                    produit_check_exist.exist = false;
-                    produit_check_exist = controller.check_product_if_exist(transfer2s.get(i).code_barre);
+                    produit = new PostData_Produit();
+                    produit = controller.check_product_if_exist(transfer2s.get(i).code_barre);
 
                     PostData_Produit produit_update = null;
 
-                    if (produit_check_exist.exist) {
+                    if (produit.exist) {
                         // UPDATE
-                        String sql3 = "SELECT  PRODUIT.PRODUIT , PRODUIT.COLISSAGE, coalesce(PRODUIT.PA_HT,0) AS PA_HT, coalesce(PRODUIT.TVA,0) AS TVA, cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT ,PRODUIT.PHOTO FROM PRODUIT WHERE PRODUIT.CODE_BARRE = '" + transfer2s.get(i).code_barre + "'";
+                        String sql3 = "SELECT  PRODUIT.PRODUIT , PRODUIT.COLISSAGE, coalesce(PRODUIT.PA_HT,0) AS PA_HT, coalesce(PRODUIT.TVA,0) AS TVA, cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT ,PRODUIT.PHOTO FROM PRODUIT WHERE PRODUIT.CODE_BARRE = '" + transfer2s.get(i).code_barre.replace("'", "''") + "'";
                         ResultSet rs3 = stmt.executeQuery(sql3);
 
                         while (rs3.next()) {
@@ -925,16 +776,17 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update = new PostData_Produit();
 
                             if (transfer1s.get(0).code_depot_s.equals(code_depot)) {
-                                produit_update.stock = String.valueOf(Double.valueOf(produit_check_exist.stock) - Double.valueOf(transfer2s.get(i).qte));
+                                produit_update.stock = produit.stock - transfer2s.get(i).qte;
                             } else {
-                                produit_update.stock = String.valueOf(Double.valueOf(transfer2s.get(i).qte) + Double.valueOf(produit_check_exist.stock));
+                                produit_update.stock = produit.stock + transfer2s.get(i).qte ;
                             }
+
                             produit_update.produit = rs3.getString("PRODUIT");
-                            produit_update.pa_ht = rs3.getString("PA_HT");
-                            produit_update.tva = rs3.getString("TVA");
-                            produit_update.pv1_ht = rs3.getString("PV1_HT");
-                            produit_update.pv2_ht = rs3.getString("PV2_HT");
-                            produit_update.pv3_ht = rs3.getString("PV3_HT");
+                            produit_update.pa_ht = rs3.getDouble("PA_HT");
+                            produit_update.tva = rs3.getDouble("TVA");
+                            produit_update.pv1_ht = rs3.getDouble("PV1_HT");
+                            produit_update.pv2_ht = rs3.getDouble("PV2_HT");
+                            produit_update.pv3_ht = rs3.getDouble("PV3_HT");
                             produit_update.colissage = rs3.getDouble("COLISSAGE");
                             produit_update.photo = rs3.getBytes("PHOTO");
 
@@ -943,7 +795,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                         //Get all syn codebarre of this product  and  Insert it into codebarre tables
-                        String sql4 = "SELECT CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE WHERE CODEBARRE.CODE_BARRE = '" + transfer2s.get(i).code_barre + "' ";
+                        String sql4 = "SELECT CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE WHERE CODEBARRE.CODE_BARRE = '" + transfer2s.get(i).code_barre.replace("'", "''") + "' ";
                         ResultSet rs4 = stmt.executeQuery(sql4);
 
                         controller.Delete_Codebarre(transfer2s.get(i).code_barre);
@@ -954,13 +806,12 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                             post_codebarre.code_barre = rs4.getString("CODE_BARRE");
                             post_codebarre.code_barre_syn = rs4.getString("CODE_BARRE_SYN");
-
                             controller.Insert_into_codebarre(post_codebarre);
                         }
                     } else {
 
                         //Get product and  Insert it into produit tables
-                        String sql3 = "SELECT  PRODUIT.CODE_BARRE, PRODUIT.REF_PRODUIT,  PRODUIT.COLISSAGE,  PRODUIT.PRODUIT , coalesce(PRODUIT.PA_HT,0) AS PA_HT, coalesce(PRODUIT.TVA,0) AS TVA, cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT , PRODUIT.PHOTO FROM PRODUIT WHERE PRODUIT.CODE_BARRE = '" + transfer2s.get(i).code_barre + "' ";
+                        String sql3 = "SELECT  PRODUIT.CODE_BARRE, PRODUIT.REF_PRODUIT,  PRODUIT.COLISSAGE,  PRODUIT.PRODUIT , coalesce(PRODUIT.PA_HT,0) AS PA_HT, coalesce(PRODUIT.TVA,0) AS TVA, cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT , PRODUIT.PHOTO FROM PRODUIT WHERE PRODUIT.CODE_BARRE = '" + transfer2s.get(i).code_barre.replace("'", "''") + "' ";
                         ResultSet rs3 = stmt.executeQuery(sql3);
 
                         while (rs3.next()) {
@@ -970,21 +821,21 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.code_barre = rs3.getString("CODE_BARRE");
                             produit_update.ref_produit = rs3.getString("REF_PRODUIT");
                             produit_update.produit = rs3.getString("PRODUIT");
-                            produit_update.pa_ht = rs3.getString("PA_HT");
-                            produit_update.tva = rs3.getString("TVA");
-                            produit_update.pv1_ht = rs3.getString("PV1_HT");
-                            produit_update.pv2_ht = rs3.getString("PV2_HT");
-                            produit_update.pv3_ht = rs3.getString("PV3_HT");
+                            produit_update.pa_ht = rs3.getDouble("PA_HT");
+                            produit_update.tva = rs3.getDouble("TVA");
+                            produit_update.pv1_ht = rs3.getDouble("PV1_HT");
+                            produit_update.pv2_ht = rs3.getDouble("PV2_HT");
+                            produit_update.pv3_ht = rs3.getDouble("PV3_HT");
                             produit_update.colissage = rs3.getDouble("COLISSAGE");
                             produit_update.stock = transfer2s.get(i).qte;
-                            //produit_update.photo =  rs3.getBlob("PHOTO");
                             produit_update.photo = rs3.getBytes("PHOTO");
+
                         }
 
                         controller.Insert_into_produit(produit_update);
 
                         //Get all syn codebarre of this product  and  Insert it into codebarre tables
-                        String sql4 = "SELECT  CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE WHERE CODEBARRE.CODE_BARRE = '" + transfer2s.get(i).code_barre + "' ";
+                        String sql4 = "SELECT  CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE WHERE CODEBARRE.CODE_BARRE = '" + transfer2s.get(i).code_barre.replace("'", "''") + "' ";
                         ResultSet rs4 = stmt.executeQuery(sql4);
 
                         while (rs4.next()) {
@@ -1091,12 +942,6 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         public Check_connection_export_server(String typeBon) {
 
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
             this.typeBon = typeBon;
         }
 
@@ -1118,7 +963,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
                 flag = 1;
 
@@ -1143,17 +988,17 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onPostExecute(Integer integer) {
             if (integer == 1) {
                 // export data vente, commande to the server
-                if (typeBon.toString().equals("VENTE")) {
-                    if ((code_depot.toString().equals("000000")) && (code_vendeur.toString().equals("000000"))) {
+                if (typeBon.equals("VENTE")) {
+                   Exporter_ventes_to_server_task export_ventesx_to_server = new Exporter_ventes_to_server_task();
+                   export_ventesx_to_server.execute();
+
+                }else if (typeBon.equals("VENTE_FTP")) {
+
                         Exporter_ventes_to_server_task export_ventesx_to_server = new Exporter_ventes_to_server_task();
                         export_ventesx_to_server.execute();
-                    } else {
-                        Exporter_ventesx_to_server_task export_ventes_to_server = new Exporter_ventesx_to_server_task();
-                        export_ventes_to_server.execute();
 
-                    }
 
-                } else if (typeBon.toString().equals("COMMANDE")) {
+                }else if (typeBon.equals("COMMANDE")) {
                     Exporter_commandes_to_server_task export_commandes_to_server = new Exporter_commandes_to_server_task();
                     export_commandes_to_server.execute();
                 } else if (typeBon.toString().equals("INVENTAIRE")) {
@@ -1181,40 +1026,35 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
         String erreurMessage = "";
 
-        int total_bon = 0;
         int bon_inserted = 0;
-        int bon_exist = 0;
-
-        int total_client = 0;
         int total_versement = 0;
 
-        public Exporter_ventes_to_server_task() {
+        List<String> list_num_bon_not_exported;
+        List<String> list_recordid_versement_not_exported;
 
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            nf = NumberFormat.getInstance(Locale.US);
+            ((DecimalFormat) nf).applyPattern("###,##0.00");
             progressDialogExportation();
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
+
             try {
-                ArrayList<PostData_Bon1> bon1s = new ArrayList<>();
-                ArrayList<PostData_Bon2> bon2s = new ArrayList<>();
+                ArrayList<PostData_Bon1> bon1s;
+                ArrayList<PostData_Bon2> bon2s;
                 PostData_Client client;
+                list_num_bon_not_exported = new ArrayList<>();
+                list_recordid_versement_not_exported = new ArrayList<>();
 
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
@@ -1225,175 +1065,121 @@ public class ActivityImportsExport extends AppCompatActivity {
                 String querry = "SELECT " +
                         "Bon1.RECORDID, " +
                         "Bon1.NUM_BON, " +
-                        "Bon1.CODE_CLIENT, " +
-                        "Client.CLIENT, " +
-                        "Bon1.LATITUDE, " +
-                        "Bon1.LONGITUDE, " +
                         "Bon1.DATE_BON, " +
                         "Bon1.HEURE, " +
-                        "Bon1.NBR_P, " +
-                        "Bon1.MODE_TARIF, " +
-                        "Bon1.CODE_DEPOT, " +
-                        "Bon1.MONTANT_BON, " +
                         "Bon1.MODE_RG, " +
+                        "Bon1.MODE_TARIF, " +
+
+                        "Bon1.NBR_P, " +
+                        "Bon1.TOT_QTE, " +
+
+                        "Bon1.TOT_HT, " +
+                        "Bon1.TOT_TVA, " +
+                        "Bon1.TIMBRE, " +
+                        "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE AS TOT_TTC, " +
+                        "Bon1.REMISE, " +
+                        "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE AS MONTANT_BON, " +
+
+                        "Bon1.ANCIEN_SOLDE, " +
+                        "Bon1.VERSER, " +
+                        "Bon1.ANCIEN_SOLDE + (Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE) - Bon1.VERSER AS RESTE, " +
+
+                        "Bon1.CODE_CLIENT, " +
+                        "Client.CLIENT, " +
+                        "Client.ADRESSE, " +
+                        "Client.TEL, " +
+                        "Client.RC, " +
+                        "Client.IFISCAL, " +
+                        "Client.AI, " +
+                        "Client.NIS, " +
+
+                        "Client.LATITUDE as LATITUDE_CLIENT, " +
+                        "Client.LONGITUDE as LONGITUDE_CLIENT, " +
+
+                        "Client.SOLDE AS SOLDE_CLIENT, " +
+                        "Client.CREDIT_LIMIT, " +
+
+                        "Bon1.LATITUDE, " +
+                        "Bon1.LONGITUDE, " +
+
+                        "Bon1.CODE_DEPOT, " +
                         "Bon1.CODE_VENDEUR, " +
                         "Bon1.EXPORTATION, " +
-                        "Bon1.REMISE, " +
-                        "Bon1.TIMBRE, " +
-                        "Bon1.VERSER, " +
-                        "Bon1.RESTE, " +
-                        "Bon1.BLOCAGE, " +
-                        "Bon1.ANCIEN_SOLDE " +
+                        "Bon1.BLOCAGE " +
                         "FROM Bon1 " +
-                        "LEFT JOIN Client ON " +
-                        "Bon1.CODE_CLIENT = Client.CODE_CLIENT " +
+                        "LEFT JOIN Client ON Bon1.CODE_CLIENT = Client.CODE_CLIENT " +
                         "WHERE BLOCAGE = 'F' ORDER BY Bon1.NUM_BON";
 
-                bon1s.clear();
+
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat format2 = new SimpleDateFormat("MM/dd/yyyy");
+
                 bon1s = controller.select_vente_from_database(querry);
-                total_bon = bon1s.size();
-
-                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-
-                prefs = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-                code_depot = prefs.getString("CODE_DEPOT", "000000");
 
 
-                // Get CODE_VENDEUR , CODE_CAISSE
-                String CODE_VENDEUR = "NOT_EXIST";
-                String CODE_CAISSE = "NOT_EXIST";
+                // Get CODE_CAISSE
 
-                String requette_vendeur_caisse = "SELECT coalesce(CODE_VENDEUR, 'NOT_EXIST') AS CODE_VENDEUR, coalesce(CODE_CAISSE, 'NOT_EXIST') AS CODE_CAISSE FROM DEPOT1 WHERE CODE_DEPOT = '" + code_depot + "' ";
+                String CODE_CAISSE = "000000";
+
+                String requette_vendeur_caisse = "SELECT coalesce(CODE_VENDEUR, '000000') AS CODE_VENDEUR, coalesce(CODE_CAISSE, '000000') AS CODE_CAISSE FROM DEPOT1 WHERE CODE_DEPOT = '" + code_depot + "' ";
                 ResultSet rs111 = stmt.executeQuery(requette_vendeur_caisse);
                 while (rs111.next()) {
-                    CODE_VENDEUR = rs111.getString("CODE_VENDEUR");
                     CODE_CAISSE = rs111.getString("CODE_CAISSE");
                 }
 
                 for (int i = 0; i < bon1s.size(); i++) {
 
-                    /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
-                    Boolean client_exist = false;
-                    // check client if exist
-                    String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + bon1s.get(i).code_client + "'";
-                    ResultSet rs0 = stmt.executeQuery(client_requete);
-                    while (rs0.next()) {
-                        client_exist = true;
-                    }
+                    try {
 
-                    // insert client if not exist
-                    if (!client_exist) {
-                        client = new PostData_Client();
-
-                        // Select client from data base to insert it
-                        client = controller.select_client_from_database(bon1s.get(i).code_client);
-                        String insert_client;
-                        // insert client
-                        insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, RIB, ACHATS, VERSER, LATITUDE, LONGITUDE) VALUES ('"
-                                + bon1s.get(i).code_client + "' , iif('" + client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", " ") + "') , iif('" + client.adresse.replace("'", " ") + "' = null,'Adresse inconnu', '" + client.adresse.replace("'", " ") + "'),  iif('" + client.tel + "' = '',0,'" + client.tel + "') , iif('" + client.rc + "' = '',0,'" + client.rc + "') , iif('" + client.ifiscal + "' = '',0,'" + client.ifiscal + "') , iif('" + client.rib + "' = '',0,'" + client.rib + "'), '" + client.achat_montant + "', '" + client.verser_montant + "', '" + client.latitude + "', '" + client.longitude + "')";
-
-
-                        if (stmt.executeUpdate(insert_client) > 0) {
-
-                            //commit insert client
-                            con.commit();
-
-                            // check if bon1 exist
-                            Boolean check_bon1_exist = false;
-                            String check_bon1_requete = "SELECT NUM_BON FROM BON1 WHERE EXPORTATION = '" + bon1s.get(i).exportation + "'";
-                            ResultSet rs3 = stmt.executeQuery(check_bon1_requete);
-
-                            while (rs3.next()) {
-                                check_bon1_exist = true;
-                            }
-
-                            if (!check_bon1_exist) {
-                                String querry_select = "" +
-                                        "SELECT " +
-                                        "Bon2.RECORDID, " +
-                                        "Bon2.CODE_BARRE, " +
-                                        "Bon2.NUM_BON, " +
-                                        "Bon2.PRODUIT, " +
-                                        "Bon2.QTE, " +
-                                        "Bon2.PV_HT, " +
-                                        "Bon2.TVA, " +
-                                        "Bon2.CODE_DEPOT, " +
-                                        "Bon2.PA_HT, " +
-                                        "Produit.STOCK " +
-                                        "FROM Bon2 " +
-                                        "INNER JOIN " +
-                                        "Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
-                                        "WHERE Bon2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
-
-
-                                bon2s = controller.select_bon2_from_database(querry_select);
-                                String[] buffer = new String[bon2s.size() + 1];
-
-                                // Get RECORDID
-                                String generator_requet = "SELECT gen_id(gen_bon1_id,1) as RECORDID FROM rdb$database";
-                                ResultSet rs1 = stmt.executeQuery(generator_requet);
-                                while (rs1.next()) {
-                                    recordid_numbon = rs1.getInt("RECORDID");
-                                }
-
-                                String vvv;
-
-                                String NUM_BON = Get_Digits_String(String.valueOf(recordid_numbon), 6);
-                                vvv = "INSERT INTO BON1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, HT, TVA, TIMBRE, REMISE, VERSER, ANCIEN_SOLDE, MODE_RG, UTILISATEUR, MODE_TARIF, EXPORTATION, BLOCAGE, LATITUDE, LONGITUDE, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
-                                        + recordid_numbon + "' , '" + NUM_BON + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
-                                        "' , '" + bon1s.get(i).code_client + "' , '" + bon1s.get(i).tot_ht + "' ,'" + bon1s.get(i).tot_tva + "' , iif('" + bon1s.get(i).timbre + "' = 'null',0,'" + bon1s.get(i).timbre + "'), iif('" + bon1s.get(i).remise + "' = 'null',0,'" + bon1s.get(i).remise + "')," +
-                                        " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "', iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') , 'TERMINAl-MOBILE', iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "'), '" + bon1s.get(i).exportation + "', 'F' , " + bon1s.get(i).latitude + ", " + bon1s.get(i).longitude + ", iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'))";
-                                stmt.executeUpdate(vvv);
-
-
-                                for (int j = 0; j < bon2s.size(); j++) {
-                                    buffer[j] = "INSERT INTO BON2 (NUM_BON, CODE_BARRE, PRODUIT, QTE, PV_HT, TVA, PA_HT, PV_HT_AR) VALUES ('" + NUM_BON + "' , '" + bon2s.get(j).codebarre + "' , iif(\"" + bon2s.get(j).produit + "\" = null, 'Produit inconnu' , \"" + bon2s.get(j).produit + "\"), '" + bon2s.get(j).qte + "', '" + bon2s.get(j).p_u + "' , '" + bon2s.get(j).tva + "' , '" + bon2s.get(j).pa_ht + "', '" + bon2s.get(j).p_u + "')";
-                                    stmt.addBatch(buffer[j]);
-                                }
-
-
-                                String requete_situation = "INSERT INTO CARNET_C (CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
-                                        + bon1s.get(i).code_client + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
-                                        "' , '" + bon1s.get(i).montant_bon + "' , '" + bon1s.get(i).verser + "' ,'BL-VENTE' , '" + NUM_BON + "', '" + bon1s.get(i).mode_rg + "', 'TERMINAL_MOBILE', ' ', iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null ,'" + CODE_CAISSE + "'))";
-                                stmt.executeUpdate(requete_situation);
-
-
-                                stmt.executeBatch();
-                                stmt.clearBatch();
-
-                                if (!CODE_CAISSE.equals("NOT_EXIST")) {
-                                    if (Double.valueOf(bon1s.get(i).verser) != 0) {
-
-                                        String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
-                                                + CODE_CAISSE + "' , '" + CODE_CAISSE + "', cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).verser +
-                                                "' , '0', 'BL-VENTE' , '" + NUM_BON + "', 'ESPECE', ' ', 'TERMINAL_MOBILE')";
-                                        stmt.executeUpdate(requete_caisse);
-                                    }
-                                }
-
-                                stmt.executeBatch();
-                                con.commit();
-                                // update bon as exported
-                                controller.Update_ventes_commandes_as_exported(false, bon1s.get(i).num_bon);
-                                bon2s.clear();
-                                stmt.clearBatch();
-                                bon_inserted++;
-
-
-                            } else {
-                                bon_exist++;
-                            }
-                        } else {
-                            // Problem insert client into database // operation aborded
-                            new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText("Oops...")
-                                    .setContentText("Problème fatal, erreur insertion client ")
-                                    .show();
+                        stmt.clearBatch();
+                        Date dt = format.parse(bon1s.get(i).date_bon);
+                        assert dt != null;
+                        /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
+                        Boolean client_exist = false;
+                        // check client if exist
+                        String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + bon1s.get(i).code_client + "'";
+                        ResultSet rs0 = stmt.executeQuery(client_requete);
+                        while (rs0.next()) {
+                            client_exist = true;
                         }
-                    } else {
+
+                        // insert client if not exist
+                        if (!client_exist) {
+                            client = new PostData_Client();
+
+                            // Select client from data base to insert it
+                            // client = controller.select_client_from_database(bon1s.get(i).code_client);
+
+                            String insert_client;
+
+                            // insert client
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES ('"
+                                    + bon1s.get(i).code_client.replace("'", "''") + "' ," +
+                                    "'" + bon1s.get(i).client.replace("'", "''") + "', " +
+                                    "'" + bon1s.get(i).adresse.replace("'", "''") + "', " +
+                                    "'" + bon1s.get(i).tel.replace("'", "''") + "', " +
+                                    "'" + bon1s.get(i).rc.replace("'", "''") + "', " +
+                                    "'" + bon1s.get(i).ifiscal.replace("'", "''") + "', " +
+                                    "'" + bon1s.get(i).ai.replace("'", "''") + "', " +
+                                    "'" + bon1s.get(i).nis.replace("'", "''") + "', " +
+                                    "'" + client.mode_tarif + "' , '" +
+                                    " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
+                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
+                                    " '" + bon1s.get(i).latitude_client + "'," +
+                                    " '" + bon1s.get(i).longitude_client + "')";
+
+
+                            stmt.executeUpdate(insert_client);
+                            con.commit();
+                        }
+
+                        String file_name = "";
+                        file_name = "VENTE_"+ bon1s.get(i).num_bon+"_"+bon1s.get(i).exportation + "_" + bon1s.get(i).date_bon + ".BLV";
+                        file_name = file_name.replace("/", "_");
+
                         // check if bon1 exist
                         Boolean check_bon1_exist = false;
-                        String check_bon1_requete = "SELECT NUM_BON FROM BON1 WHERE EXPORTATION = '" + bon1s.get(i).exportation + "'";
+                        String check_bon1_requete = "SELECT NUM_BON FROM BON1 WHERE EXPORTATION = '" + file_name + "'";
                         ResultSet rs3 = stmt.executeQuery(check_bon1_requete);
 
                         while (rs3.next()) {
@@ -1407,129 +1193,297 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "Bon2.CODE_BARRE, " +
                                     "Bon2.NUM_BON, " +
                                     "Bon2.PRODUIT, " +
+                                    "Bon2.NBRE_COLIS, " +
+                                    "Bon2.COLISSAGE, " +
                                     "Bon2.QTE, " +
+                                    "Bon2.QTE_GRAT, " +
                                     "Bon2.PV_HT, " +
                                     "Bon2.TVA, " +
                                     "Bon2.CODE_DEPOT, " +
                                     "Bon2.PA_HT, " +
+                                    "Bon2.DESTOCK_TYPE, " +
+                                    "Bon2.DESTOCK_CODE_BARRE, " +
+                                    "Bon2.DESTOCK_QTE, " +
                                     "Produit.STOCK " +
-                                    "FROM Bon2 " +
-                                    "INNER JOIN " +
-                                    "Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
+                                    "FROM Bon2 LEFT JOIN Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
                                     "WHERE Bon2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
+
 
                             bon2s = controller.select_bon2_from_database(querry_select);
                             String[] buffer = new String[bon2s.size() + 1];
 
+                            // Get RECORDID
                             String generator_requet = "SELECT gen_id(gen_bon1_id,1) as RECORDID FROM rdb$database";
                             ResultSet rs1 = stmt.executeQuery(generator_requet);
                             while (rs1.next()) {
                                 recordid_numbon = rs1.getInt("RECORDID");
                             }
 
-                            String vvv;
+
+                            String insert_into_journee = "UPDATE OR INSERT INTO JOURNEE  (DATE_JOURNEE) VALUES ( '" + format2.format(dt) + "' ) MATCHING (DATE_JOURNEE) ";
+                            stmt.executeUpdate(insert_into_journee);
+
                             String NUM_BON = Get_Digits_String(String.valueOf(recordid_numbon), 6);
-                            vvv = "INSERT INTO BON1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, HT, TVA, TIMBRE, REMISE, VERSER, ANCIEN_SOLDE, MODE_RG, UTILISATEUR, MODE_TARIF, EXPORTATION, BLOCAGE, LATITUDE, LONGITUDE, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
-                                    + recordid_numbon + "' , '" + NUM_BON + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
-                                    "' , '" + bon1s.get(i).code_client + "' , '" + bon1s.get(i).tot_ht + "' ,'" + bon1s.get(i).tot_tva + "' , iif('" + bon1s.get(i).timbre + "' = 'null',0,'" + bon1s.get(i).timbre + "'), iif('" + bon1s.get(i).remise + "' = 'null',0,'" + bon1s.get(i).remise + "')," +
-                                    " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "', iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') , 'TERMINAl-MOBILE', iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "'), '" + bon1s.get(i).exportation + "', 'F' , " + bon1s.get(i).latitude + ", " + bon1s.get(i).longitude + ", iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'))";
-                            stmt.executeUpdate(vvv);
+
+
+                            String insert_into_bon1 = "INSERT INTO BON1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, TIMBRE, REMISE, VERSER, ANCIEN_SOLDE, MODE_RG, UTILISATEUR, MODE_TARIF, EXPORTATION, BLOCAGE, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
+                                    + recordid_numbon + "' ," +
+                                    " '" + NUM_BON + "' , '" + format2.format(dt) + "' ," +
+                                    " '" + bon1s.get(i).heure + "', "+
+                                    " '" + bon1s.get(i).code_client.replace("'", "''") + "' ," +
+                                    // " '" + bon1s.get(i).tot_ht + "' ," +
+                                    //  " '" + bon1s.get(i).tot_tva + "' ," +
+                                    " iif('" + bon1s.get(i).timbre + "' = 'null',0,'" + bon1s.get(i).timbre + "')," +
+                                    " iif('" + bon1s.get(i).remise + "' = 'null',0,'" + bon1s.get(i).remise + "')," +
+                                    " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "'," +
+                                    " iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') ," +
+                                    " 'TERMINAl-MOBILE'," +
+                                    " iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "')," +
+                                    " '" + file_name + "'," +
+                                    " 'F' ," +
+                                    " " + bon1s.get(i).latitude + "," +
+                                    " " + bon1s.get(i).longitude + "," +
+                                    " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
+                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
+                                    " iif('" + CODE_CAISSE + "' = '000000', null,'" + CODE_CAISSE + "'))";
+
+                            stmt.addBatch(insert_into_bon1);
 
 
                             for (int j = 0; j < bon2s.size(); j++) {
-                                buffer[j] = "INSERT INTO BON2 (NUM_BON, CODE_BARRE, PRODUIT, QTE, PV_HT, TVA, PA_HT, PV_HT_AR) VALUES ('" + NUM_BON + "' , '" + bon2s.get(j).codebarre + "' , iif('" + bon2s.get(j).produit + "' = null, 'Produit inconnu' , '" + bon2s.get(j).produit + "'), '" + bon2s.get(j).qte + "', '" + bon2s.get(j).p_u + "' , '" + bon2s.get(j).tva + "' , '" + bon2s.get(j).pa_ht + "', '" + bon2s.get(j).p_u + "')";
+                                buffer[j] = "INSERT INTO BON2 (NUM_BON, CODE_BARRE, PRODUIT, QTE, QTE_GRAT, PV_HT_AR, PV_HT, TVA, PA_HT, NBRE_COLIS, COLISSAGE, DESTOCK_QTE, CODE_DEPOT, DESTOCK_CODE_BARRE, DESTOCK_TYPE) VALUES (" +
+                                        " '" + NUM_BON + "' ," +
+                                        " '" + bon2s.get(j).codebarre.replace("'", "''") + "' ," +
+                                        " '" + bon2s.get(j).produit.replace("'", "''") + "' ," +
+                                        " '" + bon2s.get(j).qte + "'," +
+                                        " '" + bon2s.get(j).gratuit + "'," +
+                                        " '" + bon2s.get(j).p_u + "' ," +
+                                        " '" + bon2s.get(j).p_u + "' ," +
+                                        " '" + bon2s.get(j).tva + "' ," +
+                                        " '" + bon2s.get(j).pa_ht + "'," +
+                                        " '" + bon2s.get(j).nbr_colis + "'," +
+                                        " '" + bon2s.get(j).colissage + "'," +
+                                        " '" + bon2s.get(j).destock_qte + "'," +
+                                        " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
+                                        " iif('" + bon2s.get(j).destock_code_barre + "' = 'null', null,'" + bon2s.get(j).destock_code_barre + "')," +
+                                        " iif('" + bon2s.get(j).destock_type + "' = 'null', null,'" + bon2s.get(j).destock_type + "'))";
+
                                 stmt.addBatch(buffer[j]);
                             }
 
+                         //   stmt.executeBatch();
 
                             String requete_situation = "INSERT INTO CARNET_C (CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
-                                    + bon1s.get(i).code_client + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
-                                    "' , '" + bon1s.get(i).montant_bon + "' , '" + bon1s.get(i).verser + "' ,'BL-VENTE' , '" + NUM_BON + "', '" + bon1s.get(i).mode_rg + "', 'TERMINAL_MOBILE', ' ', iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'))";
-                            stmt.executeUpdate(requete_situation);
+                                    + bon1s.get(i).code_client.replace("'", "''") + "', " +
+                                    " '" + format2.format(dt) + "', " +
+                                    " '" + bon1s.get(i).heure + "', " +
+                                    " '" + bon1s.get(i).montant_bon + "' ," +
+                                    " '" + bon1s.get(i).verser + "' ," +
+                                    " 'BL-VENTE' ," +
+                                    " '" + NUM_BON + "'," +
+                                    " '" + bon1s.get(i).mode_rg + "'," +
+                                    " 'TERMINAL_MOBILE'," +
+                                    " ' '," +
+                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
+                                    " iif('" + CODE_CAISSE + "' = '000000', null ,'" + CODE_CAISSE + "'))";
+
+                            stmt.addBatch(requete_situation);
 
 
-                            if (!CODE_CAISSE.equals("NOT_EXIST")) {
-                                if (Double.valueOf(bon1s.get(i).verser) != 0) {
+                            if (!CODE_CAISSE.equals("000000")) {
+                                if (bon1s.get(i).verser != 0) {
 
                                     String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
-                                            + CODE_CAISSE + "', '" + CODE_CAISSE + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).verser +
-                                            "' , '0', 'BL-VENTE' , '" + NUM_BON + "', 'ESPECE', ' ', 'TERMINAL_MOBILE')";
-                                    stmt.executeUpdate(requete_caisse);
+                                            + CODE_CAISSE + "' ," +
+                                            " '" + CODE_CAISSE + "'," +
+                                            " '" + format2.format(dt) + "' ," +
+                                            " '" + bon1s.get(i).verser + "', " +
+                                            " '0'," +
+                                            " 'BL-VENTE' ," +
+                                            " '" + NUM_BON + "'," +
+                                            " 'ESPECE'," +
+                                            " ' '," +
+                                            " 'TERMINAL_MOBILE')";
+                                    stmt.addBatch(requete_caisse);
                                 }
                             }
 
                             stmt.executeBatch();
                             con.commit();
-                            //update bon as exported
+                            // update bon as exported
                             controller.Update_ventes_commandes_as_exported(false, bon1s.get(i).num_bon);
+                            bon_inserted++;
                             stmt.clearBatch();
                             bon2s.clear();
-                            bon_inserted++;
 
-                        } else {
-                            bon_exist++;
                         }
+                    }catch (Exception e){
+                        con.rollback();
+                        list_num_bon_not_exported.add( bon1s.get(i).num_bon);
+                        stmt.clearBatch();
                     }
+
                 }
 
                 // Export all versement
 
                 // INSERT ALL VERSEMENTS OF CAURANT CLIENTS
-                ArrayList<PostData_Carnet_c> all_versement_client = new ArrayList<>();
-                ArrayList<PostData_Client> list_client = new ArrayList<>();
-                stmt.clearBatch();
-                list_client = controller.select_clients_from_database("SELECT * FROM Client");
-                for (int q = 0; q < list_client.size(); q++) {
-                    all_versement_client.clear();
-                    all_versement_client = controller.select_carnet_c_from_database("SELECT * FROM Carnet_c WHERE IS_EXPORTED = 0 AND CODE_CLIENT = '" + list_client.get(q).code_client + "'");
+                ArrayList<PostData_Carnet_c> all_versement_client;
+                ArrayList<PostData_Client> list_client ;
 
-                    if (all_versement_client.size() > 0) {
+                all_versement_client = controller.select_carnet_c_from_database("SELECT Carnet_c.RECORDID, " +
+                        "Carnet_c.CODE_CLIENT, " +
+                        "Carnet_c.DATE_CARNET, " +
+                        "Client.CLIENT, " +
+                        "Client.LATITUDE, " +
 
-                        total_client++;
+                        "Client.LONGITUDE, " +
+                        "Client.TEL, " +
+                        "Client.CLIENT, " +
+                        "Client.ADRESSE, " +
+                        "Client.RC, " +
+                        "Client.IFISCAL, " +
+                        "Client.AI, " +
+                        "Client.NIS, " +
+                        "Client.MODE_TARIF, " +
 
-                        for (int g = 0; g < all_versement_client.size(); g++) {
+                        "Carnet_c.HEURE, " +
+                        "Carnet_c.ACHATS, " +
+                        "Carnet_c.VERSEMENTS, " +
+                        "Carnet_c.SOURCE, " +
+                        "Carnet_c.NUM_BON, " +
+                        "Carnet_c.MODE_RG, " +
+                        "Carnet_c.REMARQUES, " +
+                        "Carnet_c.UTILISATEUR, " +
+                        "Carnet_c.EXPORTATION " +
+
+
+                        "FROM Carnet_c " +
+                        "LEFT JOIN Client ON " +
+                        "Client.CODE_CLIENT = Carnet_c.CODE_CLIENT ");
+
+
+
+                for (int g = 0; g < all_versement_client.size(); g++) {
+
+                    try {
+
+                        stmt.clearBatch();
+                        Date dt = format.parse(all_versement_client.get(g).carnet_date);
+                        assert dt != null;
+
+                        /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
+                        Boolean client_exist = false;
+                        // check client if exist
+                        String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + all_versement_client.get(g).code_client + "'";
+                        ResultSet rs0 = stmt.executeQuery(client_requete);
+                        while (rs0.next()) {
+                            client_exist = true;
+                        }
+
+                        // insert client if not exist
+                        if (!client_exist) {
+                            client = new PostData_Client();
+
+                            // Select client from data base to insert it
+                            // client = controller.select_client_from_database(bon1s.get(i).code_client);
+                            String insert_client;
+                            // insert client
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES ('"
+                                    + all_versement_client.get(g).code_client.replace("'", "''") + "' ," +
+                                    "'" + all_versement_client.get(g).client.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).adresse.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).tel.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).rc.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).ifiscal.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).ai.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).nis.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).mode_tarif + "' , '" +
+                                    " iif('" + code_depot + "' = '000000', null ,'" + code_depot + "'), " +
+                                    " iif('" + code_vendeur + "' = '000000', null ,'" + code_vendeur + "'), " +
+                                    " iif('" + all_versement_client.get(g).latitude + "' = 'null', null ,'" + all_versement_client.get(g).latitude + "') , " +
+                                    " iif('" + all_versement_client.get(g).longitude + "' = 'null', null ,'" + all_versement_client.get(g).longitude + "'))";
+
+
+                            stmt.executeUpdate(insert_client);
+                            con.commit();
+                        }
+
+                        String file_name = "";
+                        file_name = "SITUATION_VRC"+ all_versement_client.get(g).recordid + "_" + all_versement_client.get(g).exportation + "_" + all_versement_client.get(g).carnet_date + ".STC";
+                        file_name = file_name.replace("/", "_");
+
+                        // check if bon1 exist
+                        Boolean check_carnet_c_exist = false;
+                        String check_bon1_requete = "SELECT NUM_BON FROM CARNET_C WHERE EXPORTATION = '" + file_name + "'";
+                        ResultSet rs3 = stmt.executeQuery(check_bon1_requete);
+
+                        while (rs3.next()) {
+                            check_carnet_c_exist = true;
+                        }
+
+                        if(!check_carnet_c_exist){
+
                             // Get carnet_c recordid
                             String generator_requet = "SELECT gen_id(gen_carnet_c_id,1) as RECORDID FROM rdb$database";
                             ResultSet rs1 = stmt.executeQuery(generator_requet);
-                            Integer num_bon_carnet_c = 0;
+                            Integer recordid_carnet_c = 0;
                             while (rs1.next()) {
-                                num_bon_carnet_c = rs1.getInt("RECORDID");
+                                recordid_carnet_c = rs1.getInt("RECORDID");
                             }
 
+
                             //String RECORDID_CRC = Get_Digits_String(String.valueOf(num_bon_carnet_c), 6);
-                            String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, CODE_VENDEUR, CODE_CAISSE) VALUES ('" + num_bon_carnet_c + "', '"
-                                    + all_versement_client.get(g).code_client + "' , cast ('" + all_versement_client.get(g).carnet_date + "' as timestamp) , '" + all_versement_client.get(g).carnet_heure +
-                                    "' , '" + all_versement_client.get(g).carnet_achats + "' , '" + all_versement_client.get(g).carnet_versement + "' ,'SITUATION-CLIENT' ,'VRC" + num_bon_carnet_c + "', '" + all_versement_client.get(g).carnet_mode_rg + "', 'TERMINAL_MOBILE', '" + all_versement_client.get(g).carnet_remarque + "', iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'))";
-                            stmt.executeUpdate(buffer_versement);
+                            String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, EXPORTATION , CODE_VENDEUR, CODE_CAISSE) VALUES (" +
+                                    " '" + recordid_carnet_c + "', " +
+                                    " '"  + all_versement_client.get(g).code_client.replace("'", "''") + "' ," +
+                                    " '" + format2.format(dt) + "'  ," +
+                                    " '" + all_versement_client.get(g).carnet_heure + "' ," +
+                                    " '" + all_versement_client.get(g).carnet_achats + "' ," +
+                                    " '" + all_versement_client.get(g).carnet_versement + "' ," +
+                                    " 'SITUATION-CLIENT' ," +
+                                    " 'VRC" + recordid_carnet_c + "'," +
+                                    " '" + all_versement_client.get(g).carnet_mode_rg + "'," +
+                                    " 'TERMINAL_MOBILE'," +
+                                    " '" + all_versement_client.get(g).carnet_remarque.replace("'", "''") + "'," +
+                                    " '" + file_name + "'," +
+                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
+                                    " iif('" + CODE_CAISSE + "' = '000000', null,'" + CODE_CAISSE + "'))";
+                            stmt.addBatch(buffer_versement);
 
 
-                            if (!CODE_CAISSE.equals("NOT_EXIST")) {
-                                if (Double.valueOf(all_versement_client.get(g).carnet_versement) != 0) {
+                            if (!CODE_CAISSE.equals("000000")) {
+                                if (all_versement_client.get(g).carnet_versement != 0) {
 
                                     String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
-                                            + CODE_CAISSE + "', '" + CODE_CAISSE + "' , cast ('" + all_versement_client.get(g).carnet_date + "' as timestamp) , '" + all_versement_client.get(g).carnet_versement +
-                                            "' , '0', 'SITUATION-CLIENT' , 'VRC" + num_bon_carnet_c + "', 'ESPECE',  '" + all_versement_client.get(g).carnet_remarque + "', 'TERMINAL_MOBILE')";
-                                    stmt.executeUpdate(requete_caisse);
+                                            + CODE_CAISSE + "', '" + CODE_CAISSE + "' , '" + format2.format(dt) + "' , '" + all_versement_client.get(g).carnet_versement +
+                                            "' , '0', 'SITUATION-CLIENT' , 'VRC" + recordid_carnet_c + "', 'ESPECE',  '" + all_versement_client.get(g).carnet_remarque + "', 'TERMINAL_MOBILE')";
+                                    stmt.addBatch(requete_caisse);
                                 }
                             }
 
+                            stmt.executeBatch();
+                            con.commit();
+                            controller.Update_versement_exported(all_versement_client.get(g).recordid);
+                            stmt.clearBatch();
                             total_versement++;
+
                         }
 
-                        con.commit();
-                        // All ok so Make all versements of this client as exported
-                        controller.Update_versement_exported(list_client.get(q).code_client);
+                    }catch (Exception e){
+                        con.rollback();
+                        stmt.clearBatch();
+                        list_recordid_versement_not_exported.add("VRC"+all_versement_client.get(g).recordid + " - " + all_versement_client.get(g).client + " :  " + nf.format(all_versement_client.get(g).carnet_versement) );
                     }
+
                 }
 
-                con.setAutoCommit(true);
-                bon1s.clear();
                 flag = 1;
 
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-                con = null;
+               // con = null;
                 Log.e("TRACKKK", "YOU HAVE AN SQL ERROR IN YOUR REQUEST  " + ex.getMessage());
                 if (ex.getMessage().contains("Unable to complete network request to host")) {
                     flag = 2;
@@ -1538,6 +1492,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                     //not executed with problem in the sql statement
                     erreurMessage = ex.getMessage();
                     flag = 3;
+                }
+
+                try {
+                    con.rollback();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
             return flag;
@@ -1548,9 +1508,31 @@ public class ActivityImportsExport extends AppCompatActivity {
             mProgressDialog.dismiss();
             // Problem insert client into database // operation aborded
             if (integer == 1) {
+                String nums_bon_error = "";
+                String versement_error = "";
+                for(int i = 0; i < list_num_bon_not_exported.size(); i++){
+                    if(i > 0){
+                        nums_bon_error = nums_bon_error + " ,  ";
+                    }
+                    nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
+                }
+                if(list_num_bon_not_exported.size() > 0){
+                    nums_bon_error = "\nProblem exportation dans les bons : " + nums_bon_error;
+                }
+                for(int i = 0; i < list_recordid_versement_not_exported.size() ; i++){
+
+                    if(i > 0){
+                        versement_error = versement_error + " \n  ";
+                    }
+                    versement_error = versement_error + list_recordid_versement_not_exported.get(i);
+
+                }
+                if(list_recordid_versement_not_exported.size() > 0){
+                    versement_error = "\nProblem exportation dans les versements nums : \n" + versement_error;
+                }
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé, Total bon Vente : " + total_bon + "\n Total bon inseré : " + bon_inserted + "\n Total bon exist : " + bon_exist + "\n ==================" + "\n Total client versés : " + total_client + "\n Total versement : " + total_versement)
+                        .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + nums_bon_error  + versement_error )
                         .show();
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
@@ -1578,185 +1560,426 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
         String erreurMessage = "";
 
+        int bon_inserted = 0;
+        int total_versement = 0;
 
-        int total_bon_commande = 0;
-        int bon_inserted_commande = 0;
-        int bon_exist_commande = 0;
+        List<String> list_num_bon_not_exported;
+        List<String> list_recordid_versement_not_exported;
 
-        public Exporter_commandes_to_server_task() {
-
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            nf = NumberFormat.getInstance(Locale.US);
+            ((DecimalFormat) nf).applyPattern("###,##0.00");
             progressDialogExportation();
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
-            try {
 
-                ArrayList<PostData_Bon1> bon1sCommande = new ArrayList<>();
-                ArrayList<PostData_Bon2> bon2sCommande = new ArrayList<>();
+            try {
+                
+                ArrayList<PostData_Bon1> bon1s_Temp;
+                ArrayList<PostData_Bon2> bon2s_Temp;
                 PostData_Client client;
+                list_num_bon_not_exported = new ArrayList<>();
+                list_recordid_versement_not_exported = new ArrayList<>();
 
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
 
                 con.setAutoCommit(false);
                 int recordid_numbon = 0;
-                String code_client;
 
-                //Export Commande
-                bon1sCommande.clear();
-                String querry_bon1_commande = "SELECT " +
-                        "Bon1_temp.RECORDID, " +
-                        "Bon1_temp.NUM_BON, " +
-                        "Bon1_temp.CODE_CLIENT, " +
+                String querry = "SELECT " +
+                        "Bon1_Temp.RECORDID, " +
+                        "Bon1_Temp.NUM_BON, " +
+                        "Bon1_Temp.DATE_BON, " +
+                        "Bon1_Temp.HEURE, " +
+                        "Bon1_Temp.MODE_RG, " +
+                        "Bon1_Temp.MODE_TARIF, " +
+
+                        "Bon1_Temp.NBR_P, " +
+                        "Bon1_Temp.TOT_QTE, " +
+
+                        "Bon1_Temp.TOT_HT, " +
+                        "Bon1_Temp.TOT_TVA, " +
+                        "Bon1_Temp.TIMBRE, " +
+                        "Bon1_Temp.TOT_HT + Bon1_Temp.TOT_TVA + Bon1_Temp.TIMBRE AS TOT_TTC, " +
+                        "Bon1_Temp.REMISE, " +
+                        "Bon1_Temp.TOT_HT + Bon1_Temp.TOT_TVA + Bon1_Temp.TIMBRE - Bon1_Temp.REMISE AS MONTANT_BON, " +
+
+                        "Bon1_Temp.ANCIEN_SOLDE, " +
+                        "Bon1_Temp.VERSER, " +
+                        "Bon1_Temp.ANCIEN_SOLDE + (Bon1_Temp.TOT_HT + Bon1_Temp.TOT_TVA + Bon1_Temp.TIMBRE - Bon1_Temp.REMISE) - Bon1_Temp.VERSER AS RESTE, " +
+
+                        "Bon1_Temp.CODE_CLIENT, " +
                         "Client.CLIENT, " +
-                        "Bon1_temp.LATITUDE, " +
-
-                        "Bon1_temp.LONGITUDE, " +
-                        "Client.LATITUDE as LATITUDE_CLIENT, " +
-
-                        "Client.LONGITUDE as LONGITUDE_CLIENT, " +
+                        "Client.ADRESSE, " +
                         "Client.TEL, " +
+                        "Client.RC, " +
+                        "Client.IFISCAL, " +
+                        "Client.AI, " +
+                        "Client.NIS, " +
+
+                        "Client.LATITUDE as LATITUDE_CLIENT, " +
+                        "Client.LONGITUDE as LONGITUDE_CLIENT, " +
+
+                        "Client.SOLDE AS SOLDE_CLIENT, " +
+                        "Client.CREDIT_LIMIT, " +
+
+                        "Bon1_Temp.LATITUDE, " +
+                        "Bon1_Temp.LONGITUDE, " +
+
+                        "Bon1_Temp.CODE_DEPOT, " +
+                        "Bon1_Temp.CODE_VENDEUR, " +
+                        "Bon1_Temp.EXPORTATION, " +
+                        "Bon1_Temp.BLOCAGE " +
+                        "FROM Bon1_Temp " +
+                        "LEFT JOIN Client ON Bon1_Temp.CODE_CLIENT = Client.CODE_CLIENT " +
+                        "WHERE BLOCAGE = 'F' ORDER BY Bon1_Temp.NUM_BON";
+
+
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat format2 = new SimpleDateFormat("MM/dd/yyyy");
+
+                bon1s_Temp = controller.select_vente_from_database(querry);
+
+
+                // Get CODE_CAISSE
+
+                String CODE_CAISSE = "000000";
+
+                String requette_vendeur_caisse = "SELECT coalesce(CODE_VENDEUR, '000000') AS CODE_VENDEUR, coalesce(CODE_CAISSE, '000000') AS CODE_CAISSE FROM DEPOT1 WHERE CODE_DEPOT = '" + code_depot + "' ";
+                ResultSet rs111 = stmt.executeQuery(requette_vendeur_caisse);
+                while (rs111.next()) {
+                    CODE_CAISSE = rs111.getString("CODE_CAISSE");
+                }
+
+
+                for (int i = 0; i < bon1s_Temp.size(); i++) {
+
+                    try {
+
+                        stmt.clearBatch();
+                        Date dt = format.parse(bon1s_Temp.get(i).date_bon);
+                        assert dt != null;
+                        /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
+                        Boolean client_exist = false;
+                        // check client if exist
+                        String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + bon1s_Temp.get(i).code_client + "'";
+                        ResultSet rs0 = stmt.executeQuery(client_requete);
+                        while (rs0.next()) {
+                            client_exist = true;
+                        }
+
+                        // insert client if not exist
+                        if (!client_exist) {
+                            client = new PostData_Client();
+
+                            // Select client from data base to insert it
+                            // client = controller.select_client_from_database(bon1s.get(i).code_client);
+
+                            String insert_client;
+
+                            // insert client
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES ('"
+                                    + bon1s_Temp.get(i).code_client.replace("'", "''") + "' ," +
+                                    "'" + bon1s_Temp.get(i).client.replace("'", "''") + "', " +
+                                    "'" + bon1s_Temp.get(i).adresse.replace("'", "''") + "', " +
+                                    "'" + bon1s_Temp.get(i).tel.replace("'", "''") + "', " +
+                                    "'" + bon1s_Temp.get(i).rc.replace("'", "''") + "', " +
+                                    "'" + bon1s_Temp.get(i).ifiscal.replace("'", "''") + "', " +
+                                    "'" + bon1s_Temp.get(i).ai.replace("'", "''") + "', " +
+                                    "'" + bon1s_Temp.get(i).nis.replace("'", "''") + "', " +
+                                    "'" + client.mode_tarif + "' , '" +
+                                    " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
+                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
+                                    " '" + bon1s_Temp.get(i).latitude_client + "'," +
+                                    " '" + bon1s_Temp.get(i).longitude_client + "')";
+
+
+                            stmt.executeUpdate(insert_client);
+                            con.commit();
+                        }
+
+                        String file_name = "";
+                        file_name = "COMMANDE_"+ bon1s_Temp.get(i).num_bon+"_"+bon1s_Temp.get(i).exportation + "_" + bon1s_Temp.get(i).date_bon + ".BLV";
+                        file_name = file_name.replace("/", "_");
+
+                        // check if bon1 exist
+                        Boolean check_bon1_exist = false;
+                        String check_bon1_requete = "SELECT NUM_BON FROM BCC1 WHERE EXPORTATION = '" + file_name + "'";
+                        ResultSet rs3 = stmt.executeQuery(check_bon1_requete);
+
+                        while (rs3.next()) {
+                            check_bon1_exist = true;
+                        }
+
+                        if (!check_bon1_exist) {
+                            String querry_select = "" +
+                                    "SELECT " +
+                                    "Bon2_Temp.RECORDID, " +
+                                    "Bon2_Temp.CODE_BARRE, " +
+                                    "Bon2_Temp.NUM_BON, " +
+                                    "Bon2_Temp.PRODUIT, " +
+                                    "Bon2_Temp.NBRE_COLIS, " +
+                                    "Bon2_Temp.COLISSAGE, " +
+                                    "Bon2_Temp.QTE, " +
+                                    "Bon2_Temp.QTE_GRAT, " +
+                                    "Bon2_Temp.PV_HT, " +
+                                    "Bon2_Temp.TVA, " +
+                                    "Bon2_Temp.CODE_DEPOT, " +
+                                    "Bon2_Temp.PA_HT, " +
+                                    "Bon2_Temp.DESTOCK_TYPE, " +
+                                    "Bon2_Temp.DESTOCK_CODE_BARRE, " +
+                                    "Bon2_Temp.DESTOCK_QTE, " +
+                                    "Produit.STOCK " +
+                                    "FROM Bon2_Temp LEFT JOIN Produit ON (Bon2_Temp.CODE_BARRE = Produit.CODE_BARRE) " +
+                                    "WHERE Bon2_Temp.NUM_BON = '" + bon1s_Temp.get(i).num_bon + "'";
+
+
+                            bon2s_Temp = controller.select_bon2_from_database(querry_select);
+
+                            String[] buffer = new String[bon2s_Temp.size() + 1];
+
+                            // Get RECORDID
+                            String generator_requet = "SELECT gen_id(gen_bcc1_id,1) as RECORDID FROM rdb$database";
+                            ResultSet rs1 = stmt.executeQuery(generator_requet);
+                            while (rs1.next()) {
+                                recordid_numbon = rs1.getInt("RECORDID");
+                            }
+
+
+                            String insert_into_journee = "UPDATE OR INSERT INTO JOURNEE  (DATE_JOURNEE) VALUES ( '" + format2.format(dt) + "' ) MATCHING (DATE_JOURNEE) ";
+                            stmt.executeUpdate(insert_into_journee);
+
+                            String NUM_BON = Get_Digits_String(String.valueOf(recordid_numbon), 6);
+
+
+                            String insert_into_bon1 = "INSERT INTO BCC1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, TIMBRE, REMISE, VERSER, ANCIEN_SOLDE, MODE_RG, UTILISATEUR, MODE_TARIF, EXPORTATION, BLOCAGE, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
+                                    + recordid_numbon + "' ," +
+                                    " '" + NUM_BON + "' , '" + format2.format(dt) + "' ," +
+                                    " '" + bon1s_Temp.get(i).heure + "', "+
+                                    " '" + bon1s_Temp.get(i).code_client.replace("'", "''") + "' ," +
+                                    // " '" + bon1s.get(i).tot_ht + "' ," +
+                                    //  " '" + bon1s.get(i).tot_tva + "' ," +
+                                    " iif('" + bon1s_Temp.get(i).timbre + "' = 'null',0,'" + bon1s_Temp.get(i).timbre + "')," +
+                                    " iif('" + bon1s_Temp.get(i).remise + "' = 'null',0,'" + bon1s_Temp.get(i).remise + "')," +
+                                    " '" + bon1s_Temp.get(i).verser + "', '" + bon1s_Temp.get(i).solde_ancien + "'," +
+                                    " iif('" + bon1s_Temp.get(i).mode_rg + "' = 'null',null,'" + bon1s_Temp.get(i).mode_rg + "') ," +
+                                    " 'TERMINAl-MOBILE'," +
+                                    " iif('" + bon1s_Temp.get(i).mode_tarif + "' = 'null',0,'" + bon1s_Temp.get(i).mode_tarif + "')," +
+                                    " '" + file_name + "'," +
+                                    " 'F' ," +
+                                    " " + bon1s_Temp.get(i).latitude + "," +
+                                    " " + bon1s_Temp.get(i).longitude + "," +
+                                    " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
+                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'))";
+
+                            stmt.addBatch(insert_into_bon1);
+
+
+                            for (int j = 0; j < bon2s_Temp.size(); j++) {
+                                buffer[j] = "INSERT INTO BCC2 (NUM_BON, CODE_BARRE, PRODUIT, QTE, QTE_GRAT, PV_HT_AR, PV_HT, TVA, PA_HT, NBRE_COLIS, COLISSAGE, DESTOCK_QTE, CODE_DEPOT, DESTOCK_CODE_BARRE, DESTOCK_TYPE) VALUES (" +
+                                        " '" + NUM_BON + "' ," +
+                                        " '" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "' ," +
+                                        " '" + bon2s_Temp.get(j).produit.replace("'", "''") + "' ," +
+                                        " '" + bon2s_Temp.get(j).qte + "'," +
+                                        " '" + bon2s_Temp.get(j).gratuit + "'," +
+                                        " '" + bon2s_Temp.get(j).p_u + "' ," +
+                                        " '" + bon2s_Temp.get(j).p_u + "' ," +
+                                        " '" + bon2s_Temp.get(j).tva + "' ," +
+                                        " '" + bon2s_Temp.get(j).pa_ht + "'," +
+                                        " '" + bon2s_Temp.get(j).nbr_colis + "'," +
+                                        " '" + bon2s_Temp.get(j).colissage + "'," +
+                                        " '" + bon2s_Temp.get(j).destock_qte + "'," +
+                                        " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
+                                        " iif('" + bon2s_Temp.get(j).destock_code_barre + "' = 'null', null,'" + bon2s_Temp.get(j).destock_code_barre + "')," +
+                                        " iif('" + bon2s_Temp.get(j).destock_type + "' = 'null', null,'" + bon2s_Temp.get(j).destock_type + "'))";
+
+                                stmt.addBatch(buffer[j]);
+                            }
+
+                            stmt.executeBatch();
+                            con.commit();
+                            // update bon as exported
+                            controller.Update_ventes_commandes_as_exported(true, bon1s_Temp.get(i).num_bon);
+                            bon_inserted++;
+                            stmt.clearBatch();
+                            bon2s_Temp.clear();
+
+                        }
+                    }catch (Exception e){
+                        con.rollback();
+                        list_num_bon_not_exported.add( bon1s_Temp.get(i).num_bon);
+                        stmt.clearBatch();
+                    }
+
+                }
+
+                // Export all versement
+
+                // INSERT ALL VERSEMENTS OF CAURANT CLIENTS
+                ArrayList<PostData_Carnet_c> all_versement_client;
+                ArrayList<PostData_Client> list_client ;
+
+                all_versement_client = controller.select_carnet_c_from_database("SELECT Carnet_c.RECORDID, " +
+                        "Carnet_c.CODE_CLIENT, " +
+                        "Carnet_c.DATE_CARNET, " +
+                        "Client.CLIENT, " +
+                        "Client.LATITUDE, " +
+
+                        "Client.LONGITUDE, " +
+                        "Client.TEL, " +
+                        "Client.CLIENT, " +
                         "Client.ADRESSE, " +
                         "Client.RC, " +
                         "Client.IFISCAL, " +
-                        "Bon1_temp.DATE_BON, " +
-                        "Bon1_temp.HEURE, " +
-                        "Bon1_temp.NBR_P, " +
-                        "Bon1_temp.MODE_TARIF, " +
+                        "Client.AI, " +
+                        "Client.NIS, " +
+                        "Client.MODE_TARIF, " +
 
-                        "Bon1_temp.CODE_DEPOT, " +
-                        "Bon1_temp.MONTANT_BON, " +
-                        "Bon1_temp.MODE_RG, " +
-                        "Bon1_temp.CODE_VENDEUR, " +
-                        "Bon1_temp.EXPORTATION, " +
-                        "Bon1_temp.REMISE, " +
-                        "Bon1_temp.TOT_TTC, " +
-                        "Bon1_temp.TOT_TVA, " +
-                        "Bon1_temp.TOT_HT, " +
+                        "Carnet_c.HEURE, " +
+                        "Carnet_c.ACHATS, " +
+                        "Carnet_c.VERSEMENTS, " +
+                        "Carnet_c.SOURCE, " +
+                        "Carnet_c.NUM_BON, " +
+                        "Carnet_c.MODE_RG, " +
+                        "Carnet_c.REMARQUES, " +
+                        "Carnet_c.UTILISATEUR, " +
+                        "Carnet_c.EXPORTATION " +
 
 
-                        "Bon1_temp.TIMBRE, " +
-                        "Bon1_temp.VERSER, " +
-                        "Bon1_temp.RESTE, " +
-                        "Bon1_temp.BLOCAGE, " +
-                        "Bon1_temp.ANCIEN_SOLDE " +
-                        "FROM Bon1_temp " +
+                        "FROM Carnet_c " +
                         "LEFT JOIN Client ON " +
-                        "Bon1_temp.CODE_CLIENT = Client.CODE_CLIENT " +
-                        "ORDER BY Bon1_temp.DATE_BON DESC";
-
-                bon1sCommande = controller.select_vente_from_database(querry_bon1_commande);
-                total_bon_commande = bon1sCommande.size();
-
-                for (int m = 0; m < bon1sCommande.size(); m++) {
-
-                    /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
-                    Boolean client_exist = false;
-                    // check client if exist
-                    String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + bon1sCommande.get(m).code_client + "'";
-                    ResultSet rs0 = stmt.executeQuery(client_requete);
-                    while (rs0.next()) {
-
-                        client_exist = true;
-                    }
-
-                    // insert client if not exist
-                    if (!client_exist) {
-                        client = new PostData_Client();
-
-                        // Select client from data base to insert it
-                        client = controller.select_client_from_database(bon1sCommande.get(m).code_client);
-
-                        // insert client
-                        String insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, RIB, ACHATS, VERSER, LATITUDE, LONGITUDE, CODE_DEPOT) VALUES ('"
-                                + bon1sCommande.get(m).code_client + "' , '" + client.client.replace("'", " ") + "' , '" + client.adresse.replace("'", " ") + "' ,'" + client.tel + "' , '" + client.rc + "' ,'" + client.ifiscal + "' , '" + client.rib
-                                + "', '" + client.achat_montant + "', '" + client.verser_montant + "', '" + client.latitude + "', '" + client.longitude + "', '" + bon1sCommande.get(m).code_depot + "')";
-
-                        stmt.executeUpdate(insert_client);
-                        //commit insert client
-                        con.commit();
-                    }
-
-                    // check if bon1 exist
-                    Boolean check_bon1_c_exist = false;
-                    String check_bon1_c_requete = "SELECT NUM_BON FROM BCC1 WHERE EXPORTATION = '" + bon1sCommande.get(m).exportation + "'";
-                    ResultSet rs3 = stmt.executeQuery(check_bon1_c_requete);
-
-                    while (rs3.next()) {
-                        check_bon1_c_exist = true;
-                    }
-
-                    if (!check_bon1_c_exist) {
-                        String querry_select = "" +
-                                "SELECT " +
-                                "Bon2_temp.RECORDID, " +
-                                "Bon2_temp.CODE_BARRE, " +
-                                "Bon2_temp.NUM_BON, " +
-                                "Bon2_temp.PRODUIT, " +
-                                "Bon2_temp.QTE, " +
-                                "Bon2_temp.PV_HT, " +
-                                "Bon2_temp.TVA, " +
-                                "Bon2_temp.CODE_DEPOT, " +
-                                "Bon2_temp.PA_HT, " +
-                                "Produit.STOCK " +
-                                "FROM Bon2_temp " +
-                                "INNER JOIN " +
-                                "Produit ON (Bon2_temp.CODE_BARRE = Produit.CODE_BARRE) " +
-                                "WHERE Bon2_temp.NUM_BON = '" + bon1sCommande.get(m).num_bon + "'";
-
-                        bon2sCommande = controller.select_bon2_from_database(querry_select);
-                        String[] buffer = new String[bon2sCommande.size() + 1];
-
-                        String generator_requet = "SELECT gen_id(gen_bcc1_id,1) as RECORDID FROM rdb$database";
-                        ResultSet rs1 = stmt.executeQuery(generator_requet);
-                        while (rs1.next()) {
-                            recordid_numbon = rs1.getInt("RECORDID");
-                        }
+                        "Client.CODE_CLIENT = Carnet_c.CODE_CLIENT ");
 
 
-                        String NUM_BON = Get_Digits_String(String.valueOf(recordid_numbon), 6);
-                        String vvv = "INSERT INTO BCC1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, HT, TVA, TIMBRE, REMISE, MODE_RG, UTILISATEUR, MODE_TARIF, CODE_DEPOT, EXPORTATION, BLOCAGE, LATITUDE, LONGITUDE) VALUES ('"
-                                + recordid_numbon + "' , '" + NUM_BON + "' , cast ('" + bon1sCommande.get(m).date_bon + "' as timestamp) , '" + bon1sCommande.get(m).heure +
-                                "' , '" + bon1sCommande.get(m).code_client + "' , '" + bon1sCommande.get(m).tot_ht + "' ,'" + bon1sCommande.get(m).tot_tva + "' , iif('" + bon1sCommande.get(m).timbre + "' = 'null',0,'" + bon1sCommande.get(m).timbre + "'), iif('" + bon1sCommande.get(m).remise + "' = 'null',0,'" + bon1sCommande.get(m).remise + "')," +
-                                " 'ESPECE', 'TERMINAl-MOBILE', iif('" + bon1sCommande.get(m).mode_tarif + "' = 'null',0,'" + bon1sCommande.get(m).mode_tarif + "'), '" + bon1sCommande.get(m).code_depot + "' , '" + bon1sCommande.get(m).exportation + "', 'F' , " + bon1sCommande.get(m).latitude + ", " + bon1sCommande.get(m).longitude + " )";
 
-                        stmt.executeUpdate(vvv);
+                for (int g = 0; g < all_versement_client.size(); g++) {
 
+                    try {
 
-                        for (int j = 0; j < bon2sCommande.size(); j++) {
-                            buffer[j] = "INSERT INTO BCC2 (NUM_BON, CODE_BARRE, PRODUIT, QTE, PV_HT, TVA, PA_HT, PV_HT_AR, CODE_DEPOT) VALUES ('" + NUM_BON + "' , '" + bon2sCommande.get(j).codebarre + "' , iif('" + bon2sCommande.get(j).produit + "' = null,0,'" + bon2sCommande.get(j).produit.replace("'", " ").replace("\"", " ") + "'), '" + bon2sCommande.get(j).qte + "', '" + bon2sCommande.get(j).p_u + "' , '" + bon2sCommande.get(j).tva + "' , '" + bon2sCommande.get(j).pa_ht + "', '" + bon2sCommande.get(j).p_u + "', '" + bon2sCommande.get(j).code_depot + "')";
-                            stmt.addBatch(buffer[j]);
-                        }
-
-                        stmt.executeBatch();
                         stmt.clearBatch();
-                        bon_inserted_commande++;
-                        con.commit();
-                    } else {
-                        bon_exist_commande++;
+                        Date dt = format.parse(all_versement_client.get(g).carnet_date);
+                        assert dt != null;
+
+                        /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
+                        Boolean client_exist = false;
+                        // check client if exist
+                        String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + all_versement_client.get(g).code_client + "'";
+                        ResultSet rs0 = stmt.executeQuery(client_requete);
+                        while (rs0.next()) {
+                            client_exist = true;
+                        }
+
+                        // insert client if not exist
+                        if (!client_exist) {
+                            client = new PostData_Client();
+
+                            // Select client from data base to insert it
+                            // client = controller.select_client_from_database(bon1s.get(i).code_client);
+                            String insert_client;
+                            // insert client
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES ('"
+                                    + all_versement_client.get(g).code_client.replace("'", "''") + "' ," +
+                                    "'" + all_versement_client.get(g).client.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).adresse.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).tel.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).rc.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).ifiscal.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).ai.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).nis.replace("'", "''") + "', " +
+                                    "'" + all_versement_client.get(g).mode_tarif + "' , '" +
+                                    " iif('" + code_depot + "' = '000000', null ,'" + code_depot + "'), " +
+                                    " iif('" + code_vendeur + "' = '000000', null ,'" + code_vendeur + "'), " +
+                                    " iif('" + all_versement_client.get(g).latitude + "' = 'null', null ,'" + all_versement_client.get(g).latitude + "') , " +
+                                    " iif('" + all_versement_client.get(g).longitude + "' = 'null', null ,'" + all_versement_client.get(g).longitude + "'))";
+
+
+                            stmt.executeUpdate(insert_client);
+                            con.commit();
+                        }
+
+                        String file_name = "";
+                        file_name = "SITUATION_VRC"+ all_versement_client.get(g).recordid + "_" + all_versement_client.get(g).exportation + "_" + all_versement_client.get(g).carnet_date + ".STC";
+                        file_name = file_name.replace("/", "_");
+
+                        // check if bon1 exist
+                        Boolean check_carnet_c_exist = false;
+                        String check_bon1_requete = "SELECT NUM_BON FROM CARNET_C WHERE EXPORTATION = '" + file_name + "'";
+                        ResultSet rs3 = stmt.executeQuery(check_bon1_requete);
+
+                        while (rs3.next()) {
+                            check_carnet_c_exist = true;
+                        }
+
+                        if(!check_carnet_c_exist){
+
+                            // Get carnet_c recordid
+                            String generator_requet = "SELECT gen_id(gen_carnet_c_id,1) as RECORDID FROM rdb$database";
+                            ResultSet rs1 = stmt.executeQuery(generator_requet);
+                            Integer recordid_carnet_c = 0;
+                            while (rs1.next()) {
+                                recordid_carnet_c = rs1.getInt("RECORDID");
+                            }
+
+
+                            //String RECORDID_CRC = Get_Digits_String(String.valueOf(num_bon_carnet_c), 6);
+                            String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, EXPORTATION , CODE_VENDEUR, CODE_CAISSE) VALUES (" +
+                                    " '" + recordid_carnet_c + "', " +
+                                    " '"  + all_versement_client.get(g).code_client.replace("'", "''") + "' ," +
+                                    " '" + format2.format(dt) + "'  ," +
+                                    " '" + all_versement_client.get(g).carnet_heure + "' ," +
+                                    " '" + all_versement_client.get(g).carnet_achats + "' ," +
+                                    " '" + all_versement_client.get(g).carnet_versement + "' ," +
+                                    " 'SITUATION-CLIENT' ," +
+                                    " 'VRC" + recordid_carnet_c + "'," +
+                                    " '" + all_versement_client.get(g).carnet_mode_rg + "'," +
+                                    " 'TERMINAL_MOBILE'," +
+                                    " '" + all_versement_client.get(g).carnet_remarque.replace("'", "''") + "'," +
+                                    " '" + file_name + "'," +
+                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
+                                    " iif('" + CODE_CAISSE + "' = '000000', null,'" + CODE_CAISSE + "'))";
+                            stmt.addBatch(buffer_versement);
+
+
+                            if (!CODE_CAISSE.equals("000000")) {
+                                if (all_versement_client.get(g).carnet_versement != 0) {
+
+                                    String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
+                                            + CODE_CAISSE + "', '" + CODE_CAISSE + "' , '" + format2.format(dt) + "' , '" + all_versement_client.get(g).carnet_versement +
+                                            "' , '0', 'SITUATION-CLIENT' , 'VRC" + recordid_carnet_c + "', 'ESPECE',  '" + all_versement_client.get(g).carnet_remarque + "', 'TERMINAL_MOBILE')";
+                                    stmt.addBatch(requete_caisse);
+                                }
+                            }
+
+                            stmt.executeBatch();
+                            con.commit();
+                            controller.Update_versement_exported(all_versement_client.get(g).recordid);
+                            stmt.clearBatch();
+                            total_versement++;
+
+                        }
+
+                    }catch (Exception e){
+                        con.rollback();
+                        stmt.clearBatch();
+                        list_recordid_versement_not_exported.add("VRC"+all_versement_client.get(g).recordid + " - " + all_versement_client.get(g).client + " :  " + nf.format(all_versement_client.get(g).carnet_versement) );
                     }
+
                 }
 
-                con.commit();
-                con.setAutoCommit(true);
                 flag = 1;
+
+
 
 
             } catch (Exception ex) {
@@ -1780,9 +2003,31 @@ public class ActivityImportsExport extends AppCompatActivity {
             mProgressDialog.dismiss();
             // Problem insert client into database // operation aborded
             if (integer == 1) {
+                String nums_bon_error = "";
+                String versement_error = "";
+                for(int i = 0; i < list_num_bon_not_exported.size(); i++){
+                    if(i > 0){
+                        nums_bon_error = nums_bon_error + " ,  ";
+                    }
+                    nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
+                }
+                if(list_num_bon_not_exported.size() > 0){
+                    nums_bon_error = "\nProblem exportation dans les bons de commande : " + nums_bon_error;
+                }
+                for(int i = 0; i < list_recordid_versement_not_exported.size() ; i++){
+
+                    if(i > 0){
+                        versement_error = versement_error + " \n  ";
+                    }
+                    versement_error = versement_error + list_recordid_versement_not_exported.get(i);
+
+                }
+                if(list_recordid_versement_not_exported.size() > 0){
+                    versement_error = "\nProblem exportation dans les versements nums : \n" + versement_error;
+                }
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé, Total bon commandes : " + total_bon_commande + "\n Total bon inseré : " + bon_inserted_commande + "\n Total bon exist : " + bon_exist_commande)
+                        .setContentText("Exportation terminé \n Nombre de commandes exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + nums_bon_error  + versement_error )
                         .show();
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
@@ -1790,6 +2035,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
                         .show();
             } else if (integer == 3) {
+                //  if(ActivityImportsExport. != null)
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Erreur...")
                         .setContentText("Erreur SQL : " + erreurMessage)
@@ -1809,14 +2055,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
 
 
-        public Check_connection_client_server_for_sychronisation_client() {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-        }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -1834,7 +2072,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
                 flag = 1;
 
@@ -1882,14 +2120,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Integer flag = 0;
 
 
-        public Check_connection_produit_server_for_sychronisation_produit() {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-        }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -1907,7 +2137,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
                 flag = 1;
 
@@ -1947,6 +2177,163 @@ public class ActivityImportsExport extends AppCompatActivity {
 
     }
 
+
+    //==================== AsyncTask TO Load parametres from server and store them in the local database (sqlite)
+    public class Check_connection_parametres_server_for_sychronisation_parametres extends AsyncTask<Void, Integer, Integer> {
+
+        Connection con;
+        Integer flag = 0;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog_Free = new ProgressDialog(ActivityImportsExport.this);
+            mProgressDialog_Free.setMessage("Vérification de la connexion ...");
+            mProgressDialog_Free.setCancelable(true);
+            mProgressDialog_Free.show();
+        }
+
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+
+                System.setProperty("FBAdbLog", "true");
+                DriverManager.setLoginTimeout(5);
+                Class.forName("org.firebirdsql.jdbc.FBDriver");
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
+                con = DriverManager.getConnection(sCon, Username, Password);
+                flag = 1;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                con = null;
+                if (e.getMessage().contains("Unable to complete network request to host")) {
+                    flag = 2;
+                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
+
+                } else {
+                    //not executed with problem in the sql statement
+                    flag = 3;
+                }
+            }
+
+            return flag;
+        }
+
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            if (integer == 1) {
+                // get all transfert bon of this depot
+                Import_parametre_from_server_task parametres_task = new Import_parametre_from_server_task();
+                parametres_task.execute();
+
+                mProgressDialog_Free.dismiss();
+            } else if (integer == 2) {
+                mProgressDialog_Free.dismiss();
+                Toast.makeText(ActivityImportsExport.this, "probleme de connexion, vérifier les parametres", Toast.LENGTH_SHORT).show();
+            } else {
+                mProgressDialog_Free.dismiss();
+                Toast.makeText(ActivityImportsExport.this, "probleme fatal", Toast.LENGTH_SHORT).show();
+            }
+            super.onPostExecute(integer);
+        }
+
+    }
+
+    //==================== AsyncTask TO Load clients from server and store them in the local database (sqlite)
+    public class Import_parametre_from_server_task extends AsyncTask<Void, Integer, Integer> {
+
+        Connection con;
+        Integer flag = 0;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialogConfigParametres();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+
+                System.setProperty("FBAdbLog", "true");
+                DriverManager.setLoginTimeout(5);
+                Class.forName("org.firebirdsql.jdbc.FBDriver");
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
+                con = DriverManager.getConnection(sCon, Username, Password);
+
+                Statement stmt = con.createStatement();
+
+                    //============================ GET Entrprise info ===========================================
+                    String sql0 = "SELECT  ENTREPRISE.NOM, ENTREPRISE.ACTIVITE, ENTREPRISE.TEL, ENTREPRISE.ADRESSE, ENTREPRISE.LOGO, ENTREPRISE.NUM_RC, ENTREPRISE.NUM_ART, ENTREPRISE.NUM_NIF, ENTREPRISE.NUM_NIS, ENTREPRISE.COND_VENTES2 FROM ENTREPRISE";
+                    ResultSet rs0 = stmt.executeQuery(sql0);
+                    while (rs0.next()) {
+
+                        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                        editor.putString("COMPANY_NAME", rs0.getString("NOM"));
+                        editor.putString("ACTIVITY_NAME", rs0.getString("ACTIVITE"));
+                        editor.putString("COMPANY_TEL", rs0.getString("TEL"));
+                        editor.putString("COMPANY_ADRESSE", rs0.getString("ADRESSE"));
+                        editor.putString("COMPANY_NUM_RC", rs0.getString("NUM_RC"));
+                        editor.putString("COMPANY_NUM_ART", rs0.getString("NUM_ART"));
+                        editor.putString("COMPANY_NUM_NIF", rs0.getString("NUM_NIF"));
+                        editor.putString("COMPANY_NUM_NIS", rs0.getString("NUM_NIS"));
+                        editor.putString("COMPANY_FOOTER", rs0.getString("COND_VENTES2"));
+
+                        byte[] image = rs0.getBytes("LOGO");
+                        if(image != null){
+                            String img_str = Base64.encodeToString(image, 0);
+                            editor.putString("COMPANY_LOGO",img_str);
+                        }else {
+                            editor.putString("COMPANY_LOGO","");
+                        }
+                        editor.apply();
+                    }
+
+                //============================ GET PARAMS ===========================================
+                String sql1 = "SELECT  PARAMS.QTE_GRAT FROM PARAMS";
+                ResultSet rs1 = stmt.executeQuery(sql1);
+                while (rs1.next()) {
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                    if(rs1.getInt("QTE_GRAT") == 1){
+                        editor.putBoolean("VENTE_WITH_QTE_GRAT", true);
+                    }else{
+                        editor.putBoolean("VENTE_WITH_QTE_GRAT", false);
+                    }
+                    editor.apply();
+                }
+
+                stmt.close();
+                flag = 1;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                con = null;
+                Log.e("TRACKKK", "ERROR WHEN EXECUTING LOAD PARAMETRES ASYNCRON TASK " + e.getMessage());
+                if (Objects.requireNonNull(e.getMessage()).contains("Unable to complete network request to host")) {
+                    flag = 2;
+                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
+                } else {
+                    //not executed with problem in the sql statement
+                    flag = 3;
+                }
+            }
+
+            return flag;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mProgressDialog.dismiss();
+            super.onPostExecute(integer);
+        }
+    }
+
+
+
     //==================== AsyncTask TO Load clients from server and store them in the local database (sqlite)
     public class Import_client_from_server_task extends AsyncTask<Void, Integer, Integer> {
 
@@ -1956,18 +2343,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int allrows = 0;
         int total_client = 0;
 
-        public Import_client_from_server_task() {
 
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-            prefs = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-            code_depot = prefs.getString("CODE_DEPOT", "000000");
-            code_vendeur = prefs.getString("CODE_VENDEUR", "000000");
-        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -1987,14 +2363,14 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
 
-                if ((code_depot.toString().equals("000000")) && (!code_vendeur.toString().equals("000000"))) {
+                if ((code_depot.equals("000000")) && (!code_vendeur.equals("000000"))) {
 
-                    String sql12 = "SELECT  COUNT(*) FROM CLIENTS WHERE CODE_VENDEUR = '" + code_vendeur + "'";
+                    String sql12 = "SELECT  COUNT(*) FROM CLIENTS WHERE CODE_VENDEUR = '" + code_vendeur + "' AND coalesce(CLIENTS.SUP , 0) = 0";
                     ResultSet rs12 = stmt.executeQuery(sql12);
 
                     while (rs12.next()) {
@@ -2003,7 +2379,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     publishProgress(1);
 
                     //============================ GET Clients ===========================================
-                    String sql0 = "SELECT  CLIENTS.CODE_CLIENT, CLIENTS.CLIENT, CLIENTS.TEL, CLIENTS.ADRESSE, coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, coalesce(CLIENTS.ACHATS,0) AS ACHATS, coalesce(CLIENTS.VERSER,0) AS VERSER, coalesce(CLIENTS.SOLDE,0) AS SOLDE, LATITUDE, LONGITUDE , coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT FROM CLIENTS WHERE CODE_VENDEUR = '" + code_vendeur + "' ";
+                    String sql0 = "SELECT  CLIENTS.CODE_CLIENT, CLIENTS.CLIENT, CLIENTS.TEL, CLIENTS.ADRESSE, coalesce(CLIENTS.NUM_RC , '') AS NUM_RC, coalesce(CLIENTS.NUM_IF , '') AS NUM_IF , coalesce(CLIENTS.NUM_IS , '') AS NUM_IS , coalesce(CLIENTS.NUM_ART , '') AS NUM_ART ,  coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, coalesce(CLIENTS.ACHATS,0) AS ACHATS, coalesce(CLIENTS.VERSER,0) AS VERSER, coalesce(CLIENTS.SOLDE,0) AS SOLDE, LATITUDE, LONGITUDE , coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT FROM CLIENTS WHERE CODE_VENDEUR = '" + code_vendeur + "' AND coalesce(CLIENTS.SUP , 0) = 0 ";
                     ResultSet rs0 = stmt.executeQuery(sql0);
                     PostData_Client client;
                     while (rs0.next()) {
@@ -2013,10 +2389,14 @@ public class ActivityImportsExport extends AppCompatActivity {
                         client.client = rs0.getString("CLIENT");
                         client.tel = rs0.getString("TEL");
                         client.adresse = rs0.getString("ADRESSE");
+                        client.rc = rs0.getString("NUM_RC");
+                        client.ifiscal = rs0.getString("NUM_IF");
+                        client.nis = rs0.getString("NUM_IS");
+                        client.ai = rs0.getString("NUM_ART");
                         client.mode_tarif = rs0.getString("MODE_TARIF");
-                        client.achat_montant = rs0.getString("ACHATS");
-                        client.verser_montant = rs0.getString("VERSER");
-                        client.solde_montant = rs0.getString("SOLDE");
+                        client.achat_montant = rs0.getDouble("ACHATS");
+                        client.verser_montant = rs0.getDouble("VERSER");
+                        client.solde_montant = rs0.getDouble("SOLDE");
                         client.latitude = rs0.getDouble("LATITUDE");
                         client.longitude = rs0.getDouble("LONGITUDE");
                         client.credit_limit = rs0.getDouble("CREDIT_LIMIT");
@@ -2029,9 +2409,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                     executed = controller.ExecuteTransactionClient(clients);
 
 
-                } else if ((code_depot.toString().equals("000000")) && (code_vendeur.toString().equals("000000"))) {
+                } else if ((code_depot.equals("000000")) && (code_vendeur.equals("000000"))) {
 
-                    String sql12 = "SELECT  COUNT(*) FROM CLIENTS";
+                    String sql12 = "SELECT  COUNT(*) FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0";
                     ResultSet rs12 = stmt.executeQuery(sql12);
 
                     while (rs12.next()) {
@@ -2041,7 +2421,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                     //============================ GET Clients ===========================================
-                    String sql0 = "SELECT  CLIENTS.CODE_CLIENT, CLIENTS.CLIENT, CLIENTS.TEL, CLIENTS.ADRESSE, coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, coalesce(CLIENTS.ACHATS,0) AS ACHATS, coalesce(CLIENTS.VERSER,0) AS VERSER, coalesce(CLIENTS.SOLDE,0) AS SOLDE, coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT FROM CLIENTS";
+                    String sql0 = "SELECT  CLIENTS.CODE_CLIENT, CLIENTS.CLIENT, CLIENTS.TEL, CLIENTS.ADRESSE, coalesce(CLIENTS.NUM_RC , '') AS NUM_RC, coalesce(CLIENTS.NUM_IF , '') AS NUM_IF , coalesce(CLIENTS.NUM_IS , '') AS NUM_IS , coalesce(CLIENTS.NUM_ART , '') AS NUM_ART, coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, coalesce(CLIENTS.ACHATS,0) AS ACHATS, coalesce(CLIENTS.VERSER,0) AS VERSER, coalesce(CLIENTS.SOLDE,0) AS SOLDE, coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0";
                     ResultSet rs0 = stmt.executeQuery(sql0);
                     PostData_Client client;
                     while (rs0.next()) {
@@ -2051,10 +2431,14 @@ public class ActivityImportsExport extends AppCompatActivity {
                         client.client = rs0.getString("CLIENT");
                         client.tel = rs0.getString("TEL");
                         client.adresse = rs0.getString("ADRESSE");
+                        client.rc = rs0.getString("NUM_RC");
+                        client.ifiscal = rs0.getString("NUM_IF");
+                        client.nis = rs0.getString("NUM_IS");
+                        client.ai = rs0.getString("NUM_ART");
                         client.mode_tarif = rs0.getString("MODE_TARIF");
-                        client.achat_montant = rs0.getString("ACHATS");
-                        client.verser_montant = rs0.getString("VERSER");
-                        client.solde_montant = rs0.getString("SOLDE");
+                        client.achat_montant = rs0.getDouble("ACHATS");
+                        client.verser_montant = rs0.getDouble("VERSER");
+                        client.solde_montant = rs0.getDouble("SOLDE");
 
                         client.credit_limit = rs0.getDouble("CREDIT_LIMIT");
 
@@ -2077,7 +2461,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                     //========= CHECK IF CLIENT EXIST IN FIREBIRD PME PRO
                         Boolean client_exist = false;
-                        String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + clients.get(i).code_client + "'";
+                        String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + clients.get(i).code_client + "' ";
                         ResultSet rs0 = stmt.executeQuery(client_requete);
                         while (rs0.next()) {
                             client_exist = true;
@@ -2089,12 +2473,19 @@ public class ActivityImportsExport extends AppCompatActivity {
                             client = controller.select_client_from_database(clients.get(i).code_client);
                             String insert_client;
                             // ====insert client
-                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, RIB, LATITUDE, LONGITUDE, CODE_DEPOT) VALUES ('"
-                                    + clients.get(i).code_client + "' , iif('"+ client.code_client +"' = null,'Client inconnu','"+client.client.replace("'", " ")+" ("+code_depot+")"
-                                    +"') , iif('"+ client.adresse.replace("'", " ") +"' = null,'Adresse inconnu', '"+ client.adresse.replace("'", " ") +"'),  iif('"+ client.tel
-                                    +"' = '',0,'"+client.tel +"') , iif('"+ client.rc +"' = '',0,'"+client.rc +"') , iif('"+ client.ifiscal +"' = '',0,'"+client.ifiscal + "') , iif('"
-                                    + client.rib +"' = '',0,'"+client.rib +"'), '"
-                                    +client.latitude+"', '" + client.longitude + "','" + code_depot + "')";
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT) VALUES ('"
+                                    + clients.get(i).code_client + "' , " +
+                                    "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''")+" ("+code_depot+")" +"') , " +
+                                    "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
+                                    "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
+                                    "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
+                                    "iif('"+ client.ifiscal +"' = '',0,'"+ client.ifiscal + "') , " +
+                                    "iif('"+ client.ai +"' = '',0,'"+ client.ai + "'),  " +
+                                    "iif('" + client.nis +"' = '',0,'" + client.nis +"'), " +
+                                    "'" + client.mode_tarif + "' , " +
+                                    "'" + client.latitude+"', " +
+                                    "'" + client.longitude + "'," +
+                                    "'" + code_depot + "')";
 
                             if(stmt.executeUpdate(insert_client) > 0){
                                 //commit insert client
@@ -2102,11 +2493,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                              }
                         }
                     }
+
                     con.setAutoCommit(true);
                     //============================ send Clients to pme pro===========================================
 
 
-                    String sql12 = "SELECT  COUNT(*) FROM CLIENTS WHERE CODE_DEPOT = '" + code_depot + "'";
+                    String sql12 = "SELECT  COUNT(*) FROM CLIENTS WHERE CODE_DEPOT = '" + code_depot + "' AND coalesce(CLIENTS.SUP , 0) = 0";
                     ResultSet rs12 = stmt.executeQuery(sql12);
 
                     while (rs12.next()) {
@@ -2115,7 +2507,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     publishProgress(1);
                     //============================ GET Clients ===========================================
                     clients.clear();
-                    String sql0 = "SELECT  CLIENTS.CODE_CLIENT, CLIENTS.CLIENT, CLIENTS.TEL, CLIENTS.ADRESSE, coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, coalesce(CLIENTS.ACHATS,0) AS ACHATS, coalesce(CLIENTS.VERSER,0) AS VERSER, coalesce(CLIENTS.SOLDE,0) AS SOLDE, LATITUDE, LONGITUDE , coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT FROM CLIENTS WHERE CODE_DEPOT = '" + code_depot + "' ";
+                    String sql0 = "SELECT  CLIENTS.CODE_CLIENT, CLIENTS.CLIENT, CLIENTS.TEL, CLIENTS.ADRESSE, coalesce(CLIENTS.NUM_RC , '') AS NUM_RC, coalesce(CLIENTS.NUM_IF , '') AS NUM_IF , coalesce(CLIENTS.NUM_IS , '') AS NUM_IS , coalesce(CLIENTS.NUM_ART , '') AS NUM_ART , coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, coalesce(CLIENTS.ACHATS,0) AS ACHATS, coalesce(CLIENTS.VERSER,0) AS VERSER, coalesce(CLIENTS.SOLDE,0) AS SOLDE, LATITUDE, LONGITUDE , coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT FROM CLIENTS WHERE CODE_DEPOT = '" + code_depot + "' AND coalesce(CLIENTS.SUP , 0) = 0";
                     ResultSet rs0 = stmt.executeQuery(sql0);
                     PostData_Client client;
                     while (rs0.next()) {
@@ -2124,10 +2516,14 @@ public class ActivityImportsExport extends AppCompatActivity {
                         client.client = rs0.getString("CLIENT");
                         client.tel = rs0.getString("TEL");
                         client.adresse = rs0.getString("ADRESSE");
+                        client.rc = rs0.getString("NUM_RC");
+                        client.ifiscal = rs0.getString("NUM_IF");
+                        client.nis = rs0.getString("NUM_IS");
+                        client.ai = rs0.getString("NUM_ART");
                         client.mode_tarif = rs0.getString("MODE_TARIF");
-                        client.achat_montant = rs0.getString("ACHATS");
-                        client.verser_montant = rs0.getString("VERSER");
-                        client.solde_montant = rs0.getString("SOLDE");
+                        client.achat_montant = rs0.getDouble("ACHATS");
+                        client.verser_montant = rs0.getDouble("VERSER");
+                        client.solde_montant = rs0.getDouble("SOLDE");
                         client.latitude = rs0.getDouble("LATITUDE");
                         client.longitude = rs0.getDouble("LONGITUDE");
                         client.credit_limit = rs0.getDouble("CREDIT_LIMIT");
@@ -2192,17 +2588,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         ArrayList<PostData_Produit> postData_produits;
 
 
-        public Import_produit_from_server_task() {
-
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-            prefs = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-            code_depot = prefs.getString("CODE_DEPOT", "000000");
-        }
 
         @Override
         protected void onPreExecute() {
@@ -2226,19 +2611,22 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
 
                 publishProgress(1);
 
-                String querry = "SELECT * FROM Produit";
+                String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
+                        "FROM PRODUIT ORDER BY PRODUIT";
 
                 postData_produits = controller.select_produits_from_database(querry);
 
                 if (code_depot.equals("000000")) {
-                    String sql12 = "SELECT  COUNT(*) FROM PRODUIT";
+                    String sql12 = "SELECT  COUNT(*) FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0) = 0 AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 )";
                     ResultSet rs12 = stmt.executeQuery(sql12);
 
                     while (rs12.next()) {
@@ -2246,7 +2634,20 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
 
                     //Get product and  Insert it into produit tables
-                    String sql3 = "SELECT  PRODUIT.CODE_BARRE, PRODUIT.REF_PRODUIT, PRODUIT.PRODUIT , coalesce(PRODUIT.PA_HT,0) AS PA_HT, coalesce(PRODUIT.TVA,0) AS TVA, cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT , PRODUIT.PHOTO , cast(coalesce(PRODUIT.STOCK,0) as decimal (17,2)) AS STOCK, PRODUIT.DETAILLE , PRODUIT.COLISSAGE FROM PRODUIT";
+                    String sql3 = "SELECT  PRODUIT.CODE_BARRE, PRODUIT.REF_PRODUIT, PRODUIT.PRODUIT , PRODUIT.DETAILLE ,PRODUIT.PHOTO , " +
+                            "coalesce(PRODUIT.PA_HT,0) AS PA_HT, " +
+                            "coalesce(PRODUIT.TVA,0) AS TVA, " +
+                            "coalesce(PRODUIT.PV1_HT,0) AS PV1_HT, " +
+                            "coalesce(PRODUIT.PV2_HT,0) AS PV2_HT, " +
+                            "coalesce(PRODUIT.PV3_HT,0) AS PV3_HT, " +
+                            "coalesce(PRODUIT.STOCK,0) AS STOCK, " +
+                            "PRODUIT.COLISSAGE, " +
+                            "DESTOCK_TYPE, " +
+                            "DESTOCK_CODE_BARRE, " +
+                            "DESTOCK_QTE " +
+                            "FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0)=0 AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 )";
+
+
                     ResultSet rs3 = stmt.executeQuery(sql3);
 
                     PostData_Produit produit_update;
@@ -2257,15 +2658,18 @@ public class ActivityImportsExport extends AppCompatActivity {
                         produit_update.code_barre = rs3.getString("CODE_BARRE");
                         produit_update.ref_produit = rs3.getString("REF_PRODUIT");
                         produit_update.produit = rs3.getString("PRODUIT");
-                        produit_update.pa_ht = rs3.getString("PA_HT");
-                        produit_update.tva = rs3.getString("TVA");
-                        produit_update.pv1_ht = rs3.getString("PV1_HT");
-                        produit_update.pv2_ht = rs3.getString("PV2_HT");
-                        produit_update.pv3_ht = rs3.getString("PV3_HT");
-                        produit_update.stock = rs3.getString("STOCK");
+                        produit_update.pa_ht = rs3.getDouble("PA_HT");
+                        produit_update.tva = rs3.getDouble("TVA");
+                        produit_update.pv1_ht = rs3.getDouble("PV1_HT");
+                        produit_update.pv2_ht = rs3.getDouble("PV2_HT");
+                        produit_update.pv3_ht = rs3.getDouble("PV3_HT");
+                        produit_update.stock = rs3.getDouble("STOCK");
                         produit_update.colissage = rs3.getDouble("COLISSAGE");
                         produit_update.photo = rs3.getBytes("PHOTO");
                         produit_update.DETAILLE = rs3.getString("DETAILLE");
+                        produit_update.destock_type = rs3.getString("DESTOCK_TYPE");
+                        produit_update.destock_code_barre = rs3.getString("DESTOCK_CODE_BARRE");
+                        produit_update.destock_qte = rs3.getDouble("DESTOCK_QTE");
 
                         produits.add(produit_update);
 
@@ -2275,7 +2679,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                     //Get all syn codebarre of this product  and  Insert it into codebarre tables
-                    String sql4 = "SELECT  CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE ";
+                    String sql4 = "SELECT  CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE LEFT JOIN produit ON ( PRODUIT.code_barre = CODEBARRE.code_barre ) WHERE Coalesce(PRODUIT.SUP,0)=0 AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 ) ";
                     ResultSet rs4 = stmt.executeQuery(sql4);
 
                     PostData_Codebarre post_codebarre;
@@ -2294,7 +2698,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
 
                 } else {
-                    String sql12 = "SELECT  COUNT(*) FROM DEPOT2 WHERE CODE_DEPOT = '" + code_depot + "' ";
+                    String sql12 = "SELECT  COUNT(*) FROM DEPOT2  LEFT JOIN produit ON ( PRODUIT.code_barre = DEPOT2.code_barre )  WHERE DEPOT2.CODE_LOT IS NULL AND CODE_DEPOT = '" + code_depot + "' AND Coalesce(PRODUIT.SUP,0)=0 AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 ) ";
                     ResultSet rs12 = stmt.executeQuery(sql12);
 
                     while (rs12.next()) {
@@ -2303,10 +2707,20 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                     //Get product and  Insert it into produit tables
-                    String sql3 = "SELECT DEPOT2.CODE_BARRE, PRODUIT.REF_PRODUIT, cast(coalesce(PRODUIT.STOCK,0) as decimal (17,2)) AS STOCK, PRODUIT.PRODUIT , PRODUIT.COLISSAGE,  coalesce(PRODUIT.PA_HT,0) AS PA_HT, coalesce(PRODUIT.TVA,0) AS TVA, cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT , PRODUIT.PHOTO, PRODUIT.DETAILLE  " +
+                    String sql3 = "SELECT DEPOT2.CODE_BARRE, PRODUIT.REF_PRODUIT, PRODUIT.PRODUIT, PRODUIT.DETAILLE, PRODUIT.PHOTO, " +
+                            "coalesce(PRODUIT.PA_HT,0) AS PA_HT, " +
+                            "coalesce(PRODUIT.TVA,0) AS TVA, " +
+                            "coalesce(PRODUIT.PV1_HT,0) AS PV1_HT, " +
+                            "coalesce(PRODUIT.PV2_HT,0) AS PV2_HT, " +
+                            "coalesce(PRODUIT.PV3_HT,0) AS PV3_HT,   " +
+                            "coalesce(DEPOT2.STOCK,0) AS STOCK, " +
+                            "PRODUIT.COLISSAGE,  " +
+                            "DESTOCK_TYPE, " +
+                            "DESTOCK_CODE_BARRE, " +
+                            "DESTOCK_QTE " +
                             " FROM DEPOT2 " +
                             " LEFT JOIN produit ON ( PRODUIT.code_barre = DEPOT2.code_barre ) " +
-                            " WHERE DEPOT2.code_depot = '" + code_depot + "' ";
+                            " WHERE DEPOT2.CODE_LOT IS NULL AND DEPOT2.code_depot = '" + code_depot + "' AND Coalesce(PRODUIT.SUP,0)=0 AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 )";
 
                     ResultSet rs3 = stmt.executeQuery(sql3);
                     produits.clear();
@@ -2318,15 +2732,18 @@ public class ActivityImportsExport extends AppCompatActivity {
                         produit_update.code_barre = rs3.getString("CODE_BARRE");
                         produit_update.ref_produit = rs3.getString("REF_PRODUIT");
                         produit_update.produit = rs3.getString("PRODUIT");
-                        produit_update.pa_ht = rs3.getString("PA_HT");
-                        produit_update.tva = rs3.getString("TVA");
-                        produit_update.pv1_ht = rs3.getString("PV1_HT");
-                        produit_update.pv2_ht = rs3.getString("PV2_HT");
-                        produit_update.pv3_ht = rs3.getString("PV3_HT");
-                        produit_update.stock = rs3.getString("STOCK");
+                        produit_update.pa_ht = rs3.getDouble("PA_HT");
+                        produit_update.tva = rs3.getDouble("TVA");
+                        produit_update.pv1_ht = rs3.getDouble("PV1_HT");
+                        produit_update.pv2_ht = rs3.getDouble("PV2_HT");
+                        produit_update.pv3_ht = rs3.getDouble("PV3_HT");
+                        produit_update.stock = rs3.getDouble("STOCK");
                         produit_update.colissage = rs3.getDouble("COLISSAGE");
                         produit_update.photo = rs3.getBytes("PHOTO");
                         produit_update.DETAILLE = rs3.getString("DETAILLE");
+                        produit_update.destock_type = rs3.getString("DESTOCK_TYPE");
+                        produit_update.destock_code_barre = rs3.getString("DESTOCK_CODE_BARRE");
+                        produit_update.destock_qte = rs3.getDouble("DESTOCK_QTE");
                         produits.add(produit_update);
 
                         compt++;
@@ -2334,7 +2751,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
 
                     //Get all syn codebarre of this product  and  Insert it into codebarre tables
-                    String sql4 = "SELECT  CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE where codebarre.code_barre in ( select CODE_BARRE FROM DEPOT2 WHERE DEPOT2.code_depot = '" + code_depot + "')";
+                    String sql4 = "SELECT  CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE where codebarre.code_barre in ( select DEPOT2.CODE_BARRE FROM DEPOT2 LEFT JOIN produit ON ( PRODUIT.code_barre = DEPOT2.code_barre ) WHERE DEPOT2.CODE_LOT IS NULL AND DEPOT2.code_depot = '" + code_depot + "' AND Coalesce(PRODUIT.GER_LOT,0)=0 AND Coalesce(PRODUIT.SUP,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 ))";
                     ResultSet rs4 = stmt.executeQuery(sql4);
                     codebarres.clear();
                     PostData_Codebarre post_codebarre;
@@ -2386,13 +2803,13 @@ public class ActivityImportsExport extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             mProgressDialog.dismiss();
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
-            currentTime = Calendar.getInstance().getTime();
-            currentDateTimeString = sdf.format(currentTime);
-            SharedPreferences pref = getBaseContext().getSharedPreferences(MY_PREF_NAME, 0);
+            Date currentDateTime = Calendar.getInstance().getTime();
+            currentDateTimeString = sdf.format(currentDateTime);
+            SharedPreferences pref = getBaseContext().getSharedPreferences(PREFS, 0);
             SharedPreferences.Editor editor = pref.edit();
-            editor.putString("time", currentDateTimeString);
+            editor.putString("date_time", currentDateTimeString);
             editor.apply();
             super.onPostExecute(integer);
 
@@ -2422,14 +2839,6 @@ public class ActivityImportsExport extends AppCompatActivity {
             _all = all;
             _num_inv = num_inv;
 
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-            prefs = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-            code_depot = prefs.getString("CODE_DEPOT", "000000");
         }
 
         @Override
@@ -2448,7 +2857,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 java.sql.DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
@@ -2503,7 +2912,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             for (int j = 0; j < invs2.size(); j++) {
                                 buffer[j] = "INSERT INTO INV2 (CODE_BARRE, NUM_INV, PA_HT, QTE, TVA,  QTE_TMP, CODE_DEPOT" +
                                         ") VALUES ('" + invs2.get(j).codebarre + "' , '" + NUM_INV + "' , '" +
-                                        invs2.get(j).pa_ht + "' , '" + invs2.get(j).quantity_old + "', '" + invs2.get(j).tva + "' , '" + invs2.get(j).quantity_new + "' , '" + invs1.get(i).code_depot + "')";
+                                        invs2.get(j).pa_ht + "' , '" + invs2.get(j).qte_theorique + "', '" + invs2.get(j).tva + "' , '" + invs2.get(j).qte_physique + "' , '" + invs1.get(i).code_depot + "')";
                                 stmt.addBatch(buffer[j]);
                             }
 
@@ -2547,7 +2956,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             for (int j = 0; j < invs2.size(); j++) {
                                 buffer[j] = "INSERT INTO INV2 (CODE_BARRE, NUM_INV, PA_HT, QTE, TVA, QTE_TMP, CODE_DEPOT" +
                                         ") VALUES ('" + invs2.get(j).codebarre + "' , '" + NUM_INV + "' , '" +
-                                        invs2.get(j).pa_ht + "' ,'" + invs2.get(j).quantity_old + "', '" + invs2.get(j).tva + "',  '" + invs2.get(j).quantity_new + "' , '" + invs1.get(i).code_depot + "')";
+                                        invs2.get(j).pa_ht + "' ,'" + invs2.get(j).qte_theorique + "', '" + invs2.get(j).tva + "',  '" + invs2.get(j).qte_physique + "' , '" + invs1.get(i).code_depot + "')";
                                 stmt.addBatch(buffer[j]);
                             }
 
@@ -2602,7 +3011,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 buffer[j] = "INSERT INTO INV2 (CODE_BARRE, REF_PRODUIT, NUM_INV, PRODUIT, PA_HT, QTE, TVA, QTE_NEW, CODE_DEPOT" +
                                         ") VALUES ('" + invs2.get(j).codebarre + "' , '" +
                                         invs2.get(j).reference + "' , '" + NUM_INV + "' , '" + invs2.get(j).produit + "', '" +
-                                        invs2.get(j).pa_ht + "' , '" + invs2.get(j).quantity_old + "', '" + invs2.get(j).tva + "', '" + invs2.get(j).quantity_new + "' , '" + invs1.get(0).code_depot + "')";
+                                        invs2.get(j).pa_ht + "' , '" + invs2.get(j).qte_theorique + "', '" + invs2.get(j).tva + "', '" + invs2.get(j).qte_physique + "' , '" + invs1.get(0).code_depot + "')";
                                 stmt.addBatch(buffer[j]);
                             }
 
@@ -2642,8 +3051,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             for (int j = 0; j < invs2.size(); j++) {
                                 buffer[j] = "INSERT INTO INV2 (CODE_BARRE, REF_PRODUIT, NUM_INV, PRODUIT, PA_HT, QTE, TVA, QTE_TMP, CODE_DEPOT" +
                                         ") VALUES ('" + invs2.get(j).codebarre + "' , '" +
-                                        invs2.get(j).reference + "' , '" + NUM_INV + "' , '" + invs2.get(j).produit + "', '" + invs2.get(j).pa_ht + "' , '" + invs2.get(j).quantity_old + "', '" + invs2.get(j).tva + "', '" +
-                                        invs2.get(j).quantity_new + "', '" + invs1.get(0).code_depot + "')";
+                                        invs2.get(j).reference + "' , '" + NUM_INV + "' , '" + invs2.get(j).produit + "', '" + invs2.get(j).pa_ht + "' , '" + invs2.get(j).qte_theorique + "', '" + invs2.get(j).tva + "', '" +
+                                        invs2.get(j).qte_physique + "', '" + invs1.get(0).code_depot + "')";
                                 stmt.addBatch(buffer[j]);
                             }
 
@@ -2727,7 +3136,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public class Exporter_ventesx_to_server_task extends AsyncTask<Void, Integer, Integer> {
+   /* public class Exporter_ventesx_to_server_task extends AsyncTask<Void, Integer, Integer> {
 
         Connection con;
         Integer flag = 0;
@@ -2741,15 +3150,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int total_versement = 0;
         SharedPreferences prefs;
 
-        public Exporter_ventesx_to_server_task() {
 
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-            Server = prefs.getString("ip", "192.168.1.94");
-            Path = prefs.getString("path", "C:/PMEPRO1122");
-            Username = prefs.getString("username", "SYSDBA");
-            Password = prefs.getString("password", "masterkey");
-
-        }
 
         @Override
         protected void onPreExecute() {
@@ -2768,7 +3169,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 Statement stmt = con.createStatement();
@@ -2791,6 +3192,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "Client.ADRESSE, " +
                         "Client.RC, " +
                         "Client.IFISCAL, " +
+                        "Client.AI, " +
+                        "Client.NIS, " +
                         "Bon1.DATE_BON, " +
                         "Bon1.HEURE, " +
                         "Bon1.NBR_P, " +
@@ -2821,17 +3224,13 @@ public class ActivityImportsExport extends AppCompatActivity {
                 bon1s = controller.select_vente_from_database(querry);
                 total_bon = bon1s.size();
 
-                prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-
-                prefs = getSharedPreferences(PREFS_CODE_DEPOT, MODE_PRIVATE);
-                code_depot = prefs.getString("CODE_DEPOT", "000000");
 
 
                 // Get CODE_VENDEUR , CODE_CAISSE
-                String CODE_VENDEUR = "NOT_EXIST";
-                String CODE_CAISSE = "NOT_EXIST";
+                String CODE_VENDEUR = "000000";
+                String CODE_CAISSE = "000000";
 
-                String requette_vendeur_caisse = "SELECT coalesce(CODE_VENDEUR, 'NOT_EXIST') AS CODE_VENDEUR, coalesce(CODE_CAISSE, 'NOT_EXIST') AS CODE_CAISSE FROM DEPOT1 WHERE CODE_DEPOT = '" + code_depot + "' ";
+                String requette_vendeur_caisse = "SELECT coalesce(CODE_VENDEUR, '000000') AS CODE_VENDEUR, coalesce(CODE_CAISSE, '000000') AS CODE_CAISSE FROM DEPOT1 WHERE CODE_DEPOT = '" + code_depot + "' ";
                 ResultSet rs111 = stmt.executeQuery(requette_vendeur_caisse);
                 while (rs111.next()) {
                     CODE_VENDEUR = rs111.getString("CODE_VENDEUR");
@@ -2858,14 +3257,15 @@ public class ActivityImportsExport extends AppCompatActivity {
                         client = controller.select_client_from_database(bon1s.get(i).code_client);
                         String insert_client;
                         // insert client
-                        insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, RIB,  LATITUDE, LONGITUDE, CODE_DEPOT) " +   //ACHATS, VERSER,
+                        insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS,  LATITUDE, LONGITUDE, CODE_DEPOT) " +   //ACHATS, VERSER,
                                 "VALUES ('"+ bon1s.get(i).code_client + "' , "
                                            + "iif('" + client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", " ") +" ("+bon1s.get(i).code_depot+")"+ "') , "
                                            + "iif('" + client.adresse.replace("'", " ") + "' = null,'Adresse inconnu', '" + client.adresse.replace("'", " ") + "'), "
                                            + " iif('" + client.tel + "' = '',0,'" + client.tel + "') , "
                                            + "iif('" + client.rc + "' = '',0,'" + client.rc + "') , "
-                                           + "iif('" + client.ifiscal + "' = '',0,'" + client.ifiscal + "') "
-                                           + ", iif('" + client.rib + "' = '',0,'" + client.rib + "'), '"
+                                           + "iif('" + client.ifiscal + "' = '',0,'" + client.ifiscal + "'), "
+                                           + "iif('" + client.ai + "' = '',0,'" + client.ai + "'), "
+                                           + "iif('" + client.nis + "' = '',0,'" + client.nis + "'), '"
                                          //  + client.achat_montant + "', '"
                                          //  + client.verser_montant + "', '"
                                            + client.latitude + "', '"
@@ -2893,14 +3293,20 @@ public class ActivityImportsExport extends AppCompatActivity {
                                         "Bon2.CODE_BARRE, " +
                                         "Bon2.NUM_BON, " +
                                         "Bon2.PRODUIT, " +
+                                        "Bon2.NBRE_COLIS, " +
+                                        "Bon2.COLISSAGE, " +
                                         "Bon2.QTE, " +
+                                        "Bon2.QTE_GRAT, " +
                                         "Bon2.PV_HT, " +
                                         "Bon2.TVA, " +
                                         "Bon2.CODE_DEPOT, " +
                                         "Bon2.PA_HT, " +
+                                        "Bon2.DESTOCK_TYPE, " +
+                                        "Bon2.DESTOCK_CODE_BARRE, " +
+                                        "Bon2.DESTOCK_QTE, " +
                                         "Produit.STOCK " +
                                         "FROM Bon2 " +
-                                        "INNER JOIN " +
+                                        "LEFT JOIN " +
                                         "Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
                                         "WHERE Bon2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
 
@@ -2921,7 +3327,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 vvv = "INSERT INTO BON1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, HT, TVA, TIMBRE, REMISE, VERSER, ANCIEN_SOLDE, MODE_RG, UTILISATEUR, MODE_TARIF, EXPORTATION, BLOCAGE, LATITUDE, LONGITUDE, CODE_VENDEUR, CODE_CAISSE, CODE_DEPOT) VALUES ('"
                                         + recordid_numbon + "' , '" + NUM_BON + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
                                         "' , '" + bon1s.get(i).code_client + "' , '" + bon1s.get(i).tot_ht + "' ,'" + bon1s.get(i).tot_tva + "' , iif('" + bon1s.get(i).timbre + "' = 'null',0,'" + bon1s.get(i).timbre + "'), iif('" + bon1s.get(i).remise + "' = 'null',0,'" + bon1s.get(i).remise + "')," +
-                                        " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "', iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') , 'TERMINAl-MOBILE', iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "'), '" + bon1s.get(i).exportation + "', 'F' , " + bon1s.get(i).latitude + ", " + bon1s.get(i).longitude + ", iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'),'" + bon1s.get(i).code_depot + "')";
+                                        " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "', iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') , 'TERMINAl-MOBILE', iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "'), '" + bon1s.get(i).exportation + "', 'F' , " + bon1s.get(i).latitude + ", " + bon1s.get(i).longitude + ", iif('" + CODE_VENDEUR + "' = '000000', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = '000000', null,'" + CODE_CAISSE + "'),'" + bon1s.get(i).code_depot + "')";
                                 stmt.executeUpdate(vvv);
 
 
@@ -2933,14 +3339,14 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                                 String requete_situation = "INSERT INTO CARNET_C (CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
                                         + bon1s.get(i).code_client + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
-                                        "' , '" + bon1s.get(i).montant_bon + "' , '" + bon1s.get(i).verser + "' ,'BL-VENTE' , '" + NUM_BON + "', '" + bon1s.get(i).mode_rg + "', 'TERMINAL_MOBILE', ' ', iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null ,'" + CODE_CAISSE + "'))";
+                                        "' , '" + bon1s.get(i).montant_bon + "' , '" + bon1s.get(i).verser + "' ,'BL-VENTE' , '" + NUM_BON + "', '" + bon1s.get(i).mode_rg + "', 'TERMINAL_MOBILE', ' ', iif('" + CODE_VENDEUR + "' = '000000', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = '000000', null ,'" + CODE_CAISSE + "'))";
                                 stmt.executeUpdate(requete_situation);
 
 
                                 stmt.executeBatch();
                                 stmt.clearBatch();
 
-                                if (!CODE_CAISSE.equals("NOT_EXIST")) {
+                                if (!CODE_CAISSE.equals("000000")) {
                                     if (Double.valueOf(bon1s.get(i).verser) != 0) {
 
                                         String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
@@ -2986,14 +3392,20 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "Bon2.CODE_BARRE, " +
                                     "Bon2.NUM_BON, " +
                                     "Bon2.PRODUIT, " +
+                                    "Bon2.NBRE_COLIS, " +
+                                    "Bon2.COLISSAGE, " +
                                     "Bon2.QTE, " +
+                                    "Bon2.QTE_GRAT, " +
                                     "Bon2.PV_HT, " +
                                     "Bon2.TVA, " +
                                     "Bon2.CODE_DEPOT, " +
                                     "Bon2.PA_HT, " +
+                                    "Bon2.DESTOCK_TYPE, " +
+                                    "Bon2.DESTOCK_CODE_BARRE, " +
+                                    "Bon2.DESTOCK_QTE, " +
                                     "Produit.STOCK " +
                                     "FROM Bon2 " +
-                                    "INNER JOIN " +
+                                    "LEFT JOIN " +
                                     "Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
                                     "WHERE Bon2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
 
@@ -3011,7 +3423,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             vvv = "INSERT INTO BON1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, HT, TVA, TIMBRE, REMISE, VERSER, ANCIEN_SOLDE, MODE_RG, UTILISATEUR, MODE_TARIF, EXPORTATION, BLOCAGE, LATITUDE, LONGITUDE, CODE_VENDEUR, CODE_CAISSE,CODE_DEPOT) VALUES ('"
                                     + recordid_numbon + "' , '" + NUM_BON + "' , CAST ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
                                     "' , '" + bon1s.get(i).code_client + "' , '" + bon1s.get(i).tot_ht + "' ,'" + bon1s.get(i).tot_tva + "' , iif('" + bon1s.get(i).timbre + "' = 'null',0,'" + bon1s.get(i).timbre + "'), iif('" + bon1s.get(i).remise + "' = 'null',0,'" + bon1s.get(i).remise + "')," +
-                                    " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "', iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') , 'TERMINAl-MOBILE', iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "'), '" + bon1s.get(i).exportation + "', 'F' , " + bon1s.get(i).latitude + ", " + bon1s.get(i).longitude + ", iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'),'" + bon1s.get(i).code_depot + "')";
+                                    " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "', iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') , 'TERMINAl-MOBILE', iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "'), '" + bon1s.get(i).exportation + "', 'F' , " + bon1s.get(i).latitude + ", " + bon1s.get(i).longitude + ", iif('" + CODE_VENDEUR + "' = '000000', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = '000000', null,'" + CODE_CAISSE + "'),'" + bon1s.get(i).code_depot + "')";
                             stmt.executeUpdate(vvv);
 
 
@@ -3024,11 +3436,11 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                             String requete_situation = "INSERT INTO CARNET_C (CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
                                     + bon1s.get(i).code_client + "' , cast ('" + bon1s.get(i).date_bon + "' as timestamp) , '" + bon1s.get(i).heure +
-                                    "' , '" + bon1s.get(i).montant_bon + "' , '" + bon1s.get(i).verser + "' ,'BL-VENTE' , '" + NUM_BON + "', '" + bon1s.get(i).mode_rg + "', 'TERMINAL_MOBILE', ' ', iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'))";
+                                    "' , '" + bon1s.get(i).montant_bon + "' , '" + bon1s.get(i).verser + "' ,'BL-VENTE' , '" + NUM_BON + "', '" + bon1s.get(i).mode_rg + "', 'TERMINAL_MOBILE', ' ', iif('" + CODE_VENDEUR + "' = '000000', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = '000000', null,'" + CODE_CAISSE + "'))";
                             stmt.executeUpdate(requete_situation);
 
 
-                            if (!CODE_CAISSE.equals("NOT_EXIST")) {
+                            if (!CODE_CAISSE.equals("000000")) {
                                 if (Double.valueOf(bon1s.get(i).verser) != 0) {
 
                                     String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
@@ -3077,6 +3489,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             "Client.ADRESSE, " +
                             "Client.RC, " +
                             "Client.IFISCAL, " +
+                            "Client.AI, " +
+                            "Client.NIS, " +
 
                             "Carnet_c.HEURE, " +
                             "Carnet_c.ACHATS, " +
@@ -3111,11 +3525,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                             //String RECORDID_CRC = Get_Digits_String(String.valueOf(num_bon_carnet_c), 6);
                             String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, CODE_VENDEUR, CODE_CAISSE) VALUES ('" + num_bon_carnet_c + "', '"
                                     + all_versement_client.get(g).code_client + "' , cast ('" + all_versement_client.get(g).carnet_date + "' as timestamp) , '" + all_versement_client.get(g).carnet_heure +
-                                    "' , '" + all_versement_client.get(g).carnet_achats + "' , '" + all_versement_client.get(g).carnet_versement + "' ,'SITUATION-CLIENT' ,'VRC" + num_bon_carnet_c + "', '" + all_versement_client.get(g).carnet_mode_rg + "', 'TERMINAL_MOBILE', '" + all_versement_client.get(g).carnet_remarque + "', iif('" + CODE_VENDEUR + "' = 'NOT_EXIST', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = 'NOT_EXIST', null,'" + CODE_CAISSE + "'))";
+                                    "' , '" + all_versement_client.get(g).carnet_achats + "' , '" + all_versement_client.get(g).carnet_versement + "' ,'SITUATION-CLIENT' ,'VRC" + num_bon_carnet_c + "', '" + all_versement_client.get(g).carnet_mode_rg + "', 'TERMINAL_MOBILE', '" + all_versement_client.get(g).carnet_remarque + "', iif('" + CODE_VENDEUR + "' = '000000', null,'" + CODE_VENDEUR + "'), iif('" + CODE_CAISSE + "' = '000000', null,'" + CODE_CAISSE + "'))";
                             stmt.executeUpdate(buffer_versement);
 
 
-                            if (!CODE_CAISSE.equals("NOT_EXIST")) {
+                            if (!CODE_CAISSE.equals("000000")) {
                                 if (Double.valueOf(all_versement_client.get(g).carnet_versement) != 0) {
 
                                     String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
@@ -3186,5 +3600,5 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             super.onPostExecute(integer);
         }
-    }
+    }*/
 }

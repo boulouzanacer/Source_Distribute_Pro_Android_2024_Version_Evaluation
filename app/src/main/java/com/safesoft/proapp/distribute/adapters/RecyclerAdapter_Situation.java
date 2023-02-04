@@ -6,13 +6,18 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
-import com.safesoft.proapp.distribute.util.MyCardView_Situation;
+import com.safesoft.proapp.distribute.utils.MyCardView_Situation;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by UK2016 on 02/01/2017.
@@ -23,6 +28,7 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
     private List<PostData_Carnet_c> carnet_c_tList;
     private ItemClick itemClick;
     private Context mContext;
+    private NumberFormat nf;
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -30,6 +36,8 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
         TextView montant_value;
         CardView cardView;
         TextView date_value;
+        TextView heure_value;
+        ImageButton btn_edit_situation, btn_remove_situation;
 
         MyViewHolder(View view) {
             super(view);
@@ -37,6 +45,11 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
             cardView = (CardView) view.findViewById(R.id.item_root);
             montant_value = (TextView) view.findViewById(R.id.montant_versement_value1);
             date_value = (TextView) view.findViewById(R.id.date_versement_value1);
+            heure_value = (TextView) view.findViewById(R.id.heure_versement_value1);
+            btn_edit_situation =  view.findViewById(R.id.btn_edit_situation);
+            btn_remove_situation =  view.findViewById(R.id.btn_remove_situation);
+            nf = NumberFormat.getInstance(Locale.US);
+            ((DecimalFormat) nf).applyPattern("##,##0.00");
         }
     }
 
@@ -52,7 +65,6 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
 
         itemClick = (ItemClick) parent.getContext();
 
-
         return new MyViewHolder(v);
     }
 
@@ -61,23 +73,31 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
         PostData_Carnet_c item = carnet_c_tList.get(position);
 
         holder.montant_value.setTextSize(17);
-        //  holder.Montant.setTypeface(null, Typeface.BOLD);
-        holder.montant_value.setText(item.carnet_versement);
+        holder.date_value.setTextSize(17);
+        holder.heure_value.setTextSize(17);
+
+        holder.montant_value.setText(String.valueOf(nf.format(item.carnet_versement)));
+        holder.date_value.setText(item.carnet_date);
+        holder.heure_value.setText(item.carnet_heure);
+
+       // holder.btn_remove_situation.setBackgroundResource(R.drawable.delete_situation_selector);
+       // holder.btn_edit_situation.setBackgroundResource(R.drawable.edit_situation__selector);
 
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.btn_edit_situation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemClick.onClick(view,holder.getAdapterPosition());
+                itemClick.onClick(view,holder.getAdapterPosition(), item);
             }
         });
 
 
-
-
-        holder.date_value.setTextSize(17);
-        // holder.Date.setTypeface(null, Typeface.BOLD);
-        holder.date_value.setText(item.carnet_date + "   " + item.carnet_heure);
+        holder.btn_remove_situation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemClick.onClick(view,holder.getAdapterPosition(), item);
+            }
+        });
 
     }
 
@@ -87,7 +107,7 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
     }
 
     public interface ItemClick{
-        void onClick(View v, int position);
+        void onClick(View v, int position, PostData_Carnet_c carnet_c);
     }
 
 

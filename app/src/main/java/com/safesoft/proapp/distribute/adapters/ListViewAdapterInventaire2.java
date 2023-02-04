@@ -51,7 +51,7 @@ public class ListViewAdapterInventaire2 extends ArrayAdapter<PostData_Inv2> {
         // Populate the data from the data object via the viewHolder object
         // into the template view.
         viewHolder.produit.setText(inventaire2.produit);
-        viewHolder.quantite.setText(inventaire2.quantity_new);
+        viewHolder.quantite.setText(String.valueOf(inventaire2.qte_physique));
         // Return the completed view to render on screen
         return convertView;
     }

@@ -19,7 +19,7 @@
             android:id="@+id/btnventes"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:background="@drawable/imagebutton_rounded"
             android:backgroundTint="@color/blue"
 
@@ -31,7 +31,7 @@
             android:id="@+id/btn_b_reception"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/imagebutton_rounded"
 
@@ -51,26 +51,27 @@
             android:id="@+id/btnproduits"
             android:layout_width="0dip"
             android:onClick="onClick"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:background="@drawable/imagebutton_rounded"
-
             android:backgroundTint="@color/rouge"
             android:layout_height="match_parent"
             android:src="@mipmap/produit"
             android:layout_weight="1" />
 
+
         <ImageButton
             android:id="@+id/btnclients"
             android:layout_width="0dip"
             android:onClick="onClick"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:background="@drawable/imagebutton_rounded"
-
             android:backgroundTint="@color/vert_clair"
             android:layout_height="match_parent"
             android:src="@mipmap/client"
             android:layout_weight="1"/>
+
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

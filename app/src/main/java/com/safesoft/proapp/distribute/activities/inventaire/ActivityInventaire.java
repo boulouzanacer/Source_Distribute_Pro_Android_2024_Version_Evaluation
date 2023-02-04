@@ -1,217 +1,797 @@
 package com.safesoft.proapp.distribute.activities.inventaire;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.adapters.RecyclerAdapterInv1;
-import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.postData.PostData_Bon1;
-import com.safesoft.proapp.distribute.postData.PostData_Bon2;
-import com.safesoft.proapp.distribute.postData.PostData_Inv1;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
+import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
+import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.material.textfield.TextInputEditText;
+import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierInventaire;
+import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
+import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventInventaire2;
+import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
+import com.safesoft.proapp.distribute.fragments.FragmentQteInventaire;
+import com.safesoft.proapp.distribute.fragments.FragmentQteVente;
+import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
+import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.postData.PostData_Inv1;
+import com.safesoft.proapp.distribute.postData.PostData_Inv2;
+import com.safesoft.proapp.distribute.postData.PostData_Produit;
+import com.safesoft.proapp.distribute.printing.PrinterInventaire;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
+import cn.nekocode.badge.BadgeDrawable;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityInventaire extends AppCompatActivity implements RecyclerAdapterInv1.ItemClick , RecyclerAdapterInv1.ItemLongClick{
-
-  RecyclerView recyclerView;
-  RecyclerAdapterInv1 adapter;
-  ArrayList<PostData_Inv1> inv1s;
-  DATABASE controller;
-
-  private MediaPlayer mp;
+public class ActivityInventaire extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick{
 
 
-  private PostData_Bon1 bon1_print;
-  private ArrayList<PostData_Bon2> bon2_print;
 
-  private String PARAMS_PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
-  private String CODE_DEPOT, CODE_VENDEUR;
+    ////////////////////////////////////////
+    private static final int ACCES_FINE_LOCATION = 2;
+    private static final int CAMERA_PERMISSION = 5;
 
-  private NumberFormat nf;
+    private Intent intent_location;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_inventaire);
+    private ListViewAdapterPanierInventaire PanierAdapter;
+    private DATABASE controller;
+    private  ArrayList<PostData_Inv2> final_panier;
+    private TextView nbr_produit;
+    private  int val_nbr_produit = 0;
+    private TextInputEditText edt_nom_inventaire;
+    private ImageButton btn_validate_inv_name;
+    private boolean btn_nom_inv_state_isactive = true;
 
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle("Les inventaires");
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    private EventBus bus;
 
-    controller = new DATABASE(this);
-
-    initViews();
-
-  }
-
-  private void initViews() {
-
-    recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-    ///////////////////
-    SharedPreferences prefs2 = getSharedPreferences(PARAMS_PREFS_CODE_DEPOT, MODE_PRIVATE);
-    CODE_DEPOT = prefs2.getString("CODE_DEPOT", "000000");
-    CODE_VENDEUR = prefs2.getString("CODE_VENDEUR", "000000");
-  }
-
-  @Override
-  protected void onStart() {
-
-    setRecycle();
-
-    // Declare US print format
-    nf = NumberFormat.getInstance(Locale.US);
-    ((DecimalFormat) nf).applyPattern("##,##0.00");
-
-    super.onStart();
-  }
-
-  private void setRecycle() {
-    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-    recyclerView.setLayoutManager(layoutManager);
-    adapter = new RecyclerAdapterInv1(this, getItems());
-    recyclerView.setAdapter(adapter);
-  }
+    private String NUM_INV;
+    private PostData_Inv1 inv1;
+    private String SOURCE;
+    private String CODE_DEPOT;
 
 
-  public ArrayList<PostData_Inv1> getItems() {
-    inv1s = new ArrayList<>();
-    inv1s.clear();
+    private ExpandableHeightListView expandableListView;
 
-    String querry = "";
-    if(CODE_DEPOT.equals("000000")){
-      querry = "SELECT * FROM Inventaires1";
-    }else{
-      querry = "SELECT * FROM Inventaires1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"'";
-    }
+    private NumberFormat nf;
 
-    // querry = "SELECT * FROM Events";
-    inv1s = controller.select_list_inventaire_from_database(querry);
+    public static final String BARCODE_KEY = "BARCODE";
 
-    return inv1s;
-  }
+    private Barcode barcodeResult;
+    final String PREFS = "ALL_PREFS";
+    String TYPE_ACTIVITY = "";
+    SharedPreferences prefs;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_inventaire);
 
-  @Override
-  public void onClick(View v, int position) {
-
-    Sound(R.raw.beep);
-    Intent editIntent = new Intent(ActivityInventaire.this, ActivityInventaireDetails.class);
-    editIntent.putExtra("NUM_INV", inv1s.get(position).num_inv);
-    editIntent.putExtra("NOM_INV", inv1s.get(position).nom_inv);
-    startActivity(editIntent);
-  }
-
-
-  @Override
-  public void onLongClick(View v, final int position) {
-
-    final CharSequence[] items = {"Supprimer", "Exporter" };
-
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setIcon(R.drawable.selectiondialogs_default_item_icon);
-    builder.setTitle("Choisissez une action");
-    builder.setItems(items, new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialog, int item) {
-        switch (item){
-          case 0:
-            new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Supprission")
-                    .setContentText("Voulez-vous vraiment supprimer l'inventaire " + inv1s.get(position).nom_inv + " ?!")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Supprimer")
-                    .showCancelButton(true)
-                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                      @Override
-                      public void onClick(SweetAlertDialog sDialog) {
-                        sDialog.dismiss();
-                      }
-                    })
-                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                      @Override
-                      public void onClick(SweetAlertDialog sDialog) {
-
-                        if(!controller.delete_inventaire_group(inv1s.get(position).num_inv)){
-                          new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
-                                  .setTitleText("Erreur...")
-                                  .setContentText("Erreur suprssion de l'inventaire ! ")
-                                  .show();
-                        }
-                        setRecycle();
-
-                        sDialog.dismiss();
-                      }
-                    })
-                    .show();
-
-            break;
-          case 1:
-            //Print_bon(bon1s.get(position).num_bon);
-            Toast.makeText(ActivityInventaire.this, "Cette option est en cours de developpement !", Toast.LENGTH_SHORT).show();
-            break;
+        if(savedInstanceState != null){
+            Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
+            if(restoredBarcode != null){
+                //  result.setText(restoredBarcode.rawValue);
+                Toast.makeText(ActivityInventaire.this, ""+restoredBarcode.rawValue, Toast.LENGTH_SHORT).show();
+                barcodeResult = restoredBarcode;
+            }
         }
-      }
-    });
-    builder.show();
+
+        bus = EventBus.getDefault();
+        controller = new DATABASE(this);
+        inv1 = new PostData_Inv1();
+        final_panier = new ArrayList<>();
 
 
-  }
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu_inventaire, menu);
+        String date_time_sub_title = null;
+        String formattedDate = null;
 
-    // return true so that the menu pop up is opened
-    return true;
-  }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if(item.getItemId() == android.R.id.home){
-      onBackPressed();
-    }else if(item.getItemId() == R.id.new_inventaire){
-      startActivityForResult(new Intent(ActivityInventaire.this, ActivityNewInventory.class), 5000);
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+
+        initViews();
+
+        //get num bon
+        if(getIntent() !=null){
+            TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
+        }else {
+            Crouton.makeText(ActivityInventaire.this, "Erreur séléction activity !", Style.ALERT).show();
+            return;
+        }
+        if(TYPE_ACTIVITY.equals("NEW_INV")){
+            //get num bon
+            NUM_INV = Get_Digits_String();
+            // get date and time
+            Calendar c = Calendar.getInstance();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+            String formattedDate_Show = date_format.format(c.getTime());
+           // formattedDate = df_save.format(c.getTime());
+            String currentTime = sdf.format(c.getTime());
+
+            date_time_sub_title = formattedDate_Show + " " + currentTime;
+
+            inv1.date_inv = formattedDate_Show;
+            inv1.heure_inv = currentTime;
+            inv1.num_inv = NUM_INV;
+            inv1.blocage = "N";
+            inv1.nom_inv = "";
+            inv1.code_depot = CODE_DEPOT;
+
+
+        }else if(TYPE_ACTIVITY.equals("EDIT_INV")){
+            //get num bon
+            if(getIntent() !=null){
+                NUM_INV = getIntent().getStringExtra("NUM_INV");
+            }
+
+            String querry = "SELECT " +
+                    "Inv1.NUM_INV, " +
+                    "Inv1.DATE_INV, " +
+                    "Inv1.HEURE_INV, " +
+                    "Inv1.LIBELLE, " +
+                    "Inv1.NBR_PRODUIT, " +
+
+                    "Inv1.UTILISATEUR, " +
+                    "Inv1.CODE_DEPOT, " +
+                    "Inv1.EXPORTATION, " +
+                    "Inv1.IS_SENT, " +
+                    "Inv1.DATE_EXPORT_INV, " +
+                    "Inv1.BLOCAGE " +
+
+                    "FROM Inv1 " +
+                    "WHERE Inv1.NUM_INV ='"+ NUM_INV +"'";
+
+            ///////////////////////////////////
+            inv1 = controller.select_inventaire_from_database(querry);
+
+            final_panier =  controller.select_inventaire2_from_database("" +
+                    "SELECT " +
+                    "Inv2.RECORDID, " +
+                    "Inv2.CODE_BARRE, " +
+                    "Inv2.NUM_INV, " +
+                    "Inv2.PRODUIT, " +
+                    "Inv2.NBRE_COLIS, " +
+                    "Inv2.COLISSAGE, " +
+                    "Inv2.PA_HT, " +
+                    "Inv2.QTE, " +
+                    "Inv2.QTE_TMP, " +
+                    "Inv2.QTE_NEW, " +
+                    "Inv2.TVA, " +
+                    "Inv2.VRAC, " +
+                    "Inv2.CODE_DEPOT " +
+                    "FROM Inv2 " +
+                    "WHERE Inv2.NUM_INV = '" + NUM_INV+ "'" );
+            //private String formattedDate;
+            date_time_sub_title = inv1.date_inv + " " + inv1.heure_inv;
+
+
+            edt_nom_inventaire.setText(inv1.nom_inv);
+            btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_edit_24);
+            edt_nom_inventaire.setEnabled(false);
+            edt_nom_inventaire.setTextColor(getResources().getColor(R.color.gray));
+            btn_nom_inv_state_isactive = false;
+
+            // Create the adapter to convert the array to views
+            PanierAdapter = new ListViewAdapterPanierInventaire(this, R.layout.transfert2_items, final_panier);
+
+            expandableListView = findViewById(R.id.expandable_listview);
+
+            expandableListView.setAdapter(PanierAdapter);
+
+            // This actually does the magic
+            expandableListView.setExpanded(true);
+
+            registerForContextMenu(expandableListView);
+
+            calcule();
+
+
+        }else {
+            Crouton.makeText(ActivityInventaire.this, "Erreur séléction activity !", Style.ALERT).show();
+            return;
+        }
+
+
+
+
+        if(NUM_INV != null) {
+            getSupportActionBar().setTitle("Inventaire N°: " + NUM_INV);
+        }
+        getSupportActionBar().setSubtitle(date_time_sub_title);
+        validate_theme();
+
+
+
+        // Register as a subscriber
+        bus.register(this);
+
     }
-    return super.onOptionsItemSelected(item);
-  }
 
-  @Override
-  public void onBackPressed() {
-    Sound(R.raw.back);
-    super.onBackPressed();
-  }
+    public String Get_Digits_String(){
+        String _number = controller.Select_max_num_inv_inventaire("Inv1");
+        while(_number.length() < 6){
+            _number = "0" + _number;
+        }
+        return _number;
+    }
+    public String Get_Digitss_String(String number, Integer length) {
+        String _number = number;
+        while (_number.length() < length) {
+            _number = "0" + _number;
+        }
+        return _number;
+    }
 
-  public void Sound(int SourceSound){
-    mp = MediaPlayer.create(this, SourceSound);
-    mp.start();
-  }
 
 
-  @Override
-  protected void onDestroy() {
 
-    super.onDestroy();
-  }
+    @SuppressLint({"CutPasteId", "WrongViewCast"})
+    private void initViews() {
 
+        edt_nom_inventaire = findViewById(R.id.edt_nom_inventaire);
+        btn_validate_inv_name = findViewById(R.id.btn_valide_inv_name);
+
+        //textview
+        nbr_produit = findViewById(R.id.total_nbr_produit);
+        intent_location = new Intent(this, ServiceLocation.class);
+
+        SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs1.getBoolean("GPS_LOCALISATION", false)){
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCES_FINE_LOCATION);
+            }else{
+                startService(intent_location);
+            }
+        }else {
+            stopService(intent_location);
+        }
+
+
+        // Declare US print format
+        nf = NumberFormat.getInstance(Locale.US);
+        ((DecimalFormat) nf).applyPattern("##,##0.00");
+
+    }
+
+
+    @SuppressLint("NonConstantResourceId")
+    public void onClickEvent(View v) throws UnsupportedEncodingException, ParseException {
+        switch (v.getId()){
+            case R.id.addProduct:
+                if(inv1.blocage.equals("F")){
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+                }
+
+                if( Objects.requireNonNull(edt_nom_inventaire.getText()).length() <1){
+                    Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                    return;
+                }
+                if(btn_nom_inv_state_isactive){
+                    Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                    return;
+                }
+
+                // Initialize activity
+                Activity activity;
+                // define activity of this class//
+                activity = ActivityInventaire.this;
+
+                FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
+                fragmentSelectProduct.showDialogbox(activity, getBaseContext(),  "1", "INVENTAIRE");
+                break;
+
+            case R.id.valide_inventaire:
+
+                if( Objects.requireNonNull(edt_nom_inventaire.getText()).length() <1){
+
+                    Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                    return;
+                }
+                if(btn_nom_inv_state_isactive){
+                    Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                    return;
+                }
+                if(final_panier.size() <1){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon est vide")
+                            .show();
+                    return;
+                }
+                if(inv1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon est déja validé")
+                            .show();
+                    return;
+                }
+
+                if (controller.validate_inv1_sql("Inv1", inv1.num_inv)) {
+                    inv1.blocage = "F";
+                    validate_theme();
+                }
+
+                break;
+            case R.id.btn_scan_produit:
+                if (ContextCompat.checkSelfPermission(ActivityInventaire.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ActivityInventaire.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+
+                }else{
+                    if(inv1.blocage.equals("F")){
+                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Ce bon est déja validé")
+                                .show();
+                        return;
+                    }
+                    if( Objects.requireNonNull(edt_nom_inventaire.getText()).length() <1){
+
+                        Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                        return;
+                    }
+                    if(btn_nom_inv_state_isactive){
+                        Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                        return;
+                    }
+                    startScanProduct();
+                }
+                break;
+            case R.id.btn_mofifier_bon:
+            if(!inv1.blocage.equals("F")){
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon n'est pas encore validé")
+                        .show();
+                return;
+
+            } else  {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Modification")
+                        .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
+                        .setCancelText("Non")
+                        .setConfirmText("Oui")
+                        .showCancelButton(true)
+                        .setCancelClickListener(Dialog::dismiss)
+                        .setConfirmClickListener(sDialog -> {
+
+                            try{
+
+                                if (controller.modifier_inv1_sql("Inv1",inv1.num_inv) ) {
+                                    inv1.blocage = "M";
+                                    validate_theme();
+                                };
+
+
+                            }catch (Exception e){
+
+                                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText("Attention!")
+                                        .setContentText("problème lors de Modification de Bon : " + e.getMessage())
+                                        .show();
+                            }
+                            sDialog.dismiss();
+                        }).show();
+            }
+            break;
+            case R.id.btn_imp_bon:
+                if(!inv1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon n'est pas encore validé")
+                            .show();
+                    return;
+                }
+                Activity bactivity;
+                bactivity = ActivityInventaire.this;
+
+                PrinterInventaire printer = new PrinterInventaire();
+                printer.start_print_inv(bactivity, final_panier, inv1);
+
+                break;
+            case R.id.btn_valide_inv_name:
+                if( Objects.requireNonNull(edt_nom_inventaire.getText()).length() <1){
+
+                    Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                    return;
+                }
+
+                inv1.nom_inv = edt_nom_inventaire.getText().toString();
+
+                if(btn_nom_inv_state_isactive){
+                    if(controller.Insert_into_Inv1("Inv1", inv1)){
+                        btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_edit_24);
+                        edt_nom_inventaire.setEnabled(false);
+                        edt_nom_inventaire.setTextColor(getResources().getColor(R.color.gray));
+                        btn_nom_inv_state_isactive = false;
+                    }
+                }else{
+                    btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_done_24);
+                    edt_nom_inventaire.setEnabled(true);
+                    edt_nom_inventaire.setTextColor(getResources().getColor(R.color.black));
+                    btn_nom_inv_state_isactive = true;
+                }
+
+                break;
+
+        }
+    }
+
+    protected void initData(){
+        final_panier =  controller.select_inventaire2_from_database("" +
+                "SELECT " +
+                "Inv2.RECORDID, " +
+                "Inv2.CODE_BARRE, " +
+                "Inv2.NUM_INV, " +
+                "Inv2.PRODUIT, " +
+                "Inv2.NBRE_COLIS, " +
+                "Inv2.COLISSAGE, " +
+                "Inv2.PA_HT, " +
+                "Inv2.QTE, " +
+                "Inv2.QTE_TMP, " +
+                "Inv2.QTE_NEW, " +
+                "Inv2.TVA, " +
+                "Inv2.VRAC, " +
+                "Inv2.CODE_DEPOT " +
+                "FROM Inv2 " +
+                "WHERE Inv2.NUM_INV = '" + NUM_INV+ "'" );
+
+        // Create the adapter to convert the array to views
+        PanierAdapter = new ListViewAdapterPanierInventaire(this, R.layout.transfert2_items, final_panier);
+
+        expandableListView = findViewById(R.id.expandable_listview);
+
+        expandableListView.setAdapter(PanierAdapter);
+
+        // This actually does the magic
+        expandableListView.setExpanded(true);
+        registerForContextMenu(expandableListView);
+
+        calcule();
+        sauvegarder();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()== R.id.expandable_listview) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_listv, menu);
+        }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.delete_produit:
+                if(inv1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon est déja validé")
+                            .show();
+                    return true;
+                }
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Suppression")
+                        .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
+                        .setCancelText("Anuuler")
+                        .setConfirmText("Supprimer")
+                        .showCancelButton(true)
+                        .setCancelClickListener(Dialog::dismiss)
+                        .setConfirmClickListener(sDialog -> {
+
+                            try{
+                                SOURCE = "INV2_DELETE";
+                                controller.delete_from_inv2("Inv2", final_panier.get(info.position).recordid);
+                                initData();
+                                //PanierAdapter.RefrechPanier(final_panier);
+                                PanierAdapter = new ListViewAdapterPanierInventaire(ActivityInventaire.this, R.layout.transfert2_items, final_panier);
+                                expandableListView.setAdapter(PanierAdapter);
+
+                            }catch (Exception e){
+
+                                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText("Attention!")
+                                        .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                        .show();
+                            }
+
+                            sDialog.dismiss();
+                        }).show();
+                return true;
+
+            case R.id.edit_produit:
+                if(inv1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon est déja validé")
+                            .show();
+                    return true ;
+                }
+                try{
+                    SOURCE = "INV2_EDIT";
+                    Activity activity;
+                    activity = ActivityInventaire.this;
+                    FragmentQteInventaire fragmentQteInventaire = new FragmentQteInventaire();
+                    fragmentQteInventaire.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
+
+                }catch (Exception e){
+
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Attention!")
+                            .setContentText("Error : " + e.getMessage())
+                            .show();
+                }
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    public void calcule(){
+
+        val_nbr_produit = final_panier.size();
+
+        final BadgeDrawable drawable = new BadgeDrawable.Builder()
+                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
+                        .badgeColor(0xff303F9F)
+                        .text1(String.valueOf(val_nbr_produit))
+                        .text2(" PRODUIT")
+                        .build();
+        SpannableString spannableString = new SpannableString(TextUtils.concat(drawable.toSpannable()));
+        nbr_produit.setText(spannableString);
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+       // inflater.inflate(R.menu.menu_bon_vente_commande, menu);
+        return true;
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    //Versement
+    protected void sauvegarder(){
+
+        inv1.nbr_produit = final_panier.size();
+       // inv1.montant_bon = val_total_ttc_remise;
+        //update current bon1
+        controller.update_inv1("Inv1", inv1);
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == ACCES_FINE_LOCATION){
+            startService(new Intent(this, ServiceLocation.class));
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Sound( R.raw.back);
+        super.onBackPressed();
+    }
+
+    public void Sound(int resid){
+        MediaPlayer mp = MediaPlayer.create(this, resid);
+        mp.start();
+    }
+
+    @Subscribe
+    public void onEvent(LocationEvent event){
+
+        Log.e("TRACKKK", "Recieved location vente : " +  event.getLocationData().getLatitude() + "  //  " + event.getLocationData().getLongitude());
+
+        //bon1.latitude = event.getLocationData().getLatitude();
+        //bon1.longitude = event.getLocationData().getLongitude();
+    }
+
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(BARCODE_KEY, barcodeResult);
+        super.onSaveInstanceState(outState);
+    }
+
+
+    private void startScanProduct() {
+        /**
+         * Build a new MaterialBarcodeScanner
+         */
+
+        final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
+                .withActivity(ActivityInventaire.this)
+                .withEnableAutoFocus(true)
+                .withBleepEnabled(true)
+                .withBackfacingCamera()
+                .withCenterTracker()
+                .withText("Scanning...")
+                .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
+                    @Override
+                    public void onResult(Barcode barcode) {
+                        // Sound( R.raw.bleep);
+                       // setRecycle(barcode.rawValue, true);
+                        selectProductFromScan(barcode.rawValue);
+                    }
+                })
+                .build();
+        materialBarcodeScanner.startScan();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        // Unregister
+        bus.unregister(this);
+        stopService(intent_location);
+        super.onDestroy();
+    }
+
+
+    @Override
+    public void onClick(View v, int position, PostData_Produit item, String SOURCE_ACTIVITY) {
+
+        PostData_Inv2 inv2 = new PostData_Inv2();
+        inv2.produit = item.produit;
+        inv2.codebarre = item.code_barre;
+        inv2.code_depot = CODE_DEPOT;
+        inv2.qte_theorique = item.stock;
+        inv2.pa_ht = item.pa_ht;
+        inv2.colissage = item.colissage;
+
+        inv2.num_inv = NUM_INV;
+       // inv2.code_depot = CODE_DEPOT;
+        SOURCE = "INV2_INSERT";
+        Activity activity = ActivityInventaire.this;
+        FragmentQteInventaire fragmentqteinventaire = new FragmentQteInventaire();
+        fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(),  inv2);
+
+    }
+
+    @Subscribe
+    public void onItemPanierReceive(CheckedPanierEventInventaire2 item_panier){
+
+           try {
+               if(SOURCE.equals("INV2_INSERT")){
+                   controller.Insert_into_inventaire2( item_panier.getData());
+               }else if(SOURCE.equals("INV2_EDIT")){
+                   controller.Update_inventaire2(item_panier.getData(), item_panier.getQtePhysiqueOld(),item_panier.getVracOld());
+               }
+               initData();
+           }catch (Exception e){
+               Crouton.makeText(ActivityInventaire.this, "Erreur dans produit" + e.getMessage(), Style.ALERT).show();
+           }
+    }
+
+    public void validate_theme(){
+        if (inv1.blocage.equals("F")) {
+            //findViewById(R.id.client).setBackgroundColor(Color.LTGRAY);
+            //findViewById(R.id.LayoutButton).setBackgroundColor(Color.LTGRAY);
+            findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(Color.LTGRAY);
+            findViewById(R.id.tl).setBackgroundColor(Color.LTGRAY);
+            getWindow().getDecorView().setBackgroundColor(Color.LTGRAY);
+
+        } else {
+            //findViewById(R.id.client).setBackgroundColor(Color.WHITE);
+            //findViewById(R.id.LayoutButton).setBackgroundColor(Color.WHITE);
+            findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(Color.WHITE);
+            findViewById(R.id.tl).setBackgroundColor(Color.WHITE);
+            getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+        }
+    }
+
+    private void selectProductFromScan(String resultscan){
+        ArrayList<PostData_Produit> produits;
+
+        PostData_Inv2 inv2 = new PostData_Inv2();
+
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
+            produits = controller.select_produits_from_database(querry);
+
+            if(produits.size() == 0){
+                String querry1 = "SELECT * FROM Codebarre WHERE CODE_BARRE_SYN = '"+resultscan+"'";
+                String code_barre = controller.select_codebarre_from_database(querry1);
+
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                        "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
+                produits = controller.select_produits_from_database(querry2);
+            }
+
+        if(produits.size() == 1){
+
+            inv2.produit = produits.get(0).produit;
+            inv2.codebarre = produits.get(0).code_barre;
+            inv2.qte_theorique = produits.get(0).stock;
+            inv2.pa_ht = produits.get(0).pa_ht;
+            inv2.tva = produits.get(0).tva;
+
+
+
+            inv2.num_inv = NUM_INV;
+            // inv2.code_depot = CODE_DEPOT;
+            SOURCE = "INV2_INSERT";
+            Activity activity = ActivityInventaire.this;
+            FragmentQteInventaire fragmentqteinventaire = new FragmentQteInventaire();
+            fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(),  inv2);
+
+        }else{
+            Crouton.makeText(ActivityInventaire.this, "Produit introuvable !", Style.ALERT).show();
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package com.safesoft.proapp.distribute.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import androidx.cardview.widget.CardView;
@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.util.ColorGeneratorModified;
-import com.safesoft.proapp.distribute.util.MyCardView;
+import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
+import com.safesoft.proapp.distribute.utils.MyCardView;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -37,30 +37,33 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
 
   class MyViewHolder extends RecyclerView.ViewHolder {
 
-    TextView Produit;
     CardView cardView;
+    TextView Produit;
     ImageView image;
     TextView stock;
-    TextView colissage;
-    TextView stock_colis;
-    TextView stock_vrac;
+    TextView colissage,colissage_title;
+    TextView stock_colis,colis_title;
+    TextView stock_vrac,vrac_title;
+    TextView prix_unit;
     LinearLayout ly_colissage, ly_stock_colis;
 
 
     MyViewHolder(View view) {
       super(view);
 
-      cardView = (CardView) view.findViewById(R.id.item_root);
+      cardView = (CardView) view.findViewById(R.id.item_root_produit);
       Produit = (TextView) view.findViewById(R.id.produit);
-      image = (ImageView) view.findViewById(R.id.imageId);
-      stock = (TextView) view.findViewById(R.id.stock);
-      stock_colis = (TextView) view.findViewById(R.id.colis);
+      image = (ImageView) view.findViewById(R.id.img_product);
+      stock = (TextView) view.findViewById(R.id.qte_r);
+      stock_colis = (TextView) view.findViewById(R.id.stock_colis);
       stock_vrac = (TextView) view.findViewById(R.id.vrac);
       colissage = (TextView) view.findViewById(R.id.colissage);
-      ly_colissage = (LinearLayout) view.findViewById(R.id.layout_colissage);
-      ly_stock_colis = (LinearLayout) view.findViewById(R.id.layout_stock_colis);
-      ly_colissage.setVisibility(View.GONE);
-      ly_stock_colis.setVisibility(View.GONE);
+      prix_unit = (TextView) view.findViewById(R.id.pu);
+      colissage_title = (TextView) view.findViewById(R.id.colissage_title);
+      colis_title = (TextView) view.findViewById(R.id.colis_title);
+      vrac_title = (TextView) view.findViewById(R.id.vrac_title);
+      //ly_colissage = (LinearLayout) view.findViewById(R.id.layout_colissage);
+      //ly_stock_colis = (LinearLayout) view.findViewById(R.id.layout_stock_colis);
 
     }
   }
@@ -82,6 +85,7 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     return new MyViewHolder(v);
   }
 
+  @SuppressLint("SetTextI18n")
   @Override
   public void onBindViewHolder(final MyViewHolder holder,int position) {
     PostData_Produit item = produitList.get(position);
@@ -89,26 +93,41 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     holder.Produit.setTextSize(17);
     holder.Produit.setTypeface(null, Typeface.BOLD);
     holder.Produit.setText(item.produit);
+
     if(item.colissage == 0.0){
-      holder.ly_colissage.setVisibility(View.GONE);
-      holder.ly_stock_colis.setVisibility(View.GONE);
-    }else {
-      holder.ly_colissage.setVisibility(View.VISIBLE);
-      holder.ly_stock_colis.setVisibility(View.VISIBLE);
-      holder.stock_colis.setText(String.valueOf(item.stock_colis));
-      holder.stock_vrac.setText(String.valueOf(item.stock_vrac));
+      holder.colissage_title.setText("");
+      holder.colissage.setText("");
+
+      holder.stock_colis.setText("");
+      holder.colis_title.setText("");
+
+      holder.stock_vrac.setText("");
+      holder.vrac_title.setText("");
+
+
+
+        }else {
+
+
+      holder.colissage_title.setText(R.string.colis);
       holder.colissage.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.colissage)));
-    }
 
-    if(item.stock == null)
-    {
-      holder.stock.setText(" "+ 0.00);
-    }
-    else
-    {
-      holder.stock.setText(" "+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.stock.toString())));
+      holder.stock_colis.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock_colis)));
+      holder.colis_title.setText(R.string.Stock_colis);
 
-    }
+      holder.stock_vrac.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock_vrac)));
+      holder.vrac_title.setText(R.string.Stock_vrac);
+
+        }
+    if(item.stock_vrac == 0.0){
+          holder.stock_vrac.setText("");
+
+        }else{
+          holder.stock_vrac.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock_vrac)));
+        }
+    holder.stock.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock)));
+    holder.prix_unit.setText(" "+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.pv1_ht)));
+
 
     holder.cardView.setOnClickListener(new View.OnClickListener() {
       @Override

@@ -40,12 +40,13 @@
                 android:layout_width="match_parent"
                 android:id="@+id/bt3"
                 android:textStyle="italic"
-
                 android:textColor="@color/accent"
                 android:background="@drawable/parametre_rounded"
                 android:text="@string/param_tres_d_imprimente"
                 android:layout_height="match_parent" />
+
             <include layout="@layout/zpref_printer" />
+
             <include layout="@layout/zpref_scanner" />
 
 

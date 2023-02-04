@@ -55,14 +55,14 @@ public class ActivityActivation extends AppCompatActivity {
     ImageView qrImage;
     private int code_activation;
     EditText code_activation_input;
-    public static final String PREFS_ACTIVATION = "PREFES_ACTIVATION";
+    public static final String PREFS = "ALL_PREFS";
 
     //////////////ancien declaration ////////////
     private static String TAG = ActivityActivation.class.getSimpleName();
 
     private static final int READ_PHONE_STATE = 5;
     private MediaPlayer mp;
-    //private String PREFS_ACTIVATION = "PREFES_ACTIVATION";
+    //private String PREFS = "ALL_PREFS";
 
     private ImageButton btnActiver;
     private ProgressDialog progressDialog;
@@ -202,24 +202,29 @@ public class ActivityActivation extends AppCompatActivity {
         {
             code_activation = 0;
         }
+
         int i = 0;
         int o = deviceId2.length()+1;
         for(int t=0;t<= deviceId2.length()-1 ;t++){
             i = i + (int)deviceId2.charAt(t) * 47293 * o;
             o = o - 1;
         }
+        
         if (code_activation == i) {
-            Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
+           // Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
+            Crouton.makeText(ActivityActivation.this, "Code d'activation correct", Style.INFO).show();
             btn_start.setVisibility(View.VISIBLE);  ///// 357272286 ///// 350889357
             saveData();
         } else {
-            Toast.makeText(ActivityActivation.this, "Code d'activation incorrect",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ActivityActivation.this, "Code d'activation incorrect",Toast.LENGTH_SHORT).show();
+            Crouton.makeText(ActivityActivation.this, "Code d'activation incorrect", Style.ALERT).show();
             ((EditText)findViewById(R.id.CODE_ACTIVATION)).setText("");
             btn_start.setVisibility(View.INVISIBLE);
 
 
         }
     }
+
     public void onClick_Btn_Start(View view) {
         startActivity(new Intent(ActivityActivation.this, MainActivity.class));
     }
@@ -482,7 +487,7 @@ public class ActivityActivation extends AppCompatActivity {
 //        }
 //    }
     public void saveData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ACTIVATION,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS,MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("NUM_SERIE",deviceId2);
         editor.putInt("CODE_ACTIVATION",code_activation);
@@ -530,6 +535,13 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur2.setText(R.string.INFO_CAM_PLUS2);
             inforevenedeur3.setText(R.string.INFO_CAM_PLUS3);
             inforevenedeur4.setText(R.string.INFO_CAM_PLUS4);
+        }
+
+        if (revendeur.equals("TIFAWT TECHNOLOGIE")) {
+            inforevenedeur1.setText(R.string.INFO_TIFAWT_TECHNOLOGIE1);
+            inforevenedeur2.setText(R.string.INFO_TIFAWT_TECHNOLOGIE2);
+            inforevenedeur3.setText(R.string.INFO_TIFAWT_TECHNOLOGIE3);
+            inforevenedeur4.setText(R.string.INFO_TIFAWT_TECHNOLOGIE4);
         }
     }
 

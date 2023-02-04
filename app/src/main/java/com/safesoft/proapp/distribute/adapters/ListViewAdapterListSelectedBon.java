@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class ListViewAdapterListSelectedBon extends BaseAdapter {
 
-  ArrayList<String> list_bons_t = new ArrayList<String>();
+  ArrayList<String> list_bons_t;
   private static LayoutInflater inflater = null;
   Context context;
   private FragmentSelectedBonTransfert fragment;

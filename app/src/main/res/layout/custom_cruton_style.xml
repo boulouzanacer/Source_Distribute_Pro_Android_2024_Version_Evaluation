@@ -24,9 +24,9 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView1"
             android:layout_below="@+id/textView1"
-            android:text="Paramètres sauvegarder, vous pouvez importer  \n votre bon de transfer depuis votre PC" />
+            android:layout_alignLeft="@+id/textView1"
+            android:text="Paramètres sauvegardé, vous pouvez importer  \n vos bon de transfer depuis votre Serveur" />
 
         <TextView
             android:id="@+id/textView1"

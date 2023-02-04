@@ -15,12 +15,10 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/folding-cell" />
             <option value="$PROJECT_DIR$/lib_badge" />
-            <option value="$PROJECT_DIR$/library_bth" />
             <option value="$PROJECT_DIR$/materialbarcodescanner" />
             <option value="$PROJECT_DIR$/sweet_alert_dialog_library" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

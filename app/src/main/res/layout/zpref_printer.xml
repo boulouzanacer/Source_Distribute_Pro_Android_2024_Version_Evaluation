@@ -34,6 +34,8 @@
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:paddingStart="8dip"
         android:focusable="true"
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp"
         tools:ignore="RtlSymmetry">
 
         <TextView
@@ -44,36 +46,114 @@
             android:text="@string/s_l_ctionner_imprimente"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dip"
+        <com.safesoft.proapp.distribute.view.FlowRadioGroup
+            android:id="@+id/rg_connect"
+            android:weightSum="4"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:textAlignment="center"
-            android:fadingEdge="horizontal"
-            android:layout_marginLeft="40dp"
-            android:text="@string/camera"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            tools:ignore="RtlCompat,RtlHardcoded">
-
+            android:orientation="horizontal">
 
             <RadioButton
-                android:text="@string/int_grer"
-                android:layout_width="match_parent"
+                android:id="@+id/rb_connect_bluetooth"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/radioButton_integrer" />
+                android:layout_weight="1"
+                android:text="Bluetooth" />
 
             <RadioButton
-                android:text="@string/bluetooth"
+                android:id="@+id/rb_connect_wifi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="WiFi" />
+
+            <RadioButton
+                android:id="@+id/rb_connect_usb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="USB"
+                android:visibility="visible" />
+
+            <RadioButton
+                android:id="@+id/rb_connect_com"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="COM"
+                android:visibility="visible" />
+
+        </com.safesoft.proapp.distribute.view.FlowRadioGroup>
+
+        <Button
+            android:id="@+id/btn_connected_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:textAllCaps="false"
+            android:text="Choisissez un périphérique à connecté" />
+
+        <TextView
+            android:id="@+id/tv_device_selected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/gray"
+            android:gravity="center"
+            android:padding="10dp"
+            android:tag="-1"
+            android:textSize="18sp" />
+
+
+        <ProgressBar
+            android:id="@+id/pb_connect"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_disConnect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/radioButton_bluetooth" />
-            </LinearLayout>
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:textAllCaps="false"
+                android:text="Déconnecter" />
 
+            <Button
+                android:id="@+id/btn_connect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:text="Connecter" />
 
+        </LinearLayout>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn_test"
+                android:layout_weight="1"
+                android:text="Test imprission"
+                android:enabled="false"
+                android:textAllCaps="false" />
+
+        </TableRow>
     </LinearLayout>
 
 
@@ -97,14 +177,15 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingStart="8dip"
         android:focusable="true"
         tools:ignore="RtlSymmetry">
 
-        <CheckBox
+        <TextView
             android:text="@string/affichez_l_entete_de_soci_t_sur_le_bon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/title_bon" />
 
@@ -116,45 +197,45 @@
             android:layout_weight="1"
             android:textAlignment="center"
             android:fadingEdge="horizontal"
-            android:layout_marginStart="20dp"
             android:padding="5dp"
             android:visibility="visible"
             android:textAppearance="?android:attr/textAppearanceMedium">
 
-            <EditText
+            <ImageView
+                android:id="@+id/comapny_logo"
+                android:layout_gravity="center"
+                android:src="@mipmap/user_profile"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"/>
+            <TextView
                 android:id="@+id/company_name"
+                android:padding="10dp"
                 android:hint="@string/nom_d_entreprise"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="Autofill"
-                android:inputType="text" />
+                android:layout_height="wrap_content" />
 
-            <EditText
+            <TextView
                 android:id="@+id/activity_name"
                 android:hint="@string/activit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="Autofill"
-                android:inputType="text" />
-            <EditText
-                android:id="@+id/adresse"
-                android:hint="@string/adresse"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="Autofill"
-                android:inputType="text" />
-
-            <Button
-                android:id="@+id/enregistrer"
-                android:text="@string/enregistrer"
-                android:layout_gravity="end"
                 android:padding="10dp"
-                android:drawableStart="@mipmap/save_title_company"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_bg"
-                android:layout_marginEnd="20dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/company_adresse"
+                android:hint="@string/adresse"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/company_tel"
+                android:hint="@string/telephone"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
         </LinearLayout>
 
 
@@ -173,10 +254,12 @@
         android:focusable="true"
         tools:ignore="RtlSymmetry">
 
-        <CheckBox
+        <TextView
             android:text="@string/affichez_le_footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/title_footer" />
 
@@ -188,39 +271,16 @@
             android:layout_weight="1"
             android:textAlignment="center"
             android:fadingEdge="horizontal"
-            android:layout_marginStart="20dp"
             android:padding="5dp"
-            android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium">
 
-            <EditText
-                android:id="@+id/merci"
+            <TextView
+                android:id="@+id/pied_de_page"
                 android:hint="@string/merci"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="Autofill"
-                android:inputType="text" />
-
-            <EditText
-                android:id="@+id/encas"
-                android:hint="@string/en_cas"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="Autofill"
-                android:inputType="text" />
-
-
-            <Button
-                android:id="@+id/enregistrer_footer"
-                android:text="@string/enregistrer"
-                android:layout_gravity="end"
-                android:padding="10dp"
-                android:drawableStart="@mipmap/save_title_company"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_bg"
-                android:layout_marginEnd="20dp"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+
         </LinearLayout>
 
 

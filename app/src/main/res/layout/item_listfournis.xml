@@ -30,6 +30,7 @@
                 android:layout_height="60dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
                 android:src="@mipmap/ic_launcher"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,18 +62,37 @@
                 app:layout_constraintStart_toStartOf="@+id/client"
                 app:layout_constraintTop_toBottomOf="@+id/client" />
 
-            <TextView
-                android:id="@+id/sld_client"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/solde_client_hint"
-                android:textAlignment="textEnd"
-                android:textColor="@color/selectiondialogs_materialdesign500_red"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <LinearLayout
+
+                app:layout_constraintStart_toStartOf="@+id/tel_client"
+                app:layout_constraintTop_toBottomOf="@+id/tel_client"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tel_client" />
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/img_pos_client"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_baseline_wrong_location_24"/>
+
+                <TextView
+                    android:id="@+id/sld_client"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/solde_client_hint"
+                    android:gravity="end"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/selectiondialogs_materialdesign500_red" />
+
+
+            </LinearLayout>
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

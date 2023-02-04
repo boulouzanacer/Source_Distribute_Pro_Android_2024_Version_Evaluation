@@ -33,8 +33,6 @@ public class ActivityBon2 extends AppCompatActivity {
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     NUM_BON = getIntent().getStringExtra("NUM_BON");
     getSupportActionBar().setTitle("Bon de vente : " + NUM_BON);
-    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-            .getColor(R.color.black)));
   }
 
   @Override
@@ -62,18 +60,20 @@ public class ActivityBon2 extends AppCompatActivity {
             "Bon2.CODE_BARRE, " +
             "Bon2.NUM_BON, " +
             "Bon2.PRODUIT, " +
+            "Bon2.NBRE_COLIS, " +
+            "Bon2.COLISSAGE, " +
             "Bon2.QTE, " +
-            "Bon2.QTE, " +
+            "Bon2.QTE_GRAT, " +
             "Bon2.PV_HT, " +
-
-
             "Bon2.TVA, " +
             "Bon2.CODE_DEPOT, " +
             "Bon2.PA_HT, " +
+            "Bon2.DESTOCK_TYPE, " +
+            "Bon2.DESTOCK_CODE_BARRE, " +
+            "Bon2.DESTOCK_QTE, " +
             "Produit.STOCK " +
             "FROM Bon2 " +
-            "INNER JOIN " +
-            "Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
+            "LEFT JOIN Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
             "WHERE Bon2.NUM_BON = '" + NUM_BON+ "'" );
     return arrayOfBon2;
   }

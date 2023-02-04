@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.util.ColorGeneratorModified;
-import com.safesoft.proapp.distribute.util.MyCardView2;
+import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
+import com.safesoft.proapp.distribute.utils.MyCardView2;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -89,12 +89,12 @@ public class RecyclerAdapterCommande extends RecyclerView.Adapter<RecyclerAdapte
     holder.NomClient.setText(""+item.client);
 
     if(item.montant_bon == null){
-      item.montant_bon = "0.00";
+      item.montant_bon = 0.00;
     }
-    holder.Montant.setText(""+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.montant_bon)) + " DA");
+    holder.Montant.setText(""+ new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
 
     if(item.nbr_p == null){
-      item.nbr_p = "0";
+      item.nbr_p = 0;
     }
     final BadgeDrawable drawable1 = new BadgeDrawable.Builder()
             .type(BadgeDrawable.TYPE_NUMBER)

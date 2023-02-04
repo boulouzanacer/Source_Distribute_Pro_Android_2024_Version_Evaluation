@@ -125,9 +125,9 @@
     <string name="code_client_hint">Code client</string>
     <string name="phone_client_hint">Num Téléphone Client</string>
     <string name="solde_client_hint">Solde Client</string>
-    <string name="registre_commerce_hint">Registe commerce</string>
+    <string name="registre_commerce_hint">R.C</string>
     <string name="nif_client">N.I.F</string>
-    <string name="rib_client">R.I.B</string>
+    <string name="nis_client">N.I.S</string>
     <string name="add_client">Ajouter</string>
     <string name="image_client">Image Id</string>
 
@@ -175,6 +175,11 @@
     <string name="INFO_CAM_PLUS3">"Tél/Fax : +(213) 37 55 50 28 \n Mobile : +(213) 557 21 43 08 / +(213) 667 32 58 97" </string>
     <string name="INFO_CAM_PLUS4"> Email : camplushamzi@gmail.com</string>
 
+    <string name="INFO_TIFAWT_TECHNOLOGIE1"> TIFAWT TECHNOLOGIE </string>
+    <string name="INFO_TIFAWT_TECHNOLOGIE2">"Cité sntp elhamiz, 16033 \n Alger" </string>
+    <string name="INFO_TIFAWT_TECHNOLOGIE3">"Tél/Fax :  Mobile : +(213) 551 23 24 42" </string>
+    <string name="INFO_TIFAWT_TECHNOLOGIE4"> Email : tifawttech@gmail.com</string>
+
     <string name="LAB_SERIAL" translatable="false">Numéro de serie</string>
     <string name="NUM_SERIAL" translatable="false">8000–1111–2222-3333</string>
     <string name="CODE_ACTIVATION" translatable="false">Code activation</string>
@@ -191,7 +196,7 @@
     <string name="database">Database :</string>
     <string name="base_de_donn_es">base de données</string>
     <string name="saisissez_ici_le_code_depot_pour_cette_appareil_veuillez_bien_confirmer_le_code_pour_viter_plutard_le_conflis_entre_les_depots">Saisissez ici le code depot pour cette appareil, veuillez bien confirmer le code pour éviter plutard le conflis entre les depots</string>
-    <string name="code_depot">CODE DEPOT :</string>
+    <string name="code_depot">CODE DEPOT (VAN):</string>
     <string name="_000001">000001</string>
     <string name="code_vendeur">CODE VENDEUR :</string>
     <string name="tester_la_connexion">Tester la connexion</string>
@@ -200,13 +205,13 @@
     <string name="camera">Camera</string>
     <string name="int_grer">Intégrer</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="affichez_l_entete_de_soci_t_sur_le_bon">Affichez l\'entete de société sur le bon</string>
+    <string name="affichez_l_entete_de_soci_t_sur_le_bon">Paramètres entreprise</string>
     <string name="nom_d_entreprise">Nom d\'entreprise</string>
     <string name="activit">Activité</string>
     <string name="adresse">Adresse</string>
     <string name="enregistrer">Enregistrer</string>
-    <string name="affichez_le_footer">Affichez le footer</string>
-    <string name="merci">Merci</string>
+    <string name="affichez_le_footer">Paramètres pied de page</string>
+    <string name="merci">Pied de page</string>
     <string name="en_cas">En cas …</string>
     <string name="s_l_ctionnez_le_scanner_qui_vous_permetra_du_scanner_le_codebarre_qrcode">Séléctionnez le scanner qui vous permetra du scanner le codebarre, qrcode .</string>
     <string name="s_l_ctionner_scanner">Séléctionner Scanner</string>
@@ -220,6 +225,7 @@
     <string name="a_vous_permet_de_definir_une_somme_objective_a_atteindre_ap_res_des_ventes_faites">ça vous permet de definir une somme objective a atteindre apères des ventes faites</string>
     <string name="objectif_montant">Objectif montant</string>
     <string name="valider">Valider</string>
+    <string name="modifier">Modifier</string>
     <string name="param_tres_gps">Paramètres GPS</string>
     <string name="a_vous_permet_d_activer_ou_d_sactiver_la_localisation_gps_cette_option_autorise_l_appareil_a_r_cup_rer_sa_postion">ça vous permet d\'activer ou désactiver la localisation GPS, cette option autorise l\'appareil a récupérer sa postion.</string>
     <string name="localisation">localisation</string>
@@ -246,8 +252,9 @@
     <string name="quantite">Quantite</string>
     <string name="nom_client">NOM CLIENT</string>
     <string name="str_modifier_obs">Cliquez ici pour modifier</string>
-    <string name="cr_er">Ajoueter client</string>
-    <string name="produit">Ajouter produit</string>
+    <string name="cr_er">Ajouter client</string>
+    <string name="edit_client">Modifier client</string>
+    <string name="produit">produit</string>
     <string name="p_u">P.U</string>
     <string name="total_ht">Total HT</string>
     <string name="_0_00_da">0.00</string>
@@ -257,15 +264,87 @@
     <string name="ttc_a_payer">TTC a payer</string>
     <string name="observation">Observation</string>
     <string name="nombre_colis">200</string>
-    <string name="modifier">Modifier</string>
-    <string name="str_add_obs">Autre info</string>
+    <string name="str_add_obs">Info</string>
     <string name="str_select_client">Cliquer ici pour selectionner client</string>
     <string name="remise_montant">REMISE</string>
-    <string name="montant_avant_remise">montant avant remise</string>
-    <string name="montant_remise">montant remise</string>
-    <string name="taux_remise">taux remise</string>
-    <string name="montant_apres_remise">montant apres remise</string>
+    <string name="montant_avant_remise">Montant Avant Remise</string>
+    <string name="montant_remise">Montant Remise</string>
+    <string name="taux_remise">Taux Remise</string>
+    <string name="montant_apres_remise">Montant Apres Remise</string>
+    <string name="nbre_colis">Nbre Colis</string>
+    <string name="nbre_produit">0</string>
+    <string name="Stock_colis">Stock Colis</string>
+    <string name="Stock_vrac">Vrac</string>
+    <string name="Stock_unite">Stock</string>
+    <string name="colissage">Colissage</string>
+    <string name="quantit">Quantité</string>
+    <string name="gratuit">U.G</string>
+    <string name="qt_en_stock_unit">Qté En Stock (Unité)</string>
+    <string name="qt_en_stock_colis">Qté En Stock (Colis)</string>
+    <string name="qt_restante_unit">Qté Restante (Unité)</string>
+    <string name="qt_restante_colis">Qté Restante (Colis)</string>
+    <string name="qt">Qté</string>
+    <string name="n_colis">N Colis</string>
+    <string name="colis">Colis.</string>
+    <string name="supprimer_produit">Supprimer Produit</string>
+    <string name="modifier_produit">Modifier Produit</string>
+    <string name="versement">Versement</string>
+    <string name="ancien_solde">Ancien Solde</string>
+    <string name="montant_bon_actuel">Montant Bon Actuel</string>
+    <string name="montant_bon">Montant Bon</string>
+    <string name="solde_actuel">Solde Actuel</string>
+    <string name="nouveau_solde">Nouveau Solde</string>
+    <string name="_01_01_2022">01/01/2022</string>
+    <string name="_16_25">xx:xx</string>
+    <string name="_18_000_da">0 da</string>
+    <string name="imprimer">Imprimer</string>
+    <string name="search_product">Rechercher produit..</string>
+    <string name="prix_1">Prix 1</string>
+    <string name="scanner">Scanner</string>
+    <string name="selection_client">Sélectionner le Client</string>
+    <string name="info">Info</string>
+    <string name="ajouter_client">Ajouter client</string>
+    <string name="a_i">A.I</string>
 
     <!---INFO REVENDEUR -->
+
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_tip">Tip</string>
+    <string name="main_pls_choose_device">Please choose a device</string>
+    <string name="dialog_back">Back</string>
+    <string name="connectez_svp">Connectez svp</string>
+
+
+    <string name="spin_default_esc_font">Please choose a Font</string>
+    <string name="choisissez_un_bluetooth_pr_ph">Choisissez un bluetooth préph</string>
+    <string name="p_riph_rique_connect">Périphérique connecté</string>
+    <string name="adapter_usbdevice">USB Device:</string>
+    <string name="dialog_title_connected_devlist">List des périphérique connecté</string>
+    <string name="pls_connect_printer_first">Connectez avant le périphérique</string>
+
+    <string name="_main_connected">Connecté</string>
+    <string name="_main_connected_fail">Erreur connexion</string>
+    <string name="_main_disconnect">Déconnecté</string>
+    <string name="choisissez_usb_p_riph_rique">Choisissez usb périphérique</string>
+    <string name="synchronisation_des_param_tres">Synchronisation des paramètres</string>
+    <string name="desciption_sync_des_parametres">Permettre la synchronisation des paramètres tel que le nom d\'entreprise, adresse, logo ... depuis le serveur distant</string>
+    <string name="telephone">Telephone</string>
+    <string name="param_tres_affichage_stock_moins">Paramètres affichage stock moins</string>
+    <string name="param_tres_edit_price">Paramètres modification prix vente</string>
+    <string name="param_tres_affichage_ht_tva">Paramètres affichage HT, TVA</string>
+    <string name="activer_l_affichage_ht">Activer l\'affichage HT</string>
+    <string name="activer_l_affichage_stock">Masquer les produits stock moins</string>
+    <string name="desactiver_modification_prix">Desactiver la modification de prix vente</string>
+    <string name="date_d_exportation">Date d\'exportation</string>
+    <string name="vrac">Vrac</string>
+    <string name="nom_inv">nom inv</string>
+    <string name="ecart_unit">Ecart (unité)</string>
+    <string name="ecart_colis">Ecart (Colis)</string>
+    <string name="quantit_th_orique">Qte théo</string>
+    <string name="qte_physique">Qte phys</string>
+    <string name="ecart">Ecart</string>
+    <string name="nom_depot_van">NOM DEPOT (VAN) :</string>
+    <string name="nom_vendeur">NOM VENDEUR :</string>
 
 </resources>

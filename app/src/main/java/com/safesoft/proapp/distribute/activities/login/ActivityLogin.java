@@ -22,10 +22,10 @@ public class ActivityLogin extends AppCompatActivity {
 
   private static final String TAG = "ActivityLogin";
   private static final int REQUEST_SIGNUP = 0;
-  private String PREFS_LOGIN = "ConfigPassword";
 
   private EditText _passwordText ;
   private Button _loginButton ;
+  private String PREFS = "ALL_PREFS";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,6 @@ public class ActivityLogin extends AppCompatActivity {
   }
 
   public void login() {
-    Log.d(TAG, "Login");
-
 
     _loginButton.setEnabled(false);
 
@@ -72,12 +70,13 @@ public class ActivityLogin extends AppCompatActivity {
                 // onLoginFailed();
                 progressDialog.dismiss();
               }
-            }, 1000);
+            }, 500);
   }
 
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == REQUEST_SIGNUP) {
       if (resultCode == RESULT_OK) {
 
@@ -103,8 +102,9 @@ public class ActivityLogin extends AppCompatActivity {
 
   @TargetApi(Build.VERSION_CODES.GINGERBREAD)
   public boolean validate() {
+
     boolean valid = true;
-    SharedPreferences prefs_login = getSharedPreferences(PREFS_LOGIN, MODE_PRIVATE);
+    SharedPreferences prefs_login = getSharedPreferences(PREFS, MODE_PRIVATE);
     String password = _passwordText.getText().toString();
 
     if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
@@ -114,9 +114,11 @@ public class ActivityLogin extends AppCompatActivity {
     }  else {
       _passwordText.setError(null);
     }
-    String password_s= prefs_login.getString("PASSWORD", "0000").toString() ;
 
-    if((password.toString().compareTo(password_s) != 0) && (password.toString().compareTo("0000") != 0) ){
+    String password_s = prefs_login.getString("PASSWORD", "safesoft") ;
+
+    assert password_s != null;
+    if((password.compareTo(password_s) != 0) && (password.compareTo("safesoft") != 0) && (password.compareTo("SAFESOFT") != 0) ){
       valid = false;
       _passwordText.setError("Mot de passe incorrect");
     } else {
