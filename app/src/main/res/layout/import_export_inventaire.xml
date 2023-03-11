@@ -3,8 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <RelativeLayout
-        android:id="@+id/rlt_exported_ventes"
+        android:id="@+id/rlt_export_inventaires"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -15,21 +16,21 @@
         android:paddingTop="15dp">
 
         <TextView
-            android:id="@+id/exportted_vente"
+            android:id="@+id/exportt_inventaire"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:text="Bons de vente déja exportés"
+            android:text="Exportation inventaire (Réseaux Local)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_exported_vente"
+            android:id="@+id/descrip_export_inventaire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ça vous permet d'afficher les bons de livraison déja exportés avec la possibilité de suppression"
-            android:layout_below="@+id/exportted_vente"
+            android:text="ça vous permet d'exporter tous les inventaires vers le serveur distant"
+            android:layout_below="@+id/exportt_inventaire"
             android:textSize="12dp"
             android:clickable="false"
             android:textColor="@color/gray"
@@ -39,42 +40,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/rlt_exported_commandes"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
-
-
-        <TextView
-            android:id="@+id/exportted_commande"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="Bons de commandes déja exportés"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
-
-        <TextView
-            android:id="@+id/descrip_exported_commande"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'afficher les bons de commandes déja exportés avec la possibilité de suppression"
-            android:layout_below="@+id/exportted_commande"
-            android:textSize="12dp"
-            android:clickable="false"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rlt_etatv"
+        android:id="@+id/rlt_export_inventaires_ftp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -86,25 +52,63 @@
         android:paddingTop="15dp">
 
         <TextView
-            android:id="@+id/etat_v"
+            android:id="@+id/exportt_inventaire_ftp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Etat de vente"
-            android:textSize="18dp"
             android:clickable="false"
+            android:text="Exportation inventaire (Serveur FTP)"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_etat_v"
+            android:id="@+id/descrip_export_inventaire_ftp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ça vous permet de consulter la quantité des produits venu entre deux date données ansi que le montant total, remise total, ...."
-            android:layout_below="@+id/etat_v"
+            android:text="Vous permet d'exporter les bons d'inventaire' vers le serveur FTP"
+            android:layout_below="@+id/exportt_inventaire_ftp"
             android:textSize="12dp"
             android:clickable="false"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlt_exported_inventaires"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:visibility="visible"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+
+        <TextView
+            android:id="@+id/exportted_inventaire"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="Bons d'inventaire exportés"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+
+        <TextView
+            android:id="@+id/descrip_exported_inventaire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/exportted_inventaire"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            android:text="ça vous permet d'afficher les bons d'inventaires exportés avec la possibilité de suppression"
+            android:textColor="@color/gray"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
 </LinearLayout>

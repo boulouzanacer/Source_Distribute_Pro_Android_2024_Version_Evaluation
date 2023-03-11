@@ -28,16 +28,16 @@
             android:src="@mipmap/vente" />
 
         <ImageButton
-            android:id="@+id/btn_b_reception"
+            android:id="@+id/btncommande"
             android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
+            android:onClick="onClick"
+            android:layout_marginLeft="5dp"
+            android:src="@mipmap/commande"
             android:background="@drawable/imagebutton_rounded"
 
-            android:backgroundTint="@color/jaune"
-            android:onClick="onClick"
-            android:src="@mipmap/transfert" />
+            android:backgroundTint="@color/sandy_brown"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -93,16 +93,17 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/btncommande"
+            android:id="@+id/btn_b_reception"
             android:layout_width="0dip"
-            android:onClick="onClick"
-            android:layout_marginLeft="5dp"
-            android:src="@mipmap/commande"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
             android:background="@drawable/imagebutton_rounded"
 
-            android:backgroundTint="@color/sandy_brown"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:backgroundTint="@color/jaune"
+            android:onClick="onClick"
+            android:src="@mipmap/transfert" />
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

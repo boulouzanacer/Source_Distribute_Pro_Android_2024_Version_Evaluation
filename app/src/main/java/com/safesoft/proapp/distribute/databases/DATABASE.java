@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseLockedException;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
@@ -16,9 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +56,7 @@ public class DATABASE extends SQLiteOpenHelper {
         mContext = context;
        // String path = mContext.getDatabasePath(DATABASE_NAME).getPath();
       //  File f = mContext.getDatabasePath(DATABASE_NAME);
-      // context.deleteDatabase("safe_distribute");
+      // context.deleteDatabase(DATABASE_NAME);
     }
 
 
@@ -77,6 +74,7 @@ public class DATABASE extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS Codebarre(CODEBARRE_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR, CODE_BARRE_SYN VARCHAR)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS COMPOSANT(COMPOSANT_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR, CODE_BARRE2 VARCHAR, QTE DOUBLE)");
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Bon1(" +
                 "RECORDID INTEGER, " +
@@ -102,7 +100,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 "EXPORTATION VARCHAR, " +
                 "BLOCAGE VARCHAR, " +
                 "VERSER DOUBLE, "+
-                "IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
+
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Bon2(RECORDID INTEGER PRIMARY KEY, " +
@@ -165,7 +164,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "EXPORTATION VARCHAR, " +
                 "BLOCAGE VARCHAR, " +
                 "VERSER DOUBLE, "+
-                "IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Bon2_temp(RECORDID INTEGER PRIMARY KEY, " +
@@ -197,14 +196,14 @@ public class DATABASE extends SQLiteOpenHelper {
                 "REMARQUES VARCHAR, " +
                 "EXPORTATION VARCHAR, " +
                 "UTILISATEUR VARCHAR, " +
-                "IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS Inv1(NUM_INV VARCHAR PRIMARY KEY, DATE_INV VARCHAR, HEURE_INV VARCHAR, LIBELLE VARCHAR, NBR_PRODUIT VARCHAR, UTILISATEUR VARCHAR, CODE_DEPOT VARCHAR, IS_SENT BOOLEAN CHECK (IS_SENT IN (0,1)), DATE_EXPORT_INV VARCHAR, BLOCAGE VARCHAR, EXPORTATION VARCHAR)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS Inv1(NUM_INV VARCHAR PRIMARY KEY, DATE_INV VARCHAR, HEURE_INV VARCHAR, LIBELLE VARCHAR, NBR_PRODUIT VARCHAR, UTILISATEUR VARCHAR, CODE_DEPOT VARCHAR, IS_SENT boolean CHECK (IS_SENT IN (0,1)), DATE_EXPORT_INV VARCHAR, BLOCAGE VARCHAR, EXPORTATION VARCHAR)");
         db.execSQL("CREATE TABLE IF NOT EXISTS Inv2(RECORDID INTEGER PRIMARY KEY, CODE_BARRE VARCHAR , NUM_INV VARCHAR, PRODUIT VARCHAR, NBRE_COLIS DOUBLE, COLISSAGE DOUBLE, PA_HT DOUBLE, QTE DOUBLE, QTE_TMP DOUBLE, QTE_NEW DOUBLE, TVA DOUBLE, VRAC VARCHAR, CODE_DEPOT VARCHAR )");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS Achats1(ACHAT1ID INTEGER, NUM_ACHAT VARCHAR PRIMARY KEY, NOM_ACHAT VARCHAR , DATE_ACHAT VARCHAR, HEURE_ACHAT VARCHAR, UTILISATEUR VARCHAR, CODE_DEPOT VARCHAR, IS_SENT BOOLEAN CHECK (IS_SENT IN (0,1)), DATE_EXPORT_ACHAT VARCHAR)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS Achats1(ACHAT1ID INTEGER, NUM_ACHAT VARCHAR PRIMARY KEY, NOM_ACHAT VARCHAR , DATE_ACHAT VARCHAR, HEURE_ACHAT VARCHAR, UTILISATEUR VARCHAR, CODE_DEPOT VARCHAR, IS_SENT boolean CHECK (IS_SENT IN (0,1)), DATE_EXPORT_ACHAT VARCHAR)");
         db.execSQL("CREATE TABLE IF NOT EXISTS Achats2(ACHAT2ID VARCHAR PRIMARY KEY, CODE_BARRE VARCHAR, REF_PRODUIT VARCHAR, NUM_ACHAT VARCHAR, PRODUIT VARCHAR, PA_HT DOUBLE, QTE DOUBLE, TVA DOUBLE, CODE_DEPOT VARCHAR )");
-        db.execSQL("CREATE TABLE IF NOT EXISTS Position(POSITION_ID INTEGER PRIMARY KEY AUTOINCREMENT, LAT DOUBLE, LONGI DOUBLE, ADRESS VARCHAR, COLOR BOOLEAN CHECK (COLOR IN (0,1)), CLIENT VARCHAR, NUM_BON VARCHAR)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS Position(POSITION_ID INTEGER PRIMARY KEY AUTOINCREMENT, LAT DOUBLE, LONGI DOUBLE, ADRESS VARCHAR, COLOR boolean CHECK (COLOR IN (0,1)), CLIENT VARCHAR, NUM_BON VARCHAR)");
 
     }
 
@@ -215,9 +214,9 @@ public class DATABASE extends SQLiteOpenHelper {
         Log.v("TRACKKK","================>  ON UPGRADE EXECUTED");
 
 
-      String[] list_requet = new String[1];
+     /* String[] list_requet = new String[1];
 
-     // list_requet[0] = "ALTER TABLE Bon1 ADD COLUMN IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0";
+     // list_requet[0] = "ALTER TABLE Bon1 ADD COLUMN IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0";
 
 
 
@@ -231,7 +230,7 @@ public class DATABASE extends SQLiteOpenHelper {
             {
                 Log.v("TRACKKK", "Failed to create column [{0}]. Most likely it already exists, which is fine.");
             }
-        }
+        }*/
 
     }
 
@@ -240,8 +239,8 @@ public class DATABASE extends SQLiteOpenHelper {
     ///////////////////////////////////////////////////////////////////////////////
 
     //============================== FUNCTION UPDATE table produit =================================
-    public Boolean ExecuteTransactionTrasfer(ArrayList<PostData_Transfer1> transfer1s, ArrayList<PostData_Transfer2> transfer2s){
-        Boolean executed = false;
+    public boolean ExecuteTransactionTrasfer(ArrayList<PostData_Transfer1> transfer1s, ArrayList<PostData_Transfer2> transfer2s){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -267,8 +266,8 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     //============================== FUNCTION table client =================================
-    public Boolean ExecuteTransactionClient(ArrayList<PostData_Client> clients){
-        Boolean executed = false;
+    public boolean ExecuteTransactionClient(ArrayList<PostData_Client> clients){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -310,7 +309,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //=============================== FUNCTION TO INSERT INTO Client TABLE ===============================
     public boolean Insert_into_client(PostData_Client client){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -339,12 +338,12 @@ public class DATABASE extends SQLiteOpenHelper {
                 db.endTransaction();
             }
         }catch (SQLiteDatabaseLockedException sqlilock){
-            Log.v("TRACKKK", sqlilock.getMessage());
+            Log.v("TRACKKK", Objects.requireNonNull(sqlilock.getMessage()));
         }
         return executed;
     }
-    public boolean Insert_into_position(PostData_Position position){
-        Boolean executed = false;
+    public void Insert_into_position(PostData_Position position){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -369,7 +368,6 @@ public class DATABASE extends SQLiteOpenHelper {
         }catch (SQLiteDatabaseLockedException sqlilock){
             Log.v("TRACKKK", sqlilock.getMessage());
         }
-        return executed;
     }
 
 
@@ -413,8 +411,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     //============================== FUNCTION table client =================================
-    public Boolean ExecuteTransactionProduit(ArrayList<PostData_Produit> produits, ArrayList<PostData_Codebarre> codebarres){
-        Boolean executed = false;
+    public boolean ExecuteTransactionProduit(ArrayList<PostData_Produit> produits, ArrayList<PostData_Codebarre> codebarres){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -514,7 +512,7 @@ public class DATABASE extends SQLiteOpenHelper {
     //=============================== FUNCTION TO INSERT INTO Carnet_c TABLE ===============================
     @SuppressLint("Range")
     public boolean Insert_into_carnet_c(PostData_Carnet_c carnet_c, double val_nouveau_solde_client , double val_nouveau_montant_versement){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -580,7 +578,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public Boolean check_client_if_exist(String  code_client){
+    public boolean check_client_if_exist(String  code_client){
         SQLiteDatabase db = this.getWritableDatabase();
         boolean exist = false;
 
@@ -596,7 +594,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public Boolean check_transfer1_if_exist(String  num_bon){
+    public boolean check_transfer1_if_exist(String  num_bon){
         SQLiteDatabase db = this.getWritableDatabase();
         boolean exist = false;
 
@@ -614,7 +612,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //================================== UPDATE TABLE (Inventaires1) =======================================
     public boolean Update_produit(PostData_Produit produit_to_update, String code_barre){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -648,7 +646,7 @@ public class DATABASE extends SQLiteOpenHelper {
     //================================== UPDATE TABLE (Carnet_c) =======================================
     @SuppressLint("Range")
     public boolean Update_versement(PostData_Carnet_c carnet_c, double val_nouveau_solde_client , double val_nouveau_montant_versement){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -686,7 +684,7 @@ public class DATABASE extends SQLiteOpenHelper {
     ////////////////////////// DELETE Situation ///////////////////////////////////////////////
     @SuppressLint("Range")
     public boolean Delete_versement(PostData_Carnet_c carnet_c, double val_nouveau_solde_client , double val_nouveau_montant_versement){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -719,7 +717,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
     //================================== UPDATE TABLE (Inventaires1) =======================================
     public boolean Update_versement_exported(String recordid){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -745,7 +743,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //================================== UPDATE TABLE (Inventaires1) =======================================
     public boolean Delete_Codebarre(String code_barre){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -862,6 +860,11 @@ public class DATABASE extends SQLiteOpenHelper {
                 client.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
                 client.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
                 client.credit_limit = cursor.getDouble(cursor.getColumnIndex("CREDIT_LIMIT"));
+
+                client.rc = cursor.getString(cursor.getColumnIndex("RC"));
+                client.ifiscal = cursor.getString(cursor.getColumnIndex("IFISCAL"));
+                client.ai = cursor.getString(cursor.getColumnIndex("AI"));
+                client.nis = cursor.getString(cursor.getColumnIndex("NIS"));
 
                 clients.add(client);
             } while (cursor.moveToNext());
@@ -1124,9 +1127,20 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.blocage = cursor.getString(cursor.getColumnIndex("BLOCAGE"));
 
                 bon1s.add(bon1);
+
             } while (cursor.moveToNext());
         }
         return bon1s;
+    }
+
+    @SuppressLint("Range")
+    public int  select_count_from_database(String querry){
+        //ArrayList<PostData_Bon1> bon1s = new ArrayList<PostData_Bon1>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(querry, null);
+        int i = cursor.getCount();
+        cursor.close();
+        return i;
     }
 
 
@@ -1224,14 +1238,14 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     //=============================== FUNCTION TO INSERT INTO bon1 or bon1_temp TABLE ===============================
-    public Boolean Insert_into_bon1(String _table, PostData_Bon1 bon1){
-        Boolean executed = false;
+    public boolean Insert_into_bon1(String _table, PostData_Bon1 bon1){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
             try {
 
-                Boolean bon1_exist = false;
+                boolean bon1_exist = false;
                 Cursor cursor0 = db.rawQuery("SELECT NUM_BON FROM "+ _table +" WHERE NUM_BON = '"+bon1.num_bon+"' ", null);
                 // looping through all rows and adding to list
                 if (cursor0.moveToFirst()) {
@@ -1280,8 +1294,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     //=============================== FUNCTION TO INSERT INTO bon1 or bon1_temp TABLE ===============================
-        public Boolean ExCommande_Export_to_ventes(String _table1, String _table2, PostData_Bon1 bon1, ArrayList<PostData_Bon2> bon2s, String new_num_bon){
-        Boolean executed = false;
+        public boolean ExCommande_Export_to_ventes(String _table1, String _table2, PostData_Bon1 bon1, ArrayList<PostData_Bon2> bon2s, String new_num_bon){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1371,9 +1385,9 @@ public class DATABASE extends SQLiteOpenHelper {
         return bon1s;
     }
     //=============================== FUNCTION TO INSERT INTO Inventaires2 TABLE ===============================
-    public Boolean Insert_into_bon2(String _table, String num_bon, String code_depot, PostData_Bon2 list_bon2){
+    public boolean Insert_into_bon2(String _table, String num_bon, String code_depot, PostData_Bon2 list_bon2){
 
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1414,8 +1428,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     //=============================== FUNCTION TO UPDATE BON2   ===============================
-    public Boolean Update_into_bon2( String _table, String num_bon, PostData_Bon2 list_bon2, Double qte_old, Double gratuit_old){
-        Boolean executed = false;
+    public boolean Update_into_bon2( String _table, String num_bon, PostData_Bon2 list_bon2, Double qte_old, Double gratuit_old){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1481,8 +1495,8 @@ public class DATABASE extends SQLiteOpenHelper {
     */
     ////////////////////////////////////// DELETING ////////////////////////////////////////////////
     @SuppressLint("Range")
-    public Boolean delete_from_bon2(String _table, Integer recordid, String num_bon, PostData_Bon2 bon2){
-        Boolean executed = false;
+    public boolean delete_from_bon2(String _table, Integer recordid, String num_bon, PostData_Bon2 bon2){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1510,8 +1524,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     @SuppressLint("Range")
-    public Boolean delete_from_inv2(String _table, Integer recordid){
-        Boolean executed = false;
+    public boolean delete_from_inv2(String _table, Integer recordid){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1536,8 +1550,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //=============================== FUNCTION TO UPDATE CLIENT ===============================
     @SuppressLint("Range")
-    public Boolean update_bon1_client(String num_bon, PostData_Bon1 bon1){
-        Boolean executed = false;
+    public boolean update_bon1_client(String num_bon, PostData_Bon1 bon1){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1548,7 +1562,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args1.put("BLOCAGE", "F");
                 args1.put("ANCIEN_SOLDE", bon1.solde_ancien);
                 args1.put("VERSER", bon1.verser);
-                if(Double.valueOf(bon1.verser) == 0){
+                if(bon1.verser == 0){
                     args1.put("MODE_RG", "A TERME");
                 }else{
                     args1.put("MODE_RG", "ESPECE");
@@ -1597,8 +1611,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     //=============================== FUNCTION TO UPDATE CLIENT ===============================
-    public Boolean update_bon1_temp(String num_bon, PostData_Bon1 bon1){
-        Boolean executed = false;
+    public boolean update_bon1_temp(String num_bon, PostData_Bon1 bon1){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1629,9 +1643,9 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //=============================== FUNCTION TO UPDATE CLIENT ===============================
     @SuppressLint("Range")
-    public Boolean update_bon1_client_edit(String num_bon, String code_client, PostData_Bon1 bon1){
+    public boolean update_bon1_client_edit(String num_bon, String code_client, PostData_Bon1 bon1){
 
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1681,9 +1695,9 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     //=============================== FUNCTION TO UPDATE CLIENT ===============================
-    public Boolean update_bon1_temp_edit(String num_bon, String code_client, PostData_Bon1 bon1){
+    public boolean update_bon1_temp_edit(String num_bon, String code_client, PostData_Bon1 bon1){
 
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1710,8 +1724,8 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public Boolean Update_ventes_commandes_as_exported(Boolean isTemp, String num_bon){
-        Boolean executed = false;
+    public boolean Update_ventes_commandes_as_exported(boolean isTemp, String num_bon){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1743,7 +1757,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     public boolean check_if_bon1_valide(String _table, String num_bon){
         //check if bon exist
-        Boolean bon1_exist = false;
+        boolean bon1_exist = false;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor0 = db.rawQuery("SELECT NUM_BON FROM " + _table + " WHERE NUM_BON = '"+num_bon+"' AND BLOCAGE = 'F'", null);
         // looping through all rows and adding to list
@@ -1793,7 +1807,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     public boolean update_Stock_Produit( String source, PostData_Bon2 panier,Double qte_old,Double gratuit_old ){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1822,7 +1836,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     public boolean update_client(Double latitude , Double longitude, String code_client){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1848,7 +1862,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //================================== UPDATE TABLE (Bon1) ===============================
     public boolean update_bon1(String _table, String num_bon, PostData_Bon1 bon1){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1884,8 +1898,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     //================================== UPDATE TABLE (Inventaires1) ===============================
-    public boolean update_inv1(String _table, PostData_Inv1 inv1){
-        Boolean executed = false;
+    public boolean update_inv1_nbr_produit(String _table, PostData_Inv1 inv1){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -1893,17 +1907,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 ContentValues args = new ContentValues();
 
-                args.put("NUM_INV", inv1.num_inv);
-                args.put("DATE_INV", inv1.date_inv);
-                args.put("HEURE_INV", inv1.heure_inv);
-                args.put("LIBELLE", inv1.nom_inv);
                 args.put("NBR_PRODUIT", inv1.nbr_produit);
-                args.put("UTILISATEUR", inv1.utilisateur);
-                args.put("CODE_DEPOT", inv1.code_depot);
-                args.put("IS_SENT", inv1.is_sent);
-                args.put("DATE_EXPORT_INV", inv1.date_export_inv);
-                args.put("BLOCAGE", inv1.blocage);
-                args.put("EXPORTATION", inv1.exportation);
+               // args.put("DATE_EXPORT_INV", inv1.date_export_inv);
 
                 String selection = "NUM_INV=?";
                 String[] selectionArgs = {inv1.num_inv};
@@ -1921,8 +1926,8 @@ public class DATABASE extends SQLiteOpenHelper {
     }
     ////////////////////////////////////// DELETING ////////////////////////////////////////////////
     @SuppressLint("Range")
-    public Boolean delete_bon_vente(Boolean isTemp, PostData_Bon1 bon1){
-        Boolean executed = false;
+    public boolean delete_bon_vente(boolean isTemp, PostData_Bon1 bon1){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -2013,8 +2018,8 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public Boolean delete_bon_en_attente(Boolean isTemp, String num_bon){
-        Boolean executed = false;
+    public boolean delete_bon_en_attente(boolean isTemp, String num_bon){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -2080,8 +2085,8 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public Boolean delete_bon_after_export(Boolean isTemp, String num_bon){
-        Boolean executed = false;
+    public boolean delete_bon_after_export(boolean isTemp, String num_bon){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -2114,8 +2119,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
 
-    public Boolean delete_all_bon(Boolean isTemp){
-        Boolean executed = false;
+    public boolean delete_all_bon(boolean isTemp){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -2163,8 +2168,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     @SuppressLint("Range")
-    public Boolean delete_versement(PostData_Carnet_c carnet_c){
-        Boolean executed = false;
+    public boolean delete_versement(PostData_Carnet_c carnet_c){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -2210,7 +2215,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<PostData_Etatv> select_etatv_from_database(String c_client , String from_d, String to_d){
+    public ArrayList<PostData_Etatv> select_etatv_from_database(String _table1, String _table2, String c_client , String from_d, String to_d){
 
         ArrayList<PostData_Etatv> all_etatv = new ArrayList<PostData_Etatv>();
 
@@ -2223,16 +2228,17 @@ public class DATABASE extends SQLiteOpenHelper {
         Double tot_credit = 0.00;
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String querry = "SELECT " +
-                "Bon2.PRODUIT, " +
-                "SUM(Bon2.QTE) TOT_QTE, " +
-                "Bon2.PV_HT, " +
-                "(SUM(Bon2.QTE) * Bon2.PV_HT) TOTAL_MONTANT_PRODUIT " +
-                "FROM Bon2 LEFT JOIN Bon1 ON " +
-                "Bon2.NUM_BON = Bon1.NUM_BON " +
-                "WHERE (Bon1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') AND Bon1.CODE_CLIENT = '"+c_client+"' " +
-                "GROUP BY Bon2.PRODUIT, Bon2.PV_HT " +
+
+        String querry = "SELECT " + _table2 +
+                ".PRODUIT, " +
+                "SUM("+_table2 +".QTE) TOT_QTE, " +
+                _table2 + ".PV_HT, " +
+                "(SUM("+ _table2 + ".QTE) * " + _table2 + ".PV_HT) TOTAL_MONTANT_PRODUIT " +
+                "FROM "+ _table2 + " LEFT JOIN " + _table1 + " ON " + _table2 + ".NUM_BON = " + _table1 + ".NUM_BON " +
+                "WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') AND " + _table1 + ".CODE_CLIENT = '"+ c_client +"' AND " + _table1 + ".BLOCAGE = 'F'" +
+                "GROUP BY "+ _table2 + ".PRODUIT, "+ _table2 + ".PV_HT " +
                 "ORDER BY TOT_QTE DESC";
+
 
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
@@ -2267,13 +2273,16 @@ public class DATABASE extends SQLiteOpenHelper {
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
+
         String querry1 = "SELECT " +
-                "Bon1.REMISE, " +
-                "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE AS MONTANT_BON, " +
+                _table1 + ".REMISE, " +
+                _table1 + ".TOT_HT," +
+                _table1 + ".TOT_TVA," +
+                _table1 + ".TIMBRE - Bon1.REMISE AS MONTANT_BON, " +
                 "Carnet_c.VERSEMENTS as VERSEMENTS, " +
-                "Bon1.VERSER " +
-                "FROM Bon1 LEFT JOIN Carnet_c ON Bon1.CODE_CLIENT = Carnet_c.CODE_CLIENT " +
-                "WHERE (Bon1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') AND Bon1.CODE_CLIENT = '"+ c_client +"' ";
+                _table1 + ".VERSER " +
+                "FROM " + _table1 + " LEFT JOIN Carnet_c ON " + _table1 + ".CODE_CLIENT = Carnet_c.CODE_CLIENT " +
+                " WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') AND "+_table1+".CODE_CLIENT = '"+ c_client +"' AND " + _table1 + ".BLOCAGE = 'F'";
 
         Cursor cursor1 = db.rawQuery(querry1, null);
         // looping through all rows and adding to list
@@ -2362,7 +2371,7 @@ public class DATABASE extends SQLiteOpenHelper {
         return all_etatv;
     }
     @SuppressLint("Range")
-    public ArrayList<PostData_Etatv> select_etatv_global_from_database(String from_d, String to_d){
+    public ArrayList<PostData_Etatv> select_etat_global_from_database(String _table1, String _table2, String from_d, String to_d){
 
         ArrayList<PostData_Etatv> all_etatv = new ArrayList<PostData_Etatv>();
 
@@ -2375,15 +2384,15 @@ public class DATABASE extends SQLiteOpenHelper {
         Double total_verser_c = 0.00;
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String querry = "SELECT " +
-                "Bon2.PRODUIT, " +
-                "SUM(Bon2.QTE) TOT_QTE, " +
-                "Bon2.PV_HT, " +
-                "(SUM(Bon2.QTE) * Bon2.PV_HT) TOTAL_MONTANT_PRODUIT " +
-                "FROM Bon2 LEFT JOIN Bon1 ON " +
-                "Bon2.NUM_BON = Bon1.NUM_BON " +
-                "WHERE (Bon1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') " +
-                "GROUP BY Bon2.PRODUIT, Bon2.PV_HT " +
+
+        String querry = "SELECT " + _table2 +
+                ".PRODUIT, " +
+                "SUM("+_table2 +".QTE) TOT_QTE, " +
+                _table2 + ".PV_HT, " +
+                "(SUM("+ _table2 + ".QTE) * " + _table2 + ".PV_HT) TOTAL_MONTANT_PRODUIT " +
+                "FROM "+ _table2 + " LEFT JOIN " + _table1 + " ON " + _table2 + ".NUM_BON = " + _table1 + ".NUM_BON " +
+                "WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') " +
+                "GROUP BY "+ _table2 + ".PRODUIT, "+ _table2 + ".PV_HT " +
                 "ORDER BY TOT_QTE DESC";
 
         Cursor cursor = db.rawQuery(querry, null);
@@ -2420,12 +2429,14 @@ public class DATABASE extends SQLiteOpenHelper {
         all_etatv.add(etatv);
 
         String querry1 = "SELECT " +
-                "Bon1.REMISE, " +
-                "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE AS MONTANT_BON, " +
-
-                "Bon1.VERSER " +
-                "FROM Bon1 " +
-                "WHERE (Bon1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') ";
+                _table1 + ".REMISE, " +
+                _table1 + ".TOT_HT + " +
+                _table1 + ".TOT_TVA + " +
+                _table1 + ".TIMBRE - " +
+                _table1 + ".REMISE AS MONTANT_BON, " +
+                _table1 + ".VERSER " +
+                "FROM " + _table1 +
+                " WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') ";
 
         Cursor cursor1 = db.rawQuery(querry1, null);
         // looping through all rows and adding to list
@@ -2525,321 +2536,6 @@ public class DATABASE extends SQLiteOpenHelper {
         return all_etatv;
     }
 
-
-/*
-    //============================== FUNCTION SELECT Produits FROM Produits TABLE ===============================
-    public ArrayList<PostData_Produits> select_data_produit_from_database(String querry){
-        ArrayList<PostData_Produits> all_produits = new ArrayList<PostData_Produits>();
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-
-                PostData_Produits produit = new PostData_Produits();
-
-                produit.codebarre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
-                produit.reference = cursor.getString(cursor.getColumnIndex("REF_PRODUIT"));
-                produit.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                produit.pa_ht = cursor.getString(cursor.getColumnIndex("PA_HT"));
-                produit.tva = cursor.getString(cursor.getColumnIndex("TVA"));
-                produit.server_exist = (cursor.getInt(cursor.getColumnIndex("SERVER_EXIST")) == 1)? true : false;
-
-                all_produits.add(produit);
-            } while (cursor.moveToNext());
-        }
-        return all_produits;
-    }
-
-    //============================== FUNCTION SELECT FROM Produits TABLE ===============================
-    public ArrayList<PostData_Achat2> select_data_achat2_from_database(String querry){
-        ArrayList<PostData_Achat2> all_achats = new ArrayList<PostData_Achat2>();
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-
-                PostData_Achat2 achat2 = new PostData_Achat2();
-
-                achat2.codebarre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
-                achat2.reference = cursor.getString(cursor.getColumnIndex("REF_PRODUIT"));
-                achat2.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                achat2.pa_ht = cursor.getString(cursor.getColumnIndex("PA_HT"));
-                achat2.quantite = cursor.getString(cursor.getColumnIndex("QTE"));
-                achat2.tva = cursor.getString(cursor.getColumnIndex("TVA"));
-                achat2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
-
-                all_achats.add(achat2);
-            } while (cursor.moveToNext());
-        }
-        return all_achats;
-    }
-
-    //============================== FUNCTION SELECT FROM Produits TABLE ===============================
-    public PostData_Produits select_produit_produits(String scan_result){
-        SQLiteDatabase db = this.getWritableDatabase();
-        PostData_Produits produit = new PostData_Produits();
-        produit.exist = false;
-        String querry  = "SELECT * FROM PRODUIT WHERE CODE_BARRE = '" + scan_result + "' OR REF_PRODUIT = '" + scan_result + "'";
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                produit.codebarre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
-                produit.reference = cursor.getString(cursor.getColumnIndex("REF_PRODUIT"));
-                produit.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                produit.pa_ht = cursor.getString(cursor.getColumnIndex("PA_HT"));
-                produit.tva = cursor.getString(cursor.getColumnIndex("TVA"));
-                produit.server_exist = (cursor.getInt(cursor.getColumnIndex("SERVER_EXIST")) == 1)? true : false;
-
-                produit.exist = true;
-            } while (cursor.moveToNext());
-        }
-        return produit;
-    }
-
-
-
-    //============================== FUNCTION SELECT FROM Produits TABLE ===============================
-    public PostData_Codebarre select_produit_codebarre(String scan_result){
-        SQLiteDatabase db = this.getWritableDatabase();
-        PostData_Codebarre codebarre = new PostData_Codebarre();
-        codebarre.exist = false;
-        String querry  = "SELECT * FROM Codebarre WHERE CODE_BARRE_SYN = '" + scan_result + "'";
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                codebarre.code_barre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
-                codebarre.exist = true;
-            } while (cursor.moveToNext());
-        }
-        return codebarre;
-    }
-
-    //============================== FUNCTION SELECT FROM Depot2 TABLE ===============================
-
-    public PostData_Produits select_produit_depot2(String scan_result,String code_depot){
-        SQLiteDatabase db = this.getWritableDatabase();
-        PostData_Produits produit = new PostData_Produits();
-        produit.exist = false;
-        String querry = "SELECT " +
-                "D.CODE_BARRE AS C_B, " +
-                "PR.REF_PRODUIT AS R_P , " +
-                "PR.PRODUIT as P, " +
-                "PR.PA_HT as PA, " +
-                "PR.TVA as TVA " +
-                "FROM Depot2 AS D, Produits AS PR " +
-                "WHERE " +
-                "CODE_DEPOT = '" + code_depot + "' " +
-                "AND ( C_B = '" + scan_result + "' " +
-                "OR R_P = '" + scan_result + "') ";
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-
-                produit.codebarre = cursor.getString(cursor.getColumnIndex("C_B"));
-                produit.reference = cursor.getString(cursor.getColumnIndex("R_P"));
-                produit.produit = cursor.getString(cursor.getColumnIndex("P"));
-                produit.pa_ht = cursor.getString(cursor.getColumnIndex("PA"));
-                produit.tva = cursor.getString(cursor.getColumnIndex("TVA"));
-                produit.exist = true;
-            } while (cursor.moveToNext());
-        }
-        return produit;
-    }
-
-    //============================== FUNCTION SELECT FROM Depot TABLE ===============================
-    public ArrayList<PostData_ListDepots> select_list_depots_from_database(){
-        ArrayList<PostData_ListDepots> list_depots = new ArrayList<PostData_ListDepots>();
-        SQLiteDatabase db = this.getWritableDatabase();
-        String querry = "SELECT * FROM Depot1";
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                PostData_ListDepots depot = new PostData_ListDepots();
-                depot.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
-                depot.nom_depot = cursor.getString(cursor.getColumnIndex("NOM_DEPOT"));
-
-                list_depots.add(depot);
-            } while (cursor.moveToNext());
-        }
-        return list_depots;
-    }
-
-
-
-    //============================== FUNCTION SELECT FROM Depot TABLE ===============================
-    public ArrayList<PostData_Fournisseur> select_list_fournisseurs_from_database(){
-        ArrayList<PostData_Fournisseur> list_fournisseurs = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
-        String querry = "SELECT * FROM Fournisseurs";
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                PostData_Fournisseur fournisseur = new PostData_Fournisseur();
-                fournisseur.code_frs = cursor.getString(cursor.getColumnIndex("CODE_FRS"));
-                fournisseur.fournis = cursor.getString(cursor.getColumnIndex("FOURNIS"));
-
-                list_fournisseurs.add(fournisseur);
-            } while (cursor.moveToNext());
-        }
-        return list_fournisseurs;
-    }
-    //============================== FUNCTION SELECT FROM Menu TABLE ===============================
-
-    public ArrayList<PostData_Fournisseur> select_list_achat_from_database(String querry){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<PostData_Fournisseur> fournisseurs = new ArrayList<>();
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                PostData_Fournisseur fournis = new PostData_Fournisseur();
-
-                fournis.num_bon = cursor.getString(cursor.getColumnIndex("NUM_BON"));
-                fournis.code_frs = cursor.getString(cursor.getColumnIndex("CODE_FRS"));
-                fournis.fournis = cursor.getString(cursor.getColumnIndex("FOURNIS"));
-                fournis.date_bon = cursor.getString(cursor.getColumnIndex("DATE_BON"));
-                fournis.heure = cursor.getString(cursor.getColumnIndex("HEURE"));
-                fournis.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
-                fournis.nom_depot = cursor.getString(cursor.getColumnIndex("NOM_DEPOT"));
-                fournis.is_sent = cursor.getInt(cursor.getColumnIndex("IS_SENT"));
-                fournis.date_export_bon = cursor.getString(cursor.getColumnIndex("DATE_EXPORT_BON"));
-                fournisseurs.add(fournis);
-            } while (cursor.moveToNext());
-        }
-        return fournisseurs;
-    }
-    //UPDATING ... /////////////////////////////////////////////////////////////////////////////////
-
-    //================================== UPDATE TABLE (Inventaires1) =======================================
-    public boolean Update_inventaire1(String num_bon){
-        Boolean executed = false;
-        try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.beginTransaction();
-            try {
-                String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
-                ContentValues args = new ContentValues();
-                args.put("IS_SENT", 1);
-                args.put("DATE_EXPORT_BON", date);
-                String selection = "NUM_BON=?";
-                String[] selectionArgs = {num_bon.toString()};
-                db.update("Achat1", args, selection, selectionArgs);
-
-                db.setTransactionSuccessful();
-                executed =  true;
-            } finally {
-                db.endTransaction();
-            }
-        }catch (SQLiteDatabaseLockedException sqlilock){
-            Log.v("TRACKKK", sqlilock.getMessage());
-        }
-        return executed;
-    }
-    //================================== UPDATE TABLE (Inventaires2) =======================================
-    public boolean Update_achat2(PostData_Produits _produit){
-        Boolean executed = false;
-        try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.beginTransaction();
-            try {
-                ContentValues args = new ContentValues();
-                args.put("QTE", _produit.qte);
-                String selection = "CODE_BARRE=? OR REF_PRODUIT=?";
-                String[] selectionArgs = {_produit.codebarre, _produit.reference};
-                db.update("Achat2", args, selection, selectionArgs);
-
-                db.setTransactionSuccessful();
-                executed =  true;
-            } finally {
-                db.endTransaction();
-            }
-        }catch (SQLiteDatabaseLockedException sqlilock){
-            Log.v("TRACKKK", sqlilock.getMessage());
-        }
-        return executed;
-    }
-
-    public Boolean delete_achat_group(String num_bon){
-        Boolean executed = false;
-        try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.beginTransaction();
-            try {
-                String selection = "NUM_BON=?";
-                String[] selectionArgs = {num_bon.toString()};
-                db.delete("Achat1", selection, selectionArgs);
-                db.delete("Achat2", selection, selectionArgs);
-
-                db.setTransactionSuccessful();
-                executed =  true;
-            } finally {
-                db.endTransaction();
-            }
-        }catch (SQLiteDatabaseLockedException sqlilock){
-            Log.v("TRACKKK", sqlilock.getMessage());
-            executed =  false;
-        }
-        return executed;
-    }
-
-
-    public String Get_Digits_String(String number, Integer length){
-        String _number = number;
-        while(_number.length() < length){
-            _number = "0" + _number;
-        }
-        Log.v("TRACKKK", _number);
-        return _number;
-    }
-
-    //================== GET MAX NUM_INV INTO TABLE Inventaires1 ===========================
-    public String Select_max_num_inv(SQLiteDatabase db){
-        String max = "0";
-        String selectQuery = "SELECT MAX(NUM_BON) AS max_id FROM Achat1 WHERE NUM_BON IS NOT NULL";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        Log.v("TRACKKK", "size " + cursor.getCount());
-        if(cursor.getCount() > 0 ) {
-            if (cursor.moveToFirst()) {
-                if(cursor.getString(0) != null){
-                    max   = cursor.getString(cursor.getColumnIndex("max_id"));
-                }
-            }
-        }
-        return max;
-    }
-
-    //============================== FUNCTION SEARCH INTO PRODUITS FROM Produits TABLE ===============================
-    public ArrayList<PostData_Produits> search_produit(String value_text){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<PostData_Produits> produits = new ArrayList<>();
-        String querry  = "SELECT * FROM Produits WHERE CODE_BARRE like '" + value_text + "%' OR REF_PRODUIT like '" + value_text + "%' OR PRODUIT like '"+ value_text +"%' ";
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                PostData_Produits produit = new PostData_Produits();
-                produit.codebarre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
-                produit.reference = cursor.getString(cursor.getColumnIndex("REF_PRODUIT"));
-                produit.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                produit.pa_ht = cursor.getString(cursor.getColumnIndex("PA_TTC"));
-                produit.tva = cursor.getString(cursor.getColumnIndex("TVA"));
-                produit.server_exist = (cursor.getInt(cursor.getColumnIndex("SERVER_EXIST")) == 1)? true : false;
-
-                produits.add(produit);
-
-            } while (cursor.moveToNext());
-        }
-        return produits;
-    }
-*/
-
     public void ResetPda(){
         mContext.deleteDatabase(DATABASE_NAME);
     }
@@ -2872,13 +2568,13 @@ public class DATABASE extends SQLiteOpenHelper {
     /////////////////////////////////////////////// INVENTAIRE ////////////////////////////////////////////////
     //=============================== FUNCTION TO INSERT INTO Inventaires2 TABLE ===============================
     public boolean Insert_into_Inv1(String _table, PostData_Inv1 inv1){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
             try {
 
-                Boolean inv1_exist = false;
+                boolean inv1_exist = false;
                 Cursor cursor0 = db.rawQuery("SELECT NUM_INV FROM "+ _table +" WHERE NUM_INV = '"+inv1.num_inv+"' ", null);
                 // looping through all rows and adding to list
                 if (cursor0.moveToFirst()) {
@@ -2897,7 +2593,6 @@ public class DATABASE extends SQLiteOpenHelper {
                     db.update(_table, args1, selection1, selectionArgs1);
 
                 }else {
-
                     ContentValues values = new ContentValues();
                     values.put("LIBELLE", inv1.nom_inv);
                     values.put("NUM_INV", inv1.num_inv);
@@ -2906,7 +2601,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     values.put("CODE_DEPOT", inv1.code_depot);
                     values.put("IS_SENT", 0);
                     values.put("BLOCAGE", "N");
-                    values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"");
+                    values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
                     db.insert(_table, null, values);
 
                 }
@@ -2924,15 +2619,14 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     //=============================== FUNCTION TO INSERT INTO Inventaires2 TABLE ===============================
-    public Boolean Insert_into_inventaire2(PostData_Inv2 inv2s){
-        Boolean executed = false;
+    public boolean Insert_into_inventaire2(PostData_Inv2 inv2s){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
             try {
                 ContentValues values = new ContentValues();
                 values.put("CODE_BARRE", inv2s.codebarre);
-              //  values.put("REF_PRODUIT", inv2s.reference);
                 values.put("NUM_INV", inv2s.num_inv);
                 values.put("PRODUIT", inv2s.produit);
                 values.put("NBRE_COLIS", inv2s.nbr_colis);
@@ -2940,7 +2634,6 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("PA_HT", inv2s.pa_ht);
                 values.put("QTE", inv2s.qte_theorique);
                 values.put("QTE_NEW", inv2s.qte_physique + inv2s.vrac);
-               // values.put("TVA", inv2s.tva);
                 values.put("CODE_DEPOT", inv2s.code_depot);
                 values.put("VRAC", inv2s.vrac);
                 db.insert("Inv2", null, values);
@@ -3075,7 +2768,7 @@ public class DATABASE extends SQLiteOpenHelper {
     /////////////////////////////////////////////// ACHAT //////////////////////////////////////////
     //=============================== FUNCTION TO INSERT INTO Achats1 TABLE ===============================
     public boolean Insert_into_achat1(String date, String heure, String nom_achat, String code_depot){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -3113,8 +2806,8 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     //=============================== FUNCTION TO INSERT INTO Achats2 TABLE ===============================
-    public Boolean Insert_into_achat2(PostData_Achat2 achat2s){
-        Boolean executed = false;
+    public boolean Insert_into_achat2(PostData_Achat2 achat2s){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -3209,17 +2902,22 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     //================================== UPDATE TABLE (Inventaires2) =======================================
-    public boolean Update_inventaire2(PostData_Inv2 _inv2, double qte_old, double vrac_old){
-        Boolean executed = false;
+    public boolean Update_inventaire2(PostData_Inv2 _inv2){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
             try {
-                ContentValues args = new ContentValues();
-                args.put("QTE_NEW", _inv2.qte_physique);
-                String selection = "CODE_BARRE=? OR REF_PRODUIT=?";
-                String[] selectionArgs = {_inv2.codebarre, _inv2.reference};
-                db.update("Inventaires2", args, selection, selectionArgs);
+
+                ContentValues args1 = new ContentValues();
+                args1.put("NBRE_COLIS", _inv2.nbr_colis);
+                args1.put("COLISSAGE", _inv2.colissage);
+                args1.put("QTE_NEW", _inv2.qte_physique + _inv2.vrac);
+                args1.put("VRAC", _inv2.vrac);
+
+                String selection1 = "RECORDID=? AND NUM_INV=?";
+                String[] selectionArgs1 = {String.valueOf(_inv2.recordid), _inv2.num_inv};
+                db.update("Inv2", args1, selection1, selectionArgs1);
 
                 db.setTransactionSuccessful();
                 executed =  true;
@@ -3234,12 +2932,12 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //================================== UPDATE TABLE (Inventaires1) =======================================
     public boolean Update_inventaire1(String num_inv){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
             try {
-                String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
+                String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
                 ContentValues args = new ContentValues();
                 args.put("IS_SENT", 1);
                 args.put("DATE_EXPORT_INV", date);
@@ -3258,8 +2956,8 @@ public class DATABASE extends SQLiteOpenHelper {
         return executed;
     }
 
-    public Boolean delete_inventaire_group(String num_inv){
-        Boolean executed = false;
+    public boolean delete_inventaire_group(String num_inv){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -3281,8 +2979,8 @@ public class DATABASE extends SQLiteOpenHelper {
         }
         return executed;
     }
-    public Boolean delete_transfert(){
-        Boolean executed = false;
+    public boolean delete_transfert(){
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -3304,7 +3002,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     public boolean validate_bon1_sql(String _table, String num_bon, PostData_Bon1 bon1){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -3333,9 +3031,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 String[] selectionArgs2 = {bon1.code_client};
                 db.update("Client", args2, selection2, selectionArgs2);*/
 
-                if(_table.equals("Bon1"))
-                db.execSQL("UPDATE Client SET ACHATS = ACHATS + " + ( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) + ", VERSER = VERSER + " + bon1.verser + ", SOLDE = SOLDE + " + (( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) - bon1.verser) + " WHERE CODE_CLIENT = '" + bon1.code_client+"'");
-
+                if(_table.equals("Bon1")){
+                    db.execSQL("UPDATE Client SET ACHATS = ACHATS + " + ( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) + ", VERSER = VERSER + " + bon1.verser + ", SOLDE = SOLDE + " + (( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) - bon1.verser) + " WHERE CODE_CLIENT = '" + bon1.code_client+"'");
+                }
 
                 db.setTransactionSuccessful();
                 executed =  true;
@@ -3351,7 +3049,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     public boolean validate_inv1_sql(String _table, String num_inv){
 
-        Boolean executed = false;
+        boolean executed = false;
 
         try {
 
@@ -3380,7 +3078,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     public boolean modifier_bon1_sql(String _table, String num_bon, PostData_Bon1 bon1){
-        Boolean executed = false;
+        boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -3394,10 +3092,13 @@ public class DATABASE extends SQLiteOpenHelper {
                 String[] selectionArgs = {num_bon};
                 db.update(_table, args, selection, selectionArgs);
 
-                db.execSQL("UPDATE Client SET ACHATS = ACHATS - " + ( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) + ", VERSER = VERSER - " + bon1.verser + ", SOLDE = SOLDE - " + (( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) - bon1.verser) + " WHERE CODE_CLIENT = '" + bon1.code_client+"'");
+                if(_table.equals("Bon1")){
+                    db.execSQL("UPDATE Client SET ACHATS = ACHATS - " + ( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) + ", VERSER = VERSER - " + bon1.verser + ", SOLDE = SOLDE - " + (( bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise ) - bon1.verser) + " WHERE CODE_CLIENT = '" + bon1.code_client+"'");
+                }
 
                 db.setTransactionSuccessful();
                 executed =  true;
+
             } finally {
                 db.endTransaction();
             }
@@ -3409,7 +3110,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     public boolean modifier_inv1_sql(String _table, String num_inv){
 
-        Boolean executed = false;
+        boolean executed = false;
 
         try {
             SQLiteDatabase db = this.getWritableDatabase();

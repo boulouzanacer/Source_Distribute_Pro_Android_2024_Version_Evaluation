@@ -12,15 +12,53 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <include layout="@layout/import_num_bon"/>
-            <include layout="@layout/export_data"/>
-            <include layout="@layout/bon_exported"/>
+            <Button
+                android:id="@+id/bt1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/parametre_rounded"
+                android:text="@string/syncronisation"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
 
+            <include layout="@layout/import_export_produit_client" />
 
+            <Button
+                android:id="@+id/bt2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/parametre_rounded"
+                android:text="@string/vente"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
+
+            <include layout="@layout/import_export_vente" />
+
+            <Button
+                android:id="@+id/bt3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/parametre_rounded"
+                android:text="@string/commande"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
+
+            <include layout="@layout/import_export_commande" />
+
+            <Button
+                android:id="@+id/bt4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/parametre_rounded"
+                android:text="@string/inventaire"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
+
+            <include layout="@layout/import_export_inventaire" />
 
         </LinearLayout>
 

@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +18,6 @@ import android.view.View;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.vente.ActivityBon2;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
@@ -37,7 +35,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityExportedVentes extends AppCompatActivity implements RecyclerAdapterBon1.ItemClick , RecyclerAdapterBon1.ItemLongClick{
+public class ActivityExportedBons extends AppCompatActivity implements RecyclerAdapterBon1.ItemClick , RecyclerAdapterBon1.ItemLongClick{
 
 
   RecyclerView recyclerView;
@@ -66,7 +64,7 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
     if(getIntent() != null){
       SOURCE = getIntent().getStringExtra("SOURCE");
     }else {
-      Crouton.makeText(ActivityExportedVentes.this, "Erreur choix de source !", Style.ALERT).show();
+      Crouton.makeText(ActivityExportedBons.this, "Erreur choix de source !", Style.ALERT).show();
       return;
     }
 
@@ -74,9 +72,12 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
     
     if(SOURCE.equals("SALE")){
       getSupportActionBar().setTitle("Bons de livraison exportés");
-    }else{
+    }else if(SOURCE.equals("ORDER")){
       getSupportActionBar().setTitle("Bons de commandes exportés");
+    }else if(SOURCE.equals("INVENTAIRE")){
+      getSupportActionBar().setTitle("Bons inventaire exportés");
     }
+
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
@@ -105,15 +106,17 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
   }
 
   private void setRecycle() {
+
     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);
     if(SOURCE.equals("SALE")){
       adapter = new RecyclerAdapterBon1(this, getItems(), "SALE");
-    }else{
+    }else if(SOURCE.equals("ORDER")){
       adapter = new RecyclerAdapterBon1(this, getItems(), "ORDER");
     }
-   
+
     recyclerView.setAdapter(adapter);
+
   }
 
 
@@ -236,7 +239,7 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
 
     Sound(R.raw.beep);
 
-    Intent intent = new Intent(ActivityExportedVentes.this, ActivityBon2.class);
+    Intent intent = new Intent(ActivityExportedBons.this, ActivityBon2.class);
     intent.putExtra("NUM_BON", bon1s.get(position).num_bon);
     startActivity(intent);
 
@@ -251,7 +254,7 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
 
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-      builder.setIcon(R.drawable.selectiondialogs_default_item_icon);
+      builder.setIcon(R.drawable.blue_circle_24);
       builder.setTitle("Choisissez une action");
       builder.setItems(items, new DialogInterface.OnClickListener() {
         @Override
@@ -259,7 +262,7 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
           switch (item){
 
             case 0:
-              new SweetAlertDialog(ActivityExportedVentes.this, SweetAlertDialog.NORMAL_TYPE)
+              new SweetAlertDialog(ActivityExportedBons.this, SweetAlertDialog.NORMAL_TYPE)
                       .setTitleText("Suppression")
                       .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
                       .setCancelText("Anuuler")
@@ -299,14 +302,14 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
       final CharSequence[] items = {"Supprimer", "Imprimer" };
 
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder.setIcon(R.drawable.selectiondialogs_default_item_icon);
+      builder.setIcon(R.drawable.blue_circle_24);
       builder.setTitle("Choisissez une action");
       builder.setItems(items, new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int item) {
           switch (item){
             case 0:
-              new SweetAlertDialog(ActivityExportedVentes.this, SweetAlertDialog.NORMAL_TYPE)
+              new SweetAlertDialog(ActivityExportedBons.this, SweetAlertDialog.NORMAL_TYPE)
                       .setTitleText("Suppression")
                       .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
                       .setCancelText("Anuuler")
@@ -427,7 +430,7 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
               "WHERE Bon2.NUM_BON = '" + num_bon+ "'");
 
       Activity bactivity;
-      bactivity = ActivityExportedVentes.this;
+      bactivity = ActivityExportedBons.this;
 
       PrinterVente printer = new PrinterVente();
       printer.start_print_sale_bon(bactivity, bon2_print, bon1_print);
@@ -503,7 +506,7 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
               "WHERE Bon2_Temp.NUM_BON = '" + num_bon+ "'");
 
       Activity bactivity;
-      bactivity = ActivityExportedVentes.this;
+      bactivity = ActivityExportedBons.this;
 
       PrinterVente printer = new PrinterVente();
       printer.start_print_order_bon(bactivity, bon2_print, bon1_print);
@@ -528,7 +531,7 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
     if(item.getItemId() == android.R.id.home){
       onBackPressed();
     }else if(item.getItemId() == R.id.delete_all_after_export){
-      new SweetAlertDialog(ActivityExportedVentes.this, SweetAlertDialog.NORMAL_TYPE)
+      new SweetAlertDialog(ActivityExportedBons.this, SweetAlertDialog.NORMAL_TYPE)
               .setTitleText("Suppression")
               .setContentText("Voulez-vous vraiment supprimer tout les bons de ventes qui sont déjà exportés au serveur ?!")
               .setCancelText("Anuuler")
@@ -546,12 +549,12 @@ public class ActivityExportedVentes extends AppCompatActivity implements Recycle
                 public void onClick(SweetAlertDialog sDialog) {
 
                   if(!controller.delete_all_bon(false)){
-                    new SweetAlertDialog(ActivityExportedVentes.this, SweetAlertDialog.SUCCESS_TYPE)
+                    new SweetAlertDialog(ActivityExportedBons.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Success!")
                             .setContentText("tous les bons de ventes a été supprimé!")
                             .show();
                   }else{
-                    new SweetAlertDialog(ActivityExportedVentes.this, SweetAlertDialog.ERROR_TYPE)
+                    new SweetAlertDialog(ActivityExportedBons.this, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Ops!")
                             .setContentText("Erreur de suppression de tous les bons de ventes!")
                             .show();

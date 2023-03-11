@@ -136,8 +136,42 @@
             android:id="@+id/descrip_import_produit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer la liste des produits depuis le serveur distant"
+            android:text="ça vous permet d'importer la liste des produits depuis le serveur distant ( Local)"
             android:layout_below="@+id/importt_produit_txt"
+            android:textSize="12dp"
+            android:textColor="@color/gray"
+            android:layout_alignParentStart="true" />
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlt_import_produit_ftp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/importt_produit_txt_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Synchronisation des produits depuis serveur (FTP)"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/descrip_import_produit_ftp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ça vous permet d'importer la liste des produits depuis le serveur distant (FTP)"
+            android:layout_below="@+id/importt_produit_txt_ftp"
             android:textSize="12dp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
@@ -175,12 +209,5 @@
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
-        <View
-            android:id="@+id/view1"
-            android:layout_marginTop="5dp"
-            android:background="@color/gray"
-            android:layout_below="@+id/descrip_import_parametre"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"/>
     </RelativeLayout>
 </LinearLayout>

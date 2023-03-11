@@ -120,19 +120,22 @@ public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv
 
 
     if(item.blocage.equals("F")){
-      holder.blocage.setText("Validé")
+      holder.blocage.setText("Fermé")
               .setTextColor(Color.WHITE)
               .setSlantedBackgroundColor(Color.GREEN)
               .setTextSize(21)
               .setSlantedLength(80)
               .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+
     }else {
-      holder.blocage.setText("En attente")
+
+      holder.blocage.setText("Ouvert")
               .setTextColor(Color.WHITE)
               .setSlantedBackgroundColor(Color.RED)
               .setTextSize(21)
               .setSlantedLength(80)
               .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+
     }
 
     if(item.is_sent == 1){

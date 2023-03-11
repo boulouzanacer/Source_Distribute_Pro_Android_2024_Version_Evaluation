@@ -149,7 +149,7 @@
             <Button
                 android:id="@+id/btn_test"
                 android:layout_weight="1"
-                android:text="Test imprission"
+                android:text="Tester impression"
                 android:enabled="false"
                 android:textAllCaps="false" />
 

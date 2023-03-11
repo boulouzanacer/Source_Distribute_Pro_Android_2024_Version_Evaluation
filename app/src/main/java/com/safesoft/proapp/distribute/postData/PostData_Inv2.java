@@ -5,7 +5,6 @@ package com.safesoft.proapp.distribute.postData;
  */
 public class PostData_Inv2 {
     public Integer recordid;
-    public String reference;
     public String produit;
     public String codebarre;
     public Double pa_ht;
@@ -18,6 +17,4 @@ public class PostData_Inv2 {
     public Double nbr_colis;
     public Double colissage;
     public Double vrac;
-
-    public Boolean exist;
 }

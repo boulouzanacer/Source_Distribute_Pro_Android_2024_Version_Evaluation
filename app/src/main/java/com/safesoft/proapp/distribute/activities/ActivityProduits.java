@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
@@ -40,6 +41,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     private MediaPlayer mp;
     public static final String BARCODE_KEY = "BARCODE";
     private SearchView searchView;
+    private TextView nbr_produit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +66,13 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         initViews();
 
         setRecycle("", false);
+
     }
 
     private void initViews() {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_produit);
+        nbr_produit = (TextView) findViewById(R.id.list_produit_nbr_produit);
     }
 
     private void setRecycle(String text_search, boolean isscan) {
@@ -82,6 +86,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan));
         recyclerView.setAdapter(adapter);
+        nbr_produit.setText("Nombre de produit : " + produits.size());
     }
 
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {

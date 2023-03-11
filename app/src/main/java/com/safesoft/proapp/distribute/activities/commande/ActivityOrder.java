@@ -325,7 +325,7 @@ public class ActivityOrder extends AppCompatActivity implements RecyclerAdapterC
     }
 
     public String Get_Digits_String(){
-        String _number = controller.Select_max_num_bon_vente("Bon1");
+        String _number = controller.Select_max_num_bon_vente("Bon1_Temp");
         while(_number.length() < 6){
             _number = "0" + _number;
         }
@@ -553,13 +553,10 @@ public class ActivityOrder extends AppCompatActivity implements RecyclerAdapterC
                         .setConfirmClickListener(sDialog -> {
 
                             try{
-
-                                if (controller.modifier_bon1_sql("Bon1",bon1_temp.num_bon, bon1_temp) ) {
+                                if (controller.modifier_bon1_sql("Bon1_Temp",bon1_temp.num_bon, bon1_temp) ) {
                                     bon1_temp.blocage = "M";
                                     validate_theme();
-                                };
-
-
+                                }
                             }catch (Exception e){
 
                                 new SweetAlertDialog(ActivityOrder.this, SweetAlertDialog.WARNING_TYPE)

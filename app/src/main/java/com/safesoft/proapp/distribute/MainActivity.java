@@ -49,6 +49,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PrinterObserver {
   Fragment objFrgment;
   FragmentManager fragmentManager;
@@ -64,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbardrawer);
+    toolbar.setSubtitle("Version : 22.2.23");
     setSupportActionBar(toolbar);
-
 
 
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -176,6 +178,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     } else if (id == R.id.inventaire) {
       startActivity(ActivityInventaireAchat.class, REQUEST_ACTIVITY_INVENTAIRE_ACHAT);
+      /*new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE)
+              .setTitleText("Important !")
+              .setContentText(" Cette rubrique est en cours de développement !" )
+              .show();*/
 
     } else if (id == R.id.parametres)
     {

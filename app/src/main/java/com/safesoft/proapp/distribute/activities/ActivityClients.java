@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter;
@@ -37,6 +38,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     DATABASE controller;
     private  MediaPlayer mp;
     private EventBus bus;
+    private TextView nbr_client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     private void initViews() {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_client);
+        nbr_client = (TextView) findViewById(R.id.list_client_nbr_client);
     }
 
     @Override
@@ -75,6 +78,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapter(this, getItems(text_search));
         recyclerView.setAdapter(adapter);
+        nbr_client.setText("Nombre de client : " + clients.size());
 
     }
 

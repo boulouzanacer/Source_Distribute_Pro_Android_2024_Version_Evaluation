@@ -145,40 +145,215 @@
 
     <!---IEDIT CLIENT -->
     <!---INFO REVENDEUR -->
-    <string name="INFO_SAFE_SOFT1">" SARL SAFE SOFT \n Capital social : 15.000.000,00 DA "</string>
-    <string name="INFO_SAFE_SOFT2">"Centre commercial et affaire Mohamadia Mall \n2eme étage N°1058 Alger   "</string>
+
+    <!--SARL SAFE SOFT-->
+    <string name="INFO_SAFE_SOFT1">SARL SAFE SOFT \n Capital social : 15.000.000,00 DA</string>
+    <string name="INFO_SAFE_SOFT2">Centre commercial et affaire Mohamadia Mall \n2eme étage N°1058 Alger</string>
     <string name="INFO_SAFE_SOFT3">023 80 44 44 / 023 80 45 45</string>
     <string name="INFO_SAFE_SOFT4"> www.safesoft-dz.com</string>
 
+    <!--COMPOS SOLUTIONS &amp; INTEGRATIONS-->
+    <string name="INFO_COMPOS1"> COMPOS SOLUTIONS &amp; INTEGRATIONS </string>
+    <string name="INFO_COMPOS2"> 05 Rue Mohamed Belkahla, Vieux kouba ,Alger </string>
+    <string name="INFO_COMPOS3">Tél/Fax : 021 28 82 83 /  Mobile : +(213)  550 20 02 72</string>
+    <string name="INFO_COMPOS4"> Email / Site web : contact@compos-dz.com / www.compos-dz.com</string>
+
+    <!--TIEMPO SOFT-->
     <string name="INFO_TIEMPO_SOFT1"> TIEMPO SOFT </string>
-    <string name="INFO_TIEMPO_SOFT2"> "96 Avenue des Frères Abdeslami \n Kouba 16050 Alger"  </string>
-    <string name="INFO_TIEMPO_SOFT3">"Tél / Fax: 021 40 51 01  \n Mobile: 0560 021 500 / 0560 021 503 "</string>
+    <string name="INFO_TIEMPO_SOFT2"> 96 Avenue des Frères Abdeslami \n Kouba 16050 Alger</string>
+    <string name="INFO_TIEMPO_SOFT3">Tél / Fax: 021 40 51 01  \n Mobile: 0560 021 500 / 0560 021 503</string>
     <string name="INFO_TIEMPO_SOFT4"> www.tiemposoft.com</string>
 
+    <!--CHERRATA SOFT-->
     <string name="INFO_CHERRATA_SOFT1"> CHERRATA SOFT </string>
-    <string name="INFO_CHERRATA_SOFT2">"Cité 600 Logts (Kharrouba) \n Mostaganem" </string>
-    <string name="INFO_CHERRATA_SOFT3">"Tél / Fax : 045 207 284 / 044 590 457 \n 0550 995 092/ 0771 144 538 "</string>
+    <string name="INFO_CHERRATA_SOFT2">Cité 600 Logts (Kharrouba) \n Mostaganem</string>
+    <string name="INFO_CHERRATA_SOFT3">Tél / Fax : 045 207 284 / 044 590 457 \n 0550 995 092/ 0771 144 538</string>
     <string name="INFO_CHERRATA_SOFT4"> www.cherrata.com</string>
 
+    <!--EASY SOFT-->
+    <string name="INFO_EASY_SOFT1"> EASY SOFT </string>
+    <string name="INFO_EASY_SOFT2">G18 Lotissement du lycée Lot A 44 Rouiba Alger</string>
+    <string name="INFO_EASY_SOFT3">Tél / Fax : 0560 93 74 84 / 0550 72 37 52</string>
+    <string name="INFO_EASY_SOFT4">Email / Site web : contact@easy-soft-dz.net / www.easy-soft-dz.net</string>
+
+    <!--MOON SOFT-->
+    <string name="INFO_MOON_SOFT1"> MOON SOFT </string>
+    <string name="INFO_MOON_SOFT2">CENTRE  AFFAIRE EL WOUROUD N°35 BAB DZAIR  BLIDA</string>
+    <string name="INFO_MOON_SOFT3">Tél / Fax : +(213) 542 625 339 / +(213) 025 215 237</string>
+    <string name="INFO_MOON_SOFT4">Email : a.djafri.dz@gmail.com</string>
+
+    <!--GLOBAL TECH MEDIA-->
+    <string name="INFO_GLOBAL_TECH1"> GLOBAL TECH MEDIA </string>
+    <string name="INFO_GLOBAL_TECH2">Cité l indépendance Mellah \n W El-Oued Algérie</string>
+    <string name="INFO_GLOBAL_TECH3">Tél/Fax : +(213) 32 14 85 85 \n Mobile : +(213) 770 539 177</string>
+    <string name="INFO_GLOBAL_TECH4"> www.globaltm.dz</string>
+
+    <!--POLYRAW-->
+    <string name="INFO_POLYRAW1"> Digital system x </string>
+    <string name="INFO_POLYRAW2">Centre commercial et affaire Mohamadia Mall 2eme étage N°1058 Alger</string>
+    <string name="INFO_POLYRAW3">Tél/Fax : +(213) 32 14 85 85 \n Mobile : +(213) 770 539 177</string>
+    <string name="INFO_POLYRAW4"> www.globaltm.dz</string>
+
+    <!--PROSOLUTION-->
+    <string name="INFO_PROSOLUTION1"> PRO SOLUTION </string>
+    <string name="INFO_PROSOLUTION2"> Cité Bousshaki F lot n°174 Beb Ezzouar Alger</string>
+    <string name="INFO_PROSOLUTION3">Mobile : 0770 48 18 44</string>
+    <string name="INFO_PROSOLUTION4"> Email : dsxapps@gmail.com </string>
+
+    <!--ACIDOMTECH-->
+    <string name="INFO_ACIDOMTECH1">ACIDOM TECHNOLOGIE SOLUTIONS INFORMATIQUES</string>
+    <string name="INFO_ACIDOMTECH2"> Rue du 1er Novembre Willaya du CHLEF-Algerie</string>
+    <string name="INFO_ACIDOMTECH3">Tél/Fax : 027 77 19 52 /n Mobile : 0550 27 72 95   /   0550 20 85 48</string>
+    <string name="INFO_ACIDOMTECH4"> Email :acidomtech@yahoo.fr </string>
+
+    <!--NDHL-->
+    <string name="INFO_NDHL1">SARL NDHL Service Informatique</string>
+    <string name="INFO_NDHL2"> 5 Rue Mohamed Belkahla, Vieux kouba ,Alger</string>
+    <string name="INFO_NDHL3">Tél/Fax : 023 80 44 44 / 023 80 45 45 /n Mobile : 0541 71 76 00 / 0661 32 33 85</string>
+    <string name="INFO_NDHL4"> - </string>
+
+    <!--TECH POS-->
     <string name="INFO_TECH_POS1"> TECH POS </string>
-    <string name="INFO_TECH_POS2">"Cité Chaabani Mohamed, N°14 \n Djelfa" </string>
+    <string name="INFO_TECH_POS2">Cité Chaabani Mohamed, N°14 \n Djelfa</string>
     <string name="INFO_TECH_POS3">Tél : 0551 43 44 93</string>
     <string name="INFO_TECH_POS4"> www.techpos-dz.com</string>
 
-    <string name="INFO_GLOBAL_TECH1"> GLOBAL TECH MEDIA </string>
-    <string name="INFO_GLOBAL_TECH2">"Cité l indépendance Mellah \n W El-Oued Algérie" </string>
-    <string name="INFO_GLOBAL_TECH3">"Tél/Fax : +(213) 32 14 85 85 \n Mobile : +(213) 770 539 177" </string>
-    <string name="INFO_GLOBAL_TECH4"> www.globaltm.dz</string>
+    <!--UNIVER SOFT-->
+    <string name="INFO_UNIVERSOFT1">UNIVERSOFT Solutions</string>
+    <string name="INFO_UNIVERSOFT2"> 23 RUE DJEBBAR AMOR (CLAIR SOLIEL) SOUK AHRAS</string>
+    <string name="INFO_UNIVERSOFT3">Mobile : 0662 84 23 52</string>
+    <string name="INFO_UNIVERSOFT4">Email : AHMEDKH041@GMAIL.COM</string>
 
+    <!--IBSMAX-->
+    <string name="INFO_IBSMAX1">IBS MAX Informatique, Bureautique &amp; Software</string>
+    <string name="INFO_IBSMAX2"> N 8, Rue Ben Chaabane Mouloud, Draria - Alger</string>
+    <string name="INFO_IBSMAX3">Mobile : 0561 65 10 23</string>
+    <string name="INFO_IBSMAX4">Email / Site web : contact@ibsmax.com / www.ibsmax.com</string>
+
+    <!--MMBOX-->
+    <string name="INFO_MMBOX1"> EURL MULTIMEDIA BOX ALGERIA</string>
+    <string name="INFO_MMBOX2"> 51,rue Ouled sidi elchikh belfort. El HARRACH Alger</string>
+    <string name="INFO_MMBOX3">Tél / Fax :   023 82 74 70 / Mobile : 0560 20 70 00</string>
+    <string name="INFO_MMBOX4">Email / Site web : eurlmultimediabox@gmail.com / www.belfortmarket.com</string>
+
+    <!--ETS KERRICHE DELPHI-->
+    <string name="INFO_DELPHI1"> ETS KERRICHE DELPHI </string>
+    <string name="INFO_DELPHI2">CITE 104LGT EPLF N54 NOUVELLE VILLE\n TIZI OUZOU</string>
+    <string name="INFO_DELPHI3">Mobile : +(213)  550 33 70 13</string>
+    <string name="INFO_DELPHI4">Email : jubakerriche@yahoo.fr</string>
+
+
+    <!--BBS-->
+    <string name="INFO_BBS1"> Dani Soft</string>
+    <string name="INFO_BBS2">SNTP GROUPE B N°38 DAR EL BEIDA -ALGER</string>
+    <string name="INFO_BBS3">Mobile : 0561 854 889 / 0550231440 / 0550231441</string>
+    <string name="INFO_BBS4">Email : m.bluebird.dz@gmail.com</string>
+
+    <!--EXPERT INFORMATIQUE-->
+    <string name="INFO_EXPERTINFO1"> EXPERT INFORMATIQUE</string>
+    <string name="INFO_EXPERTINFO2">CITE EL NASR BATNA</string>
+    <string name="INFO_EXPERTINFO3">Mobile : 0661 60 48 08 / 0541 42 09 61</string>
+    <string name="INFO_EXPERTINFO4">Email : nouifod@gmail.com</string>
+
+    <!--ARC TECH-->
+    <string name="INFO_ARCTECH1"> EXPERT INFORMATIQUE</string>
+    <string name="INFO_ARCTECH2">CITE EL NASR BATNA</string>
+    <string name="INFO_ARCTECH3">Mobile : 0661 60 48 08 / 0541 42 09 61</string>
+    <string name="INFO_ARCTECH4">Email : nouifod@gmail.com</string>
+
+    <!--DATA PRO-->
+    <string name="INFO_DATAPRO1"> DATA PRO</string>
+    <string name="INFO_DATAPRO2">CITE 1406 BT17 LOC N1 BOUMERDES</string>
+    <string name="INFO_DATAPRO3">Tél / Fax :  024 79 75 66 /n Mobile : 0560 59 49 59 / 0560 14 88 07</string>
+    <string name="INFO_DATAPRO4">Email :  khenicheriad@gmail.com</string>
+
+
+    <!--LAGA-->
+    <string name="INFO_LAGA1"> GLOBAL INFO LAGA </string>
+    <string name="INFO_LAGA2">Azazga centre</string>
+    <string name="INFO_LAGA3">Mobile : 0770979813 / 0770979806</string>
+    <string name="INFO_LAGA4">Email : Globalinfolaga@gmail.com</string>
+
+
+    <!--SOFT SPACE-->
+    <string name="INFO_SOFTSPACE1"> SOFT SPACE</string>
+    <string name="INFO_SOFTSPACE2">LOTISSEMENT AMYOUD NOUVELLE VILLE TIZI OUZOU</string>
+    <string name="INFO_SOFTSPACE3">Mobile : SAMIR 0770 62 94 19 / 0561 72 50 54</string>
+    <string name="INFO_SOFTSPACE4">Email :  softspace-dz.com</string>
+
+    <!--AFKAR SOFT-->
+    <string name="INFO_AFKARSOFT1"> AFKAR SOFT</string>
+    <string name="INFO_AFKARSOFT2">Promotion immobilière el-yasmine les orangers local N°10 - Rouiba</string>
+    <string name="INFO_AFKARSOFT3">Mobile : 0770 10 27 89  / 0559 33 89 04</string>
+    <string name="INFO_AFKARSOFT4">Site web : www.afkarsoft.com / www.afkarsoftstore.com</string>
+
+    <!--AZAD ADRAR-->
+    <string name="INFO_AZAD1">AZED SYSTEMS Matériel &amp; services informatiques</string>
+    <string name="INFO_AZAD2">Rue kaddour belitm Adrar</string>
+    <string name="INFO_AZAD3">Mobile : 0770 10 27 89  / 0559 33 89 04</string>
+    <string name="INFO_AZAD4"> Email : BENHASSAN2000@GMAIL.COM</string>
+
+
+    <!--GENERAL IT-->
+    <string name="INFO_GENERALIT1">GENERAL IT</string>
+    <string name="INFO_GENERALIT2">EL HAMIZ</string>
+    <string name="INFO_GENERALIT3">Mobile    : 0550.037.000 / 0550.054.100</string>
+    <string name="INFO_GENERALIT4"> -  </string>
+
+    <!--VAST SOFT-->
+    <string name="INFO_VASTSOFT1">VAST SOFT</string>
+    <string name="INFO_VASTSOFT2">Centre Commercial El hamadia Bouzareah Alger</string>
+    <string name="INFO_VASTSOFT3">Mobile    : YOUCEF 0783 98 98 78 / 0656 07 38 68 / 0556 43 90 82</string>
+    <string name="INFO_VASTSOFT4"> Email : youcef.aitaliyahia@gmail.com / Site web :  www.vastsoft-dz.com</string>
+
+    <!--CAM PLUS -->
     <string name="INFO_CAM_PLUS1"> HAMZI SECURITY SYSTEM CAM+ </string>
-    <string name="INFO_CAM_PLUS2">"Cité Emir Abdelkader \n Tebessa" </string>
-    <string name="INFO_CAM_PLUS3">"Tél/Fax : +(213) 37 55 50 28 \n Mobile : +(213) 557 21 43 08 / +(213) 667 32 58 97" </string>
+    <string name="INFO_CAM_PLUS2">Cité Emir Abdelkader \n Tebessa</string>
+    <string name="INFO_CAM_PLUS3">Tél / Fax :  +213 49 36 34 17 Mobile :  +213 667 36 95 49</string>
     <string name="INFO_CAM_PLUS4"> Email : camplushamzi@gmail.com</string>
 
+    <!--EASY SOLUTION-->
+    <string name="INFO_EASYSOLUTION1"> EASY SOLUTION </string>
+    <string name="INFO_EASYSOLUTION2"> CITE SNTV N°14 ALGER PLAGE -BORDJ EL BAAHRI </string>
+    <string name="INFO_EASYSOLUTION3"> ABDELMALEK 0552.70.20.87 / MOHAMED 0556.49.22.51 </string>
+    <string name="INFO_EASYSOLUTION4"> Email : MALEK_QUASAR@YAHOO.FR </string>
+
+    <!--TIFAWT TECHNOLOGIE-->
     <string name="INFO_TIFAWT_TECHNOLOGIE1"> TIFAWT TECHNOLOGIE </string>
-    <string name="INFO_TIFAWT_TECHNOLOGIE2">"Cité sntp elhamiz, 16033 \n Alger" </string>
-    <string name="INFO_TIFAWT_TECHNOLOGIE3">"Tél/Fax :  Mobile : +(213) 551 23 24 42" </string>
+    <string name="INFO_TIFAWT_TECHNOLOGIE2">Cité sntp elhamiz, 16033 \n Alger</string>
+    <string name="INFO_TIFAWT_TECHNOLOGIE3">Tél/Fax :  Mobile : +(213) 551 23 24 42</string>
     <string name="INFO_TIFAWT_TECHNOLOGIE4"> Email : tifawttech@gmail.com</string>
+
+    <!--DARIA SOFT-->
+    <string name="INFO_DARIASOFT1"> DARIA-POS </string>
+    <string name="INFO_DARIASOFT2">  297 les mandarines EL MOHAMMADIA Alger </string>
+    <string name="INFO_DARIASOFT3"> Mobile     :Gérant :0555 06 87 27 / Support : 0555 06 87 28 / COMMERCIAL :0555 06 87 29 </string>
+    <string name="INFO_DARIASOFT4"> Email :  dariacomputer@gmail.com </string>
+
+    <!--MATEN AFKAR-->
+    <string name="INFO_MATENAFKAR1"> MATEN SOLUTION </string>
+    <string name="INFO_MATENAFKAR2">Promotion immobilière el-yasmine les orangers local N°10 - Rouiba </string>
+    <string name="INFO_MATENAFKAR3"> Mobile    : 0540 21 40 84  / 0541 73 16 82 </string>
+    <string name="INFO_MATENAFKAR4"> - </string>
+
+    <!--NOUH BARIKA-->
+    <string name="INFO_NOUHBARIKA1"> AHMED SOFT SOLUTION</string>
+    <string name="INFO_NOUHBARIKA2">Barika Batna</string>
+    <string name="INFO_NOUHBARIKA3"> Mobile    : 0559 10 68 76 / 0779 45 45 01</string>
+    <string name="INFO_NOUHBARIKA4"> - </string>
+
+    <!--KATIA QUEEN SOFT-->
+    <string name="INFO_QUEENSOFT1">QUEEN SOFT SOLUTION</string>
+    <string name="INFO_QUEENSOFT2"> El Eulma Setif</string>
+    <string name="INFO_QUEENSOFT3"> Mobile    : 0798 33 79 70 / 0562 00 90 42</string>
+    <string name="INFO_QUEENSOFT4"> - </string>
+
+    <!--OA TECH-->
+    <string name="INFO_OATECH1">TECHNOLOGY OF SAFETY</string>
+    <string name="INFO_OATECH2">El HARRACH - BELFORT</string>
+    <string name="INFO_OATECH3"> Mobile    :0554 01 47 74  </string>
+    <string name="INFO_OATECH4"> - </string>
+
 
     <string name="LAB_SERIAL" translatable="false">Numéro de serie</string>
     <string name="NUM_SERIAL" translatable="false">8000–1111–2222-3333</string>
@@ -346,5 +521,9 @@
     <string name="ecart">Ecart</string>
     <string name="nom_depot_van">NOM DEPOT (VAN) :</string>
     <string name="nom_vendeur">NOM VENDEUR :</string>
+    <string name="vente">Vente</string>
+    <string name="syncronisation">Syncronisation</string>
+    <string name="inventaire">Inventaire</string>
+    <string name="commande">Commande</string>
 
 </resources>

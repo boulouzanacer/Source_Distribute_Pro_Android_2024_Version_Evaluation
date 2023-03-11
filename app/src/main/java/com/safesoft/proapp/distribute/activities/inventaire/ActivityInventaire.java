@@ -211,11 +211,9 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             //private String formattedDate;
             date_time_sub_title = inv1.date_inv + " " + inv1.heure_inv;
 
-
             edt_nom_inventaire.setText(inv1.nom_inv);
             btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_edit_24);
             edt_nom_inventaire.setEnabled(false);
-            edt_nom_inventaire.setTextColor(getResources().getColor(R.color.gray));
             btn_nom_inv_state_isactive = false;
 
             // Create the adapter to convert the array to views
@@ -231,7 +229,6 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             registerForContextMenu(expandableListView);
 
             calcule();
-
 
         }else {
             Crouton.makeText(ActivityInventaire.this, "Erreur séléction activity !", Style.ALERT).show();
@@ -308,7 +305,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 if(inv1.blocage.equals("F")){
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setContentText("Cet inventaire est déja validé")
                         .show();
                 return;
                 }
@@ -345,14 +342,14 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 if(final_panier.size() <1){
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Ce bon est vide")
+                            .setContentText("Cet inventaire est vide")
                             .show();
                     return;
                 }
                 if(inv1.blocage.equals("F")){
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
+                            .setContentText("Cet inventaire est déja validé")
                             .show();
                     return;
                 }
@@ -371,7 +368,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                     if(inv1.blocage.equals("F")){
                         new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Information!")
-                                .setContentText("Ce bon est déja validé")
+                                .setContentText("Cet inventaire est déja validé")
                                 .show();
                         return;
                     }
@@ -388,47 +385,54 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 }
                 break;
             case R.id.btn_mofifier_bon:
-            if(!inv1.blocage.equals("F")){
-                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas encore validé")
-                        .show();
-                return;
+                if(inv1.is_sent == 1){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Cet inventaire est déja exporté, modification impossible")
+                            .show();
+                    return;
+                }
+                if(!inv1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Cet inventaire n'est pas encore validé")
+                            .show();
+                    return;
 
-            } else  {
-                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Modification")
-                        .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
-                        .setCancelText("Non")
-                        .setConfirmText("Oui")
-                        .showCancelButton(true)
-                        .setCancelClickListener(Dialog::dismiss)
-                        .setConfirmClickListener(sDialog -> {
+                } else  {
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Modification")
+                            .setContentText("Voulez-vous vraiment Modifier cet inventaire ?")
+                            .setCancelText("Non")
+                            .setConfirmText("Oui")
+                            .showCancelButton(true)
+                            .setCancelClickListener(Dialog::dismiss)
+                            .setConfirmClickListener(sDialog -> {
 
-                            try{
+                                try{
 
-                                if (controller.modifier_inv1_sql("Inv1",inv1.num_inv) ) {
-                                    inv1.blocage = "M";
-                                    validate_theme();
-                                };
+                                    if (controller.modifier_inv1_sql("Inv1",inv1.num_inv) ) {
+                                        inv1.blocage = "M";
+                                        validate_theme();
+                                    };
 
 
-                            }catch (Exception e){
+                                }catch (Exception e){
 
-                                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Attention!")
-                                        .setContentText("problème lors de Modification de Bon : " + e.getMessage())
-                                        .show();
-                            }
-                            sDialog.dismiss();
-                        }).show();
-            }
+                                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("Attention!")
+                                            .setContentText("problème lors de Modification d'inventaire : " + e.getMessage())
+                                            .show();
+                                }
+                                sDialog.dismiss();
+                            }).show();
+                }
             break;
             case R.id.btn_imp_bon:
                 if(!inv1.blocage.equals("F")){
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Ce bon n'est pas encore validé")
+                            .setContentText("Cet inventaire n'est pas encore validé")
                             .show();
                     return;
                 }
@@ -452,13 +456,11 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                     if(controller.Insert_into_Inv1("Inv1", inv1)){
                         btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_edit_24);
                         edt_nom_inventaire.setEnabled(false);
-                        edt_nom_inventaire.setTextColor(getResources().getColor(R.color.gray));
                         btn_nom_inv_state_isactive = false;
                     }
                 }else{
                     btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_done_24);
                     edt_nom_inventaire.setEnabled(true);
-                    edt_nom_inventaire.setTextColor(getResources().getColor(R.color.black));
                     btn_nom_inv_state_isactive = true;
                 }
 
@@ -519,7 +521,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 if(inv1.blocage.equals("F")){
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
+                            .setContentText("Cet inventaire est déja validé")
                             .show();
                     return true;
                 }
@@ -556,7 +558,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 if(inv1.blocage.equals("F")){
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
+                            .setContentText("Cet inventaire est déja validé")
                             .show();
                     return true ;
                 }
@@ -619,9 +621,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     protected void sauvegarder(){
 
         inv1.nbr_produit = final_panier.size();
-       // inv1.montant_bon = val_total_ttc_remise;
-        //update current bon1
-        controller.update_inv1("Inv1", inv1);
+        //update current inv1
+        controller.update_inv1_nbr_produit("Inv1", inv1);
 
     }
 
@@ -726,7 +727,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                if(SOURCE.equals("INV2_INSERT")){
                    controller.Insert_into_inventaire2( item_panier.getData());
                }else if(SOURCE.equals("INV2_EDIT")){
-                   controller.Update_inventaire2(item_panier.getData(), item_panier.getQtePhysiqueOld(),item_panier.getVracOld());
+                   controller.Update_inventaire2(item_panier.getData());
                }
                initData();
            }catch (Exception e){
@@ -742,12 +743,14 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             findViewById(R.id.tl).setBackgroundColor(Color.LTGRAY);
             getWindow().getDecorView().setBackgroundColor(Color.LTGRAY);
 
+
         } else {
             //findViewById(R.id.client).setBackgroundColor(Color.WHITE);
             //findViewById(R.id.LayoutButton).setBackgroundColor(Color.WHITE);
             findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(Color.WHITE);
             findViewById(R.id.tl).setBackgroundColor(Color.WHITE);
             getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+
         }
     }
 

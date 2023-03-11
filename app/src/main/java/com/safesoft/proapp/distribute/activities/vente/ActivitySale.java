@@ -36,6 +36,10 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
+import com.safesoft.proapp.distribute.activities.ActivitySetting;
+import com.safesoft.proapp.distribute.ftp.Ftp_export;
+import com.safesoft.proapp.distribute.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.printing.PrinterVente;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
@@ -124,6 +128,9 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     String PARAMS_PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
     SharedPreferences prefs;
 
+    // constant code for runtime permissions
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,7 +144,6 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 barcodeResult = restoredBarcode;
             }
         }
-
         bus = EventBus.getDefault();
         controller = new DATABASE(this);
         bon1 = new PostData_Bon1();
@@ -376,6 +382,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             tr_total_tva.setVisibility(View.GONE);
             tr_total_timbre.setVisibility(View.GONE);
         }
+
 
         intent_location = new Intent(this, ServiceLocation.class);
 
@@ -918,21 +925,28 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-       // inflater.inflate(R.menu.menu_bon_vente_commande, menu);
+        getMenuInflater().inflate(R.menu.sale_menu, menu);
         return true;
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
         }
+        if (id == R.id.generate_pdf) {
+            Activity mActivity;
+            mActivity = ActivitySale.this;
+
+            GeneratePDF generate_pdf = new GeneratePDF();
+            generate_pdf.startPDF(mActivity, bon1, final_panier, "FROM_SALE");
+
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
-
 
     //Versement
     protected void sauvegarder(){
@@ -959,7 +973,6 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if(requestCode == ACCES_FINE_LOCATION){
@@ -1162,4 +1175,6 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             Crouton.makeText(ActivitySale.this, "Produit introuvable !", Style.ALERT).show();
         }
     }
+
+
 }

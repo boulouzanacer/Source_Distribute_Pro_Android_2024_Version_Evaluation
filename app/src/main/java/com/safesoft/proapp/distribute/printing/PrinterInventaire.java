@@ -123,6 +123,7 @@ public class PrinterInventaire {
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
+
             Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
             for(int i = 0; i< pairedDeviceList.size() ; i++){
                 if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
@@ -131,6 +132,7 @@ public class PrinterInventaire {
 
                 }
             }
+
             if(isfound){
                 Log.v("PRINTER", "Device found");
                 if(device != null){
@@ -373,9 +375,9 @@ public class PrinterInventaire {
                     textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
-                    if(!prefs.getString("COMPANY_ACTIVITY", "").equals("")){
+                    if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
                         cmd.append(cmd.getLFCRCmd());
-                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ACTIVITY", "")));
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
                     }
                     if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
                         cmd.append(cmd.getLFCRCmd());

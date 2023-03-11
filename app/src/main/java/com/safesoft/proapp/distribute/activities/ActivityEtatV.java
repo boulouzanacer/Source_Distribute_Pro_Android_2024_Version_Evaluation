@@ -114,7 +114,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     initViews();
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle("Statistique des ventes");
+    getSupportActionBar().setTitle("Statistiques ventes");
     empty_data.setVisibility(View.VISIBLE);
     retry =(ImageView) findViewById(R.id.retry);
     retry.setOnClickListener(new View.OnClickListener() {
@@ -442,7 +442,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     int flag = 0;
     try {
 
-      result_etatzg =  controller.select_etatv_from_database(c_client,from_d,  to_d);
+      result_etatzg =  controller.select_etatv_from_database("Bon1", "Bon2", c_client,from_d,  to_d);
       flag = 1;
     }catch (Exception sqle){
       Log.v("TRACKKK", sqle.getMessage());
@@ -450,10 +450,11 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     }
     return flag;
   }
+
   public int getEtatGlobal(String from_d, String to_d){
     int flag = 0;
     try {
-      result_etatzg =  controller.select_etatv_global_from_database(from_d,  to_d);
+      result_etatzg =  controller.select_etat_global_from_database("Bon1","Bon2", from_d,  to_d);
       flag = 1;
     }catch (Exception sqle){
       Log.v("TRACKKK", sqle.getMessage());

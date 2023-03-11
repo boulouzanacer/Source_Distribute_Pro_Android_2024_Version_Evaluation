@@ -115,32 +115,7 @@
 
 
         <LinearLayout
-            android:id="@+id/mode_tarif_lnr"
-            android:layout_below="@+id/code_vendeur_lnr"
-            android:padding="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClickListener"
-            android:background="@drawable/import_export_selector"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <pl.coreorb.selectiondialogs.views.SelectedItemView
-                android:id="@+id/mode_tarif_select"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hint="MODE DE TARIFICATION"
-                app:itemIcon="@drawable/pv1"
-                app:itemName="Prix vente 1" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
             android:id="@+id/stock_moins_lnr"
-            android:layout_below="@+id/mode_tarif_lnr"
             android:padding="10dp"
             android:clickable="true"
             android:focusable="true"
@@ -158,6 +133,7 @@
                 android:text="VENTE AVEC STOCK MOINS"
                 android:textColor="@color/black_overlay"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
         </LinearLayout>
 
 

@@ -1,4 +1,4 @@
-#Sat Feb 04 17:03:52 GMT+01:00 2023
+#Sat Mar 11 11:58:28 GMT+01:00 2023
 path.4=15/classes.dex
 path.3=14/classes.dex
 path.2=12/classes.dex
@@ -19,6 +19,7 @@ base.8=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2
 base.7=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\5\\classes.dex
 base.6=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\4\\classes.dex
 base.5=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\3\\classes.dex
+renamed.23=classes24.dex
 renamed.22=classes23.dex
 renamed.21=classes22.dex
 renamed.20=classes21.dex
@@ -42,6 +43,7 @@ base.14=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_
 base.19=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\7\\classes.dex
 base.18=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\6\\classes.dex
 base.20=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex
+base.23=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes3.dex
 base.22=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 base.21=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\9\\classes.dex
 renamed.3=classes4.dex
@@ -66,5 +68,6 @@ base.12=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_
 path.20=8/classes.dex
 base.11=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\12\\classes.dex
 base.10=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2021\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\11\\classes.dex
+path.23=classes3.dex
 path.21=9/classes.dex
 path.22=classes2.dex

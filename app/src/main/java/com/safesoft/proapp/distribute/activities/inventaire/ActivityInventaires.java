@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterInv1;
@@ -45,7 +46,8 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
   private ArrayList<PostData_Bon2> bon2_print;
 
   private String PREFS = "ALL_PREFS";
-  private String CODE_DEPOT, CODE_VENDEUR;
+  private String CODE_DEPOT;
+  private String SOURCE;
 
   private NumberFormat nf;
 
@@ -55,15 +57,20 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     setContentView(R.layout.activity_inventaires);
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle("Les inventaires");
+    getSupportActionBar().setTitle("Liste inventaires");
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
     controller = new DATABASE(this);
 
+    if(getIntent() != null){
+      SOURCE = getIntent().getStringExtra("SOURCE");
+    }
+
     initViews();
 
   }
+
 
   private void initViews() {
 
@@ -72,7 +79,6 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     ///////////////////
     SharedPreferences prefs2 = getSharedPreferences(PREFS, MODE_PRIVATE);
     CODE_DEPOT = prefs2.getString("CODE_DEPOT", "000000");
-    CODE_VENDEUR = prefs2.getString("CODE_VENDEUR", "000000");
   }
 
   @Override
@@ -101,11 +107,21 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     inv1s.clear();
 
     String querry = "";
-    if(CODE_DEPOT.equals("000000")){
-      querry = "SELECT * FROM Inv1 WHERE IS_SENT <> 1";
-    }else{
-      querry = "SELECT * FROM Inv1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"' AND IS_SENT <> 1";
+    if(!SOURCE.equals("EXPORTED")){
+      if(CODE_DEPOT.equals("000000")){
+        querry = "SELECT * FROM Inv1 WHERE IS_SENT <> 1 OR IS_SENT is null";
+      }else{
+        querry = "SELECT * FROM Inv1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"' AND ( IS_SENT <> 1 OR IS_SENT is null)";
+      }
+    }else {
+      if(CODE_DEPOT.equals("000000")){
+        querry = "SELECT * FROM Inv1 WHERE IS_SENT <> 0";
+      }else{
+        querry = "SELECT * FROM Inv1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"' AND ( IS_SENT <> 0)";
+      }
     }
+
+
 
     // querry = "SELECT * FROM Events";
     inv1s = controller.select_list_inventaire_from_database(querry);
@@ -131,7 +147,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     final CharSequence[] items = {"Supprimer", "Exporter" };
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setIcon(R.drawable.selectiondialogs_default_item_icon);
+    builder.setIcon(R.drawable.blue_circle_24);
     builder.setTitle("Choisissez une action");
     builder.setItems(items, new DialogInterface.OnClickListener() {
       @Override
@@ -172,7 +188,9 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
             break;
           case 1:
             //Print_bon(bon1s.get(position).num_bon);
-            Toast.makeText(ActivityInventaires.this, "Cette option est en cours de developpement !", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ActivityInventaires.this, "Cette option est en cours de developpement !", Toast.LENGTH_SHORT).show();
+           // ActivityImportsExport.Check_connection_export_server check_connection_export_data_inventaire = new ActivityImportsExport.Check_connection_export_server("INVENTAIRE");
+           // check_connection_export_data_inventaire.execute();
             break;
         }
       }
@@ -184,8 +202,11 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu_inventaire, menu);
+    if(!SOURCE.equals("EXPORTED")){
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.menu_inventaire, menu);
+    }
+
 
     // return true so that the menu pop up is opened
     return true;
@@ -196,9 +217,11 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     if(item.getItemId() == android.R.id.home){
       onBackPressed();
     }else if(item.getItemId() == R.id.new_inventaire){
-      Intent editIntent = new Intent(ActivityInventaires.this, ActivityInventaire.class);
-      editIntent.putExtra("TYPE_ACTIVITY", "NEW_INV");
-      startActivity(editIntent);
+      if(!SOURCE.equals("EXPORTED")){
+        Intent editIntent = new Intent(ActivityInventaires.this, ActivityInventaire.class);
+        editIntent.putExtra("TYPE_ACTIVITY", "NEW_INV");
+        startActivity(editIntent);
+      }
     }
     return super.onOptionsItemSelected(item);
   }

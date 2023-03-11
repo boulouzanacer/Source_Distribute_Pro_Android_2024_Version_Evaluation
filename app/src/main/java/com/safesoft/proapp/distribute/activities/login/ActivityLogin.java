@@ -115,10 +115,10 @@ public class ActivityLogin extends AppCompatActivity {
       _passwordText.setError(null);
     }
 
-    String password_s = prefs_login.getString("PASSWORD", "safesoft") ;
+    String password_s = prefs_login.getString("PASSWORD", "0000") ;
 
     assert password_s != null;
-    if((password.compareTo(password_s) != 0) && (password.compareTo("safesoft") != 0) && (password.compareTo("SAFESOFT") != 0) ){
+    if((password.compareTo(password_s) != 0) && (password.compareTo("0000") != 0)){
       valid = false;
       _passwordText.setError("Mot de passe incorrect");
     } else {

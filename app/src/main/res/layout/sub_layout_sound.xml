@@ -5,7 +5,6 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:id="@+id/param_sound"
-
     android:layout_height="wrap_content"
     android:visibility="gone"
     android:orientation="vertical" >

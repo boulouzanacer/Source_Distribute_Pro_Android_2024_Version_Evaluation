@@ -54,9 +54,7 @@ import android.widget.TextView;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
-import com.emmasuzuki.easyform.EasyTextInputLayout;
 import com.github.ybq.android.spinkit.style.Circle;
-//import com.safesoft.proapp.distribute.activation.ActivityActivation;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean;
@@ -80,7 +78,6 @@ import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
-//import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.dialog.BluetoothDeviceChooseDialog;
@@ -99,15 +96,11 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
-import pl.coreorb.selectiondialogs.data.SelectableIcon;
-import pl.coreorb.selectiondialogs.dialogs.IconSelectDialog;
-import pl.coreorb.selectiondialogs.views.SelectedItemView;
 
-public class ActivitySetting extends BaseActivity implements IconSelectDialog.OnIconSelectedListener, View.OnClickListener, PrinterObserver {
+public class ActivitySetting extends BaseActivity implements View.OnClickListener, PrinterObserver {
 
     private static final String TAG_SELECT_COLOR_DIALOG = "TAG_SELECT_COLOR_DIALOG";
     private static final int CAMERA_PERMISSION = 5;
@@ -118,8 +111,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
 
     private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur;
     private TextInputEditText edt_objectif;
-
-    private SelectedItemView mode_tarif;
 
     private Button btntest;
     private Button btn_scan_qr;
@@ -166,8 +157,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-
-    private String printStr;
     private TextSetting textSetting;
 
     private BluetoothAdapter mBluetoothAdapter;
@@ -243,6 +232,7 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
         TextView tel = findViewById(R.id.company_tel);
         TextView footer = findViewById(R.id.pied_de_page);
 
+
         param_co = findViewById(R.id.param_co);
         param_ftp = findViewById(R.id.param_ftp);
         param_impr = findViewById(R.id.param_impr);
@@ -250,7 +240,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
         param_backup = findViewById(R.id.param_backup);
         param_reset = findViewById(R.id.param_reset);
         param_divers = findViewById(R.id.param_divers);
-
 
         bt1.setOnClickListener(view -> {
 
@@ -372,9 +361,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
             editor.apply();
         });
 
-        mode_tarif = findViewById(R.id.mode_tarif_select);
-        mode_tarif.setOnClickListener(v -> showIconSelectDialog());
-
         edt_objectif = findViewById(R.id.edit_objectif);
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -407,14 +393,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         edt_objectif.setText(prefs.getString("OBJECTIF_MONTANT", "0.00"));
-
-        if (Objects.equals(prefs.getString("PV_ID", "PV1"), "PV1")) {
-            mode_tarif.setSelectedName("Prix de vente 1");
-        } else if (Objects.equals(prefs.getString("PV_ID", "PV1"), "PV2")) {
-            mode_tarif.setSelectedName("Prix de vente 2");
-        } else {
-            mode_tarif.setSelectedName("Prix de vente 3");
-        }
 
 
         rg_connect = findViewById(R.id.rg_connect);
@@ -547,10 +525,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
 
         //Switch
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_importer_online = findViewById(R.id.switch_import);
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_exporter_online = findViewById(R.id.switch_export);
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_gps = findViewById(R.id.switch_gps);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_ht = findViewById(R.id.switch_ht);
@@ -562,24 +536,7 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
         /////////////////////////////////// SWITCH IMPORTATION /////////////////////////////////////
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        switch_importer_online.setChecked(prefs.getBoolean("IMPORT_ONLINE", false));
-
-        switch_importer_online.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("IMPORT_ONLINE", isChecked);
-            editor.apply();
-
-        });
-
         //////////////////////////////////// SWITCH EXPORTATION ////////////////////////////////////
-
-        switch_exporter_online.setChecked(prefs.getBoolean("EXPORT_ONLINE", false));
-        switch_exporter_online.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("EXPORT_ONLINE", isChecked);
-            editor.apply();
-        });
-
 
         //////////////////////////////// SWITCH GPS LOCALISATION ///////////////////////////////////
 
@@ -1037,11 +994,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
 
 
     private void textPrint() throws UnsupportedEncodingException {
-        printStr = "Thank you \n (this is juste a print test)  ";
-
-        if (TextUtils.isEmpty(printStr)) {
-            printStr = "Hello Printer";
-        }
 
         switch (BaseApplication.getInstance().getCurrentCmdType()) {
             case BaseEnum.CMD_ESC:
@@ -1053,6 +1005,7 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
     }
 
     private void escPrint() throws UnsupportedEncodingException {
+
         if(BaseApplication.getInstance().getIsConnected()){
             rtPrinter = BaseApplication.getInstance().getRtPrinter();
             if (rtPrinter != null) {
@@ -1060,20 +1013,22 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
                 Cmd escCmd = escFac.create();
                 escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
 
-                  escCmd.setChartsetName("utf-8");
+                escCmd.setChartsetName("utf-8");
 
                 CommonSetting commonSetting = new CommonSetting();
-                // commonSetting.setEscLineSpacing(getInputLineSpacing());
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
                 escCmd.append(escCmd.getCommonSettingCmd(commonSetting));
 
-                escCmd.append(escCmd.getTextCmd(textSetting, printStr));
-
+                escCmd.append(escCmd.getTextCmd(textSetting,  "(this is juste a print test)"));
+                escCmd.append(escCmd.getLFCRCmd());
+                escCmd.append(escCmd.getTextCmd(textSetting, "Thank you"));
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
-                escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+                escCmd.append(escCmd.getLFCRCmd());
+                escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
 
                 rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
@@ -1083,6 +1038,7 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
         }
 
     }
+
 
     private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
         PIFactory piFactory = new BluetoothFactory();
@@ -1404,53 +1360,6 @@ public class ActivitySetting extends BaseActivity implements IconSelectDialog.On
 
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
-    private void showIconSelectDialog() {
-        new IconSelectDialog.Builder(ActivitySetting.this)
-                .setIcons(sampleIcons())
-                .setTitle("Séléctionner mode tarif")
-                .setSortIconsByName(true)
-                .setOnIconSelectedListener(this)
-                .build().show(getSupportFragmentManager(), TAG_SELECT_COLOR_DIALOG);
-    }
-
-
-    private static ArrayList<SelectableIcon> sampleIcons() {
-        ArrayList<SelectableIcon> selectionDialogsColors = new ArrayList<>();
-        selectionDialogsColors.add(new SelectableIcon("PV1", "Prix vente 1", R.drawable.pv1));
-        selectionDialogsColors.add(new SelectableIcon("PV2", "Prix vente 2", R.drawable.pv2));
-        selectionDialogsColors.add(new SelectableIcon("PV3", "Prix vente 3", R.drawable.pv3));
-        return selectionDialogsColors;
-    }
-
-
-    @Override
-    public void onIconSelected(SelectableIcon selectedItem) {
-        mode_tarif.setSelectedIcon(selectedItem);
-        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-        String TAG = "1";
-        switch (selectedItem.getId()) {
-
-            case "PV1":
-                editor.putString("PV_ID", "PV1");
-                TAG = "1";
-                break;
-            case "PV2":
-                editor.putString("PV_ID", "PV2");
-                TAG = "2";
-                break;
-            case "PV3":
-                editor.putString("PV_ID", "PV3");
-                TAG = "3";
-                break;
-        }
-        editor.apply();
-        new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("Success!")
-                .setContentText("Prix de vente " + TAG + " bien séléctionné !")
-                .show();
     }
 
 

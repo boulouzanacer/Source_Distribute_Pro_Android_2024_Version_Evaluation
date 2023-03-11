@@ -46,6 +46,7 @@
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_bon2.xml" value="0.5" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_client_detail.xml" value="0.33" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_clients.xml" value="0.3296296296296296" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_code_revendeur.xml" value="0.33" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_codebarre_scan.xml" value="0.2682291666666667" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_ddddd.xml" value="0.2682291666666667" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/activity_dropbox_send.xml" value="0.2682291666666667" />
@@ -91,7 +92,7 @@
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/dialog_choose_usb_device.xml" value="0.2321504916631039" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/dialog_wifi_config.xml" value="0.2821718683197948" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/dialogfragment_password_reset.xml" value="0.3522873022659256" />
-        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/export_data.xml" value="0.2677083333333333" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/export_data.xml" value="0.33" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_addClient.xml" value="0.2740487387772552" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_add_client.xml" value="0.33" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_all_clients.xml" value="0.25" />
@@ -111,6 +112,10 @@
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_versement.xml" value="0.42256410256410254" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/fragment_versement_client.xml" value="0.3522873022659256" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/gggggggggggg.xml" value="0.33" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/import_export_commande.xml" value="0.3522873022659256" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/import_export_inventaire.xml" value="0.3522873022659256" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/import_export_produit_client.xml" value="0.3522873022659256" />
+        <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/import_export_vente.xml" value="0.3522873022659256" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/import_num_bon.xml" value="0.33" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_achat1_list.xml" value="0.21979166666666666" />
         <entry key="..\:/P-VENTE/Source_Android_Studio_2021/Source_Distribute_Pro_Android_2021/app/src/main/res/layout/item_bon1_list.xml" value="0.22" />

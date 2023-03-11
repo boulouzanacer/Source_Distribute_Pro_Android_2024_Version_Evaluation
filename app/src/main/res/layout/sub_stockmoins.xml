@@ -19,7 +19,6 @@
         tools:ignore="UselessParent">
 
 
-
         <View
             android:id="@+id/view"
             android:layout_marginTop="5dp"
@@ -28,31 +27,6 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             tools:ignore="UnknownIdInLayout" />
-
-
-        <LinearLayout
-            android:id="@+id/mode_tarif_lnr"
-            android:layout_below="@+id/code_vendeur_lnr"
-            android:padding="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClickListener"
-            android:background="@drawable/import_export_selector"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="UnknownIdInLayout,UsingOnClickInXml">
-
-
-            <pl.coreorb.selectiondialogs.views.SelectedItemView
-                android:id="@+id/mode_tarif_select"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hint="MODE DE TARIFICATION"
-                app:itemIcon="@drawable/pv1"
-                app:itemName="Prix vente 1" />
-
-        </LinearLayout>
 
 
         <LinearLayout

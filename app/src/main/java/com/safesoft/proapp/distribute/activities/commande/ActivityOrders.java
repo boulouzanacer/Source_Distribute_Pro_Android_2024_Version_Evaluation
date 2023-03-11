@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
@@ -170,7 +169,7 @@ public class ActivityOrders extends AppCompatActivity implements RecyclerAdapter
             final CharSequence[] items = {"Modifier", "Supprimer", "Imprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setIcon(R.drawable.selectiondialogs_default_item_icon);
+            builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
@@ -186,7 +185,7 @@ public class ActivityOrders extends AppCompatActivity implements RecyclerAdapter
 
                                     Sound(R.raw.beep);
 
-                                    Intent editIntent = new Intent(ActivityOrders.this, ActivitySale.class);
+                                    Intent editIntent = new Intent(ActivityOrders.this, ActivityOrder.class);
                                     editIntent.putExtra("NUM_BON", bon1s_temp.get(position).num_bon);
                                     editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ORDER");
                                     startActivity(editIntent);
@@ -206,7 +205,7 @@ public class ActivityOrders extends AppCompatActivity implements RecyclerAdapter
                                 .setCancelClickListener(Dialog::dismiss)
                                 .setConfirmClickListener(sDialog -> {
 
-                                    controller.delete_bon_vente(false, bon1s_temp.get(position));
+                                    controller.delete_bon_vente(true, bon1s_temp.get(position));
                                     setRecycle();
 
                                     sDialog.dismiss();
@@ -262,7 +261,7 @@ public class ActivityOrders extends AppCompatActivity implements RecyclerAdapter
             final CharSequence[] items = {"Supprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setIcon(R.drawable.selectiondialogs_default_item_icon);
+            builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {

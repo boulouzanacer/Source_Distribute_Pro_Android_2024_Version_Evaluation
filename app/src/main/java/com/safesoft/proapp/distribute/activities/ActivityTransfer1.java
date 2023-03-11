@@ -135,7 +135,7 @@ public class ActivityTransfer1 extends AppCompatActivity implements RecyclerAdap
     final CharSequence[] items = {"Imprimer" };
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setIcon(R.drawable.selectiondialogs_default_item_icon);
+    builder.setIcon(R.drawable.blue_circle_24);
     builder.setTitle("Choisissez une action");
     builder.setItems(items, new DialogInterface.OnClickListener() {
       @Override

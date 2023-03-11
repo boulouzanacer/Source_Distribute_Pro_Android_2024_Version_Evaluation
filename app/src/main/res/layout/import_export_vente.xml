@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rlt_export_ventes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:visibility="visible"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/exportt_vente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="Exportation ventes (Réseaux Local)"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/descrip_export_vente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/exportt_vente"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            android:text="Vous permet d'exporter les bons de ventes vers le serveur distant"
+            android:textColor="@color/gray"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/rlt_export_ventes_ftp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:visibility="visible"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/exportt_vente_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="Exportation ventes (Serveur FTP)"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/descrip_export_vente_ftp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vous permet d'exporter les bons de ventes vers le serveur FTP"
+            android:layout_below="@+id/exportt_vente_ftp"
+            android:textSize="12dp"
+            android:clickable="false"
+            android:textColor="@color/gray"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlt_exported_ventes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:visibility="visible"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/exportted_vente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="Bons de vente exportés"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/descrip_exported_vente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/exportted_vente"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            android:text="ça vous permet d'afficher les bons de livraison exportés avec la possibilité de suppression"
+            android:textColor="@color/gray"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlt_etatv"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:visibility="visible"
+        android:onClick="onRelativeClick"
+        android:background="@drawable/import_export_selector"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/etat_v"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="Etat de vente"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black_overlay"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/descrip_etat_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etat_v"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            android:text="ça vous permet de consulter la quantité des produits vendu entre deux date données ansi que le montant total, remise total, ...."
+            android:textColor="@color/gray"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+</LinearLayout>

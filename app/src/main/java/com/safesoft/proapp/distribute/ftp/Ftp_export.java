@@ -7,24 +7,38 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
-import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
+import com.safesoft.proapp.distribute.activities.commande.ActivityOrder;
 import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.fragments.FragmentSelectBonTransfer;
+import com.safesoft.proapp.distribute.fragments.FragmentSelectClient;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
+import com.safesoft.proapp.distribute.postData.PostData_Inv1;
+import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.io.CopyStreamAdapter;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,17 +57,23 @@ public class Ftp_export {
     private Activity mActivity;
     SharedPreferences prefs;
     private List<PostData_Bon1> bon1s;
+    private List<PostData_Bon1> bon1s_Temp;
+    private List<PostData_Inv1> Invs1;
     private List<PostData_Bon2> bon2s;
+    private List<PostData_Bon2> bon2s_Temp;
+    private List<PostData_Inv2> Inv2s;
     private ArrayList<PostData_Carnet_c> all_versement_client;
     private DATABASE controller;
     private final String PREFS = "ALL_PREFS";
     String serverIp,serverPort,username, password, ftp_imp,ftp_imp_def, ftp_exp, code_depot, nom_depot, code_vendeur, nom_vendeur;
-    Map<String, String> F_SQL_LIST_VENT;
+    Map<String, String> F_SQL_LIST_VENTE;
+    Map<String, String> F_SQL_LIST_COMMAND;
+    Map<String, String> F_SQL_LIST_INVENTAIRE;
     Map<String, String> F_SQL_LIST_SITUATION;
     String file_name = null;
     FTPClient con = null;
 
-    public void start(Activity activity) throws ParseException {
+    public void start(Activity activity, String SOURCE, String nom_bon) throws ParseException {
 
         mActivity = activity;
 
@@ -75,14 +95,32 @@ public class Ftp_export {
         code_vendeur = prefs.getString("CODE_VENDEUR", "000000");
         nom_vendeur = prefs.getString("NOM_VENDEUR", code_vendeur);
 
-        new LongOperation().execute();
+
+        switch (SOURCE) {
+            case "SALE":
+                new LongOperationSale().execute();
+                break;
+            case "ORDER":
+                new LongOperationOrder().execute();
+                break;
+            case "INVENTAIRE":
+                new LongOperationInventaire().execute();
+                break;
+            case "TRANSFERT_LIST":
+                new LongOperationGetListBon().execute();
+                break;
+            case "PRODUCT_LIST":
+                new LongOperationImportationProduits(nom_bon).execute();
+                break;
+        }
 
     }
 
+    // create and prepare "sales" local file to export via FTP
 
-    public void prepare_local_file() throws ParseException {
+    public void prepare_local_file_sale() throws ParseException {
 
-        F_SQL_LIST_VENT =  new HashMap<>();
+        F_SQL_LIST_VENTE =  new HashMap<>();
         F_SQL_LIST_SITUATION =  new HashMap<>();
         String F_SQL = "";
 
@@ -137,7 +175,7 @@ public class Ftp_export {
         bon1s = controller.select_vente_from_database(querry);
 
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
 
         for(int i = 0; i< bon1s.size(); i++){
@@ -230,7 +268,242 @@ public class Ftp_export {
             file_name = "VENTE_"+ bon1s.get(i).num_bon+"_"+bon1s.get(i).exportation + "_" + bon1s.get(i).date_bon + ".BLV";
             file_name = file_name.replace("/", "_");
 
-            F_SQL_LIST_VENT.put(file_name, F_SQL);
+            F_SQL_LIST_VENTE.put(file_name, F_SQL);
+        }
+
+
+        //////////////////////////////////////// SITUATION /////////////////////////////////////////////////
+        F_SQL = "";
+        all_versement_client = controller.select_carnet_c_from_database("SELECT Carnet_c.RECORDID, " +
+                "Carnet_c.CODE_CLIENT, " +
+                "Carnet_c.DATE_CARNET, " +
+                "Client.CLIENT, " +
+                "Client.LATITUDE, " +
+
+                "Client.LONGITUDE, " +
+                "Client.TEL, " +
+                "Client.CLIENT, " +
+                "Client.ADRESSE, " +
+                "Client.RC, " +
+                "Client.IFISCAL, " +
+                "Client.AI, " +
+                "Client.NIS, " +
+                "Client.MODE_TARIF, " +
+
+                "Carnet_c.HEURE, " +
+                "Carnet_c.ACHATS, " +
+                "Carnet_c.VERSEMENTS, " +
+                "Carnet_c.SOURCE, " +
+                "Carnet_c.NUM_BON, " +
+                "Carnet_c.MODE_RG, " +
+                "Carnet_c.REMARQUES, " +
+                "Carnet_c.UTILISATEUR, " +
+                "Carnet_c.EXPORTATION " +
+
+
+                "FROM Carnet_c " +
+                "LEFT JOIN Client ON " +
+                "Client.CODE_CLIENT = Carnet_c.CODE_CLIENT ");
+
+        for(int i = 0; i< all_versement_client.size(); i++){
+
+            Date dt = format.parse(all_versement_client.get(i).carnet_date);
+            assert dt != null;
+
+            F_SQL = "SITUATION-CLIENT|"+format2.format(dt)+"\n";
+            ///////////////////////////////////// JOURNEE //////////////////////////////////////
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
+            ///////////////////////////////////// CLIENT ///////////////////////////////////////
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE , CODE_VENDEUR ";
+
+            try {
+                F_SQL =  F_SQL + ")\n VALUES ( " +
+                        " iif('" + code_depot + "' = '000000', null, '" + code_depot + "') , " +
+                        " '"+ all_versement_client.get(i).code_client + "'," +
+                        " iif('"+ all_versement_client.get(i).client + "' = null , null, '"+ all_versement_client.get(i).client.replace("'", "''") + "') , " +
+                        " iif('"+ all_versement_client.get(i).adresse + "' = null , null, '"+ all_versement_client.get(i).adresse.replace("'", "''") + "') , " +
+                        " iif('"+ all_versement_client.get(i).tel + "' = null, null , '"+ all_versement_client.get(i).tel.replace("'", "''") + "') , " +
+                        " iif('"+ all_versement_client.get(i).rc + "' = 'null', null , '"+ all_versement_client.get(i).rc + "') , " +
+                        " iif('"+ all_versement_client.get(i).ifiscal + "' = null , null, '"+ all_versement_client.get(i).ifiscal + "') , " +
+                        " iif('"+ all_versement_client.get(i).nis + "' = null, null , '"+ all_versement_client.get(i).nis + "') , " +
+                        " iif('"+ all_versement_client.get(i).ai + "' = null, null , '"+ all_versement_client.get(i).ai + "') , " +
+                        " "+all_versement_client.get(i).latitude+", " +
+                        " "+all_versement_client.get(i).longitude+" ";
+            }catch (Exception e){
+                Log.v("ERROR", e.getMessage());
+                int x = 0;
+            }
+
+
+            F_SQL =  F_SQL + ",iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "') ";
+
+            F_SQL =  F_SQL + ") MATCHING (CODE_CLIENT);\n";
+
+
+            ///////////////////////////////////CARNET CLIENT////////////////////////////////////
+            F_SQL =  F_SQL + "INSERT INTO CARNET_C (CODE_VENDEUR, RECORDID,NUM_BON,EXPORTATION,CODE_CAISSE,";
+            F_SQL =  F_SQL + "CODE_CLIENT,DATE_CARNET,HEURE,SOURCE,UTILISATEUR,MODE_RG,";
+            F_SQL =  F_SQL + "ACHATS,VERSEMENTS)\n";
+            F_SQL =  F_SQL + "VALUES \n";
+            F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
+            F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
+            F_SQL =  F_SQL + " '" + all_versement_client.get(i).carnet_achats + "'," + all_versement_client.get(i).carnet_versement +");\n";
+            ///////////////////////////////////CARNET CLIENT////////////////////////////////////
+            ///////////////////////////////////CAISSE //////////////////////////////////////////
+            if (all_versement_client.get(i).carnet_versement !=0 ) {
+                F_SQL =  F_SQL + "INSERT INTO CAISSE2 (CODE_CAISSE,CODE_CAISSE1,SOURCE,NUM_SOURCE,ENTREE,";
+                F_SQL =  F_SQL + "DATE_CAISSE,UTILISATEUR,MODE_RG)\n";
+                F_SQL =  F_SQL + "VALUES \n";
+                F_SQL =  F_SQL + "(:CODE_CAISSE:,:CODE_CAISSE:,'SITUATION-CLIENT',lpad ((SELECT GEN_ID(GEN_CARNET_C_ID,0) FROM RDB$DATABASE) ,6,'000000')," + all_versement_client.get(i).carnet_versement + ",";
+                F_SQL =  F_SQL + "'" + format2.format(dt) + "','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "');\n";
+            }
+
+            file_name = "SITUATION_VRC"+ all_versement_client.get(i).recordid + "_" + all_versement_client.get(i).exportation + "_" + all_versement_client.get(i).carnet_date + ".STC";
+            file_name = file_name.replace("/", "_");
+            F_SQL_LIST_SITUATION.put(file_name, F_SQL);
+
+        }
+
+    }
+
+    
+    // create and prepare "orders" local file to export via FTP
+
+    public void prepare_local_file_order() throws ParseException {
+
+        F_SQL_LIST_COMMAND =  new HashMap<>();
+        F_SQL_LIST_SITUATION =  new HashMap<>();
+        String F_SQL = "";
+
+        String querry = "SELECT " +
+                "Bon1_Temp.RECORDID, " +
+                "Bon1_Temp.NUM_BON, " +
+                "Bon1_Temp.DATE_BON, " +
+                "Bon1_Temp.HEURE, " +
+                "Bon1_Temp.MODE_RG, " +
+                "Bon1_Temp.MODE_TARIF, " +
+
+                "Bon1_Temp.NBR_P, " +
+                "Bon1_Temp.TOT_QTE, " +
+
+                "Bon1_Temp.TOT_HT, " +
+                "Bon1_Temp.TOT_TVA, " +
+                "Bon1_Temp.TIMBRE, " +
+                "Bon1_Temp.TOT_HT + Bon1_Temp.TOT_TVA + Bon1_Temp.TIMBRE AS TOT_TTC, " +
+                "Bon1_Temp.REMISE, " +
+                "Bon1_Temp.TOT_HT + Bon1_Temp.TOT_TVA + Bon1_Temp.TIMBRE - Bon1_Temp.REMISE AS MONTANT_BON, " +
+
+                "Bon1_Temp.ANCIEN_SOLDE, " +
+                "Bon1_Temp.VERSER, " +
+                "Bon1_Temp.ANCIEN_SOLDE + (Bon1_Temp.TOT_HT + Bon1_Temp.TOT_TVA + Bon1_Temp.TIMBRE - Bon1_Temp.REMISE) - Bon1_Temp.VERSER AS RESTE, " +
+
+                "Bon1_Temp.CODE_CLIENT, " +
+                "Client.CLIENT, " +
+                "Client.ADRESSE, " +
+                "Client.TEL, " +
+                "coalesce(Client.RC, '') RC, " +
+                "coalesce(Client.IFISCAL, '') IFISCAL, " +
+                "coalesce(Client.AI, '') AI, " +
+                "coalesce(Client.NIS, '') NIS, " +
+
+                "Client.LATITUDE as LATITUDE_CLIENT, " +
+                "Client.LONGITUDE as LONGITUDE_CLIENT, " +
+
+                "Client.SOLDE AS SOLDE_CLIENT, " +
+                "Client.CREDIT_LIMIT, " +
+
+                "Bon1_Temp.LATITUDE, " +
+                "Bon1_Temp.LONGITUDE, " +
+
+                "Bon1_Temp.CODE_DEPOT, " +
+                "Bon1_Temp.CODE_VENDEUR, " +
+                "Bon1_Temp.EXPORTATION, " +
+                "Bon1_Temp.BLOCAGE " +
+                "FROM Bon1_Temp " +
+                "LEFT JOIN Client ON Bon1_Temp.CODE_CLIENT = Client.CODE_CLIENT " +
+                "WHERE BLOCAGE = 'F' ORDER BY Bon1_Temp.NUM_BON";
+
+        bon1s_Temp = controller.select_vente_from_database(querry);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
+
+
+        for(int i = 0; i< bon1s_Temp.size(); i++){
+
+            Date dt = format.parse(bon1s_Temp.get(i).date_bon);
+            assert dt != null;
+
+            F_SQL = "COMMANDE|"+bon1s_Temp.get(i).nbr_p+"|"+format2.format(dt)+"\n";
+            ///////////////////////////////////// JOURNEE //////////////////////////////////////
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
+            ///////////////////////////////////// CLIENT ///////////////////////////////////////
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE, CODE_VENDEUR ";
+
+            F_SQL =  F_SQL + ")\n VALUES ( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , '"+ bon1s_Temp.get(i).code_client.replace("'", "''") + "','"+ bon1s_Temp.get(i).client.replace("'", "''") + "','"+ bon1s_Temp.get(i).adresse.replace("'", "''") + "','"+ bon1s_Temp.get(i).tel.replace("'", "''") + "','" + bon1s_Temp.get(i).rc.replace("'", "''") + "','" + bon1s_Temp.get(i).ifiscal.replace("'", "''") + "','" +  bon1s_Temp.get(i).nis.replace("'", "''") + "','" +  bon1s_Temp.get(i).ai.replace("'", "''") + "', "+bon1s_Temp.get(i).latitude_client+", "+bon1s_Temp.get(i).longitude_client+"";
+
+            F_SQL =  F_SQL + ", iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')";
+
+            F_SQL =  F_SQL + ") MATCHING (CODE_CLIENT);\n";
+
+            ///////////////////////////////////// BON1 ////////////////////////////////////////////
+            F_SQL =  F_SQL + "INSERT INTO BCC1 (RECORDID,NUM_BON,EXPORTATION,CODE_DEPOT, CODE_VENDEUR, " +
+                    "CODE_CLIENT,DATE_BON, HEURE,MODE_RG,BLOCAGE,MODE_TARIF," +
+                    "VERSER, TIMBRE, REMISE, ANCIEN_SOLDE, LATITUDE, LONGITUDE, UTILISATEUR)\n ";
+
+
+
+
+            F_SQL =  F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BCC1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
+            F_SQL =  F_SQL + "'" + bon1s_Temp.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) +"','" + bon1s_Temp.get(i).heure +"','" + bon1s_Temp.get(i).mode_rg +"','" + bon1s_Temp.get(i).blocage + "','" + bon1s_Temp.get(i).mode_tarif+ "',";
+            F_SQL =  F_SQL + "" + bon1s_Temp.get(i).verser + "," + bon1s_Temp.get(i).timbre +"," + bon1s_Temp.get(i).remise + "," + bon1s_Temp.get(i).solde_ancien + "," + bon1s_Temp.get(i).latitude + "," + bon1s_Temp.get(i).longitude + ", 'TERMINAL_MOBILE');\n" ;
+
+
+            String querry_select = "" +
+                    "SELECT " +
+                    "Bon2_Temp.RECORDID, " +
+                    "Bon2_Temp.CODE_BARRE, " +
+                    "Bon2_Temp.NUM_BON, " +
+                    "Bon2_Temp.PRODUIT, " +
+                    "Bon2_Temp.NBRE_COLIS, " +
+                    "Bon2_Temp.COLISSAGE, " +
+                    "Bon2_Temp.QTE, " +
+                    "Bon2_Temp.QTE_GRAT, " +
+                    "Bon2_Temp.PV_HT, " +
+                    "Bon2_Temp.TVA, " +
+                    "Bon2_Temp.CODE_DEPOT, " +
+                    "Bon2_Temp.PA_HT, " +
+                    "Bon2_Temp.DESTOCK_TYPE, " +
+                    "Bon2_Temp.DESTOCK_CODE_BARRE, " +
+                    "Bon2_Temp.DESTOCK_QTE, " +
+                    "Produit.STOCK " +
+                    "FROM Bon2_Temp LEFT JOIN Produit ON (Bon2_Temp.CODE_BARRE = Produit.CODE_BARRE) " +
+                    "WHERE Bon2_Temp.NUM_BON = '" + bon1s_Temp.get(i).num_bon + "'";
+
+
+            bon2s_Temp = controller.select_bon2_from_database(querry_select);
+
+            for(int j = 0; j< bon2s_Temp.size(); j++){
+                ///////////////////////////////////BON 2 ///////////////////////////////////////
+                F_SQL =  F_SQL + "INSERT INTO BCC2 (CODE_DEPOT,RECORDID,NUM_BON,";
+                F_SQL =  F_SQL + "CODE_BARRE,PRODUIT,DESTOCK_TYPE,DESTOCK_CODE_BARRE,DESTOCK_QTE,";
+                F_SQL =  F_SQL + "NBRE_COLIS,COLISSAGE,QTE,QTE_GRAT,";
+                F_SQL =  F_SQL + "TVA,PV_HT_AR,PV_HT,PA_HT)\n";
+                F_SQL =  F_SQL + "VALUES\n";
+                F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BCC2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
+                F_SQL =  F_SQL + "'" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "','" + bon2s_Temp.get(j).produit.replace("'", "''") + "','" + bon2s_Temp.get(j).destock_type + "','" + bon2s_Temp.get(j).destock_code_barre + "','" + bon2s_Temp.get(j).destock_qte + "',";
+                F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).nbr_colis + ","   + bon2s_Temp.get(j).colissage +","  + bon2s_Temp.get(j).qte + "," + bon2s_Temp.get(j).gratuit + ",";
+                F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).tva + ","   + bon2s_Temp.get(j).p_u +","  + bon2s_Temp.get(j).p_u + "," + bon2s_Temp.get(j).pa_ht + ");\n";
+                ///////////////////////////////////BON 2 ///////////////////////////////////////
+            }
+
+
+            /////////////////////////////////// CAISSE //////////////////////////////////////////////
+
+            file_name = "COMMANDE_"+ bon1s_Temp.get(i).num_bon+"_"+bon1s_Temp.get(i).exportation + "_" + bon1s_Temp.get(i).date_bon + ".BLV";
+            file_name = file_name.replace("/", "_");
+
+            F_SQL_LIST_COMMAND.put(file_name, F_SQL);
         }
 
 
@@ -281,13 +554,13 @@ public class Ftp_export {
             F_SQL =  F_SQL + ")\n VALUES ( " +
                     " iif('" + code_depot + "' = '000000', null, '" + code_depot + "') , " +
                     " '"+ all_versement_client.get(i).code_client + "'," +
-                    " iif("+ all_versement_client.get(i).client + " = null , null, '"+ all_versement_client.get(i).client.replace("'", "''") + "') , " +
-                    " iif("+ all_versement_client.get(i).adresse + " = null , null, '"+ all_versement_client.get(i).adresse.replace("'", "''") + "') , " +
-                    " iif("+ all_versement_client.get(i).tel + " = null, null , '"+ all_versement_client.get(i).tel.replace("'", "''") + "') , " +
-                    " iif("+ all_versement_client.get(i).rc + " = 'null', null , '"+ all_versement_client.get(i).rc + "') , " +
-                    " iif("+ all_versement_client.get(i).ifiscal + " = null , null, '"+ all_versement_client.get(i) + "') , " +
-                    " iif("+ all_versement_client.get(i).nis + " = null, null , '"+ all_versement_client.get(i) + "') , " +
-                    " iif("+ all_versement_client.get(i).ai + " = null, null , '"+ all_versement_client.get(i) + "') , " +
+                    " iif('"+ all_versement_client.get(i).client + "' = null , null, '"+ all_versement_client.get(i).client.replace("'", "''") + "') , " +
+                    " iif('"+ all_versement_client.get(i).adresse + "' = null , null, '"+ all_versement_client.get(i).adresse.replace("'", "''") + "') , " +
+                    " iif('"+ all_versement_client.get(i).tel + "' = null, null , '"+ all_versement_client.get(i).tel.replace("'", "''") + "') , " +
+                    " iif('"+ all_versement_client.get(i).rc + "' = 'null', null , '"+ all_versement_client.get(i).rc + "') , " +
+                    " iif('"+ all_versement_client.get(i).ifiscal + "' = null , null, '"+ all_versement_client.get(i).ifiscal + "') , " +
+                    " iif('"+ all_versement_client.get(i).nis + "' = null, null , '"+ all_versement_client.get(i).nis + "') , " +
+                    " iif('"+ all_versement_client.get(i).ai + "' = null, null , '"+ all_versement_client.get(i).ai + "') , " +
                     " "+all_versement_client.get(i).latitude+", " +
                     " "+all_versement_client.get(i).longitude+" ";
 
@@ -301,7 +574,7 @@ public class Ftp_export {
             F_SQL =  F_SQL + "CODE_CLIENT,DATE_CARNET,HEURE,SOURCE,UTILISATEUR,MODE_RG,";
             F_SQL =  F_SQL + "ACHATS,VERSEMENTS)\n";
             F_SQL =  F_SQL + "VALUES \n";
-            F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
+            F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
             F_SQL =  F_SQL + " '" + all_versement_client.get(i).carnet_achats + "'," + all_versement_client.get(i).carnet_versement +");\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
@@ -322,6 +595,102 @@ public class Ftp_export {
 
     }
 
+
+    public void prepare_local_file_inventaire() throws ParseException {
+
+        F_SQL_LIST_INVENTAIRE =  new HashMap<>();
+        String F_SQL = "";
+
+        String querry = "SELECT " +
+                "Inv1.NUM_INV, " +
+                "Inv1.DATE_INV, " +
+                "Inv1.HEURE_INV, " +
+                "Inv1.LIBELLE, " +
+                "Inv1.NBR_PRODUIT, " +
+
+                "Inv1.UTILISATEUR, " +
+                "Inv1.CODE_DEPOT, " +
+                "Inv1.EXPORTATION, " +
+                "Inv1.IS_SENT, " +
+                "Inv1.DATE_EXPORT_INV, " +
+                "Inv1.BLOCAGE " +
+                "FROM Inv1 " +
+                "WHERE BLOCAGE = 'F' ORDER BY Inv1.NUM_INV";
+
+        try {
+            Invs1 = controller.select_list_inventaire_from_database(querry);
+        }catch (Exception e){
+            Log.v("zzz", e.getMessage());
+        }
+
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
+
+
+        for(int i = 0; i< Invs1.size(); i++){
+
+            Date dt = format.parse(Invs1.get(i).date_inv);
+            assert dt != null;
+
+            F_SQL = "INVENTAIRE|"+Invs1.get(i).nbr_produit+"|"+format2.format(dt)+"\n";
+            ///////////////////////////////////// JOURNEE //////////////////////////////////////
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
+
+            ///////////////////////////////////// INV1 ////////////////////////////////////////////
+            F_SQL =  F_SQL + "INSERT INTO INV1 (RECORDID,NUM_INV,EXPORTATION,CODE_DEPOT, " +
+                    "DATE_INV, HEURE, LIBELLE, NBR_PRODUIT, BLOCAGE, UTILISATEUR)\n ";
+
+            F_SQL =  F_SQL + " VALUES ( (SELECT GEN_ID(GEN_INV1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_INV1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:, iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), ";
+            F_SQL =  F_SQL + "'" + format2.format(dt) +"','" + Invs1.get(i).heure_inv +"', '" + Invs1.get(i).nom_inv +"', " + Invs1.get(i).nbr_produit +", 'M',";
+            F_SQL =  F_SQL + "'TERMINAL_MOBILE');\n" ;
+
+
+            String querry_select = "" +
+                    "SELECT " +
+                    "Inv2.RECORDID, " +
+                    "Inv2.CODE_BARRE, " +
+                    "Inv2.NUM_INV, " +
+                    "Inv2.PRODUIT, " +
+                    "Inv2.NBRE_COLIS, " +
+                    "Inv2.COLISSAGE, " +
+                    "Inv2.PA_HT, " +
+                    "Inv2.QTE, " +
+                    "Inv2.QTE_TMP, " +
+                    "Inv2.QTE_NEW, " +
+                    "Inv2.TVA, " +
+                    "Inv2.VRAC, " +
+                    "Inv2.CODE_DEPOT " +
+                    "FROM Inv2 " +
+                    "WHERE Inv2.NUM_INV = '" + Invs1.get(i).num_inv+ "'";
+
+            Inv2s = controller.select_inventaire2_from_database(querry_select);
+
+
+            for(int j = 0; j< Inv2s.size(); j++){
+                ///////////////////////////////////INV 2 ///////////////////////////////////////
+                F_SQL =  F_SQL + "INSERT INTO INV2 (CODE_DEPOT,RECORDID,NUM_INV,";
+                F_SQL =  F_SQL + "CODE_BARRE, PA_HT,";
+                F_SQL =  F_SQL + "QTE, QTE_TMP,";
+                F_SQL =  F_SQL + "TVA)\n";
+                F_SQL =  F_SQL + "VALUES\n";
+                F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_INV2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_INV1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
+                F_SQL =  F_SQL + "'" + Inv2s.get(j).codebarre.replace("'", "''") + "',";
+                F_SQL =  F_SQL + ""  + Inv2s.get(j).pa_ht + "," + Inv2s.get(j).qte_theorique + ",";
+                F_SQL =  F_SQL + ""   + Inv2s.get(j).qte_physique +","  + Inv2s.get(j).tva + ");\n";
+                ///////////////////////////////////BON 2 ///////////////////////////////////////
+            }
+
+
+            /////////////////////////////////// CAISSE //////////////////////////////////////////////
+
+            file_name = "INVENTAIRE_"+ Invs1.get(i).num_inv+"_"+Invs1.get(i).exportation + "_" + Invs1.get(i).date_inv + ".INV";
+            file_name = file_name.replace("/", "_");
+
+            F_SQL_LIST_INVENTAIRE.put(file_name, F_SQL);
+        }
+
+    }
 
     public boolean  create_file(String file_name, String F_SQL){
         try
@@ -372,11 +741,13 @@ public class Ftp_export {
     }
 
 
-    private final class LongOperation extends AsyncTask<Void, Void, Integer> {
+    // AsynchTAsk Sales
+    
+    private final class LongOperationSale extends AsyncTask<Void, Void, Integer> {
 
         ProgressDialog mProgressDialog;
 
-        public LongOperation() {
+        public LongOperationSale() {
 
             mProgressDialog = new ProgressDialog(mActivity);
             mProgressDialog.setMessage("Connexion serveur FTP ...");
@@ -393,15 +764,22 @@ public class Ftp_export {
 
                 try {
                     if(connectFtp()){
-                        prepare_local_file();
+                        prepare_local_file_sale();
                         int count_vente = 1;
                         int count_situation = 1;
-                        for (Map.Entry map : F_SQL_LIST_VENT.entrySet()) {
+                        for (Map.Entry map : F_SQL_LIST_VENTE.entrySet()) {
 
                             if(create_file(map.getKey().toString(), map.getValue().toString())){
-                                mProgressDialog.setMessage("Exportation des BL ..." + count_vente  + "/" + F_SQL_LIST_VENT.size());
+                                mProgressDialog.setMessage("Exportation des BL ..." + count_vente  + "/" + F_SQL_LIST_VENTE.size());
                                 s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/VENTE", mProgressDialog);
+                                try {
+                                    if( map.getKey().toString().endsWith(".BLV")){
+                                        String num_bon = map.getKey().toString().substring(6, 12);
+                                        controller.Update_ventes_commandes_as_exported(false, num_bon);
+                                    }
+                                }catch (Exception e){
 
+                                }
                             }else {
                                 return 1;
                             }
@@ -440,7 +818,7 @@ public class Ftp_export {
             if(result == 0){
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Exportation...")
-                        .setContentText("Exportation ftp terminé. \n Total bon Vente : " + F_SQL_LIST_VENT.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
+                        .setContentText("Exportation ftp terminé. \n Total bon Vente : " + F_SQL_LIST_VENTE.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
                         .show();
             }else if(result == 1){
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
@@ -456,6 +834,331 @@ public class Ftp_export {
         }
     }
 
+
+    
+    // AsynchTAsk Orders
+
+    private final class LongOperationOrder extends AsyncTask<Void, Void, Integer> {
+
+        ProgressDialog mProgressDialog;
+
+        public LongOperationOrder() {
+
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int s = 0;
+
+
+            try {
+                if(connectFtp()){
+                    prepare_local_file_order();
+                    int count_commande = 1;
+                    int count_situation = 1;
+                    for (Map.Entry map : F_SQL_LIST_COMMAND.entrySet()) {
+
+                        if(create_file(map.getKey().toString(), map.getValue().toString())){
+                            mProgressDialog.setMessage("Exportation des commandes ..." + count_commande  + "/" + F_SQL_LIST_COMMAND.size());
+                            if(code_depot.equals("000000") || code_depot.equals("")){
+                                if(code_vendeur.equals("000000") || code_vendeur.equals("")){
+                                    // maydir walo
+                                }else {
+                                    s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_vendeur, "/COMMANDE", mProgressDialog);
+                                    try {
+                                        if( map.getKey().toString().endsWith(".BLV")){
+                                            String num_bon = map.getKey().toString().substring(9, 15);
+                                            controller.Update_ventes_commandes_as_exported(true, num_bon);
+                                        }
+                                    }catch (Exception e){
+
+                                    }
+                                }
+                            }else {
+                                s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/COMMANDE", mProgressDialog);
+                                try {
+                                    if( map.getKey().toString().endsWith(".BLV")){
+                                        String num_bon = map.getKey().toString().substring(9, 15);
+                                        controller.Update_ventes_commandes_as_exported(true, num_bon);
+                                    }
+                                }catch (Exception e){
+
+                                }
+                            }
+
+
+                        }else {
+                            return 1;
+                        }
+                        count_commande++;
+                    }
+
+                    for (Map.Entry map : F_SQL_LIST_SITUATION.entrySet()) {
+
+                        if(create_file(map.getKey().toString(), map.getValue().toString())){
+                            mProgressDialog.setMessage("Exportation des STC ..." + count_situation  + "/" + F_SQL_LIST_SITUATION.size());
+
+                            if(code_depot.equals("000000") || code_depot.equals("")){
+                                if(code_vendeur.equals("000000") || code_vendeur.equals("")){
+                                    // maydir walo
+                                }else {
+                                    s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_vendeur, "/SITUATION-CLIENT", mProgressDialog);
+                                }
+                            }else {
+                                s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/SITUATION-CLIENT", mProgressDialog);
+                            }
+
+
+
+                        }else {
+                            return 1;
+                        }
+                        count_situation++;
+                    }
+
+                }else {
+                    return 2;
+                }
+
+                disconnectFtp();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                disconnectFtp();
+                return 2;
+            }
+            return s;
+        }
+
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            mProgressDialog.hide();
+            if(result == 0){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Exportation...")
+                        .setContentText("Exportation ftp terminé. \n Total bons commandes : " + F_SQL_LIST_COMMAND.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
+                        .show();
+            }else if(result == 1){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Exportation...")
+                        .setContentText("Problème au niveau de creation du fichier")
+                        .show();
+            }else if(result == 2){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Exportation...")
+                        .setContentText("Problem de connexion serveur ftp")
+                        .show();
+            }
+        }
+    }
+
+
+    private final class LongOperationInventaire extends AsyncTask<Void, Void, Integer> {
+
+        ProgressDialog mProgressDialog;
+
+        public LongOperationInventaire() {
+
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int s = 0;
+
+
+            try {
+                if(connectFtp()){
+                    prepare_local_file_inventaire();
+                    int count_inventaire = 1;
+                    for (Map.Entry map : F_SQL_LIST_INVENTAIRE.entrySet()) {
+
+                        if(create_file(map.getKey().toString(), map.getValue().toString())){
+                            mProgressDialog.setMessage("Exportation inventaires ..." + count_inventaire  + "/" + F_SQL_LIST_INVENTAIRE.size());
+                            if(code_depot.equals("000000") || code_depot.equals("")){
+                                s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, "", "/INVENTAIRE", mProgressDialog);
+                            }else {
+                                s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/INVENTAIRE", mProgressDialog);
+                            }
+
+
+                        }else {
+                            return 1;
+                        }
+                        count_inventaire++;
+                    }
+
+                }else {
+                    return 2;
+                }
+
+                disconnectFtp();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                disconnectFtp();
+                return 2;
+            }
+            return s;
+        }
+
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            mProgressDialog.hide();
+            if(result == 0){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Exportation...")
+                        .setContentText("Exportation ftp terminé. \n Total bons inventaires : " + F_SQL_LIST_INVENTAIRE.size())
+                        .show();
+            }else if(result == 1){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Exportation...")
+                        .setContentText("Problème au niveau de creation du fichier")
+                        .show();
+            }else if(result == 2){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Exportation...")
+                        .setContentText("Problem de connexion serveur ftp")
+                        .show();
+            }
+        }
+    }
+
+    private final class LongOperationGetListBon extends AsyncTask<Void, Void, Integer> {
+
+        ProgressDialog mProgressDialog;
+        ArrayList<String> listFile;
+
+        public LongOperationGetListBon() {
+
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int s = 0;
+            try {
+                if(connectFtp()){
+                    listFile = new GetListFromFtp().ftpGestList1(con, nom_depot,  mProgressDialog);
+                }else {
+                    return 2;
+                }
+                disconnectFtp();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                disconnectFtp();
+                return 2;
+            }
+            return s;
+        }
+
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            mProgressDialog.hide();
+            if(result == 0){
+                FragmentSelectBonTransfer fragmentSelectBon = new FragmentSelectBonTransfer();
+                fragmentSelectBon.showDialogbox(mActivity, mActivity.getBaseContext(),  listFile);
+            }else if(result == 1){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problème au niveau de creation du fichier")
+                        .show();
+            }else if(result == 2){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problem de connexion serveur ftp")
+                        .show();
+            }
+        }
+    }
+
+    private final class LongOperationImportationProduits extends AsyncTask<Void, Void, Integer> {
+
+        ProgressDialog mProgressDialog;
+        String nom_bon;
+
+        public LongOperationImportationProduits(String nom_bon) {
+
+            this.nom_bon = nom_bon;
+
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int s = 0;
+
+
+            try {
+                if(connectFtp()){
+                    s = new DownloadFileFromFtp().ftpDownload1(mActivity, con, nom_depot,  mProgressDialog, nom_bon);
+                }else {
+                    return 2;
+                }
+                disconnectFtp();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                disconnectFtp();
+                return 2;
+            }
+            return s;
+        }
+
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            mProgressDialog.hide();
+            if(result == 0){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Le bon de transfert a été bien traité !")
+                        .show();
+            }else if(result == 1){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problème au moment d'importation du fichier depuis le serveur FTP")
+                        .show();
+            }else if(result == 2){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problem de connexion serveur ftp")
+                        .show();
+            }else if(result == 3){
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problem au moment de traitement du fichier !")
+                        .show();
+            }
+        }
+    }
 }
 
 
@@ -511,5 +1214,94 @@ public class Ftp_export {
         }
 
         return status;
+    }
+}
+
+
+class GetListFromFtp {
+
+    CopyStreamAdapter streamListener;
+    ProgressDialog pDialog;
+    ArrayList<String> listFile;
+
+    //https://stackoverflow.com/questions/21923833/how-to-show-the-progress-bar-in-ftp-download-in-async-class-in-android
+
+    public ArrayList<String> ftpGestList1(FTPClient mFTPClient, String nom_depot,  final ProgressDialog pDialog) throws IOException {
+
+        this.pDialog = pDialog;
+
+        try {
+
+            boolean changedRemoteDir = mFTPClient.changeWorkingDirectory("/EXP/TRANSFERT/" + nom_depot);
+            if (!changedRemoteDir) {
+                return null;
+            }
+            // list all the files which will be downloaded.
+            FTPFile[] ftpFiles = mFTPClient.listFiles();
+            listFile = new ArrayList<>();
+            for (FTPFile file : ftpFiles) {
+                if(file.getName().endsWith(".BDR")){
+                    listFile.add(file.getName());
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }finally {
+            if (mFTPClient != null) {
+                mFTPClient.logout();
+                mFTPClient.disconnect();
+            }
+        }
+
+        return listFile;
+    }
+}
+
+
+class DownloadFileFromFtp {
+
+    ProgressDialog pDialog;
+
+    public int ftpDownload1(Activity activity, FTPClient mFTPClient, String nom_depot,  final ProgressDialog pDialog, String nom_bon) throws IOException {
+
+        this.pDialog = pDialog;
+
+        try {
+
+            boolean changedRemoteDir = mFTPClient.changeWorkingDirectory("/EXP/TRANSFERT/" + nom_depot);
+            if (!changedRemoteDir) {
+                return 1;
+            }
+            mFTPClient.setFileType(FTP.BINARY_FILE_TYPE);
+            mFTPClient.enterLocalPassiveMode();
+            boolean success = false;
+            try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(Paths.get(activity.getApplicationInfo().dataDir + "/" + nom_bon).toFile().toPath()))) {
+                success = mFTPClient.retrieveFile(nom_bon, outputStream);
+            }
+
+            //Start reading the file
+            FileInputStream is;
+            BufferedReader reader;
+            final File file = new File(activity.getApplicationInfo().dataDir + "/" + nom_bon);
+
+            if (file.exists()) {
+                is = new FileInputStream(file);
+                reader = new BufferedReader(new InputStreamReader(is));
+                String line = reader.readLine();
+                while(line != null){
+                    Log.d("StackOverflow", line);
+                    line = reader.readLine();
+                }
+            }else{
+                return 3;
+            }
+
+            return 0;
+
+        } catch (Exception e) {
+            return 1;
+        }
     }
 }

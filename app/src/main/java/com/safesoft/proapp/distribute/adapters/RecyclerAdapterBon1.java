@@ -109,7 +109,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         if(SOURCE.equals("SALE")){
             holder.lnr_versement.setVisibility(View.VISIBLE);
             holder.Versement.setText(""+ new DecimalFormat("##,##0.00").format(item.verser) + " DA");
-        }else{
+        }else if(SOURCE.equals("ORDER")){
             holder.lnr_versement.setVisibility(View.GONE);
         }
 

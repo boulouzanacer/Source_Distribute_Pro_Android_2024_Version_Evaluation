@@ -69,7 +69,7 @@ public class PasswordResetDialogFragment extends DialogFragment {
     reset.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if(mPassword.getText().toString().equalsIgnoreCase("safesoft")){
+        if(mPassword.getText().toString().equalsIgnoreCase("0000")){
           new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                   .setTitleText("Réinitialisation")
                   .setContentText("Voulez-vous vraiment réinitialiser cette appareil, attention cette opération supprimera tous vos données?!")

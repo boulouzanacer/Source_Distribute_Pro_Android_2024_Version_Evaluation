@@ -322,6 +322,7 @@ public class PrinterVente {
         }
 
 
+
         @Override
         protected Boolean doInBackground(Void... params) {
 
@@ -358,9 +359,13 @@ public class PrinterVente {
             return true;
         }
 
+
+
         @Override
         protected void onPostExecute(Boolean result) {
+
             mProgressDialog.dismiss();
+
             if(result){
                 try {
                     if(type_print.equals("VENTE") || type_print.equals("ORDER")){
@@ -375,6 +380,7 @@ public class PrinterVente {
             }
         }
     }
+
 
 
     void print_bon()  throws UnsupportedEncodingException {
@@ -407,8 +413,7 @@ public class PrinterVente {
                     String img_str= prefs.getString("COMPANY_LOGO", "");
                     if (!img_str.equals("")){
                         //decode string to image
-                        String base = img_str;
-                        byte[] imageAsBytes = Base64.decode(base.getBytes(), Base64.DEFAULT);
+                        byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
                         mBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
                         cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
                         cmd.append(cmd.getLFCRCmd());
@@ -425,7 +430,7 @@ public class PrinterVente {
                         });
                     }
 */
-                   // bitmapSetting.setBimtapLimitWidth(40 * 8);
+                    // bitmapSetting.setBimtapLimitWidth(40 * 8);
 
 
 
@@ -433,17 +438,17 @@ public class PrinterVente {
                     cmd.append(cmd.getCommonSettingCmd(commonSetting));
 
                     textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
                     textSetting.setDoubleWidth(SettingEnum.Enable);
                     textSetting.setBold(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
                     textSetting.setBold(SettingEnum.Disable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
-                    if(!prefs.getString("COMPANY_ACTIVITY", "").equals("")){
+                    if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
                         cmd.append(cmd.getLFCRCmd());
-                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ACTIVITY", "")));
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
                     }
                     if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
                         cmd.append(cmd.getLFCRCmd());
@@ -459,7 +464,7 @@ public class PrinterVente {
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     ////////////////////////////////////// INFO CLIENT ///////////////////////////////////////////
                     textSetting.setAlign(CommonEnum.ALIGN_RIGHT);
-                    textSetting.setIsEscSmallCharactor(SettingEnum.Enable);
+                    //textSetting.setIsEscSmallCharactor(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, "Date :" + bon1.date_bon + " " + bon1.heure));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
@@ -477,16 +482,16 @@ public class PrinterVente {
                     textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
                     textSetting.setDoubleWidth(SettingEnum.Enable);
                     textSetting.setBold(SettingEnum.Enable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
                     if(type_print.equals("VENTE")){
-                        cmd.append(cmd.getTextCmd(textSetting, "BL N°:" + bon1.num_bon));
+                        cmd.append(cmd.getTextCmd(textSetting, "BL N :" + bon1.num_bon));
                     }else if(type_print.equals("ORDER")){
-                        cmd.append(cmd.getTextCmd(textSetting, "COMMANDE N°:" + bon1.num_bon));
+                        cmd.append(cmd.getTextCmd(textSetting, "COMMANDE N :" + bon1.num_bon));
                     }
 
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     //cmd.append(cmd.getTextCmd(textSetting, "123456789.123456789.123456789.123456789.123456789.123456789.123456789."));
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setBold(SettingEnum.Disable);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
@@ -570,28 +575,28 @@ public class PrinterVente {
                     nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
 
                     total_bon = bon1.tot_ttc;
-                    total_bon_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(total_bon));
+                    total_bon_str   =  new DecimalFormat("####0.00").format(total_bon);
+
 
                     remise_bon = bon1.remise;
-                    remise_bon_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(remise_bon));
+                    remise_bon_str   =  new DecimalFormat("####0.00").format(remise_bon);
 
                     ancien_solde = bon1.solde_ancien;
-                    ancien_solde_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(ancien_solde));
+                    ancien_solde_str   =  new DecimalFormat("####0.00").format(ancien_solde);
 
                     total_a_payer = bon1.montant_bon;
-                    total_a_payer_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(total_a_payer));
+                    total_a_payer_str   =  new DecimalFormat("####0.00").format(total_a_payer);
 
                     versement = bon1.verser;
-                    versement_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(versement));
+                    versement_str   =  new DecimalFormat("####0.00").format(versement);
 
                     nouveau_solde = bon1.reste;
-                    nouveau_solde_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(nouveau_solde));
+                    nouveau_solde_str   =  new DecimalFormat("####0.00").format(nouveau_solde);
 
                     String format2 = "%1$13s%2$-9s%3$13s%4$13s";
                     textSetting.setBold(SettingEnum.Enable);
 
                     if(remise_bon !=0){
-
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL :" ,total_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "REMISE :" ,remise_bon_str)));
@@ -607,11 +612,9 @@ public class PrinterVente {
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     /////////////////////////////IMPRESSION TOTAL///////////////////////////////////
                     //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
-
-
                     textSetting.setBold(SettingEnum.Enable);
-                    textSetting.setDoubleWidth(SettingEnum.Enable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+                    //textSetting.setDoubleWidth(SettingEnum.Enable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
 
                     String format3 = "%1$16s%2$14s";
 
@@ -632,7 +635,7 @@ public class PrinterVente {
 
                     textSetting.setBold(SettingEnum.Disable);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
 
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
                     cmd.append(cmd.getLFCRCmd()); // one line space
@@ -660,9 +663,9 @@ public class PrinterVente {
                     //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
 
 
-                    //cmd.append(cmd.getLFCRCmd());  // one line space
-                    //cmd.append(cmd.getLFCRCmd());  // one line space
-                   // cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                     cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getHeaderCmd());//初始化, Initial
                     cmd.append(cmd.getLFCRCmd());  // one line space
 
@@ -677,6 +680,7 @@ public class PrinterVente {
         }).start();
 
     }
+
 
 
     void print_etiquette()  throws UnsupportedEncodingException {
@@ -702,12 +706,10 @@ public class PrinterVente {
 
                     cmd.append(cmd.getCommonSettingCmd(commonSetting));
                     textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
                     textSetting.setDoubleWidth(SettingEnum.Enable);
                     textSetting.setBold(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
                     textSetting.setBold(SettingEnum.Disable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
                     cmd.append(cmd.getLFCRCmd()); // one line space
@@ -716,7 +718,7 @@ public class PrinterVente {
                     String prix_vente_str;
 
                     prix_vente = produit.pv1_ht * (1+(produit.tva/100));
-                    prix_vente_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(prix_vente));
+                    prix_vente_str   =  new DecimalFormat("").format(Double.valueOf(prix_vente));
 
                     textSetting.setBold(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, prix_vente_str + " DA"));
@@ -740,10 +742,9 @@ public class PrinterVente {
                     //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
 
 
-                    //cmd.append(cmd.getLFCRCmd());  // one line space
-                    //cmd.append(cmd.getLFCRCmd());  // one line space
-                    // cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getHeaderCmd());//初始化, Initial
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getLFCRCmd());  // one line space
 
                 } catch (IOException e) {
@@ -757,6 +758,7 @@ public class PrinterVente {
         }).start();
 
     }
+
 
     static class StringUtils {
 
@@ -779,6 +781,7 @@ public class PrinterVente {
             return sb.toString();
         }
     }
+
 
     public void showProgressDialog(final String str){
         mActivity.runOnUiThread(new Runnable() {

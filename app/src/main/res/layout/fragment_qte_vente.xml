@@ -363,7 +363,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/blue"
                 android:layout_marginEnd="5sp"
-                app:mfb_text="Valider"
+                app:mfb_text="Inserer"
                 app:mfb_textColor="#FFFFFF" />
 
 

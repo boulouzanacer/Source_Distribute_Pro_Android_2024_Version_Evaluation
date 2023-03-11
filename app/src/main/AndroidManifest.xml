@@ -2,32 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.safesoft.proapp.distribute">
-
-
     <!-- Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <!-- Request legacy Bluetooth permissions on older devices. -->
-    <uses-permission android:name="android.permission.BLUETOOTH"
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /> <!-- Request legacy Bluetooth permissions on older devices. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
         android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-
-
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.usb.host"
@@ -43,86 +41,71 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:replace="android:icon">
+        <activity
+            android:name=".activities.ActivityPDF"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
         <!-- Main classes -->
         <activity
-            android:name="com.safesoft.proapp.distribute.MainActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-            android:exported="true">
-
-        </activity>
-
-
-        <activity
+            android:name=".activation.ActivityCodeRevendeur"
             android:exported="true"
-            android:name="com.safesoft.proapp.distribute.splashscreen.splashScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.safesoft.proapp.distribute.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Activation classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activation.ActivityActivation" />
-
-
-        <!-- Client classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityClients" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityClientDetail" />
-
-        <!-- Produits classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityProduits" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityProduitDetail" />
-
-        <!-- Transfer classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityTransfer1" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityTransfert2Detail" />
-
-        <!-- Autre classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityImportsExport" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivitySetting" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityExportedVentes" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityInventaireAchat" />
-
-
-        <!-- login parametres classes -->
         <activity
-            android:name="com.safesoft.proapp.distribute.activities.login.ActivityLogin"
+            android:name="com.safesoft.proapp.distribute.splashscreen.splashScreen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> <!-- Activation classes -->
+        <activity android:name=".activation.ActivityActivation" /> <!-- Client classes -->
+        <activity android:name=".activities.ActivityClients" />
+        <activity android:name=".activities.ActivityClientDetail" /> <!-- Produits classes -->
+        <activity android:name=".activities.ActivityProduits" />
+        <activity android:name=".activities.ActivityProduitDetail" /> <!-- Transfer classes -->
+        <activity android:name=".activities.ActivityTransfer1" />
+        <activity android:name=".activities.ActivityTransfert2Detail" /> <!-- Autre classes -->
+        <activity android:name=".activities.ActivityImportsExport" />
+        <activity android:name=".activities.ActivitySetting" />
+        <activity android:name=".activities.ActivityExportedBons" />
+        <activity android:name=".activities.ActivityInventaireAchat" /> <!-- login parametres classes -->
+        <activity
+            android:name=".activities.login.ActivityLogin"
             android:theme="@style/AppTheme.Dark" />
         <activity
-            android:name="com.safesoft.proapp.distribute.activities.login.ActivityChangePwd"
-            android:theme="@style/AppTheme.Dark" />
-
-        <!-- Achat classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.achats.ActivityAchat" />
-
-
-        <!-- Inventaire classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire" />
-
-        <!-- Scanner classes -->
+            android:name=".activities.login.ActivityChangePwd"
+            android:theme="@style/AppTheme.Dark" /> <!-- Achat classes -->
+        <activity android:name=".activities.achats.ActivityAchat" /> <!-- Inventaire classes -->
+        <activity android:name=".activities.inventaire.ActivityInventaire" />
+        <activity android:name=".activities.inventaire.ActivityInventaires" /> <!-- Scanner classes -->
         <activity
             android:name="com.safesoft.proapp.distribute.scanner.FullScannerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.safesoft.proapp.distribute.scanner.BaseScannerActivity" />
-
-        <!-- vente classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivitySale" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivitySales" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.vente.ActivityBon2" />
-
-        <!-- Commande classes -->
-        <activity android:name="com.safesoft.proapp.distribute.activities.commande.ActivityOrders" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.commande.ActivityOrder" />
-
+        <activity android:name="com.safesoft.proapp.distribute.scanner.BaseScannerActivity" /> <!-- vente classes -->
+        <activity android:name=".activities.vente.ActivitySale" />
+        <activity android:name=".activities.vente.ActivitySales" />
+        <activity android:name=".activities.vente.ActivityBon2" /> <!-- Commande classes -->
+        <activity android:name=".activities.commande.ActivityOrder" />
+        <activity android:name=".activities.commande.ActivityOrders" />
         <activity
-            android:exported="true"
             android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"
+            android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
 
@@ -134,27 +117,21 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-
-        <!-- Bluetooth classes -->
-        <activity android:name=".activities.ActivityItenerary" />
-
-        <!-- Services -->
+        </activity> <!-- Bluetooth classes -->
+        <activity android:name=".activities.ActivityItenerary" /> <!-- Services -->
         <service
             android:name="com.safesoft.proapp.distribute.services.ServiceDistribute"
             android:label="Local Service" />
-        <service android:name="com.safesoft.proapp.distribute.gps.ServiceLocation" />
-
-        <!-- Maps-->
+        <service android:name="com.safesoft.proapp.distribute.gps.ServiceLocation" /> <!-- Maps -->
         <activity
-            android:name="com.safesoft.proapp.distribute.activities.ActivityMaps"
-            android:label="@string/title_activity_maps" />
-        <activity android:name="com.safesoft.proapp.distribute.activities.ActivityEtatV" />
+            android:name=".activities.ActivityMaps"
+            android:label="@string/title_activity_maps" /> <!-- Etat -->
+        <activity android:name=".activities.ActivityEtatV" />
+        <activity android:name=".activities.ActivityEtatC" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
     </application>
 
 </manifest>

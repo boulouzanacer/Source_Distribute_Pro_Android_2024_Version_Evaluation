@@ -62,7 +62,11 @@ public class ActivityInventaireAchat extends AppCompatActivity {
     }
 
     protected void lunchActivity(Class cls){
-        startActivity(new Intent(ActivityInventaireAchat.this, cls));
+
+        Intent exported_inventaire_intent = new Intent(ActivityInventaireAchat.this, cls);
+        exported_inventaire_intent.putExtra("SOURCE", "NOTEXPORTED");
+        startActivity(exported_inventaire_intent);
+
     }
 
     @Override

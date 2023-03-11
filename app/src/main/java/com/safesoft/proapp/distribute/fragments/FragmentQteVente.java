@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 
@@ -29,6 +30,10 @@ import org.greenrobot.eventbus.EventBus;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class FragmentQteVente {
 
@@ -50,6 +55,8 @@ public class FragmentQteVente {
 
     private final String PREFS = "ALL_PREFS";
     private String SOURCE;
+
+    SharedPreferences prefs;
 
     //PopupWindow display method
 
@@ -122,7 +129,7 @@ public class FragmentQteVente {
 
 
 
-        SharedPreferences prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
         if(prefs.getBoolean("AFFICHAGE_HT", false)){
             tvaLayout.setVisibility(View.VISIBLE);
             prixhtLayout.setVisibility(View.VISIBLE);
@@ -180,6 +187,8 @@ public class FragmentQteVente {
             val_nbr_colis = 0.0;
             val_qte_old = 0.0;
             val_gratuit_old = 0.0;
+            val_qte = 0.0;
+
         }else if(SOURCE.equals("BON2_EDIT") || SOURCE.equals("BON2_TEMP_EDIT")){
             if(SOURCE.equals("BON2_EDIT")){
                 val_stock_avant = arrived_bon2.stock_produit + arrived_bon2.qte+arrived_bon2.gratuit;
@@ -246,6 +255,20 @@ public class FragmentQteVente {
         // onMontantRemiseChange();
 
         btn_valider.setOnClickListener(v -> {
+
+            if (!SOURCE.equals("BON2_TEMP_INSERT") && !SOURCE.equals("BON2_TEMP_EDIT")){
+                if(!(prefs.getBoolean("STOCK_MOINS", false))){
+                    if(val_qte > val_stock_avant){
+                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention!")
+                                .setContentText("Stock produit insuffisant, insersion impossible! ")
+                                .show();
+
+                        return;
+                    }
+                }
+            }
+
             boolean hasError = false;
 
             if (edt_qte.getText().length() <= 0 ) {
@@ -253,6 +276,7 @@ public class FragmentQteVente {
                 edt_qte.setError("Quantité obligatoire!!");
                 hasError = true;
             }
+
             if (edt_prix_ht.getText().length() <= 0 && edt_prix_ht.getVisibility() == View.VISIBLE) {
                 edt_prix_ht.setError("Prix HT obligatoire!!");
                 hasError = true;
@@ -272,8 +296,8 @@ public class FragmentQteVente {
                 arrived_bon2.p_u = val_prix_ht;
                 arrived_bon2.tva = val_tva;
 
-                 CheckedPanierEventBon2 item_panier = new CheckedPanierEventBon2(arrived_bon2, val_qte_old, val_gratuit_old);
-                 bus.post(item_panier);
+                CheckedPanierEventBon2 item_panier = new CheckedPanierEventBon2(arrived_bon2, val_qte_old, val_gratuit_old);
+                bus.post(item_panier);
 
                 dialog.dismiss();
             }
@@ -444,6 +468,7 @@ public class FragmentQteVente {
             }
         });
 
+
         edt_tva.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -473,6 +498,7 @@ public class FragmentQteVente {
 
             }
         });
+
 
         edt_prix_ttc.addTextChangedListener(new TextWatcher() {
             @Override
@@ -504,7 +530,6 @@ public class FragmentQteVente {
 
             }
         });
-
     }
 
     void onNbrColisChange(){
@@ -583,11 +608,13 @@ public class FragmentQteVente {
     }
 
     void onQteChange(){
+
         if(edt_qte.getText().toString().isEmpty()){
             val_qte = 0.00;
         }else {
             val_qte = Double.parseDouble(edt_qte.getText().toString());
         }
+
 
         if(edt_gratuit.getText().toString().isEmpty()){
             val_gratuit = 0.00;
@@ -613,6 +640,7 @@ public class FragmentQteVente {
     }
 
     void onGratuitChange(){
+
         if(edt_qte.getText().toString().isEmpty()){
             val_qte = 0.00;
         }else {
@@ -647,6 +675,7 @@ public class FragmentQteVente {
         val_prix_ttc = val_prix_ht * (1+(val_tva / 100));
         edt_prix_ttc.setText(nf.format(val_prix_ttc));
     }
+
 
     void onPrixTtcChange(){
         if(edt_tva.getText().toString().isEmpty()){

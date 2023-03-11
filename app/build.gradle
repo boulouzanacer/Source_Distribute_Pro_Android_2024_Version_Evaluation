@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
 
         applicationId "com.safesoft.proapp.distribute"
-        minSdkVersion 24
-        targetSdkVersion 32
+        minSdkVersion 26
+        targetSdkVersion 33
         versionCode 537
         versionName "1.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -61,7 +62,7 @@ dependencies {
 
     implementation 'com.haozhang.libary:android-slanted-textview:1.2'
     implementation 'com.haozhang.libary:android-slanted-textview:1.2'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -71,17 +72,19 @@ dependencies {
     implementation 'com.labo.kaji:swipeawaydialog:0.1.0'
     implementation 'com.baoyz.swipemenulistview:library:1.3.0'
     implementation 'com.emmasuzuki:easyform:1.1.0'
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.github.paolorotolo:expandableheightlistview:1.0.0'
     implementation 'com.victor:lib:1.0.4'
     implementation 'eu.inloop:simplerecycleradapter:0.3.1'
     implementation 'me.grantland:autofittextview:0.2.1'
     implementation 'com.jzxiang.pickerview:TimePickerDialog:1.0.1'
     implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
-    implementation 'com.jakewharton:butterknife:8.0.1'
+    implementation 'com.jakewharton:butterknife:10.2.3'
     implementation 'com.dropbox.core:dropbox-core-sdk:3.0.5'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'pl.coreorb:selection-dialogs:0.9.1'
+    //implementation 'pl.coreorb:selection-dialogs:0.9.1'
+
+
     //Button
     implementation 'com.rilixtech:materialfancybuttons:1.8.7'
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
@@ -102,6 +105,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-nop:1.7.25'
 
 
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 
     // externel librery
     implementation project(':folding-cell')
@@ -122,10 +126,12 @@ dependencies {
     implementation files('libs/printer_library.jar')
     //implementation project(path: ':libezftp')
 
-    implementation ("com.journeyapps:zxing-android-embedded:4.2.0"){
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0"){
         exclude group: 'com.google.zxing', module: 'android-core'
         transitive = false
     }
+
+    implementation 'com.github.aabhasr1:OtpView:v1.1.2'
 
 
 }

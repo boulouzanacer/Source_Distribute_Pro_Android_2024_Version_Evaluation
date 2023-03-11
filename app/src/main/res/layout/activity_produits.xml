@@ -3,13 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-android:background="@drawable/font_black"
+    android:background="@drawable/font_black"
+    android:weightSum="20"
+    android:orientation="vertical"
     tools:context="com.safesoft.proapp.distribute.activities.ActivityProduits">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_produit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="19"
         android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/list_produit_nbr_produit"
+        android:layout_weight="1"
+        android:text="Nombre de prduit : "
+        android:gravity="center"
+        android:background="@color/blue"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
 
 </LinearLayout>

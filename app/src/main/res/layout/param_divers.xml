@@ -13,7 +13,7 @@
     <include layout="@layout/sub_layout_edit_prix" />
     <include layout="@layout/sub_layout_gps" />
     <include layout="@layout/sub_layout_sound" />
-    <include layout="@layout/sub_layout_import_export" />
+    <!--<include layout="@layout/sub_layout_import_export" />-->
     <include layout="@layout/zpref_scanner" />
     <include layout="@layout/sub_stockmoins" />
 

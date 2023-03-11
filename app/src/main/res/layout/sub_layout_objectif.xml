@@ -52,7 +52,6 @@
         android:id="@+id/prefSpacingType"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-       android:gravity="center"
         android:padding="10dp"
         android:weightSum="4"
         android:orientation="horizontal">
@@ -62,7 +61,7 @@
             android:id="@+id/edit_objectif_title"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-          android:gravity="center"
+            android:layout_gravity="center"
             app:errorMessage="@string/error_message_empty"
             app:errorType="empty"
             android:layout_weight="2.5"
@@ -89,6 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
+            android:layout_gravity="center"
             android:background="@drawable/button_bg"
             android:text="@string/valider" />
 

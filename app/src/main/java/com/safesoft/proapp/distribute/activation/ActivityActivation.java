@@ -500,49 +500,237 @@ public class ActivityActivation extends AppCompatActivity {
         inforevenedeur3 = findViewById(R.id.InfoRevendeur3);
         inforevenedeur4 = findViewById(R.id.InfoRevendeur4);
 
+        //00
         if (revendeur.equals("SAFE SOFT"))  {
             inforevenedeur1.setText(R.string.INFO_SAFE_SOFT1);
             inforevenedeur2.setText(R.string.INFO_SAFE_SOFT2);
             inforevenedeur3.setText(R.string.INFO_SAFE_SOFT3);
             inforevenedeur4.setText(R.string.INFO_SAFE_SOFT4);
         }
+        //01
+        if (revendeur.equals("COMPOS SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_COMPOS1);
+            inforevenedeur2.setText(R.string.INFO_COMPOS2);
+            inforevenedeur3.setText(R.string.INFO_COMPOS3);
+            inforevenedeur4.setText(R.string.INFO_COMPOS4);
+        }
+        //02
         if (revendeur.equals("TIEMPO SOFT")) {
             inforevenedeur1.setText(R.string.INFO_TIEMPO_SOFT1);
             inforevenedeur2.setText(R.string.INFO_TIEMPO_SOFT2);
             inforevenedeur3.setText(R.string.INFO_TIEMPO_SOFT3);
             inforevenedeur4.setText(R.string.INFO_TIEMPO_SOFT4);
         }
+        //03
         if (revendeur.equals("CHERRATA SOFT")) {
             inforevenedeur1.setText(R.string.INFO_CHERRATA_SOFT1);
             inforevenedeur2.setText(R.string.INFO_CHERRATA_SOFT2);
             inforevenedeur3.setText(R.string.INFO_CHERRATA_SOFT3);
             inforevenedeur4.setText(R.string.INFO_CHERRATA_SOFT4);
         }
-        if (revendeur.equals("TECH POS")) {
-            inforevenedeur1.setText(R.string.INFO_TECH_POS1);
-            inforevenedeur2.setText(R.string.INFO_TECH_POS2);
-            inforevenedeur3.setText(R.string.INFO_TECH_POS3);
-            inforevenedeur4.setText(R.string.INFO_TECH_POS4);
+        //04
+        if (revendeur.equals("EASY SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_EASY_SOFT1);
+            inforevenedeur2.setText(R.string.INFO_EASY_SOFT1);
+            inforevenedeur3.setText(R.string.INFO_EASY_SOFT3);
+            inforevenedeur4.setText(R.string.INFO_EASY_SOFT4);
         }
+        //05
+        if (revendeur.equals("MOON SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_MOON_SOFT1);
+            inforevenedeur2.setText(R.string.INFO_MOON_SOFT2);
+            inforevenedeur3.setText(R.string.INFO_MOON_SOFT3);
+            inforevenedeur4.setText(R.string.INFO_MOON_SOFT4);
+        }
+        //06
         if (revendeur.equals("GLOBAL TECH")) {
             inforevenedeur1.setText(R.string.INFO_GLOBAL_TECH1);
             inforevenedeur2.setText(R.string.INFO_GLOBAL_TECH2);
             inforevenedeur3.setText(R.string.INFO_GLOBAL_TECH3);
             inforevenedeur4.setText(R.string.INFO_GLOBAL_TECH4);
         }
+        //07
+        if (revendeur.equals("POLYRAW")) {
+            inforevenedeur1.setText(R.string.INFO_POLYRAW1);
+            inforevenedeur2.setText(R.string.INFO_POLYRAW2);
+            inforevenedeur3.setText(R.string.INFO_POLYRAW3);
+            inforevenedeur4.setText(R.string.INFO_POLYRAW4);
+        }
+        //08
+        if (revendeur.equals("PROSOLUTION")) {
+            inforevenedeur1.setText(R.string.INFO_PROSOLUTION1);
+            inforevenedeur2.setText(R.string.INFO_PROSOLUTION2);
+            inforevenedeur3.setText(R.string.INFO_PROSOLUTION3);
+            inforevenedeur4.setText(R.string.INFO_PROSOLUTION4);
+        }
+        //09
+        if (revendeur.equals("ACIDOMTECH")) {
+            inforevenedeur1.setText(R.string.INFO_ACIDOMTECH1);
+            inforevenedeur2.setText(R.string.INFO_ACIDOMTECH2);
+            inforevenedeur3.setText(R.string.INFO_ACIDOMTECH3);
+            inforevenedeur4.setText(R.string.INFO_ACIDOMTECH4);
+        }
+        //10
+        if (revendeur.equals("NDHL")) {
+            inforevenedeur1.setText(R.string.INFO_NDHL1);
+            inforevenedeur2.setText(R.string.INFO_NDHL2);
+            inforevenedeur3.setText(R.string.INFO_NDHL3);
+            inforevenedeur4.setText(R.string.INFO_NDHL4);
+        }
+        //11
+        if (revendeur.equals("TECH POS")) {
+            inforevenedeur1.setText(R.string.INFO_TECH_POS1);
+            inforevenedeur2.setText(R.string.INFO_TECH_POS2);
+            inforevenedeur3.setText(R.string.INFO_TECH_POS3);
+            inforevenedeur4.setText(R.string.INFO_TECH_POS4);
+        }
+        //12
+        if (revendeur.equals("UNIVER SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_UNIVERSOFT1);
+            inforevenedeur2.setText(R.string.INFO_UNIVERSOFT2);
+            inforevenedeur3.setText(R.string.INFO_UNIVERSOFT3);
+            inforevenedeur4.setText(R.string.INFO_UNIVERSOFT4);
+        }
+        //13
+        if (revendeur.equals("IBSMAX")) {
+            inforevenedeur1.setText(R.string.INFO_IBSMAX1);
+            inforevenedeur2.setText(R.string.INFO_IBSMAX2);
+            inforevenedeur3.setText(R.string.INFO_IBSMAX3);
+            inforevenedeur4.setText(R.string.INFO_IBSMAX4);
+        }
+        //14
+        if (revendeur.equals("MMBOX")) {
+            inforevenedeur1.setText(R.string.INFO_MMBOX1);
+            inforevenedeur2.setText(R.string.INFO_MMBOX2);
+            inforevenedeur3.setText(R.string.INFO_MMBOX3);
+            inforevenedeur4.setText(R.string.INFO_MMBOX4);
+        }
+        //15
+        if (revendeur.equals("DELPHI SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_DELPHI1);
+            inforevenedeur2.setText(R.string.INFO_DELPHI2);
+            inforevenedeur3.setText(R.string.INFO_DELPHI3);
+            inforevenedeur4.setText(R.string.INFO_DELPHI4);
+        }
+        //16
+        if (revendeur.equals("BBS")) {
+             inforevenedeur1.setText(R.string.INFO_BBS1);
+             inforevenedeur2.setText(R.string.INFO_BBS2);
+             inforevenedeur3.setText(R.string.INFO_BBS3);
+             inforevenedeur4.setText(R.string.INFO_BBS4);
+        }
+        //17
+        if (revendeur.equals("EXPERT INFO")) {
+            inforevenedeur1.setText(R.string.INFO_EXPERTINFO1);
+            inforevenedeur2.setText(R.string.INFO_EXPERTINFO2);
+            inforevenedeur3.setText(R.string.INFO_EXPERTINFO3);
+            inforevenedeur4.setText(R.string.INFO_EXPERTINFO4);
+        }
+        //18
+        if (revendeur.equals("ARC TECH")) {
+            inforevenedeur1.setText(R.string.INFO_DATAPRO1);
+            inforevenedeur2.setText(R.string.INFO_DATAPRO1);
+            inforevenedeur3.setText(R.string.INFO_DATAPRO1);
+            inforevenedeur4.setText(R.string.INFO_DATAPRO1);
+        }
+        //20
+        if (revendeur.equals("LAGA")) {
+            inforevenedeur1.setText(R.string.INFO_LAGA1);
+            inforevenedeur2.setText(R.string.INFO_LAGA2);
+            inforevenedeur3.setText(R.string.INFO_LAGA3);
+            inforevenedeur4.setText(R.string.INFO_LAGA4);
+        }
+        //21
+        if (revendeur.equals("SOFT SPACE")) {
+            inforevenedeur1.setText(R.string.INFO_SOFTSPACE1);
+            inforevenedeur2.setText(R.string.INFO_SOFTSPACE2);
+            inforevenedeur3.setText(R.string.INFO_SOFTSPACE3);
+            inforevenedeur4.setText(R.string.INFO_SOFTSPACE4);
+        }
+        //22
+        if (revendeur.equals("AFKAR SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_AFKARSOFT1);
+            inforevenedeur2.setText(R.string.INFO_AFKARSOFT2);
+            inforevenedeur3.setText(R.string.INFO_AFKARSOFT3);
+            inforevenedeur4.setText(R.string.INFO_AFKARSOFT4);
+        }
+        //23
+        if (revendeur.equals("AZAD ADRAR")) {
+            inforevenedeur1.setText(R.string.INFO_AZAD1);
+            inforevenedeur2.setText(R.string.INFO_AZAD1);
+            inforevenedeur3.setText(R.string.INFO_AZAD1);
+            inforevenedeur4.setText(R.string.INFO_AZAD1);
+        }
+         //24
+        if (revendeur.equals("GENERAL IT")) {
+            inforevenedeur1.setText(R.string.INFO_GENERALIT1);
+            inforevenedeur2.setText(R.string.INFO_GENERALIT2);
+            inforevenedeur3.setText(R.string.INFO_GENERALIT3);
+            inforevenedeur4.setText(R.string.INFO_GENERALIT4);
+        }
+        //25
+        if (revendeur.equals("VAST SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_VASTSOFT1);
+            inforevenedeur2.setText(R.string.INFO_VASTSOFT1);
+            inforevenedeur3.setText(R.string.INFO_VASTSOFT1);
+            inforevenedeur4.setText(R.string.INFO_VASTSOFT1);
+        }
+        //26
         if (revendeur.equals("CAM PLUS")) {
             inforevenedeur1.setText(R.string.INFO_CAM_PLUS1);
             inforevenedeur2.setText(R.string.INFO_CAM_PLUS2);
             inforevenedeur3.setText(R.string.INFO_CAM_PLUS3);
             inforevenedeur4.setText(R.string.INFO_CAM_PLUS4);
         }
-
+        //27
+        if (revendeur.equals("EASY SOLUTION")) {
+            inforevenedeur1.setText(R.string.INFO_EASYSOLUTION1);
+            inforevenedeur2.setText(R.string.INFO_EASYSOLUTION2);
+            inforevenedeur3.setText(R.string.INFO_EASYSOLUTION3);
+            inforevenedeur4.setText(R.string.INFO_EASYSOLUTION4);
+        }
+        //28
         if (revendeur.equals("TIFAWT TECHNOLOGIE")) {
             inforevenedeur1.setText(R.string.INFO_TIFAWT_TECHNOLOGIE1);
             inforevenedeur2.setText(R.string.INFO_TIFAWT_TECHNOLOGIE2);
             inforevenedeur3.setText(R.string.INFO_TIFAWT_TECHNOLOGIE3);
             inforevenedeur4.setText(R.string.INFO_TIFAWT_TECHNOLOGIE4);
+        } //31
+        if (revendeur.equals("DARIA COMPUTER")) {
+            inforevenedeur1.setText(R.string.INFO_DARIASOFT1);
+            inforevenedeur2.setText(R.string.INFO_DARIASOFT1);
+            inforevenedeur3.setText(R.string.INFO_DARIASOFT1);
+            inforevenedeur4.setText(R.string.INFO_DARIASOFT1);
         }
+        //32
+        if (revendeur.equals("MATEN AFKAR")) {
+            inforevenedeur1.setText(R.string.INFO_MATENAFKAR1);
+            inforevenedeur2.setText(R.string.INFO_MATENAFKAR1);
+            inforevenedeur3.setText(R.string.INFO_MATENAFKAR1);
+            inforevenedeur4.setText(R.string.INFO_MATENAFKAR1);
+        }//33
+        if (revendeur.equals("NOUH BARIKA")) {
+            inforevenedeur1.setText(R.string.INFO_NOUHBARIKA1);
+            inforevenedeur2.setText(R.string.INFO_NOUHBARIKA2);
+            inforevenedeur3.setText(R.string.INFO_NOUHBARIKA3);
+            inforevenedeur4.setText(R.string.INFO_NOUHBARIKA4);
+        }
+        //34
+        if (revendeur.equals("KATIA QUEEN SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_QUEENSOFT1);
+            inforevenedeur2.setText(R.string.INFO_QUEENSOFT2);
+            inforevenedeur3.setText(R.string.INFO_QUEENSOFT3);
+            inforevenedeur4.setText(R.string.INFO_QUEENSOFT4);
+        }
+        //35
+        if (revendeur.equals("OA TECH")) {
+            inforevenedeur1.setText(R.string.INFO_OATECH1);
+            inforevenedeur2.setText(R.string.INFO_OATECH2);
+            inforevenedeur3.setText(R.string.INFO_OATECH3);
+            inforevenedeur4.setText(R.string.INFO_OATECH4);
+        }
+
+
     }
 
 }

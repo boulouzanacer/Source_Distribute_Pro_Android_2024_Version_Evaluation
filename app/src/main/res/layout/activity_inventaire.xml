@@ -37,7 +37,6 @@
                 app:errorMessage="@string/error_message_empty"
                 app:errorType="empty"
                 android:hint="Nom inventaire"
-
                 app:expandedHintEnabled="false"
                 app:helperText="   ">
 
