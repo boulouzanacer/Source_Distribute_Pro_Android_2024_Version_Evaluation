@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/blue"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:weightSum="3.5"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/blue"
+            android:text="@string/timbre"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:typeface="monospace" />
+
+        <LinearLayout
+            android:layout_weight="1.5"
+            android:weightSum="1"
+            android:baselineAligned="false"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contextClickable="false"
+                android:layout_weight="1"
+                app:errorMessage="@string/error_message_empty"
+                app:errorType="empty"
+                app:hintTextColor="@color/blue"
+                android:layout_margin="5dp"
+                app:expandedHintEnabled="false"
+                app:helperText="@string/montant_timbre">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/montant_timbre"
+                    android:gravity="center"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:padding="5dp"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:layout_height="0dp">
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_timbre"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/blue"
+                android:layout_marginEnd="5sp"
+                app:mfb_text="Valider"
+                app:mfb_textColor="#FFFFFF" />
+
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:background="@color/blue"
+                app:mfb_text="Annuler"
+                app:mfb_textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

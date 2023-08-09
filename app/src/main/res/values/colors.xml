@@ -3,15 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorAccent_dark">#FF0C81</color>
 
     <color name="carot">#e67e22</color>
     <color name="white">#FFFFFF</color>
-    <color name="ver_pistach">#00FF00</color>
     <color name="vert">#19C414</color>
     <color name="emerald">#2ecc71</color>
     <color name="orange">#ff9216</color>
-    <color name="sun">#f1c40f</color>
 
     <color name="vert_clair">#2ecc71</color>
     <color name="rouge">#e74c3c</color>
@@ -22,47 +19,28 @@
     <color name="sandy_brown">#F4A460</color>
 
 
-    <color name="bgBackSideColor">#f4f0ff</color>
-    <color name="bgTitleLeft">#594691</color>
-    <color name="bgTitleRight">#ffffff</color>
     <color name="bgContentTop">#594691</color>
     <color name="bgContent">#ffffff</color>
     <color name="contentDividerLine">#e0e0e0</color>
     <color name="contentBadgeTitle">#a9a9a9</color>
-    <color name="titleBadgeTitle">#adafb1</color>
-    <color name="titleBadgeText">#adafb1</color>
     <color name="mainTextColor">#343d43</color>
-    <color name="btnRequest">#ffbf12</color>
 
     <color name="black_overlay">#66000000</color>
     <color name="divider">#ffcccccc</color>
 
     <color name="nephritis">#27ae60</color>
     <color name="viber_color">#8f5db7</color>
-    <color name="viber_color_dark">#59267c</color>
 
 
-    <color name="primary_dark">#E12929</color>
     <color name="lightcoral">#F08080</color>
     <color name="accent">#FFFFFF</color>
 
-    <color name="withpurple">#8e44ad</color>
-
     <color name="crimson">#DC143C</color>
     <color name="black">#000000</color>
-    <color name="jet">#222222</color>
-    <color name="oil">#333333</color>
-    <color name="monsoon">#777777</color>
-    <color name="jumbo">#888888</color>
-    <color name="aluminum">#999999</color>
-    <color name="base">#AAAAAA</color>
     <color name="iron">#CCCCCC</color>
     <color name="primary">#E43F3F</color>
     <color name="color_pme_pro_distribute">#0094d6</color>
 
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
@@ -71,4 +49,15 @@
     <color name="tag_red_bg">#ff6d5f</color>
     <color name="tag_green_bg">#40d189</color>
     <color name="tag_blue_light_bg">#33befa</color>
+
+
+    <!--green gradiant-->
+    <color name="green_white_1">#549365</color>
+    <color name="green_white_2">#85B291</color>
+    <color name="green_white_3">#B5D1BD</color>
+
+    <!--blue gradiant-->
+    <color name="blue_white_1">#4C4CFF</color>
+    <color name="blue_white_2">#7F7FFF</color>
+    <color name="blue_white_3">#B2B2FF</color>
 </resources>

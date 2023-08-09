@@ -24,12 +24,12 @@ public class ListViewAdapterListSelectedBon extends BaseAdapter {
   ArrayList<String> list_bons_t;
   private static LayoutInflater inflater = null;
   Context context;
-  private FragmentSelectedBonTransfert fragment;
-  private EventBus bus = EventBus.getDefault();
+  private final FragmentSelectedBonTransfert fragment;
+  private final EventBus bus = EventBus.getDefault();
   private SelectedBonTransfertEvent event = null;
 
   public interface ProduitSelectedEventListener {
-    public void ProduitSelectedEvent(String s, PostData_Client client);
+    void ProduitSelectedEvent(String s, PostData_Client client);
   }
 
   ProduitSelectedEventListener produitSelectedListener;

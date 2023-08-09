@@ -32,6 +32,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/parametre_rounded"
+                android:text="@string/achats"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
+
+            <include layout="@layout/import_export_achat" />
+
+            <Button
+                android:id="@+id/bt3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/parametre_rounded"
                 android:text="@string/vente"
                 android:textColor="@color/accent"
                 android:textStyle="italic" />
@@ -39,7 +50,7 @@
             <include layout="@layout/import_export_vente" />
 
             <Button
-                android:id="@+id/bt3"
+                android:id="@+id/bt4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/parametre_rounded"
@@ -50,7 +61,7 @@
             <include layout="@layout/import_export_commande" />
 
             <Button
-                android:id="@+id/bt4"
+                android:id="@+id/bt5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/parametre_rounded"

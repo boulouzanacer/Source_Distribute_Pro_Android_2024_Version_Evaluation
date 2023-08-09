@@ -5,12 +5,10 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="20dp"
     android:visibility="gone"
-    android:id="@+id/param_scan"
     android:orientation="vertical" >
 
 
     <View
-        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_size"
         android:background="@color/divider" />
@@ -24,7 +22,6 @@
         android:text="@string/s_l_ctionnez_le_scanner_qui_vous_permetra_du_scanner_le_codebarre_qrcode" />
 
     <LinearLayout
-        android:id="@+id/prefSpacingPrin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/item_background_holo_light"
@@ -81,7 +78,6 @@
         android:background="@color/divider" />
 
     <View
-        android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_large_size"
         android:background="@color/divider" />

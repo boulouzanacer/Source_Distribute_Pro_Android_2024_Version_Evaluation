@@ -1,126 +1,39 @@
 <resources>
-    <string name="app_name">Pme Pro Distribute</string>
+    <string name="app_name">Distribute pro</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="code_barre_produit" translatable="false"># 6130000054882</string>
-    <string name="tva_badje" translatable="false">TVA</string>
+    <string name="tva_badge" translatable="false">Tva</string>
     <string name="tva" translatable="false">0%</string>
-    <string name="requests_count_mock" translatable="false">5</string>
-    <string name="requests_count_badge" translatable="false">REQUESTS</string>
-    <string name="prix_achat_montant" translatable="false">5000 DA</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="mode_tarif" translatable="false"> xxxxxxxxxxxxxx</string>
-    <string name="mode_tarif_text" translatable="false">MODE DE TARIF</string>
-    <string name="prix_achat" translatable="false">PRIX ACHAT</string>
-    <string name="prix_vente" translatable="false">PRIX VENTE</string>
-    <string name="pledge_mock" translatable="false">$150</string>
-    <string name="pledge_badge" translatable="false">PLEDGE</string>
     <string name="produit_badge" translatable="false">PRODUIT </string>
     <string name="reference_badge" translatable="false">REFERENCE </string>
     <string name="codebarre_badge" translatable="false">CODEBARRE </string>
     <string name="client_name_mock" translatable="false">Edward Norton</string>
     <string name="rating_mock" translatable="false">(26)</string>
-    <string name="pv1" translatable="false">PRIX V1 HT</string>
-    <string name="pv2" translatable="false">PRIX V2 HT</string>
-    <string name="pv3" translatable="false">PRIX V3 HT</string>
+    <string name="pv1" translatable="false">Prix de vente 1 (HT)</string>
+    <string name="pv2" translatable="false">Prix de vente 2 (HT)</string>
+    <string name="pv3" translatable="false">Prix de vente 3 (HT)</string>
+    <string name="pv4" translatable="false">Prix de vente 4 (HT)</string>
+    <string name="pv5" translatable="false">Prix de vente 5 (HT)</string>
+    <string name="pv6" translatable="false">Prix de vente 6 (HT)</string>
     <string name="DETAILLE" translatable="false">DETAILLE</string>
     <string name="pv3_prix" translatable="false">0.00 DA</string>
-    <string name="delivery_date_mock" translatable="false">May 16, 2016</string>
-    <string name="stock" translatable="false">STOCK</string>
     <string name="stock_qte" translatable="false">231</string>
-    <string name="panier_btn_text" translatable="false">AJOUTER AU PANIER</string>
-    <string name="btn_annotation_mock" translatable="false">5 people have sent a request</string>
-    <string name="pv1_prix">0.00 DA</string>
-    <string name="content_from2_mock">New York, NY 10025</string>
+    <string name="pv1_prix">0.00</string>
     <string name="pv2_prix">0.00 DA</string>
-    <string name="content_to2_mock">Woodside, NY 11101</string>
-    <string name="title_activity_main2">Main2Activity</string>
 
     <string name="qte_string">QTE</string>
     <string name="produit_string">PRODUIT</string>
-    <string-array name="sample_array">
-        <item>single choice item 1</item>
-        <item>single choice item quite long and seamless text 2</item>
-        <item>single choice item 3</item>
-        <item>single choice item long text 4</item>
-    </string-array>
 
     <!-- Print -->
-    <string name="print_test">Print Test</string>
-    <string name="printer_version">Printer Version：</string>
-    <string name="bar_code">Barcode:</string>
-    <string name="print_bar_code">Print Barcode</string>
-    <string name="D_bar_code">Qrcode:</string>
-    <string name="print_2D_barcode">Print Qrcode</string>
-    <string name="walk_paper_lines">Walk Paper Lines:</string>
-    <string name="walk_paper_test">Walk Paper</string>
-    <string name="left_margin">Left Margin:</string>
-    <string name="right_margin">Right Margin</string>
-    <string name="row_space">Row Space:</string>
-    <string name="font_size">Font Size：</string>
-    <string name="gray_level">Gray Level:</string>
-    <string name="print_content">Print Content：</string>
-    <string name="chinese_example">ZH Example</string>
-    <string name="english_example">EN Example</string>
-    <string name="clear_text">Clear</string>
-    <string name="print_text">Print Text</string>
-    <string name="printing_wait">Printing, please wait……</string>
-    <string name="printing_wait1">Connection, patientez svp……</string>
-    <string name="activation_wait">Connexion, patientez svp……</string>
-    <string name="D_barcode_loading">Qrcode loading</string>
-    <string name="generate_barcode_wait">Generating barcode, please wait……</string>
-    <string name="input_print_data">Please input print data</string>
-    <string name="maker_search_distance">Walk Paper For Search Black Block:</string>
-    <string name="maker_walk_distance">Walk Paper After Haved Search:</string>
-    <string name="maker_walk_distance_range">(0–255)</string>
-    <string name="maker">Black Block Detection</string>
-    <string name="maker_error">maker input value not fit</string>
-    <string name="maker_not_find">Cannot Find Black Block</string>
-    <string name="papercut">Paper Cut</string>
-    <string name="walk_paper_intput_value">walk paper intput value not fit</string>
-    <string name="print_picture">Print Picture</string>
-    <string name="sure">sure</string>
-    <string name="not_find_picture">not find picture</string>
-    <string name="input_command">Please Input Command</string>
-    <string name="execute_command">Execute Command</string>
-    <string name="watting">Please wait while checking driver version</string>
-    <string name="noPaper">No paper</string>
-    <string name="noPaperNotice">No paper, please put paper in and retry</string>
-    <string name="LowBattery">Low battery, please connect the charger!</string>
-    <string name="overTemp">over temp !</string>
-    <string name="ptintInit">Printer initialing… Please try again after a few seconds.</string>
-    <string name="outOfLeft">Beyond the left margin！</string>
-    <string name="outOfLine">Beyond the row space！</string>
-    <string name="outOfFont">Beyond the font size！</string>
-    <string name="outOfGray">Beyond the gray level！</string>
-    <string name="outOfCharSpace">Beyond The Char Space！</string>
     <string name="empty">The content is empty！</string>
-    <string name="lengthNotEnougth">The length is not enough！</string>
-    <string name="index_text">Print Text</string>
-    <string name="index_pic">Picture/Qrcode</string>
-    <string name="index_comm">Print Command</string>
-    <string name="input_content">input content</string>
-    <string name="dialog_comfirm">ConFirm</string>
-    <string name="operation_result">Result</string>
-    <string name="bl_dy">Print</string>
-    <string name="bl_dy1">Connection</string>
-    <string name="leading_activation">Connexion</string>
-    <string name="print_waring">Tip: If the SDK provides the function of can not meet your printing needs, you can send the print instruction way for implementation</string>
-    <string name="char_space">Char Space:</string>
-    <string name="printer_type_common">SerialPort Printer</string>
-    <string name="printer_type_usb">USB Printer</string>
-    <string name="printer_type_select">Select Printer Type</string>
 
 
     <string name="error_message_empty">Ce champ est obligatoire</string>
-    <string name="error_message_nom_client">le nom de client est obligatoire</string>
     <string name="title_activity_maps">Map</string>
 
 
     <string name="nom_client_hint">Nom client</string>
-    <string name="adresse_client_hint">Adresse client</string>
     <string name="revendeur_hint">Revendeur</string>
     <string name="code_client_hint">Code client</string>
     <string name="phone_client_hint">Num Téléphone Client</string>
@@ -128,7 +41,6 @@
     <string name="registre_commerce_hint">R.C</string>
     <string name="nif_client">N.I.F</string>
     <string name="nis_client">N.I.S</string>
-    <string name="add_client">Ajouter</string>
     <string name="image_client">Image Id</string>
 
     <string name="error_message_code_client">Enter un valid code client</string>
@@ -139,7 +51,6 @@
     <string name="auto_focus_on">Auto Focus [ON]</string>
     <string name="auto_focus_off">Auto Focus [OFF]</string>
     <string name="formats">Formats</string>
-    <string name="choose_formats">Choose Formats</string>
     <string name="select_camera">Select a Camera</string>
     <!---IEDIT CLIENT -->
 
@@ -172,7 +83,6 @@
 
     <!--EASY SOFT-->
     <string name="INFO_EASY_SOFT1"> EASY SOFT </string>
-    <string name="INFO_EASY_SOFT2">G18 Lotissement du lycée Lot A 44 Rouiba Alger</string>
     <string name="INFO_EASY_SOFT3">Tél / Fax : 0560 93 74 84 / 0550 72 37 52</string>
     <string name="INFO_EASY_SOFT4">Email / Site web : contact@easy-soft-dz.net / www.easy-soft-dz.net</string>
 
@@ -191,8 +101,8 @@
     <!--POLYRAW-->
     <string name="INFO_POLYRAW1"> Digital system x </string>
     <string name="INFO_POLYRAW2">Centre commercial et affaire Mohamadia Mall 2eme étage N°1058 Alger</string>
-    <string name="INFO_POLYRAW3">Tél/Fax : +(213) 32 14 85 85 \n Mobile : +(213) 770 539 177</string>
-    <string name="INFO_POLYRAW4"> www.globaltm.dz</string>
+    <string name="INFO_POLYRAW3">Mobile : +(213) 770 481 844</string>
+    <string name="INFO_POLYRAW4"> - </string>
 
     <!--PROSOLUTION-->
     <string name="INFO_PROSOLUTION1"> PRO SOLUTION </string>
@@ -263,9 +173,6 @@
 
     <!--DATA PRO-->
     <string name="INFO_DATAPRO1"> DATA PRO</string>
-    <string name="INFO_DATAPRO2">CITE 1406 BT17 LOC N1 BOUMERDES</string>
-    <string name="INFO_DATAPRO3">Tél / Fax :  024 79 75 66 /n Mobile : 0560 59 49 59 / 0560 14 88 07</string>
-    <string name="INFO_DATAPRO4">Email :  khenicheriad@gmail.com</string>
 
 
     <!--LAGA-->
@@ -289,9 +196,6 @@
 
     <!--AZAD ADRAR-->
     <string name="INFO_AZAD1">AZED SYSTEMS Matériel &amp; services informatiques</string>
-    <string name="INFO_AZAD2">Rue kaddour belitm Adrar</string>
-    <string name="INFO_AZAD3">Mobile : 0770 10 27 89  / 0559 33 89 04</string>
-    <string name="INFO_AZAD4"> Email : BENHASSAN2000@GMAIL.COM</string>
 
 
     <!--GENERAL IT-->
@@ -302,9 +206,6 @@
 
     <!--VAST SOFT-->
     <string name="INFO_VASTSOFT1">VAST SOFT</string>
-    <string name="INFO_VASTSOFT2">Centre Commercial El hamadia Bouzareah Alger</string>
-    <string name="INFO_VASTSOFT3">Mobile    : YOUCEF 0783 98 98 78 / 0656 07 38 68 / 0556 43 90 82</string>
-    <string name="INFO_VASTSOFT4"> Email : youcef.aitaliyahia@gmail.com / Site web :  www.vastsoft-dz.com</string>
 
     <!--CAM PLUS -->
     <string name="INFO_CAM_PLUS1"> HAMZI SECURITY SYSTEM CAM+ </string>
@@ -326,15 +227,9 @@
 
     <!--DARIA SOFT-->
     <string name="INFO_DARIASOFT1"> DARIA-POS </string>
-    <string name="INFO_DARIASOFT2">  297 les mandarines EL MOHAMMADIA Alger </string>
-    <string name="INFO_DARIASOFT3"> Mobile     :Gérant :0555 06 87 27 / Support : 0555 06 87 28 / COMMERCIAL :0555 06 87 29 </string>
-    <string name="INFO_DARIASOFT4"> Email :  dariacomputer@gmail.com </string>
 
     <!--MATEN AFKAR-->
     <string name="INFO_MATENAFKAR1"> MATEN SOLUTION </string>
-    <string name="INFO_MATENAFKAR2">Promotion immobilière el-yasmine les orangers local N°10 - Rouiba </string>
-    <string name="INFO_MATENAFKAR3"> Mobile    : 0540 21 40 84  / 0541 73 16 82 </string>
-    <string name="INFO_MATENAFKAR4"> - </string>
 
     <!--NOUH BARIKA-->
     <string name="INFO_NOUHBARIKA1"> AHMED SOFT SOLUTION</string>
@@ -362,57 +257,47 @@
     <string name="BTN_START" translatable="false">Démarer</string>
 
     <string name="parametre_connexion">Parametre Connexion</string>
-    <string name="param_tres_d_imprimente">Paramètres d\'imprimente</string>
+    <string name="param_tres_d_imprimente">Paramètres d\'imprimante</string>
     <string name="sauvegarde_des_donn_es">Sauvegarde des données</string>
     <string name="r_initialisation_des_donn_es">Réinitialisation des données</string>
     <string name="parametre_divers">Parametre divers</string>
     <string name="adress_ip">Adresse IP :</string>
-    <string name="icone_ip_adresse">icone ip adresse</string>
     <string name="database">Database :</string>
-    <string name="base_de_donn_es">base de données</string>
     <string name="saisissez_ici_le_code_depot_pour_cette_appareil_veuillez_bien_confirmer_le_code_pour_viter_plutard_le_conflis_entre_les_depots">Saisissez ici le code depot pour cette appareil, veuillez bien confirmer le code pour éviter plutard le conflis entre les depots</string>
     <string name="code_depot">CODE DEPOT (VAN):</string>
     <string name="_000001">000001</string>
     <string name="code_vendeur">CODE VENDEUR :</string>
     <string name="tester_la_connexion">Tester la connexion</string>
-    <string name="s_l_ctionnez_l_imprimente_qui_vous_permetra_d_imprimer_les_tickets">Séléctionnez l\'imprimente qui vous permetra d\'imprimer les tickets .</string>
-    <string name="s_l_ctionner_imprimente">Séléctionner Imprimente</string>
+    <string name="s_l_ctionnez_l_imprimente_qui_vous_permetra_d_imprimer_les_tickets">Séléctionnez l\'imprimante qui vous permetra d\'imprimer les tickets .</string>
+    <string name="s_l_ctionner_imprimente">Type connexion de l\'imprimante</string>
     <string name="camera">Camera</string>
     <string name="int_grer">Intégrer</string>
-    <string name="bluetooth">Bluetooth</string>
-    <string name="affichez_l_entete_de_soci_t_sur_le_bon">Paramètres entreprise</string>
+    <string name="affichez_l_entete_de_soci_t_sur_le_bon">Paramètres d\'entreprise</string>
     <string name="nom_d_entreprise">Nom d\'entreprise</string>
     <string name="activit">Activité</string>
     <string name="adresse">Adresse</string>
-    <string name="enregistrer">Enregistrer</string>
     <string name="affichez_le_footer">Paramètres pied de page</string>
     <string name="merci">Pied de page</string>
-    <string name="en_cas">En cas …</string>
     <string name="s_l_ctionnez_le_scanner_qui_vous_permetra_du_scanner_le_codebarre_qrcode">Séléctionnez le scanner qui vous permetra du scanner le codebarre, qrcode .</string>
     <string name="s_l_ctionner_scanner">Séléctionner Scanner</string>
     <string name="a_vous_permet_de_faire_une_sauvegarde_des_donn_es_une_copie_du_base_de_donn_es_sur_un_serveur_distant_et_meme_la_restauration_de_vos_donn_es">ça vous permet de faire une sauvegarde des données ( une copie du base de données ) sur un serveur distant et meme la restoration de vos données.</string>
     <string name="sauvegarder_backup">Sauvegarder ( Backup )</string>
-    <string name="a_vous_permet_de_changer_le_mot_de_passe_du_param_tres_g_n_ral">ça vous permet de changer le mot de passe du paramètres général !</string>
+    <string name="a_vous_permet_de_changer_le_mot_de_passe_du_param_tres_g_n_ral">ça vous permet de changer le mot de passe du paramètre général !</string>
     <string name="changer_mot_de_passe">Changer mot de passe</string>
-    <string name="a_vous_permet_de_r_initialiser_l_appareil_attention_cette_op_ration_va_supprimer_touts_vos_donn_es_sur_l_appareil">ça vous permet de réinitialiser l\'appareil ! Attention cette opération va supprimer touts vos données sur l\'appareil</string>
+    <string name="a_vous_permet_de_r_initialiser_l_appareil_attention_cette_op_ration_va_supprimer_touts_vos_donn_es_sur_l_appareil">ça vous permet de réinitialiser l\'appareil ! Attention cette opération supprimera tous vos données sur l\'appareil</string>
     <string name="r_initialiser">Réinitialiser</string>
     <string name="param_tres_syst_me_objectif">Paramètres système objectif</string>
     <string name="a_vous_permet_de_definir_une_somme_objective_a_atteindre_ap_res_des_ventes_faites">ça vous permet de definir une somme objective a atteindre apères des ventes faites</string>
     <string name="objectif_montant">Objectif montant</string>
     <string name="valider">Valider</string>
     <string name="modifier">Modifier</string>
-    <string name="param_tres_gps">Paramètres GPS</string>
-    <string name="a_vous_permet_d_activer_ou_d_sactiver_la_localisation_gps_cette_option_autorise_l_appareil_a_r_cup_rer_sa_postion">ça vous permet d\'activer ou désactiver la localisation GPS, cette option autorise l\'appareil a récupérer sa postion.</string>
-    <string name="localisation">localisation</string>
+    <string name="a_vous_permet_d_activer_ou_d_sactiver_la_localisation_gps_cette_option_autorise_l_appareil_a_r_cup_rer_sa_postion">ça vous permet d\'activer ou désactiver la localisation GPS, cette option autorise l\'appareil à récupérer votre position Gps.</string>
+    <string name="localisation">Activiter / Désactiver</string>
     <string name="a_vous_permet_d_activer_ou_d_sactiver_le_son_de_pda">ça vous permet d\'activer ou désactiver le son de PDA</string>
-    <string name="activer_le_song">Activer le song</string>
-    <string name="param_tres_imporation_exportation">Paramètres imporation/exportation</string>
-    <string name="a_vous_permet_d_activer_ou_d_sactiver_l_importation_et_l_exportation_des_bons_de_transferts_produits_clients_ventes_et_commandes_online_ou_local">ça vous permet d\'activer ou désactiver l\'importation et l\'exportation des bons de transferts, produits, clients , ventes et commandes online ou local</string>
-    <string name="importation_online">Importation online</string>
-    <string name="exportation_online">Exportation online</string>
-    <string name="vente_avec_stock_moins">VENTE AVEC STOCK MOINS</string>
-    <string name="afficher_les_achats_client">AFFICHER LES ACHATS CLIENT:</string>
-    <string name="afficher_photo_produit_dans_la_vente">AFFICHER PHOTO PRODUIT dans la vente</string>
+    <string name="activer_le_song">Activer le son</string>
+    <string name="vente_avec_stock_moins">vente avec stock moins</string>
+    <string name="afficher_les_achats_client">Afficher les achats client</string>
+    <string name="afficher_photo_produit_dans_la_vente">Afficher photo produit</string>
     <string name="param_tres_serveur_ftp">Paramètres Serveur FTP</string>
     <string name="serveur_ftp">Serveur FTP :</string>
     <string name="utilisateur">Utilisateur :</string>
@@ -426,10 +311,7 @@
     <string name="produits">Produits</string>
     <string name="quantite">Quantite</string>
     <string name="nom_client">NOM CLIENT</string>
-    <string name="str_modifier_obs">Cliquez ici pour modifier</string>
-    <string name="cr_er">Ajouter client</string>
-    <string name="edit_client">Modifier client</string>
-    <string name="produit">produit</string>
+    <string name="produit">Produit</string>
     <string name="p_u">P.U</string>
     <string name="total_ht">Total HT</string>
     <string name="_0_00_da">0.00</string>
@@ -439,8 +321,6 @@
     <string name="ttc_a_payer">TTC a payer</string>
     <string name="observation">Observation</string>
     <string name="nombre_colis">200</string>
-    <string name="str_add_obs">Info</string>
-    <string name="str_select_client">Cliquer ici pour selectionner client</string>
     <string name="remise_montant">REMISE</string>
     <string name="montant_avant_remise">Montant Avant Remise</string>
     <string name="montant_remise">Montant Remise</string>
@@ -452,7 +332,6 @@
     <string name="Stock_vrac">Vrac</string>
     <string name="Stock_unite">Stock</string>
     <string name="colissage">Colissage</string>
-    <string name="quantit">Quantité</string>
     <string name="gratuit">U.G</string>
     <string name="qt_en_stock_unit">Qté En Stock (Unité)</string>
     <string name="qt_en_stock_colis">Qté En Stock (Colis)</string>
@@ -470,14 +349,12 @@
     <string name="solde_actuel">Solde Actuel</string>
     <string name="nouveau_solde">Nouveau Solde</string>
     <string name="_01_01_2022">01/01/2022</string>
-    <string name="_16_25">xx:xx</string>
     <string name="_18_000_da">0 da</string>
     <string name="imprimer">Imprimer</string>
     <string name="search_product">Rechercher produit..</string>
-    <string name="prix_1">Prix 1</string>
     <string name="scanner">Scanner</string>
     <string name="selection_client">Sélectionner le Client</string>
-    <string name="info">Info</string>
+    <string name="selection_fournisseur">Sélectionner le Fournisseur</string>
     <string name="ajouter_client">Ajouter client</string>
     <string name="a_i">A.I</string>
 
@@ -488,31 +365,27 @@
     <string name="dialog_tip">Tip</string>
     <string name="main_pls_choose_device">Please choose a device</string>
     <string name="dialog_back">Back</string>
-    <string name="connectez_svp">Connectez svp</string>
 
 
-    <string name="spin_default_esc_font">Please choose a Font</string>
     <string name="choisissez_un_bluetooth_pr_ph">Choisissez un bluetooth préph</string>
     <string name="p_riph_rique_connect">Périphérique connecté</string>
     <string name="adapter_usbdevice">USB Device:</string>
     <string name="dialog_title_connected_devlist">List des périphérique connecté</string>
     <string name="pls_connect_printer_first">Connectez avant le périphérique</string>
 
-    <string name="_main_connected">Connecté</string>
-    <string name="_main_connected_fail">Erreur connexion</string>
     <string name="_main_disconnect">Déconnecté</string>
-    <string name="choisissez_usb_p_riph_rique">Choisissez usb périphérique</string>
     <string name="synchronisation_des_param_tres">Synchronisation des paramètres</string>
     <string name="desciption_sync_des_parametres">Permettre la synchronisation des paramètres tel que le nom d\'entreprise, adresse, logo ... depuis le serveur distant</string>
     <string name="telephone">Telephone</string>
     <string name="param_tres_affichage_stock_moins">Paramètres affichage stock moins</string>
     <string name="param_tres_edit_price">Paramètres modification prix vente</string>
+    <string name="param_tres_famille">Paramètres mode famille</string>
     <string name="param_tres_affichage_ht_tva">Paramètres affichage HT, TVA</string>
     <string name="activer_l_affichage_ht">Activer l\'affichage HT</string>
     <string name="activer_l_affichage_stock">Masquer les produits stock moins</string>
     <string name="desactiver_modification_prix">Desactiver la modification de prix vente</string>
+    <string name="mode_famille">Activer / Désactiver le mode famille</string>
     <string name="date_d_exportation">Date d\'exportation</string>
-    <string name="vrac">Vrac</string>
     <string name="nom_inv">nom inv</string>
     <string name="ecart_unit">Ecart (unité)</string>
     <string name="ecart_colis">Ecart (Colis)</string>
@@ -525,5 +398,21 @@
     <string name="syncronisation">Syncronisation</string>
     <string name="inventaire">Inventaire</string>
     <string name="commande">Commande</string>
+    <string name="rechercher">Rechercher</string>
+    <string name="famille">Famille</string>
+    <string name="title_activity_tspmaps">TSPActivityMaps</string>
+    <string name="param_tres_filtre_recherche">Paramètres filtre recherche</string>
+    <string name="sauvegarder_les_filtres_de_recherche">Sauvegarder les filtres de recherche</string>
+    <string name="rechercher_client">Rechercher client</string>
+    <string name="pa_ht">Prix achat (HT)</string>
+    <string name="activer_l_affichage_pa">Activer l\'affichage PA</string>
+    <string name="achats">Achats</string>
+    <string name="ramp">RAMP</string>
+    <string name="pamp">PAMP (HT)</string>
+    <string name="taux_timbre">Taux timbre</string>
+    <string name="montant_timbre">Montant timbre</string>
+    <string name="d_signation">Désignation</string>
+    <string name="code_produit">Code produit</string>
+    <string name="connexion_instantan">Connexion via internet</string>
 
 </resources>

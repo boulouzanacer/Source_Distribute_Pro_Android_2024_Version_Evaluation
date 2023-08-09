@@ -5,18 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 
-import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.splashscreen.splashScreen;
+import com.safesoft.proapp.distribute.activities.splashscreen.splashScreen;
 
 import in.aabhasjindal.otptextview.OTPListener;
 import in.aabhasjindal.otptextview.OtpTextView;
 
 public class ActivityCodeRevendeur extends AppCompatActivity {
 
-    private String PREFS = "ALL_PREFS";
+    private final String PREFS = "ALL_PREFS";
     private boolean isVendorSaved = false;
     private String REVENDEUR = "SAFE SOFT";
     private OtpTextView otpTextView;
@@ -32,6 +30,7 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
             Intent intent = new Intent(ActivityCodeRevendeur.this, splashScreen.class);
             intent.putExtra("REVENDEUR", REVENDEUR);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         }
 
@@ -66,7 +65,6 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
                         finish();
                         break;
                     case "0202": // TIEMPO SOFT
-
                         intent.putExtra("REVENDEUR","TIEMPO SOFT");
                         saveData("TIEMPO SOFT");
                         startActivity(intent);
@@ -97,7 +95,7 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
                         finish();
                         break;
                     case "0707": // POLYRAW
-                    intent.putExtra("REVENDEUR","POLYRAW");
+                        intent.putExtra("REVENDEUR","POLYRAW");
                         saveData("POLYRAW");
                         startActivity(intent);
                         finish();

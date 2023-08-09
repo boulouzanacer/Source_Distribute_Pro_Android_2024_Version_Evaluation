@@ -4,11 +4,10 @@
 
 
     <item
-        android:id="@+id/rouge"
-        android:orderInCategory="1"
-        android:title="Visité"
-        android:icon="@mipmap/rouge"
-        app:showAsAction="always" >
-    </item>
+        android:id="@+id/menu_search_item"
+        android:icon="@drawable/baseline_search_24"
+        android:title="Rechercher"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always"/>
 
 </menu>

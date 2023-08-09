@@ -15,5 +15,4 @@
         android:orderInCategory="2"
         android:icon="@drawable/ic_add_black_24dp"
         app:showAsAction="always" />
-
 </menu>

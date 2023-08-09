@@ -1,21 +1,31 @@
 package com.safesoft.proapp.distribute.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
+import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 import com.safesoft.proapp.distribute.utils.MyCardView2;
 
+import java.text.DecimalFormat;
 import java.util.List;
+
+import cn.nekocode.badge.BadgeDrawable;
 
 /**
  * Created by UK2016 on 02/01/2017.
@@ -23,54 +33,55 @@ import java.util.List;
 
 public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterAchat1.MyViewHolder> {
 
-    private List<PostData_Achat1> achat1List;
+    private final List<PostData_Achat1> bon1List;
     private int color = 0;
     private ItemClick itemClick;
     private ItemLongClick itemLongClick;
     private ColorGeneratorModified generator;
-    private Context mContext;
+    private final String SOURCE;
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView NumAchat;
-        TextView NomAchat;
-        TextView NomClient;
-
-        TextView Date_exp;
+        TextView NumBon;
+        TextView NomFournisseur;
+        TextView Montant;
         TextView nbrProduit;
-        TextView Date_achat;
+        TextView Date_bon;
+        TextView Heure_bon;
+        TextView Versement;
         CardView cardView;
         SlantedTextView blocage;
-
+        LinearLayout lnr_versement;
 
         MyViewHolder(View view) {
             super(view);
 
-            cardView = (CardView) view.findViewById(R.id.item_root);
-            NumAchat = (TextView) view.findViewById(R.id.num_achat);
-            NomAchat = (TextView) view.findViewById(R.id.nom_achat);
-            NomClient = (TextView) view.findViewById(R.id.nom_client);
-
-            Date_exp = (TextView) view.findViewById(R.id.date_exp);
-            nbrProduit = (TextView) view.findViewById(R.id.nbr_p);
-            Date_achat = (TextView) view.findViewById(R.id.date_achat);
-            blocage = (SlantedTextView) view.findViewById(R.id.blocage);
-
+            cardView = view.findViewById(R.id.item_root);
+            NumBon = view.findViewById(R.id.num_bon);
+            NomFournisseur = view.findViewById(R.id.nom_fournisseur);
+            Montant = view.findViewById(R.id.montant);
+            nbrProduit = view.findViewById(R.id.nbr_p);
+            Date_bon = view.findViewById(R.id.date_bon);
+            Heure_bon = view.findViewById(R.id.heure_bon);
+            Versement = view.findViewById(R.id.versement_bon);
+            blocage = view.findViewById(R.id.blocage);
+            lnr_versement = view.findViewById(R.id.lnr_versement);
         }
     }
 
-
-    public RecyclerAdapterAchat1(Context context, List<PostData_Achat1> itemList) {
-        this.achat1List = itemList;
+    public RecyclerAdapterAchat1(Context context, List<PostData_Achat1> itemList, String SOURCE) {
+        this.bon1List = itemList;
+        this.SOURCE =SOURCE;
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
-        mContext = context;
     }
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = new MyCardView2(parent.getContext(), R.layout.item_achat1_list);
+
         itemClick = (ItemClick) parent.getContext();
 
         itemLongClick = (ItemLongClick) parent.getContext();
@@ -78,81 +89,71 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
         return new MyViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final MyViewHolder holder,int position) {
-        PostData_Achat1 item = achat1List.get(position);
+        PostData_Achat1 item = bon1List.get(position);
 
-        holder.NumAchat.setTextSize(17);
-        holder.NumAchat.setTypeface(null, Typeface.BOLD);
-        holder.NumAchat.setText(""+item.num_achat);
-        holder.NomClient.setText(""+item.fournisseur);
+        holder.NumBon.setTextSize(17);
+        holder.NumBon.setTypeface(null, Typeface.BOLD);
+        holder.NumBon.setText(""+item.num_bon);
+        holder.NomFournisseur.setText(""+item.fournis);
 
-        holder.NomAchat.setText(""+item.nom_achat);
+        if(SOURCE.equals("ACHAT")){
+            holder.lnr_versement.setVisibility(View.VISIBLE);
+            holder.Versement.setText(""+ new DecimalFormat("##,##0.00").format(item.verser) + " DA");
+        }else if(SOURCE.equals("ACHAT_ORDER")){
+            holder.lnr_versement.setVisibility(View.GONE);
+        }
 
-            /*
-            if(item.nbr_p == null){
-                item.nbr_p = "0";
-            }
+        holder.Montant.setText(""+ new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
 
-            final BadgeDrawable drawable1 = new BadgeDrawable.Builder()
-                    .type(BadgeDrawable.TYPE_NUMBER)
-                    .badgeColor(0xff303F9F)
-                    .textSize(35)
-                    .number(Integer.valueOf(item.nbr_p))
-                    .build();
+        final BadgeDrawable drawable1 = new BadgeDrawable.Builder()
+                .type(BadgeDrawable.TYPE_NUMBER)
+                .badgeColor(0xff303F9F)
+                .textSize(35)
+                .number(item.nbr_p)
+                .build();
 
 
-            SpannableString spannableString1 = new SpannableString(TextUtils.concat(drawable1.toSpannable()));
+        SpannableString spannableString1 = new SpannableString(TextUtils.concat(drawable1.toSpannable()));
 
-            holder.nbrProduit.setText(spannableString1);
- */
-        holder.Date_achat.setText(item.date_achat + " " + item.heure_achat);
-
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                itemClick.onClick(view,holder.getAdapterPosition());
-            }
+        holder.nbrProduit.setText(spannableString1);
+        holder.Date_bon.setText(item.date_bon);
+        holder.Heure_bon.setText(item.heure);
+        holder.cardView.setOnClickListener(view -> itemClick.onClick(view,holder.getAdapterPosition()));
+        holder.cardView.setOnLongClickListener(v -> {
+            itemLongClick.onLongClick(v , holder.getAdapterPosition());
+            return true;
         });
 
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                itemLongClick.onLongClick(v , holder.getAdapterPosition());
-                return true;
-            }
-        });
-        if(item.is_sent == 1){
-            holder.blocage.setText("Exporté")
+
+        if(item.blocage.equals("F")){
+            holder.blocage.setText("Validé")
                     .setTextColor(Color.WHITE)
                     .setSlantedBackgroundColor(Color.GREEN)
                     .setTextSize(21)
-                    .setSlantedLength(50)
+                    .setSlantedLength(80)
                     .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-
-            holder.Date_exp.setText(item.date_export_achat);
         }else {
             holder.blocage.setText("En attente")
                     .setTextColor(Color.WHITE)
                     .setSlantedBackgroundColor(Color.RED)
                     .setTextSize(21)
-                    .setSlantedLength(50)
+                    .setSlantedLength(80)
                     .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-            holder.Date_exp.setText("Pas encore exporté");
         }
-
-
 
 
         if (color == 0){
             if (generator!=null)
-                color = generator.getColor(achat1List.get(position).num_achat);
+                color = generator.getColor(bon1List.get(position).num_bon);
         }
     }
 
     @Override
     public int getItemCount() {
-        return achat1List.size();
+        return bon1List.size();
     }
 
     public interface ItemClick{
@@ -163,9 +164,10 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
         void onLongClick(View v, int position);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void refresh(List<PostData_Achat1> new_itemList){
-        achat1List.clear();
-        achat1List.addAll(new_itemList);
+        bon1List.clear();
+        bon1List.addAll(new_itemList);
         notifyDataSetChanged();
     }
 }

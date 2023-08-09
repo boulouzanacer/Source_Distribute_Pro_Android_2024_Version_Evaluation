@@ -6,14 +6,31 @@
     android:background="@drawable/font_black"
     android:weightSum="20"
     android:orientation="vertical"
-    tools:context="com.safesoft.proapp.distribute.activities.ActivityProduits">
+    tools:context="com.safesoft.proapp.distribute.activities.product.ActivityProduits">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_produit"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="19"
+        android:layout_weight="17.5"
         android:scrollbars="vertical" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dateFilterContainer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:hint="@string/famille">
+
+        <AutoCompleteTextView
+            android:id="@+id/famille_dropdown"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="none"
+            tools:text="Toutes" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/list_produit_nbr_produit"

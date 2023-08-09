@@ -37,26 +37,26 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerAdapterCheckProducts.MyViewHolder> {
 
-    private List<PostData_Produit> produitList;
+    private final List<PostData_Produit> produitList;
     ArrayList<PostData_Produit> temp_list = new ArrayList<>();
-    private ArrayList<PostData_Bon2> bon2_list;
+    private final ArrayList<PostData_Bon2> bon2_list;
     private int color = 0;
     private ItemClick itemClick;
     private ColorGeneratorModified generator;
-    private Context mContext;
-    private Activity mActivity;
-    private EventBus bus;
-    private String mode_tarif;
-    private String PREFS = "ALL_PREFS";
+    private final Context mContext;
+    private final Activity mActivity;
+    private final EventBus bus;
+    private final String mode_tarif;
+    private final String PREFS = "ALL_PREFS";
     private boolean stock_moins = false;
     private boolean photo_pr = false;
-    private AlertDialog dialog;
-    private String SOURCE_ACTIVITY;
+    private final AlertDialog dialog;
 
+    private String SOURCE;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView Produit, Prix_vente, Qte_r, Colissage, Stock_colis,Stock_colis_title, Colissage_title;
+        TextView Produit, Prix, Qte_r, Colissage, Stock_colis,Stock_colis_title, Colissage_title;
         ImageView photopr;
         CardView cardView;
         ScalingActivityAnimator mScalingActivityAnimator ;
@@ -66,7 +66,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
             cardView = (CardView) view.findViewById(R.id.item_root_select_produit);
             Produit = (TextView) view.findViewById(R.id.produit);
-            Prix_vente = (TextView) view.findViewById(R.id.prix_u);
+            Prix = (TextView) view.findViewById(R.id.prix_u);
             Colissage = (TextView) view.findViewById(R.id.colissage);
             Colissage_title = (TextView) view.findViewById(R.id.colissage_title);
             Stock_colis = (TextView) view.findViewById(R.id.stock_colis);
@@ -83,28 +83,21 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     }
 
 
-    public RecyclerAdapterCheckProducts(Context context, Activity activity, List<PostData_Produit> itemList, String mode_tarif, AlertDialog dialog, String SOURCE_ACTIVITY) {
+    public RecyclerAdapterCheckProducts(Context context, Activity activity, List<PostData_Produit> itemList, String mode_tarif, AlertDialog dialog, String SOURCE) {
         this.produitList = itemList;
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
-        mContext = context;
-        mActivity = activity;
+        this.mContext = context;
+        this.mActivity = activity;
+        this.SOURCE = SOURCE;
+
         bus = EventBus.getDefault();
         this.mode_tarif = mode_tarif;
-        this.SOURCE_ACTIVITY = SOURCE_ACTIVITY;
         bon2_list = new ArrayList<>();
-        SharedPreferences prefs3 = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
-        if (prefs3.getBoolean("STOCK_MOINS", false)) {
-            stock_moins = true;
-        } else {
-            stock_moins = false;
-        }
+        SharedPreferences prefs3 = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        stock_moins = prefs3.getBoolean("STOCK_MOINS", false);
 
-        if (prefs3.getBoolean("PR_PRO", false)) {
-            photo_pr = true;
-        } else {
-            photo_pr = false;
-        }
+        photo_pr = prefs3.getBoolean("PR_PRO", false);
         this.dialog = dialog;
         setHasStableIds(true);
     }
@@ -127,12 +120,19 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
         holder.Produit.setText(item.produit);
 
-        if(mode_tarif.equals("3")){
-            holder.Prix_vente.setText(new DecimalFormat("##,##0.00").format(item.pv3_ht));
-        }else if(mode_tarif.equals("2")){
-            holder.Prix_vente.setText(new DecimalFormat("##,##0.00").format(item.pv2_ht));
-        } else
-            holder.Prix_vente.setText(new DecimalFormat("##,##0.00").format(item.pv1_ht));
+        if(SOURCE.equals("ACHAT")){
+            holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pa_ht));
+        }else if(SOURCE.equals("VENTE")){
+
+            if(mode_tarif.equals("3")){
+                holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pv3_ht));
+            }else if(mode_tarif.equals("2")){
+                holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pv2_ht));
+            } else
+                holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pv1_ht));
+
+        }
+
 
         holder.Stock_colis.setText(new DecimalFormat("##,##0.##").format(item.stock_colis));
 
@@ -171,7 +171,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
             public void onClick(View view) {
 
 
-                itemClick.onClick(view, holder.getAdapterPosition(), item, SOURCE_ACTIVITY);
+                itemClick.onClick(view, holder.getAdapterPosition(), item);
 
                 dialog.dismiss();
             }
@@ -196,16 +196,12 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     }
 
     public interface ItemClick{
-        void onClick(View v, int position, PostData_Produit item, String SOURCE_ACTIVITY);
+        void onClick(View v, int position, PostData_Produit item);
     }
 
     public void refresh(List<PostData_Produit> new_itemList){
         produitList.clear();
         produitList.addAll(new_itemList);
         notifyDataSetChanged();
-    }
-
-    private void StockOverFlowMessage(Double qte){
-            Crouton.makeText((Activity)mContext, "Stock non disponible, Quantité "+String .valueOf(qte)+" est superieur du stock ", Style.ALERT).show();
     }
 }

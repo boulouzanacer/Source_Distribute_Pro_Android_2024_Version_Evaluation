@@ -20,13 +20,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:text="Exportation inventaire (Réseaux Local)"
+            android:text="Exportation inventaire (Réseaux IP)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_export_inventaire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ça vous permet d'exporter tous les inventaires vers le serveur distant"
@@ -62,7 +61,6 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_export_inventaire_ftp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vous permet d'exporter les bons d'inventaire' vers le serveur FTP"
@@ -99,7 +97,6 @@
 
 
         <TextView
-            android:id="@+id/descrip_exported_inventaire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/exportted_inventaire"

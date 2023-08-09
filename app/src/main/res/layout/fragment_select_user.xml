@@ -12,7 +12,6 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/first"
             android:layout_marginTop="20dp"
             android:paddingTop="10dp"
             android:paddingBottom="20dp"
@@ -38,7 +37,6 @@
 
             <TextView
                 android:text="Debut session"
-                android:id="@+id/beginsession"
                 android:textStyle="bold"
                 android:textSize="15sp"
                 android:layout_marginLeft="3dp"
@@ -48,7 +46,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/second"
             android:paddingTop="10dp"
             android:paddingBottom="20dp"
             android:layout_marginRight="5dp"
@@ -72,7 +69,6 @@
                 android:layout_marginEnd="11dp" />
 
             <TextView
-                android:id="@+id/endsession"
                 android:text="Fin session"
                 android:textStyle="bold"
                 android:textSize="15sp"
@@ -91,7 +87,6 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/userText"
             android:text="Svp séléctionner client "
             android:textSize="15sp"
             android:textColor="@color/carot"

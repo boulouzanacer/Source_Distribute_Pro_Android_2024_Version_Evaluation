@@ -4,9 +4,10 @@ version = '1.0'
 android {
     compileSdkVersion 33
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 33
     }
+    namespace 'com.github.ybq.android.spinkit'
 }
 dependencies {
 }

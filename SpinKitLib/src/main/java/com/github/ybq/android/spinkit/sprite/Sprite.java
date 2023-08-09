@@ -41,8 +41,8 @@ public abstract class Sprite extends Drawable implements
     private int alpha = 255;
     private static final Rect ZERO_BOUNDS_RECT = new Rect();
     protected Rect drawBounds = ZERO_BOUNDS_RECT;
-    private Camera mCamera;
-    private Matrix mMatrix;
+    private final Camera mCamera;
+    private final Matrix mMatrix;
 
     public Sprite() {
         mCamera = new Camera();

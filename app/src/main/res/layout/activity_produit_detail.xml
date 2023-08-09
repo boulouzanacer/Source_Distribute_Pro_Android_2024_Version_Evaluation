@@ -1,359 +1,670 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp"
     android:orientation="vertical"
-    android:id="@+id/linearLayout">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- content header line -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/bgContentTop"
-        android:paddingBottom="7dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="7dp">
-
-        <TextView
-            android:id="@+id/stock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/stock_qte"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/stock_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stock :   "
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/stock" />
-
-        <TextView
-            android:id="@+id/colissage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:text="@string/nombre_colis"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:background="@color/bgContent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageProduit"
-            android:background="@drawable/client_detail_band"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:padding="5dp"
-            android:src="@mipmap/client" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:padding="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/ContentMainBadgeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="0dp"
-                android:text="@string/reference_badge" />
-
-            <TextView
-                android:id="@+id/reference"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                android:text="6135400004856" />
-
-            <TextView
-                android:layout_marginTop="10dp"
-                style="@style/ContentMainBadgeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="0dp"
-                android:text="@string/codebarre_badge" />
-
-            <TextView
-                android:id="@+id/codebarre"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:text="123000045824"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- content body layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bgContent"
-        android:orientation="vertical"
-        android:paddingBottom="6dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="9dp">
+        android:padding="3dp"
+        android:orientation="vertical">
 
-        <!-- avatar and name part -->
+        <!-- content header line -->
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/blue"
+            android:paddingBottom="7dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="7dp">
 
             <TextView
-                android:id="@+id/content_avatar_title"
-                style="@style/ContentMainBadgeTitle"
+                android:id="@+id/stock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="5dp"
-                android:text="@string/produit_badge" />
-
-            <ImageView
-                android:id="@+id/imageproduit2"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_below="@id/content_avatar_title"
-                android:scaleType="centerCrop"
-                android:src="@drawable/avatar" />
-
-            <TextView
-                android:id="@+id/produit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/imageproduit2"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="2dp"
-                android:layout_toEndOf="@id/imageproduit2"
-                android:text="@string/client_name_mock"
-                android:textColor="@color/mainTextColor"
-                android:textSize="18sp"
+                android:layout_alignParentEnd="true"
+                android:text="@string/stock_qte"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-2dp"
-                android:layout_marginStart="3dp"
-                android:text="@string/rating_mock"
-                android:textColor="@color/contentBadgeTitle"
-                android:textSize="12sp" />
+                android:text="Stock : "
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/stock" />
 
-            <ImageView
+            <TextView
+                android:id="@+id/colissage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/arrow" />
+                android:text="@string/nombre_colis"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 
-        <!-- divider line -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="9dp"
-            android:src="@color/contentDividerLine" />
-
-        <!-- addresses part -->
         <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:background="@color/bgContent"
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+            <ImageView
+                android:id="@+id/imageProduit"
+                android:background="@drawable/client_detail_band"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:padding="5dp"
+                android:src="@mipmap/client" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/content_from_badge"
                     style="@style/ContentMainBadgeTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/pv1" />
+                    android:layout_marginBottom="0dp"
+                    android:text="@string/reference_badge" />
 
                 <TextView
-                    android:id="@+id/pv1"
+                    android:id="@+id/reference"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@id/content_from_badge"
-                    android:layout_below="@id/content_from_badge"
-                    android:text="@string/pv1_prix"
-                    android:visibility="gone"
-                    android:textColor="@color/mainTextColor"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/content_to_badge"
-                    style="@style/ContentMainBadgeTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/pv2" />
-
-                <TextView
-                    android:id="@+id/pv2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@id/content_to_badge"
-                    android:layout_below="@id/content_to_badge"
-                    android:text="@string/pv2_prix"
-                    android:visibility="gone"
-                    android:textColor="@color/mainTextColor"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/arrow" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <!-- divider line -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="7dp"
-            android:src="@color/contentDividerLine" />
-
-        <!-- dates part -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/content_delivery_date_badge"
-                    style="@style/ContentMainBadgeTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/pv3" />
-
-                <TextView
-                    android:id="@+id/pv3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@id/content_delivery_date_badge"
-                    android:layout_below="@id/content_delivery_date_badge"
-                    android:text="@string/pv3_prix"
-                    android:visibility="gone"
-                    android:textColor="@color/mainTextColor"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/content_deadline_badge"
-                    style="@style/ContentMainBadgeTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/tva_badje" />
-
-                <TextView
-                    android:id="@+id/tva"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@id/content_deadline_badge"
-                    android:layout_below="@id/content_deadline_badge"
-                    android:text="@string/tva"
-                    android:textColor="@color/mainTextColor"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/DETAILLE"
-                    style="@style/ContentMainBadgeTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:text="6135400004856" />
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    style="@style/ContentMainBadgeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:text="@string/codebarre_badge" />
+
+                <TextView
+                    android:id="@+id/codebarre"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:text="123000045824"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- content body layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bgContent"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <!-- avatar and name part -->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/content_avatar_title"
+                    style="@style/ContentMainBadgeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text="@string/DETAILLE" />
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/produit_badge" />
 
-
+                <TextView
+                    android:id="@+id/produit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/content_avatar_title"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="2dp"
+                    android:text=""
+                    android:textColor="@color/mainTextColor"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
+            <!-- divider line -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:src="@color/contentDividerLine" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/lnr_pa_ht"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/pa_ht" />
+
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pa_ht"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_pamp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/pamp" />
+
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pamp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_pv1"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/pv1_title"
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/pv1" />
+
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pv1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_pv2"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/pv2_title"
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/pv2" />
+
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pv2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_pv3"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/pv3_title"
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/pv3" />
+
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pv3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_pv4"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/pv4_title"
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/pv4" />
+
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pv4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_pv5"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <TextView
+                            android:id="@+id/pv5_title"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv5"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pv5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_pv6"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/pv6_title"
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/pv6" />
+
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/pv6"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_tva"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_weight="1"
+                            style="@style/ContentMainBadgeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/tva_badge" />
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/tva"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pv1_prix"
+                            android:visibility="visible"
+                            android:textColor="@color/mainTextColor"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@color/contentDividerLine" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- divider line -->
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_weight="1"
+                    style="@style/ContentMainBadgeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textColor="@color/white"
+                    android:background="@color/gray_btn_bg_color"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="Description" />
+
+                <TextView
+                    android:id="@+id/Description"
+                    style="@style/ContentMainBadgeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <!-- request button -->
 
         </LinearLayout>
-
-        <!-- request button -->
-
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

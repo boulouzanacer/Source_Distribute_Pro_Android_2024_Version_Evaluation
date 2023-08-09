@@ -1,32 +1,22 @@
 package com.safesoft.proapp.distribute.activation;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.emmasuzuki.easyform.EasyTextInputLayout;
 import com.google.zxing.BarcodeFormat;
@@ -36,12 +26,7 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.splashscreen.splashScreen;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Objects;
+import com.safesoft.proapp.distribute.activities.splashscreen.splashScreen;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -58,7 +43,7 @@ public class ActivityActivation extends AppCompatActivity {
     public static final String PREFS = "ALL_PREFS";
 
     //////////////ancien declaration ////////////
-    private static String TAG = ActivityActivation.class.getSimpleName();
+    private static final String TAG = ActivityActivation.class.getSimpleName();
 
     private static final int READ_PHONE_STATE = 5;
     private MediaPlayer mp;
@@ -66,8 +51,8 @@ public class ActivityActivation extends AppCompatActivity {
 
     private ImageButton btnActiver;
     private ProgressDialog progressDialog;
-    private boolean state_a = false;
-    private boolean phone_read_state = false;
+    private final boolean state_a = false;
+    private final boolean phone_read_state = false;
 
     private Animation animation;
     private Animation animation1;
@@ -227,6 +212,7 @@ public class ActivityActivation extends AppCompatActivity {
 
     public void onClick_Btn_Start(View view) {
         startActivity(new Intent(ActivityActivation.this, MainActivity.class));
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
 

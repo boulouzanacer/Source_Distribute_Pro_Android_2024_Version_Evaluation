@@ -28,11 +28,11 @@ import java.util.List;
 
 public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapterProduits.MyViewHolder> {
 
-  private List<PostData_Produit> produitList;
+  private final List<PostData_Produit> produitList;
   private int color = 0;
   private ItemClick itemClick;
   private ColorGeneratorModified generator;
-  private Context mContext;
+  private final Context mContext;
 
 
   class MyViewHolder extends RecyclerView.ViewHolder {

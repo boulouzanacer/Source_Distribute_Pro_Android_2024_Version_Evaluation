@@ -6,7 +6,7 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 33
     }
     buildTypes {
@@ -15,6 +15,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'cn.nekocode.badge'
 }
 
 dependencies {

@@ -23,12 +23,12 @@ import java.util.List;
 
 public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdapterTransfert1.MyViewHolder> {
 
-    private List<PostData_Transfer1> transfert1List;
+    private final List<PostData_Transfer1> transfert1List;
     private int color = 0;
     private ItemClick itemClick;
     private  ItemLongClick itemLongClick;
     private ColorGeneratorModified generator;
-    private Context mContext;
+    private final Context mContext;
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -109,11 +109,11 @@ public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdap
                 if(item.nbr_p.length() == 1)
                     firstChar = String.valueOf(item.nbr_p.charAt(0));
                 else if(item.nbr_p.length() == 2)
-                    firstChar = String.valueOf(item.nbr_p.charAt(0))+ String.valueOf(item.nbr_p.charAt(1));
+                    firstChar = String.valueOf(item.nbr_p.charAt(0))+ item.nbr_p.charAt(1);
                 else if(item.nbr_p.length() == 3)
-                    firstChar = String.valueOf(item.nbr_p.charAt(0))+ String.valueOf(item.nbr_p.charAt(1)+ String.valueOf(item.nbr_p.charAt(2)));
+                    firstChar = String.valueOf(item.nbr_p.charAt(0)) + item.nbr_p.charAt(1) + item.nbr_p.charAt(2);
                 else if(item.nbr_p.length() == 4)
-                    firstChar = String.valueOf(item.nbr_p.charAt(0))+ String.valueOf(item.nbr_p.charAt(1)+ String.valueOf(item.nbr_p.charAt(2))+ String.valueOf(item.nbr_p.charAt(3)));
+                    firstChar = String.valueOf(item.nbr_p.charAt(0)) + item.nbr_p.charAt(1) + item.nbr_p.charAt(2) + item.nbr_p.charAt(3);
             }else{
                 firstChar = "NO";
             }

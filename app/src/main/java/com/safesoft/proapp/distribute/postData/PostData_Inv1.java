@@ -12,7 +12,7 @@ public class PostData_Inv1 {
   public String utilisateur;
   public String code_depot;
   public String date_export_inv;
-  public Integer is_sent;
+  public Integer is_exported;
   public String blocage;
   public String exportation;
   public int nbr_produit;

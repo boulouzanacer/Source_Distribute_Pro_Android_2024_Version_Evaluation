@@ -26,7 +26,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:id="@+id/sold_actuelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
@@ -66,7 +65,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_btn_produit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -142,7 +140,6 @@
             android:padding="2dp">
 
             <TableRow
-                android:id="@+id/tr_item_4"
                 android:background="@drawable/table_row_last_bg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -150,7 +147,6 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/tv_product_item_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nombre de produit"
@@ -208,7 +204,7 @@
             <Button
                 android:id="@+id/btn_mofifier_bon"
                 style="@style/Widget.Material3.Button.Icon"
-                app:icon="@drawable/ic_baseline_edit_24"
+                app:icon="@drawable/baseline_edit_24"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

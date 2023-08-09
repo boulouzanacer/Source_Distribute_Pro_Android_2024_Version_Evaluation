@@ -11,7 +11,7 @@ import com.safesoft.proapp.distribute.R;
 
 public class CameraSelectorDialogFragment extends DialogFragment {
     public interface CameraSelectorDialogListener {
-        public void onCameraSelected(int cameraId);
+        void onCameraSelected(int cameraId);
     }
 
     private int mCameraId;
@@ -78,7 +78,7 @@ public class CameraSelectorDialogFragment extends DialogFragment {
                         }
                     }
                 })
-                .setNegativeButton("Canceel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }

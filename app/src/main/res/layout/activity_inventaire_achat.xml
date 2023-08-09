@@ -38,7 +38,6 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <TextView
-                    android:id="@+id/descrip_exported_vente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cette rublique vous permet de faire des inventaires à l'aide d'un scanner code barre via bluetooth ou un scanner intégré avec l'appariel"
@@ -74,7 +73,6 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <TextView
-                    android:id="@+id/descrip_etat_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/etat_v"

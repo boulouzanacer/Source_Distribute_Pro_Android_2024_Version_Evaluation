@@ -4,18 +4,19 @@ version = "1.0"
 project.group = "com.safesoft.uk2015.restopro"
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 23
     }
 
     lintOptions {
 
         abortOnError false
     }
+    namespace 'cn.pedant.SweetAlert'
 }
 
 dependencies {
-    implementation 'com.pnikosis:materialish-progress:1.0'
+    implementation 'com.pnikosis:materialish-progress:1.7'
 }

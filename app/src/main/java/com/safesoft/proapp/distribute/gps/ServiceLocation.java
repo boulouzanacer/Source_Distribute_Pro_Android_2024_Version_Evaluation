@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 
@@ -24,9 +26,8 @@ public class ServiceLocation extends Service
   private LocationManager mLocationManager = null;
   private static final int LOCATION_INTERVAL = 5000;
   private static final float LOCATION_DISTANCE = 10f;
-  private DATABASE controller;
 
-  private EventBus bus = EventBus.getDefault();
+  private final EventBus bus = EventBus.getDefault();
   LocationEvent event = null;
 
   private class LocationListener implements android.location.LocationListener
@@ -40,15 +41,16 @@ public class ServiceLocation extends Service
     }
 
     @Override
-    public void onLocationChanged(Location location)
+    public void onLocationChanged(@NonNull Location location)
     {
+
       mLastLocation.reset();
       mLastLocation.set(location);
       event = new LocationEvent(mLastLocation);
-      Log.e(TAG, "onLocationChanged: " +  mLastLocation.getLatitude() + "  //  " + mLastLocation.getLongitude());
-
       // Post the event
       bus.post(event);
+
+      // stopUpdateLocation();
     }
 
     @Override
@@ -94,16 +96,9 @@ public class ServiceLocation extends Service
   {
     super.onCreate();
     Log.e(TAG, "onCreate");
-    controller = new DATABASE(this);
 
     initializeLocationManager();
-    try {
-      mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, mLocationListeners[1]);
-    } catch (SecurityException ex) {
-      Log.i(TAG, "fail to request location update, ignore", ex);
-    } catch (IllegalArgumentException ex) {
-      Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-    }
+
     try {
       mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, mLocationListeners[0]);
     } catch (SecurityException ex) {
@@ -111,6 +106,16 @@ public class ServiceLocation extends Service
     } catch (IllegalArgumentException ex) {
       Log.d(TAG, "gps provider does not exist " + ex.getMessage());
     }
+
+
+    try {
+      mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, mLocationListeners[1]);
+    } catch (SecurityException ex) {
+      Log.i(TAG, "fail to request location update, ignore", ex);
+    } catch (IllegalArgumentException ex) {
+      Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+    }
+
   }
 
 
@@ -119,17 +124,21 @@ public class ServiceLocation extends Service
   {
     Log.e(TAG, "onDestroy");
     super.onDestroy();
+    stopUpdateLocation();
+  }
+
+
+  private void stopUpdateLocation(){
     if (mLocationManager != null) {
-      for (int i = 0; i < mLocationListeners.length; i++) {
+      for (LocationListener mLocationListener : mLocationListeners) {
         try {
-          mLocationManager.removeUpdates(mLocationListeners[i]);
+          mLocationManager.removeUpdates(mLocationListener);
         } catch (SecurityException ex) {
           Log.i(TAG, "fail to remove location listners, ignore", ex);
         }
       }
     }
   }
-
 
   private void initializeLocationManager() {
     Log.e(TAG, "initializeLocationManager");

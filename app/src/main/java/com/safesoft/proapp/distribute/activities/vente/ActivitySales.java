@@ -14,7 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import com.safesoft.proapp.distribute.printing.PrinterVente;
+
+import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
@@ -42,7 +43,8 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
     private final String PREFS = "ALL_PREFS";
     Boolean printer_mode_integrate = true;
-
+    private String SOURCE_EXPORT = "";
+    SharedPreferences prefs;
     private NumberFormat nf;
 
     @Override
@@ -52,13 +54,20 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Bons de livraison");
+        getSupportActionBar().setSubtitle("Client");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
+        if(getIntent() != null){
+            SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
+        }
+
         initViews();
 
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        editor.remove("FILTRE_SEARCH_VALUE");
+        editor.apply();
 
     }
 
@@ -94,55 +103,62 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         bon1s = new ArrayList<>();
 
         String querry = "SELECT " +
-                "Bon1.RECORDID, " +
-                "Bon1.NUM_BON, " +
-                "Bon1.DATE_BON, " +
-                "Bon1.HEURE, " +
-                "Bon1.MODE_RG, " +
-                "Bon1.MODE_TARIF, " +
+                "BON1.RECORDID, " +
+                "BON1.NUM_BON, " +
+                "BON1.DATE_BON, " +
+                "BON1.HEURE, " +
+                "BON1.DATE_F, " +
+                "BON1.HEURE_F, " +
+                "BON1.MODE_RG, " +
+                "BON1.MODE_TARIF, " +
 
-                "Bon1.NBR_P, " +
-                "Bon1.TOT_QTE, " +
+                "BON1.NBR_P, " +
+                "BON1.TOT_QTE, " +
 
-                "Bon1.TOT_HT, " +
-                "Bon1.TOT_TVA, " +
-                "Bon1.TIMBRE, " +
-                "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE AS TOT_TTC, " +
-                "Bon1.REMISE, " +
-                "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE AS MONTANT_BON, " +
+                "BON1.TOT_HT, " +
+                "BON1.TOT_TVA, " +
+                "BON1.TIMBRE, " +
+                "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE AS TOT_TTC, " +
+                "BON1.REMISE, " +
+                "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE AS MONTANT_BON, " +
 
-                "Bon1.ANCIEN_SOLDE, " +
-                "Bon1.VERSER, " +
-                "Bon1.ANCIEN_SOLDE + (Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE) - Bon1.VERSER AS RESTE, " +
+                "BON1.ANCIEN_SOLDE, " +
+                "BON1.VERSER, " +
+                "BON1.ANCIEN_SOLDE + (BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE) - BON1.VERSER AS RESTE, " +
 
-                "Bon1.CODE_CLIENT, " +
-                "Client.CLIENT, " +
-                "Client.ADRESSE, " +
-                "Client.TEL, " +
-                "Client.RC, " +
-                "Client.IFISCAL, " +
-                "Client.AI, " +
-                "Client.NIS, " +
+                "BON1.CODE_CLIENT, " +
+                "CLIENT.CLIENT, " +
+                "CLIENT.ADRESSE, " +
+                "CLIENT.TEL, " +
+                "CLIENT.RC, " +
+                "CLIENT.IFISCAL, " +
+                "CLIENT.AI, " +
+                "CLIENT.NIS, " +
 
-                "Client.LATITUDE as LATITUDE_CLIENT, " +
-                "Client.LONGITUDE as LONGITUDE_CLIENT, " +
+                "CLIENT.LATITUDE as LATITUDE_CLIENT, " +
+                "CLIENT.LONGITUDE as LONGITUDE_CLIENT, " +
 
-                "Client.SOLDE AS SOLDE_CLIENT, " +
-                "Client.CREDIT_LIMIT, " +
+                "CLIENT.SOLDE AS SOLDE_CLIENT, " +
+                "CLIENT.CREDIT_LIMIT, " +
 
-                "Bon1.LATITUDE, " +
-                "Bon1.LONGITUDE, " +
+                "BON1.LATITUDE, " +
+                "BON1.LONGITUDE, " +
 
-                "Bon1.CODE_DEPOT, " +
-                "Bon1.CODE_VENDEUR, " +
-                "Bon1.EXPORTATION, " +
-                "Bon1.BLOCAGE " +
-                "FROM Bon1 " +
-                "LEFT JOIN Client ON Bon1.CODE_CLIENT = Client.CODE_CLIENT " +
-                "WHERE IS_EXPORTED = 0 ORDER BY Bon1.NUM_BON";
+                "BON1.CODE_DEPOT, " +
+                "BON1.CODE_VENDEUR, " +
+                "BON1.EXPORTATION, " +
+                "BON1.BLOCAGE " +
+                "FROM BON1 " +
+                "LEFT JOIN CLIENT ON BON1.CODE_CLIENT = CLIENT.CODE_CLIENT";
 
-        // querry = "SELECT * FROM Events";
-        bon1s = controller.select_vente_from_database(querry);
+
+        if(!SOURCE_EXPORT.equals("EXPORTED")){
+            querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY BON1.NUM_BON ";
+        }else {
+            querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY BON1.NUM_BON ";
+        }
+
+        bon1s = controller.select_all_bon1_from_database(querry);
 
         return bon1s;
     }
@@ -156,8 +172,9 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
         editIntent.putExtra("NUM_BON", bon1s.get(position).num_bon);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_SALE");
+        editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
         startActivity(editIntent);
-
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
 
@@ -173,25 +190,33 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
                     case 0:
-                        new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Bon de vente")
-                                .setContentText("Voulez-vous vraiment modifier ce bon ?!")
-                                .setCancelText("Non")
-                                .setConfirmText("Modifier")
-                                .showCancelButton(true)
-                                .setCancelClickListener(Dialog::dismiss)
-                                .setConfirmClickListener(sDialog -> {
+                        if(!SOURCE_EXPORT.equals("EXPORTED")){
+                            new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
+                                    .setTitleText("Bon de vente")
+                                    .setContentText("Voulez-vous vraiment modifier ce bon ?!")
+                                    .setCancelText("Non")
+                                    .setConfirmText("Modifier")
+                                    .showCancelButton(true)
+                                    .setCancelClickListener(Dialog::dismiss)
+                                    .setConfirmClickListener(sDialog -> {
 
-                                    Sound(R.raw.beep);
+                                        Sound(R.raw.beep);
 
-                                    Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
-                                    editIntent.putExtra("NUM_BON", bon1s.get(position).num_bon);
-                                    editIntent.putExtra("TYPE_ACTIVITY", "EDIT_SALE");
-                                    startActivity(editIntent);
-
-                                    sDialog.dismiss();
-                                })
-                                .show();
+                                        Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
+                                        editIntent.putExtra("NUM_BON", bon1s.get(position).num_bon);
+                                        editIntent.putExtra("TYPE_ACTIVITY", "EDIT_SALE");
+                                        editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
+                                        startActivity(editIntent);
+                                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                        sDialog.dismiss();
+                                    })
+                                    .show();
+                        }else{
+                            new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Information!")
+                                    .setContentText("Ce bon est déja exporté")
+                                    .show();
+                        }
 
                         break;
                     case 1:
@@ -227,28 +252,27 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
                         final_panier =  controller.select_bon2_from_database("" +
                                 "SELECT " +
-                                "Bon2.RECORDID, " +
-                                "Bon2.CODE_BARRE, " +
-                                "Bon2.NUM_BON, " +
-                                "Bon2.PRODUIT, " +
-                                "Bon2.NBRE_COLIS, " +
-                                "Bon2.COLISSAGE, " +
-                                "Bon2.QTE, " +
-                                "Bon2.QTE_GRAT, " +
-                                "Bon2.PV_HT, " +
-                                "Bon2.TVA, " +
-                                "Bon2.CODE_DEPOT, " +
-                                "Bon2.PA_HT, " +
-                                "Bon2.DESTOCK_TYPE, " +
-                                "Bon2.DESTOCK_CODE_BARRE, " +
-                                "Bon2.DESTOCK_QTE, " +
-                                "Produit.STOCK " +
-                                "FROM Bon2 " +
-                                "LEFT JOIN Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
-                                "WHERE Bon2.NUM_BON = '" + bon1s.get(position).num_bon + "'" );
-                        PrinterVente printer = new PrinterVente();
+                                "BON2.RECORDID, " +
+                                "BON2.CODE_BARRE, " +
+                                "BON2.NUM_BON, " +
+                                "BON2.PRODUIT, " +
+                                "BON2.NBRE_COLIS, " +
+                                "BON2.COLISSAGE, " +
+                                "BON2.QTE, " +
+                                "BON2.QTE_GRAT, " +
+                                "BON2.PU, " +
+                                "BON2.TVA, " +
+                                "BON2.CODE_DEPOT, " +
+                                "BON2.DESTOCK_TYPE, " +
+                                "BON2.DESTOCK_CODE_BARRE, " +
+                                "BON2.DESTOCK_QTE, " +
+                                "PRODUIT.STOCK " +
+                                "FROM BON2 " +
+                                "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                                "WHERE BON2.NUM_BON = '" + bon1s.get(position).num_bon + "'" );
+                        Printing printer = new Printing();
                         try {
-                            printer.start_print_sale_bon(bactivity, final_panier, bon1s.get(position));
+                            printer.start_print_bon(bactivity, "VENTE", final_panier, bon1s.get(position), null);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -263,25 +287,22 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
-                switch (item) {
-                    case 0:
-                        new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Suppression")
-                                .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
-                                .setCancelText("Anuuler")
-                                .setConfirmText("Supprimer")
-                                .showCancelButton(true)
-                                .setCancelClickListener(Dialog::dismiss)
-                                .setConfirmClickListener(sDialog -> {
+                if (item == 0) {
+                    new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
+                            .setTitleText("Suppression")
+                            .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
+                            .setCancelText("Anuuler")
+                            .setConfirmText("Supprimer")
+                            .showCancelButton(true)
+                            .setCancelClickListener(Dialog::dismiss)
+                            .setConfirmClickListener(sDialog -> {
 
-                                    controller.delete_bon_en_attente(false, bon1s.get(position).num_bon);
-                                    setRecycle();
+                                controller.delete_bon_en_attente(false, bon1s.get(position).num_bon);
+                                setRecycle();
 
-                                    sDialog.dismiss();
-                                })
-                                .show();
-
-                        break;
+                                sDialog.dismiss();
+                            })
+                            .show();
                 }
             });
             builder.show();
@@ -293,9 +314,10 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_ventes, menu);
-
+        if(!SOURCE_EXPORT.equals("EXPORTED")){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_sales_client, menu);
+        }
         // return true so that the menu pop up is opened
         return true;
     }
@@ -307,7 +329,9 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         } else if (item.getItemId() == R.id.new_sale) {
             Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
             editIntent.putExtra("TYPE_ACTIVITY", "NEW_SALE");
+            editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
             startActivity(editIntent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -316,6 +340,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
     public void onBackPressed() {
         Sound(R.raw.back);
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

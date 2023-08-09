@@ -17,18 +17,17 @@
         android:background="@drawable/client_selector">
 
         <ImageView
-            android:id="@+id/img_client"
             android:src="@mipmap/user_profile"
             android:layout_weight="1"
             android:layout_marginStart="2dp"
             android:layout_width="0dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="5dp"
             android:layout_height="match_parent"/>
 
         <LinearLayout
             android:layout_weight="3"
             android:weightSum="3"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="5dp"
             android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="match_parent">
@@ -39,7 +38,7 @@
                 android:layout_height="0dp"
                 android:padding="5dp"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:gravity="start|bottom"
                 android:textColor="@color/black"
                 android:layout_weight="2"
@@ -69,7 +68,6 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/solde_title"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:textStyle="bold"
@@ -87,12 +85,18 @@
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:textColor="@color/emerald"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:text="10600.22"
                 android:gravity="center|top"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
+            <ImageView
+                android:id="@+id/img_client_location"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/ic_baseline_wrong_location_24"/>
 
         </LinearLayout>
 

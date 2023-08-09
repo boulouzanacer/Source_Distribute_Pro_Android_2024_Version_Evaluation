@@ -12,7 +12,7 @@ import me.dm7.barcodescanner.zbar.BarcodeFormat;
 
 public class FormatSelectorDialogFragment extends DialogFragment {
   public interface FormatSelectorDialogListener {
-    public void onFormatsSaved(ArrayList<Integer> selectedIndices);
+    void onFormatsSaved(ArrayList<Integer> selectedIndices);
   }
 
   private ArrayList<Integer> mSelectedIndices;
@@ -45,17 +45,13 @@ public class FormatSelectorDialogFragment extends DialogFragment {
     int i = 0;
     for(BarcodeFormat format : BarcodeFormat.ALL_FORMATS) {
       formats[i] = format.getName();
-      if(mSelectedIndices.contains(i)) {
-        checkedIndices[i] = true;
-      } else {
-        checkedIndices[i] = false;
-      }
+        checkedIndices[i] = mSelectedIndices.contains(i);
       i++;
     }
 
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     // Set the dialog title
-    builder.setTitle("choose format ")
+    builder.setTitle("Choisir format ")
             // Specify the list array, the items to be selected by default (null for none),
             // and the listener through which to receive callbacks when items are selected
             .setMultiChoiceItems(formats, checkedIndices,
@@ -67,7 +63,7 @@ public class FormatSelectorDialogFragment extends DialogFragment {
                           mSelectedIndices.add(which);
                         } else if (mSelectedIndices.contains(which)) {
                           // Else, if the item is already in the array, remove it
-                          mSelectedIndices.remove(mSelectedIndices.indexOf(which));
+                          mSelectedIndices.remove((Integer) which);
                         }
                       }
                     })
@@ -82,9 +78,10 @@ public class FormatSelectorDialogFragment extends DialogFragment {
                 }
               }
             })
-            .setNegativeButton("Canceelo", new DialogInterface.OnClickListener() {
+            .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int id) {
+
               }
             });
 

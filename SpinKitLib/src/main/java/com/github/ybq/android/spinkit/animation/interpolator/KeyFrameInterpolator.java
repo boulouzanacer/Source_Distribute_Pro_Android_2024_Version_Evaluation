@@ -8,7 +8,7 @@ import android.view.animation.Interpolator;
  */
 public class KeyFrameInterpolator implements Interpolator {
 
-    private TimeInterpolator interpolator;
+    private final TimeInterpolator interpolator;
     private float[] fractions;
 
 

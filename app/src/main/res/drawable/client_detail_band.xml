@@ -2,7 +2,7 @@
 
     <item>
         <shape>
-            <solid android:color="@color/white"></solid>
+            <solid android:color="@color/white" />
             <stroke
                 android:width="2dp"
                 android:color="@color/gray" />

@@ -28,7 +28,7 @@ public class ListViewAdapterListBon extends BaseAdapter {
   ArrayList<String> temp_list = new ArrayList<>();
   private static LayoutInflater inflater = null;
   Context context;
-  private EventBus bus = EventBus.getDefault();
+  private final EventBus bus = EventBus.getDefault();
   SelectedBonEvent event = null;
   AlertDialog dialog;
 

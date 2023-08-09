@@ -28,11 +28,11 @@ import cn.nekocode.badge.BadgeDrawable;
 
 public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv1.MyViewHolder> {
 
-  private List<PostData_Inv1> inv1List;
+  private final List<PostData_Inv1> inv1List;
   private ItemClick itemClick;
   private ItemLongClick itemLongClick;
   private ColorGeneratorModified generator;
-  private Context mContext;
+  private final Context mContext;
 
 
   class MyViewHolder extends RecyclerView.ViewHolder {
@@ -138,14 +138,13 @@ public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv
 
     }
 
-    if(item.is_sent == 1){
+    if(item.is_exported == 1){
       holder.Date_exp.setText(item.date_export_inv);
     }else {
       holder.Date_exp.setText("Pas encore exporté");
     }
 
   }
-
 
   @Override
   public int getItemCount() {

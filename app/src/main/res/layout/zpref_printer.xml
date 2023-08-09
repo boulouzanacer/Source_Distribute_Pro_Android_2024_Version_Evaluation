@@ -19,13 +19,11 @@
         android:text="@string/s_l_ctionnez_l_imprimente_qui_vous_permetra_d_imprimer_les_tickets" />
 
     <View
-        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_large_size"
         android:background="@color/divider" />
 
     <LinearLayout
-        android:id="@+id/prefSpacingPrin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/item_background_holo_light"
@@ -163,13 +161,11 @@
         android:background="@color/divider" />
 
     <View
-        android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_large_size"
         android:background="@color/divider" />
 
     <LinearLayout
-        android:id="@+id/prefSpacingPrin1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/item_background_holo_light"
@@ -186,11 +182,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/title_bon" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
-            android:id="@+id/edit_bloc"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -242,7 +236,6 @@
 
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/item_background_holo_light"
@@ -260,11 +253,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/title_footer" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
-            android:id="@+id/edit_footer"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"

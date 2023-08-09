@@ -19,13 +19,11 @@ import com.safesoft.proapp.distribute.R;
 import butterknife.ButterKnife;
 
 public class ActivityLogin extends AppCompatActivity {
-
-  private static final String TAG = "ActivityLogin";
   private static final int REQUEST_SIGNUP = 0;
 
   private EditText _passwordText ;
   private Button _loginButton ;
-  private String PREFS = "ALL_PREFS";
+  private final String PREFS = "ALL_PREFS";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +89,7 @@ public class ActivityLogin extends AppCompatActivity {
   public void onLoginSuccess() {
     _loginButton.setEnabled(true);
     startActivity(new Intent(ActivityLogin.this, ActivitySetting.class));
+    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     finish();
   }
 
@@ -100,7 +99,6 @@ public class ActivityLogin extends AppCompatActivity {
     _loginButton.setEnabled(true);
   }
 
-  @TargetApi(Build.VERSION_CODES.GINGERBREAD)
   public boolean validate() {
 
     boolean valid = true;
@@ -117,8 +115,7 @@ public class ActivityLogin extends AppCompatActivity {
 
     String password_s = prefs_login.getString("PASSWORD", "0000") ;
 
-    assert password_s != null;
-    if((password.compareTo(password_s) != 0) && (password.compareTo("0000") != 0)){
+    if((password.compareTo(password_s) != 0)){
       valid = false;
       _passwordText.setError("Mot de passe incorrect");
     } else {

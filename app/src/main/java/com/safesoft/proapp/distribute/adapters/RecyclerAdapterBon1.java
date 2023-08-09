@@ -10,10 +10,12 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
@@ -22,6 +24,9 @@ import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 import com.safesoft.proapp.distribute.utils.MyCardView2;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import cn.nekocode.badge.BadgeDrawable;
@@ -37,8 +42,9 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
     private ItemClick itemClick;
     private ItemLongClick itemLongClick;
     private ColorGeneratorModified generator;
-    private String SOURCE;
+    private final String SOURCE;
 
+    private Context mContext;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -48,6 +54,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         TextView nbrProduit;
         TextView Date_bon;
         TextView Heure_bon;
+        TextView Diff_time;
         TextView Versement;
         CardView cardView;
         SlantedTextView blocage;
@@ -63,6 +70,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
             nbrProduit = view.findViewById(R.id.nbr_p);
             Date_bon = view.findViewById(R.id.date_bon);
             Heure_bon = view.findViewById(R.id.heure_bon);
+            Diff_time = view.findViewById(R.id.diff_time);
             Versement = view.findViewById(R.id.versement_bon);
             blocage = view.findViewById(R.id.blocage);
             lnr_versement = view.findViewById(R.id.lnr_versement);
@@ -73,6 +81,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
     public RecyclerAdapterBon1(Context context, List<PostData_Bon1> itemList, String SOURCE) {
         this.bon1List = itemList;
         this.SOURCE =SOURCE;
+        this.mContext = context;
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
     }
@@ -98,13 +107,6 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         holder.NumBon.setText(""+item.num_bon);
 
         holder.NomClient.setText(""+item.client);
-
-        if(item.montant_bon == null){
-            item.montant_bon = 0.00;
-        }
-        if(item.verser == null){
-            item.verser = 0.00;
-        }
 
         if(SOURCE.equals("SALE")){
             holder.lnr_versement.setVisibility(View.VISIBLE);
@@ -150,6 +152,9 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                     .setTextSize(21)
                     .setSlantedLength(80)
                     .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+
+            holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
+
         }else {
             holder.blocage.setText("En attente")
                     .setTextColor(Color.WHITE)
@@ -157,6 +162,8 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                     .setTextSize(21)
                     .setSlantedLength(80)
                     .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+
+            holder.Diff_time.setText("");
         }
 
 
@@ -184,5 +191,38 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         bon1List.clear();
         bon1List.addAll(new_itemList);
         notifyDataSetChanged();
+    }
+
+    private String getDateDifferenceFromNow(String startDate, String endDate){
+
+        try {
+
+            String inputPattern = "dd/MM/yyyy HH:mm:ss";
+            SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+            Date date_start = null;
+            date_start = inputFormat.parse(startDate);
+
+            Date date_end = null;
+            date_end = inputFormat.parse(endDate);
+
+
+            assert date_start != null;
+            assert date_end != null;
+            long diff = date_end.getTime() - date_start.getTime();
+
+            long days = diff / (24 * 60 * 60 * 1000);
+            long days_rest = diff % (24 * 60 * 60 * 1000);
+            long hours = days_rest / (60 * 60 * 1000);
+            long hours_rest = days_rest % (60 * 60 * 1000);
+            long minutes = hours_rest / (60 * 1000);
+            long minutes_rest = hours_rest % (60 * 1000);
+            long seconds = minutes_rest / 1000;
+
+            return seconds>0 ? (minutes != 0 ? (hours!=0 ? (days !=0 ? (days + "j " + hours + "h " + minutes + "m " + seconds + "s "):hours + "h " + minutes + "m " + seconds + "s "):minutes + "m et " + seconds + "seconds"): seconds + "seconds"):"0 s";
+
+        } catch (Exception exception) {
+            Log.v("DISTRIBUTE ERROR", "Unable to find difference");
+            return "";
+        }
     }
 }

@@ -29,7 +29,9 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 //import android.telephony.TelephonyManager;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -39,6 +41,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 //import android.widget.CompoundButton;
@@ -49,6 +52,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -57,6 +61,8 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.ybq.android.spinkit.style.Circle;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.mhadikz.toaster.Toaster;
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean;
 import com.rt.printerlibrary.bean.UsbConfigBean;
 import com.rt.printerlibrary.bean.WiFiConfigBean;
@@ -77,6 +83,8 @@ import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
+import com.safesoft.proapp.distribute.MainActivity;
+import com.safesoft.proapp.distribute.activation.NetClient;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
@@ -96,30 +104,32 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivitySetting extends BaseActivity implements View.OnClickListener, PrinterObserver {
-
-    private static final String TAG_SELECT_COLOR_DIALOG = "TAG_SELECT_COLOR_DIALOG";
     private static final int CAMERA_PERMISSION = 5;
 
     public Circle circle;
 
     private EditText ip, pathdatabase, nom_serveur_ftp, num_port_ftp, nom_utilisateur_ftp, password_ftp, ch_exp_ftp, ch_imp_ftp;
 
+    private TextInputLayout username_safe_event_text, password_safe_event_text;
+    private EditText username_safe_event, password_safe_event;
+    Spinner type_logiciel_dropdown;
+
     private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur;
     private TextInputEditText edt_objectif;
 
     private Button btntest;
-    private Button btn_scan_qr;
 
     //////////////////////// SharedPreferences /////////////////////
     SharedPreferences prefs;
 
     private final String PREFS = "ALL_PREFS";
-    //private final String PREFS_AUTRE = "PREFS_AUTRE";
 
     /////////////////// CONFIG BLUETOOTH ///////////////////////
     private String BT_VALUE_MAC = "00:00:00:00";
@@ -132,7 +142,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
 
 
-    private final Boolean[] isRunning = {false};
+    private Boolean isRunning = false;
     private String username;
     private String password;
 
@@ -150,7 +160,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     Button bt1, bt2, bt3, bt4, bt10, bt11;
     RelativeLayout param_pda;
-    private Context mContext;
 
     private final String[] NEED_PERMISSION = {
             Manifest.permission.CAMERA,
@@ -202,7 +211,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true); //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Parametres");
-        mContext = getBaseContext();
 
         initView();
         init();
@@ -212,10 +220,41 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     @Override
     public void initView() {
+
+        InputFilter[] filters = new InputFilter[1];
+        filters[0] = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (end > start) {
+                    String destTxt = dest.toString();
+                    String resultingTxt = destTxt.substring(0, dstart) + source.subSequence(start, end) + destTxt.substring(dend);
+                    if (!resultingTxt.matches ("^\\d{1,3}(\\.(\\d{1,3}(\\.(\\d{1,3}(\\.(\\d{1,3})?)?)?)?)?)?")) {
+                        return "";
+                    } else {
+                        String[] splits = resultingTxt.split("\\.");
+                        for (String split : splits) {
+                            if (Integer.parseInt(split) > 254) {
+                                return "";
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        };
+
         //EditText
         ip = findViewById(R.id.ip);
-
+        ip.setFilters(filters);
         pathdatabase = findViewById(R.id.database);
+        type_logiciel_dropdown = findViewById(R.id.type_logiciel);
+
+        username_safe_event_text = findViewById(R.id.username_safe_event_text);
+        password_safe_event_text = findViewById(R.id.password_safe_event_text);
+
+        username_safe_event = findViewById(R.id.username_event);
+        password_safe_event = findViewById(R.id.password_event);
+
+
         bt1 = findViewById(R.id.bt1);
         bt2 = findViewById(R.id.bt2);
         bt3 = findViewById(R.id.bt3);
@@ -240,6 +279,26 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         param_backup = findViewById(R.id.param_backup);
         param_reset = findViewById(R.id.param_reset);
         param_divers = findViewById(R.id.param_divers);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_logiciel_list, android.R.layout.simple_spinner_dropdown_item);
+        type_logiciel_dropdown.setAdapter(adapter);
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
+        type_logiciel_dropdown.setSelection(adapter.getPosition(TYPE_LOGICIEL));
+        type_logiciel_dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putString("TYPE_LOGICIEL", (String) parent.getItemAtPosition(position));
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
 
         bt1.setOnClickListener(view -> {
 
@@ -322,7 +381,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_divers.setVisibility(View.GONE);
             }
         });
+
         // Chekbox
+        CheckBox chkbx_safe_event = findViewById(R.id.chkbx_safe_event);
         CheckBox chkbx_stock_moins = findViewById(R.id.chkbx_stock_moins);
         CheckBox chkbx_achats_show = findViewById(R.id.chkbx_achats_show);
         CheckBox chkbx_produit = findViewById(R.id.chkbx_photo_pr);
@@ -330,6 +391,35 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         // checkbox stock moins
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+
+        chkbx_safe_event.setChecked(prefs.getBoolean("USE_SAFE_EVENT", false));
+        username_safe_event.setText(prefs.getString("SAFE_EVENT_USER", ""));
+        password_safe_event.setText(prefs.getString("SAFE_EVENT_PASS", ""));
+
+        chkbx_safe_event.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("USE_SAFE_EVENT", isChecked);
+            editor.apply();   // editor.commit();
+
+            if(isChecked){
+                username_safe_event_text.setVisibility(View.VISIBLE);
+                password_safe_event_text.setVisibility(View.VISIBLE);
+            }else {
+                ip.setText("192.168.1.6");
+                username_safe_event_text.setVisibility(View.GONE);
+                password_safe_event_text.setVisibility(View.GONE);
+            }
+
+        });
+
+        if(prefs.getBoolean("USE_SAFE_EVENT", false)){
+            username_safe_event_text.setVisibility(View.VISIBLE);
+            password_safe_event_text.setVisibility(View.VISIBLE);
+        }else {
+            username_safe_event_text.setVisibility(View.GONE);
+            password_safe_event_text.setVisibility(View.GONE);
+        }
 
         chkbx_stock_moins.setChecked(prefs.getBoolean("STOCK_MOINS", false));
 
@@ -420,22 +510,27 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             rdb_scanner_camera.setChecked(true);
         }
 
-        btn_scan_qr = findViewById(R.id.btn_scanqr);
-        btn_scan_qr.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-
-            }else{
-                startScan();
-            }
-        });
-
         //Button
         btntest = findViewById(R.id.check);
         btntest.setOnClickListener(v -> {
-            if (!isRunning[0]) {
-                new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password).execute();
-                isRunning[0] = true;
+           // SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+            if (!isRunning) {
+                if(prefs.getBoolean("USE_SAFE_EVENT", false)){
+
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                    editor.putString("SAFE_EVENT_USER", username_safe_event.getText().toString());
+                    editor.putString("SAFE_EVENT_PASS", password_safe_event.getText().toString());
+                    editor.apply();   // editor.commit();
+
+                    textView.setVisibility(View.VISIBLE);
+                    circle.start();
+                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString());
+                }else {
+                    textView.setVisibility(View.VISIBLE);
+                    circle.start();
+                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password).execute();
+                }
+                isRunning = true;
             } else {
                 Crouton.showText(ActivitySetting.this, "Test Connexion est en cours!", Style.INFO);
             }
@@ -529,10 +624,15 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_ht = findViewById(R.id.switch_ht);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_pa_ht = findViewById(R.id.switch_pa_ht);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_stock_moins = findViewById(R.id.switch_stock_moins);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_edit_prix = findViewById(R.id.switch_edit_prix);
-
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_famille = findViewById(R.id.switch_famille);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_filtre_recherche = findViewById(R.id.switch_filtre_recherche);
         /////////////////////////////////// SWITCH IMPORTATION /////////////////////////////////////
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -543,8 +643,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
+        switch_pa_ht.setChecked(prefs.getBoolean("AFFICHAGE_PA_HT", false));
         switch_stock_moins.setChecked(prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false));
         switch_edit_prix.setChecked(prefs.getBoolean("EDIT_PRICE", false));
+        switch_famille.setChecked(prefs.getBoolean("MODE_FAMILLE", false));
+        switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
 
         switch_gps.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -559,6 +662,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
+        switch_pa_ht.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("AFFICHAGE_PA_HT", isChecked);
+            editor.apply();
+        });
+
         switch_stock_moins.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("AFFICHAGE_STOCK_MOINS", isChecked);
@@ -570,15 +679,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.putBoolean("EDIT_PRICE", isChecked);
             editor.apply();
         });
-        // Reset database
 
+        switch_famille.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("MODE_FAMILLE", isChecked);
+            editor.apply();
+        });
 
-        // Backup database
-
-
-        // Header company setting
-
-
+        switch_filtre_recherche.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("FILTRE_SEARCH", isChecked);
+            editor.apply();
+        });
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         comapny_name.setText(prefs.getString("COMPANY_NAME", ""));
@@ -597,42 +709,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
 
-
-    private void startScan() {
-        /**
-         * Build a new MaterialBarcodeScanner
-         */
-
-        final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
-                .withActivity(ActivitySetting.this)
-                .withEnableAutoFocus(true)
-                .withBleepEnabled(true)
-                .withBackfacingCamera()
-                .withCenterTracker()
-                .withText("Scanning...")
-                .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
-                    @Override
-                    public void onResult(Barcode barcode) {
-                        // Sound( R.raw.bleep);
-                       Log.v("SCAN", barcode.rawValue);
-                       if(barcode.rawValue.startsWith(";")){
-                           String p = barcode.rawValue.replaceFirst(";", "");
-                           int index = p.indexOf(";");
-                           String ips = p.substring(0,index);
-                           ip.setText(ips);
-                           String d = p.replace(ips, "");
-                           pathdatabase.setText(d.replace(";",""));
-                       }else{
-                           Crouton.makeText(ActivitySetting.this, "N'est pas un Qr code de paramètres", Style.ALERT).show();
-                       }
-
-                      // ;
-                      // ;
-                    }
-                })
-                .build();
-        materialBarcodeScanner.startScan();
-    }
 
     public void init() {
 
@@ -861,11 +937,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
                     curPrinterInterface = printerInterfaceArrayList.get(i);
                     BaseApplication.getInstance().setRtPrinter(rtPrinter);//设置全局RTPrinter
-                    if (printerInterfaceArrayList.get(i).getConnectState() == ConnectStateEnum.Connected) {
-                        setPrintEnable(true);
-                    } else {
-                        setPrintEnable(false);
-                    }
+                    setPrintEnable(printerInterfaceArrayList.get(i).getConnectState() == ConnectStateEnum.Connected);
                 }
             });
         } else {
@@ -995,12 +1067,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private void textPrint() throws UnsupportedEncodingException {
 
-        switch (BaseApplication.getInstance().getCurrentCmdType()) {
-            case BaseEnum.CMD_ESC:
-                escPrint();
-                break;
-            default:
-                break;
+        if (BaseApplication.getInstance().getCurrentCmdType() == BaseEnum.CMD_ESC) {
+            escPrint();
         }
     }
 
@@ -1049,8 +1117,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             rtPrinter.connect(bluetoothEdrConfigBean);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-
         }
     }
 
@@ -1063,8 +1129,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             rtPrinter.connect(wiFiConfigBean);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-
         }
     }
 
@@ -1127,7 +1191,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 UsbDevice mUsbDevice = (UsbDevice) parent.getAdapter().getItem(position);
-                PendingIntent mPermissionIntent = PendingIntent.getBroadcast(ActivitySetting.this, 0, new Intent(ActivitySetting.this.getApplicationInfo().packageName), 0);
+                PendingIntent mPermissionIntent = PendingIntent.getBroadcast(ActivitySetting.this, 0, new Intent(ActivitySetting.this.getApplicationInfo().packageName), PendingIntent.FLAG_IMMUTABLE);
                 tv_device_selected.setText(getString(R.string.adapter_usbdevice) + mUsbDevice.getDeviceId()); //+ (position + 1));
                 configObj = new UsbConfigBean(BaseApplication.getInstance(), mUsbDevice, mPermissionIntent);
                 tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
@@ -1147,11 +1211,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     }
 
     private void isConfigPrintEnable(Object configObj) {
-        if (isInConnectList(configObj)) {
-            setPrintEnable(true);
-        } else {
-            setPrintEnable(false);
-        }
+        setPrintEnable(isInConnectList(configObj));
     }
 
     private boolean isInConnectList(Object configObj) {
@@ -1252,9 +1312,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     mScalingActivityAnimator3.resume();
                 });
                 break;
-            case R.id.mode_tarif_lnr:
-
-                break;
 
             case R.id.reset_pda:
 
@@ -1270,8 +1327,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 // Start change pwd  activity
                 Intent intent = new Intent(getApplicationContext(), ActivityChangePwd.class);
                 startActivity(intent);
-                finish();
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                finish();
+
                 break;
         }
     }
@@ -1363,7 +1421,68 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     }
 
 
-    //class Insert Data into FireBird Database
+    public void sendRequest(String username_safe_event, String password_safe_event) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+
+                        NetClient nc = new NetClient("105.96.9.62", 1209); // ip adress and port
+
+                        String message_online = username_safe_event + ":" + password_safe_event + ":"+ "" + ":" + "cccc";
+                        nc.sendDataWithString(message_online);
+                        String token = nc.receiveDataFromServer();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(token.length()<= 15){
+                                    ip.setText(token);
+                                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password).execute();
+                                }else {
+
+                                    terminateProcessing();
+
+                                    new Toaster.Builder(ActivitySetting.this)
+                                            .setTitle("Attention")
+                                            .setDescription(""+ token)
+                                            .setDuration(Toaster.LENGTH_LONG)
+                                            .setStatus(Toaster.Status.WARNING)
+                                            .show();
+                                }
+
+                            }
+                        });
+
+                        Log.e("TRACKKK", "==========> " + token);
+
+                    } catch (Exception e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                terminateProcessing();
+                                Log.e("TRACKKK", e.getMessage());
+
+                                new Toaster.Builder(ActivitySetting.this)
+                                        .setTitle("Erreur")
+                                        .setDescription("Problème au niveau de serveur")
+                                        .setDuration(Toaster.LENGTH_LONG)
+                                        .setStatus(Toaster.Status.ERROR)
+                                        .show();
+                            }
+                        });
+                    }
+                }
+            }).start();
+    }
+
+    private void terminateProcessing(){
+        isRunning = false;
+        circle.stop();
+        textView.setVisibility(View.GONE);
+    }
     //====================================
     @SuppressLint("StaticFieldLeak")
     public class TestConnection_Setting extends AsyncTask<Void, Void, Boolean> {
@@ -1390,7 +1509,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             super.onPreExecute();
             textView.setVisibility(View.VISIBLE);
             circle.start();
-
         }
 
         @Override
@@ -1401,11 +1519,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 System.setProperty("FBAdbLog", "true");
                 java.sql.DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql://" + _Server + "/" + _pathDatabase + ".FDB?encoding=ISO8859_1";
+                String sCon = "jdbc:firebirdsql:" + _Server + ":" + _pathDatabase + ".FDB";
                 Log.d("TAG", "doInBackground: " + sCon);
                 con = DriverManager.getConnection(sCon, _Username, _Password);
                 executed = true;
-                con = null;
 
             } catch (Exception ex) {
                 con = null;
@@ -1417,7 +1534,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             circle.stop();
-            isRunning[0] = false;
+            isRunning = false;
             textView.setVisibility(View.GONE);
 
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1436,7 +1553,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 Animation shake = AnimationUtils.loadAnimation(ActivitySetting.this, R.anim.shakanimation);
                 btntest.startAnimation(shake);
                 Sound(R.raw.error);
-                // Crouton.showText(_context , " Failed to Connect !", Style.ALERT);
             }
             super.onPostExecute(aBoolean);
         }
@@ -1447,7 +1563,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1456,6 +1571,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     public void onBackPressed() {
         Sound(R.raw.back);
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

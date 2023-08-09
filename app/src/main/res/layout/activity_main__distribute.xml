@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/font_black"
-
     android:padding="7dp"
     android:orientation="vertical" >
 
@@ -16,29 +15,87 @@
         android:padding="10dp">
 
         <ImageButton
-            android:id="@+id/btnventes"
+            android:id="@+id/btn_clients"
+            android:layout_width="0dip"
+            android:onClick="onClick"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/green_white_1"
+            android:layout_height="match_parent"
+            android:src="@mipmap/client"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/btn_ventes"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
             android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/blue"
-
+            android:backgroundTint="@color/green_white_2"
             android:layout_weight="1"
             android:onClick="onClick"
             android:src="@mipmap/vente" />
 
         <ImageButton
-            android:id="@+id/btncommande"
+            android:id="@+id/btn_commande_client"
             android:layout_width="0dip"
             android:onClick="onClick"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:src="@mipmap/commande"
             android:background="@drawable/imagebutton_rounded"
-
-            android:backgroundTint="@color/sandy_brown"
+            android:backgroundTint="@color/green_white_3"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:padding="10dp"
+        android:visibility="visible"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+        <ImageButton
+            android:id="@+id/btn_commande_fournisseur"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/blue_white_3"
+            android:onClick="onClick"
+            android:visibility="gone"
+            android:src="@mipmap/commande" />
+
+
+        <ImageButton
+            android:id="@+id/btn_achat"
+            android:layout_width="0dip"
+            android:onClick="onClick"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/blue_white_1"
+            android:src="@drawable/baseline_achat_24"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btn_fournisseur"
+            android:layout_width="0dip"
+            android:onClick="onClick"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/outline_fournisseur_24"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/blue_white_2"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,7 +105,7 @@
         android:layout_weight="1" >
 
         <ImageButton
-            android:id="@+id/btnproduits"
+            android:id="@+id/btn_produits"
             android:layout_width="0dip"
             android:onClick="onClick"
             android:layout_marginEnd="5dp"
@@ -58,20 +115,18 @@
             android:src="@mipmap/produit"
             android:layout_weight="1" />
 
-
         <ImageButton
-            android:id="@+id/btnclients"
+            android:id="@+id/btn_inventaire"
             android:layout_width="0dip"
             android:onClick="onClick"
             android:layout_marginStart="5dp"
             android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/vert_clair"
+            android:backgroundTint="@color/gray"
+            android:src="@mipmap/inventaire"
             android:layout_height="match_parent"
-            android:src="@mipmap/client"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -81,57 +136,23 @@
         android:layout_weight="1" >
 
         <ImageButton
-            android:id="@+id/btnimport_export"
+            android:id="@+id/btn_import_export"
             android:layout_width="0dip"
             android:onClick="onClick"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:background="@drawable/imagebutton_rounded"
-
             android:backgroundTint="@color/violet"
             android:src="@mipmap/import_export"
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/btn_b_reception"
+            android:id="@+id/btn_parametres"
             android:layout_width="0dip"
-            android:layout_height="match_parent"
+            android:onClick="onClick"
             android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/imagebutton_rounded"
-
-            android:backgroundTint="@color/jaune"
-            android:onClick="onClick"
-            android:src="@mipmap/transfert" />
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:padding="10dp"
-        android:orientation="horizontal"
-        android:layout_weight="1" >
-
-        <ImageButton
-            android:id="@+id/btn_inventaire_achat"
-            android:layout_width="0dip"
-            android:onClick="onClick"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/imagebutton_rounded"
-
-            android:backgroundTint="@color/gray"
-            android:src="@mipmap/inventaire"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/btnparametres"
-            android:layout_width="0dip"
-            android:onClick="onClick"
-            android:layout_marginLeft="5dp"
             android:src="@mipmap/parametre"
             android:background="@drawable/imagebutton_rounded"
-
             android:backgroundTint="@color/colorAccent"
             android:layout_height="match_parent"
             android:layout_weight="1" />

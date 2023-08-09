@@ -32,7 +32,7 @@ public class PasswordResetDialogFragment extends DialogFragment {
   private EditText mPassword;
   private Button reset;
   private DATABASE controller;
-  private String MY_PREF_NAME = "T";
+  private final String MY_PREF_NAME = "T";
 
   public PasswordResetDialogFragment() {
     // Empty constructor is required for DialogFragment

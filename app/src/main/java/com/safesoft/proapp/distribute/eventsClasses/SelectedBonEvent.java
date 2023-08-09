@@ -8,7 +8,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Client;
 
 public class SelectedBonEvent {
 
-  private String nom_bon;
+  private final String nom_bon;
 
   public SelectedBonEvent(String nom_bon){
     this.nom_bon = nom_bon;

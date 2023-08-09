@@ -32,7 +32,7 @@ public class ServiceDistribute extends Service {
   private String Server;
   private String Username;
   private String Password;
-  private String MY_PREFS_NAME = "ConfigNetwork";
+  private final String MY_PREFS_NAME = "ConfigNetwork";
   private String Path;
   private DATABASE controller;
   private String _params;

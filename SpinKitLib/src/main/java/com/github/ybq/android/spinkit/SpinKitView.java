@@ -17,7 +17,7 @@ import com.github.ybq.android.spinkit.sprite.Sprite;
  */
 public class SpinKitView extends ProgressBar {
 
-    private Style mStyle;
+    private final Style mStyle;
     private int mColor;
     private Sprite mSprite;
 

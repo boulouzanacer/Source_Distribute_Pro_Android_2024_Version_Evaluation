@@ -20,13 +20,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:text="Exportation ventes (Réseaux Local)"
+            android:text="Exportation ventes (Réseaux IP)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_export_vente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/exportt_vente"
@@ -63,7 +62,6 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_export_vente_ftp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vous permet d'exporter les bons de ventes vers le serveur FTP"
@@ -98,7 +96,6 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_exported_vente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/exportted_vente"
@@ -134,13 +131,12 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/descrip_etat_v"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/etat_v"
             android:layout_alignParentStart="true"
             android:clickable="false"
-            android:text="ça vous permet de consulter la quantité des produits vendu entre deux date données ansi que le montant total, remise total, ...."
+            android:text="ça vous permet de consulter la quantité des produits vendu ansi que le montant total, remise total...entre deux date donné."
             android:textColor="@color/gray"
             android:textSize="12dp" />
 

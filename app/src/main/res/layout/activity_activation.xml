@@ -225,7 +225,6 @@
 
 
             <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/revendeur_check_edittext"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -246,7 +245,6 @@
             android:gravity="bottom">
 
             <ImageButton
-                android:id="@+id/activer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

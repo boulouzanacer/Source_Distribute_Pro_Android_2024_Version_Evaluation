@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -42,10 +43,14 @@ public class FragmentRemise {
     private TextInputEditText taux_remise;
     private TextInputEditText montant_apres_remise;
     private Context mContext;
-    private double val_avant_remise = 0.00, t = 0.00, val_taux = 0.00, val_apres_remise = 0.00, val_remise = 0.00;
+    private double val_avant_remise = 0.00;
+    private final double t = 0.00;
+    private double val_taux = 0.00;
+    private double val_apres_remise = 0.00;
+    private double val_remise = 0.00;
     String str;
 
-    private EventBus bus = EventBus.getDefault();
+    private final EventBus bus = EventBus.getDefault();
     Context mcontext;
     Activity activity;
     AlertDialog dialog;
@@ -70,8 +75,11 @@ public class FragmentRemise {
 
 
         //Specify the length and width through constants
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(layoutParams);
 
 
         btn_remise = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);

@@ -36,25 +36,22 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
-import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
-import com.safesoft.proapp.distribute.activities.ActivitySetting;
-import com.safesoft.proapp.distribute.ftp.Ftp_export;
-import com.safesoft.proapp.distribute.pdf.GeneratePDF;
-import com.safesoft.proapp.distribute.printing.PrinterVente;
+import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire;
+import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
+import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
-import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEvent2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.RemiseEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
-import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierVente;
+import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanier;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ValidateFactureEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentQteVente;
+import com.safesoft.proapp.distribute.fragments.FragmentQte;
 import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectClient;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
-import com.safesoft.proapp.distribute.fragments.FragmentValider;
+import com.safesoft.proapp.distribute.fragments.FragmentValideBon;
 import com.safesoft.proapp.distribute.gps.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
@@ -93,18 +90,18 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     private Intent intent_location;
 
-    private ListViewAdapterPanierVente PanierAdapter;
+    private ListViewAdapterPanier PanierAdapter;
     private Button btn_select_client,btn_mode_tarif;
     private DATABASE controller;
     private  ArrayList<PostData_Bon2> final_panier;
     private TextView total_ht, tva, txv_timbre, txv_remise, total_ttc, total_ttc_remise;
     private CheckBox  checkBox_timbre;
-    private  Double val_total_ht = 0.00;
-    private Double val_tva = 0.00;
-    private Double val_timbre = 0.00;
-    private Double val_total_ttc = 0.00;
-    private Double val_remise = 0.00;
-    private Double val_total_ttc_remise = 0.00;
+    private double val_total_ht = 0.00;
+    private double val_tva = 0.00;
+    private double val_timbre = 0.00;
+    private double val_total_ttc = 0.00;
+    private double val_remise = 0.00;
+    private double val_total_ttc_remise = 0.00;
 
     private EventBus bus;
 
@@ -125,12 +122,15 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     final String PREFS = "ALL_PREFS";
 
     String TYPE_ACTIVITY = "";
+    String SOURCE_EXPORT = "";
     String PARAMS_PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
     SharedPreferences prefs;
 
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
 
+    @SuppressLint("SimpleDateFormat") SimpleDateFormat date_format;
+    @SuppressLint("SimpleDateFormat") SimpleDateFormat heure_format;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +144,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 barcodeResult = restoredBarcode;
             }
         }
+
         bus = EventBus.getDefault();
         controller = new DATABASE(this);
         bon1 = new PostData_Bon1();
@@ -165,21 +166,24 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         //get num bon
         if(getIntent() !=null){
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
+            SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         }else {
             Crouton.makeText(ActivitySale.this, "Erreur séléction activity !", Style.ALERT).show();
             return;
         }
+
+        date_format = new SimpleDateFormat("dd/MM/yyyy");
+        heure_format = new SimpleDateFormat("HH:mm:ss");
+
         if(TYPE_ACTIVITY.equals("NEW_SALE")){
             //get num bon
-            NUM_BON = Get_Digits_String();
+            String selectQuery = "SELECT MAX(NUM_BON) AS max_id FROM BON1 WHERE NUM_BON IS NOT NULL";
+            NUM_BON = controller.select_max_num_bon(selectQuery);
             // get date and time
             Calendar c = Calendar.getInstance();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
             String formattedDate_Show = date_format.format(c.getTime());
            // formattedDate = df_save.format(c.getTime());
-            String currentTime = sdf.format(c.getTime());
+            String currentTime = heure_format.format(c.getTime());
 
             date_time_sub_title = formattedDate_Show + " " + currentTime;
 
@@ -198,77 +202,76 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             }
 
             String querry = "SELECT " +
-                    "Bon1.RECORDID, " +
-                    "Bon1.NUM_BON, " +
-                    "Bon1.DATE_BON, " +
-                    "Bon1.HEURE, " +
-                    "Bon1.MODE_RG, " +
-                    "Bon1.MODE_TARIF, " +
+                    "BON1.RECORDID, " +
+                    "BON1.NUM_BON, " +
+                    "BON1.DATE_BON, " +
+                    "BON1.HEURE, " +
+                    "BON1.MODE_RG, " +
+                    "BON1.MODE_TARIF, " +
 
-                    "Bon1.NBR_P, " +
-                    "Bon1.TOT_QTE, " +
+                    "BON1.NBR_P, " +
+                    "BON1.TOT_QTE, " +
 
-                    "Bon1.TOT_HT, " +
-                    "Bon1.TOT_TVA, " +
-                    "Bon1.TIMBRE, " +
-                    "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE AS TOT_TTC, " +
-                    "Bon1.REMISE, " +
-                    "Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE AS MONTANT_BON, " +
+                    "BON1.TOT_HT, " +
+                    "BON1.TOT_TVA, " +
+                    "BON1.TIMBRE, " +
+                    "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE AS TOT_TTC, " +
+                    "BON1.REMISE, " +
+                    "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE AS MONTANT_BON, " +
 
-                    "Bon1.ANCIEN_SOLDE, " +
-                    "Bon1.VERSER, " +
-                    "Bon1.ANCIEN_SOLDE + (Bon1.TOT_HT + Bon1.TOT_TVA + Bon1.TIMBRE - Bon1.REMISE) - Bon1.VERSER AS RESTE, " +
+                    "BON1.ANCIEN_SOLDE, " +
+                    "BON1.VERSER, " +
+                    "BON1.ANCIEN_SOLDE + (BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE) - BON1.VERSER AS RESTE, " +
 
-                    "Bon1.CODE_CLIENT, " +
-                    "Client.CLIENT, " +
-                    "Client.ADRESSE, " +
-                    "Client.TEL, " +
-                    "Client.RC, " +
-                    "Client.IFISCAL, " +
-                    "Client.AI, " +
-                    "Client.NIS, " +
+                    "BON1.CODE_CLIENT, " +
+                    "CLIENT.CLIENT, " +
+                    "CLIENT.ADRESSE, " +
+                    "CLIENT.TEL, " +
+                    "CLIENT.RC, " +
+                    "CLIENT.IFISCAL, " +
+                    "CLIENT.AI, " +
+                    "CLIENT.NIS, " +
 
-                    "Client.LATITUDE as LATITUDE_CLIENT, " +
-                    "Client.LONGITUDE as LONGITUDE_CLIENT, " +
+                    "CLIENT.LATITUDE as LATITUDE_CLIENT, " +
+                    "CLIENT.LONGITUDE as LONGITUDE_CLIENT, " +
 
-                    "Client.SOLDE AS SOLDE_CLIENT, " +
-                    "Client.CREDIT_LIMIT, " +
+                    "CLIENT.SOLDE AS SOLDE_CLIENT, " +
+                    "CLIENT.CREDIT_LIMIT, " +
 
-                    "Bon1.LATITUDE, " +
-                    "Bon1.LONGITUDE, " +
+                    "BON1.LATITUDE, " +
+                    "BON1.LONGITUDE, " +
 
-                    "Bon1.CODE_DEPOT, " +
-                    "Bon1.CODE_VENDEUR, " +
-                    "Bon1.EXPORTATION, " +
-                    "Bon1.BLOCAGE " +
-                    "FROM Bon1 " +
-                    "LEFT JOIN Client ON Bon1.CODE_CLIENT = Client.CODE_CLIENT " +
-                    "WHERE Bon1.NUM_BON ='"+NUM_BON+"'";
+                    "BON1.CODE_DEPOT, " +
+                    "BON1.CODE_VENDEUR, " +
+                    "BON1.EXPORTATION, " +
+                    "BON1.BLOCAGE " +
+                    "FROM BON1 " +
+                    "LEFT JOIN CLIENT ON BON1.CODE_CLIENT = CLIENT.CODE_CLIENT " +
+                    "WHERE BON1.NUM_BON ='"+NUM_BON+"'";
             ///////////////////////////////////
             bon1 = controller.select_bon1_from_database2(querry);
 
 
             final_panier =  controller.select_bon2_from_database("" +
                     "SELECT " +
-                    "Bon2.RECORDID, " +
-                    "Bon2.CODE_BARRE, " +
-                    "Bon2.NUM_BON, " +
-                    "Bon2.PRODUIT, " +
-                    "Bon2.NBRE_COLIS, " +
-                    "Bon2.COLISSAGE, " +
-                    "Bon2.QTE, " +
-                    "Bon2.QTE_GRAT, " +
-                    "Bon2.PV_HT, " +
-                    "Bon2.TVA, " +
-                    "Bon2.CODE_DEPOT, " +
-                    "Bon2.PA_HT, " +
-                    "Bon2.DESTOCK_TYPE, " +
-                    "Bon2.DESTOCK_CODE_BARRE, " +
-                    "Bon2.DESTOCK_QTE, " +
-                    "Produit.STOCK " +
-                    "FROM Bon2 " +
-                    "LEFT JOIN Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
-                    "WHERE Bon2.NUM_BON = '" + NUM_BON+ "'" );
+                    "BON2.RECORDID, " +
+                    "BON2.CODE_BARRE, " +
+                    "BON2.NUM_BON, " +
+                    "BON2.PRODUIT, " +
+                    "BON2.NBRE_COLIS, " +
+                    "BON2.COLISSAGE, " +
+                    "BON2.QTE, " +
+                    "BON2.QTE_GRAT, " +
+                    "BON2.PU, " +
+                    "BON2.TVA, " +
+                    "BON2.CODE_DEPOT, " +
+                    "BON2.DESTOCK_TYPE, " +
+                    "BON2.DESTOCK_CODE_BARRE, " +
+                    "BON2.DESTOCK_QTE, " +
+                    "PRODUIT.STOCK " +
+                    "FROM BON2 " +
+                    "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                    "WHERE BON2.NUM_BON = '" + NUM_BON+ "'" );
             //private String formattedDate;
             date_time_sub_title = bon1.date_bon + " " + bon1.heure;
 
@@ -276,7 +279,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             onClientSelected(client_selected);
 
             // Create the adapter to convert the array to views
-            PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier);
+            PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
             expandableListView = findViewById(R.id.expandable_listview);
 
@@ -317,6 +320,16 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
 
         checkBox_timbre.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if(bon1.blocage.equals("F")){
+                checkBox_timbre.setChecked(!isChecked);
+                new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+
             if(client_selected == null){
                 Toast.makeText(ActivitySale.this, "Veuilez sélectionner un Client", Toast.LENGTH_SHORT).show();
                 checkBox_timbre.setChecked(false);
@@ -329,24 +342,6 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         });
 
     }
-
-    public String Get_Digits_String(){
-        String _number = controller.Select_max_num_bon_vente("Bon1");
-        while(_number.length() < 6){
-            _number = "0" + _number;
-        }
-        return _number;
-    }
-    public String Get_Digitss_String(String number, Integer length) {
-        String _number = number;
-        while (_number.length() < length) {
-            _number = "0" + _number;
-        }
-        return _number;
-    }
-
-
-
 
     @SuppressLint({"CutPasteId", "WrongViewCast"})
     private void initViews() {
@@ -445,6 +440,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                         bon1.mode_tarif = "1";
                         btn_mode_tarif.setText("Tarif 1");
                     }
+
                 }else {
                     return;
                 }
@@ -475,9 +471,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 break;
 
             case R.id.valide_facture:
-
                 if( bon1.client.length() <1){
-
                     Crouton.makeText(ActivitySale.this, "Vous devez Séléctionner un client", Style.ALERT).show();
                     return;
                 }
@@ -496,7 +490,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     return;
                 }
 
-                FragmentValider fragmentvalider = new FragmentValider();
+                FragmentValideBon fragmentvalider = new FragmentValideBon();
                 fragmentvalider.showDialogbox(ActivitySale.this, bon1.solde_ancien, bon1.montant_bon, bon1.verser);
 
                 break;
@@ -539,41 +533,48 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 }
                 break;
             case R.id.btn_mofifier_bon:
-            if(!bon1.blocage.equals("F")){
-                new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas encore validé")
-                        .show();
-                return;
+                if(!SOURCE_EXPORT.equals("EXPORTED")){
+                    if(!bon1.blocage.equals("F")){
+                        new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Ce bon n'est pas encore validé")
+                                .show();
+                        return;
 
-            } else  {
-                new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Modification")
-                        .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
-                        .setCancelText("Non")
-                        .setConfirmText("Oui")
-                        .showCancelButton(true)
-                        .setCancelClickListener(Dialog::dismiss)
-                        .setConfirmClickListener(sDialog -> {
+                    } else  {
+                        new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Modification")
+                                .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
+                                .setCancelText("Non")
+                                .setConfirmText("Oui")
+                                .showCancelButton(true)
+                                .setCancelClickListener(Dialog::dismiss)
+                                .setConfirmClickListener(sDialog -> {
 
-                            try{
+                                    try{
 
-                                if (controller.modifier_bon1_sql("Bon1",bon1.num_bon, bon1) ) {
-                                    bon1.blocage = "M";
-                                    validate_theme();
-                                };
+                                        if (controller.modifier_bon1_sql("BON1",bon1.num_bon, bon1) ) {
+                                            bon1.blocage = "M";
+                                            validate_theme();
+                                        }
 
 
-                            }catch (Exception e){
+                                    }catch (Exception e){
 
-                                new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Attention!")
-                                        .setContentText("problème lors de Modification de Bon : " + e.getMessage())
-                                        .show();
-                            }
-                            sDialog.dismiss();
-                        }).show();
-            }
+                                        new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                                                .setTitleText("Attention!")
+                                                .setContentText("problème lors de Modification de Bon : " + e.getMessage())
+                                                .show();
+                                    }
+                                    sDialog.dismiss();
+                                }).show();
+                    }
+                }else {
+                    new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon est déja exporté")
+                            .show();
+                }
             break;
             case R.id.btn_imp_bon:
                 if(!bon1.blocage.equals("F")){
@@ -586,8 +587,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 Activity bactivity;
                 bactivity = ActivitySale.this;
 
-                PrinterVente printer = new PrinterVente();
-                printer.start_print_sale_bon(bactivity, final_panier, bon1);
+                Printing printer = new Printing();
+                printer.start_print_bon(bactivity, "VENTE", final_panier, bon1, null);
 
                 break;
 
@@ -605,7 +606,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         activity = ActivitySale.this;
 
         FragmentSelectClient fragmentSelectClient = new FragmentSelectClient();
-        fragmentSelectClient.showDialogbox(activity, getBaseContext());
+        fragmentSelectClient.showDialogbox(activity, getBaseContext(), "FROM_VENTE");
 
     }
 
@@ -700,42 +701,35 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         }
 
 
-        if(!controller.Insert_into_bon1("Bon1",bon1)){
+        if(!controller.insert_into_bon1("BON1",bon1)){
             finish();
         }
-    }
-
-    @Subscribe
-    public void onEvent(CheckedPanierEvent2 panier){
-
-        // initData(panier.getData());
     }
 
     protected void initData(){
         final_panier = controller.select_bon2_from_database("" +
                 "SELECT " +
-                "Bon2.RECORDID, " +
-                "Bon2.CODE_BARRE, " +
-                "Bon2.NUM_BON, " +
-                "Bon2.PRODUIT, " +
-                "Bon2.NBRE_COLIS, " +
-                "Bon2.COLISSAGE, " +
-                "Bon2.QTE, " +
-                "Bon2.QTE_GRAT, " +
-                "Bon2.PV_HT, " +
-                "Bon2.TVA, " +
-                "Bon2.CODE_DEPOT, " +
-                "Bon2.PA_HT, " +
-                "Bon2.DESTOCK_TYPE, " +
-                "Bon2.DESTOCK_CODE_BARRE, " +
-                "Bon2.DESTOCK_QTE, " +
-                "Produit.STOCK " +
-                "FROM Bon2 " +
-                "LEFT JOIN Produit ON (Bon2.CODE_BARRE = Produit.CODE_BARRE) " +
-                "WHERE Bon2.NUM_BON = '" + bon1.num_bon + "'" );
+                "BON2.RECORDID, " +
+                "BON2.CODE_BARRE, " +
+                "BON2.NUM_BON, " +
+                "BON2.PRODUIT, " +
+                "BON2.NBRE_COLIS, " +
+                "BON2.COLISSAGE, " +
+                "BON2.QTE, " +
+                "BON2.QTE_GRAT, " +
+                "BON2.PU, " +
+                "BON2.TVA, " +
+                "BON2.CODE_DEPOT, " +
+                "BON2.DESTOCK_TYPE, " +
+                "BON2.DESTOCK_CODE_BARRE, " +
+                "BON2.DESTOCK_QTE, " +
+                "PRODUIT.STOCK " +
+                "FROM BON2 " +
+                "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                "WHERE BON2.NUM_BON = '" + bon1.num_bon + "'" );
 
         // Create the adapter to convert the array to views
-        PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier);
+        PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
         expandableListView = findViewById(R.id.expandable_listview);
 
@@ -782,10 +776,10 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
                             try{
                                 SOURCE = "BON2_DELETE";
-                                controller.delete_from_bon2("Bon2", final_panier.get(info.position).recordid, bon1.num_bon ,final_panier.get(info.position));
+                                controller.delete_from_bon2("BON2", final_panier.get(info.position).recordid ,final_panier.get(info.position));
                                 initData();
                                 //PanierAdapter.RefrechPanier(final_panier);
-                                PanierAdapter = new ListViewAdapterPanierVente(ActivitySale.this, R.layout.transfert2_items, final_panier);
+                                PanierAdapter = new ListViewAdapterPanier(ActivitySale.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
                                 expandableListView.setAdapter(PanierAdapter);
 
                             }catch (Exception e){
@@ -812,7 +806,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     SOURCE = "BON2_EDIT";
                     Activity activity;
                     activity = ActivitySale.this;
-                    FragmentQteVente fragmentqte = new FragmentQteVente();
+                    FragmentQte fragmentqte = new FragmentQte();
                     fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position) , final_panier.get(info.position).p_u * (1 + (final_panier.get(info.position).tva/ 100)));
 
                 }catch (Exception e){
@@ -840,8 +834,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
         for(int k = 0; k< final_panier.size(); k++){
 
-            Double total_montant_produit = final_panier.get(k).p_u * final_panier.get(k).qte;
-            Double montant_tva_produit = total_montant_produit  * ((final_panier.get(k).tva) / 100);
+            double total_montant_produit = final_panier.get(k).p_u * final_panier.get(k).qte;
+            double montant_tva_produit = total_montant_produit  * ((final_panier.get(k).tva) / 100);
             val_total_ht = val_total_ht + total_montant_produit;
             val_tva = val_tva + montant_tva_produit;
 
@@ -937,14 +931,21 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             onBackPressed();
         }
         if (id == R.id.generate_pdf) {
-            Activity mActivity;
-            mActivity = ActivitySale.this;
 
-            GeneratePDF generate_pdf = new GeneratePDF();
-            generate_pdf.startPDF(mActivity, bon1, final_panier, "FROM_SALE");
+            if(!bon1.blocage.equals("F")){
+                new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon n'est pas validé")
+                        .show();
+            }else{
+                Activity mActivity;
+                mActivity = ActivitySale.this;
 
-            return true;
+                GeneratePDF generate_pdf = new GeneratePDF();
+                generate_pdf.startPDFVente(mActivity, bon1, final_panier, "FROM_SALE");
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -966,7 +967,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         bon1.remise =  val_remise;
         bon1.montant_bon = val_total_ttc_remise;
         //update current bon1
-        controller.update_bon1("Bon1",bon1.num_bon, bon1);
+        controller.update_bon1("BON1",bon1.num_bon, bon1);
 
     }
 
@@ -984,6 +985,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     public void onBackPressed() {
         Sound( R.raw.back);
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int resid){
@@ -1028,8 +1030,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                        // setRecycle(barcode.rawValue, true);
                         selectProductFromScan(barcode.rawValue);
                     }
-                })
-                .build();
+                }).build();
         materialBarcodeScanner.startScan();
     }
 
@@ -1044,7 +1045,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
 
     @Override
-    public void onClick(View v, int position, PostData_Produit item, String SOURCE_ACTIVITY) {
+    public void onClick(View v, int position, PostData_Produit item) {
 
             PostData_Bon2 bon2 = new PostData_Bon2();
             bon2.produit = item.produit;
@@ -1053,7 +1054,6 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             bon2.destock_type = item.destock_type;
             bon2.destock_code_barre = item.destock_code_barre;
             bon2.destock_qte = item.destock_qte;
-            bon2.pa_ht = item.pa_ht;
             bon2.tva = item.tva;
             bon2.colissage = item.colissage;
             if(bon1.mode_tarif.equals("3")){
@@ -1067,7 +1067,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             bon2.code_depot = CODE_DEPOT;
             SOURCE = "BON2_INSERT";
             Activity activity = ActivitySale.this;
-            FragmentQteVente fragmentqte = new FragmentQteVente();
+            FragmentQte fragmentqte = new FragmentQte();
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2 , bon2.p_u * (1 + (bon2.tva / 100)));
 
     }
@@ -1077,9 +1077,9 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
            try {
                if(SOURCE.equals("BON2_INSERT")){
-                   controller.Insert_into_bon2("Bon2",NUM_BON, CODE_DEPOT,  item_panier.getData());
+                   controller.insert_into_bon2("BON2",NUM_BON, CODE_DEPOT,  item_panier.getData());
                }else if(SOURCE.equals("BON2_EDIT")){
-                   controller.Update_into_bon2("Bon2",NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
+                   controller.update_into_bon2("BON2",NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
                }
 
                initData();
@@ -1102,7 +1102,12 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
         bon1.reste = bon1.solde_ancien + (bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise) - bon1.verser;
 
-        if (controller.validate_bon1_sql("Bon1", bon1.num_bon, bon1)) {
+        Calendar c = Calendar.getInstance();
+        bon1.date_f = date_format.format(c.getTime());
+        bon1.heure_f = heure_format.format(c.getTime());
+
+        //bon1.diff_time =
+        if (controller.validate_bon1_sql("BON1", bon1)) {
             bon1.blocage = "F";
         }
 
@@ -1129,19 +1134,19 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         ArrayList<PostData_Produit> produits;
         PostData_Bon2 bon2 = new PostData_Bon2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
-                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
             produits = controller.select_produits_from_database(querry);
 
             if(produits.size() == 0){
-                String querry1 = "SELECT * FROM Codebarre WHERE CODE_BARRE_SYN = '"+resultscan+"'";
+                String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+resultscan+"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
                 produits = controller.select_produits_from_database(querry2);
             }
@@ -1155,7 +1160,6 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             bon2.destock_type = produits.get(0).destock_type;
             bon2.destock_code_barre = produits.get(0).destock_code_barre;
             bon2.destock_qte = produits.get(0).destock_qte;
-            bon2.pa_ht = produits.get(0).pa_ht;
             bon2.tva = produits.get(0).tva;
             bon2.colissage = produits.get(0).colissage;
             if(bon1.mode_tarif.equals("3")){
@@ -1168,13 +1172,14 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
             SOURCE = "BON2_INSERT";
             Activity activity = ActivitySale.this;
-            FragmentQteVente fragmentqte = new FragmentQteVente();
+            FragmentQte fragmentqte = new FragmentQte();
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2 , bon2.p_u * (1 + (bon2.tva / 100)));
 
+        }else if(produits.size() > 1){
+            Crouton.makeText(ActivitySale.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
         }else{
             Crouton.makeText(ActivitySale.this, "Produit introuvable !", Style.ALERT).show();
         }
     }
-
 
 }

@@ -3,22 +3,21 @@ package com.safesoft.proapp.distribute.fragments;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.ActivityClientDetail;
+import com.safesoft.proapp.distribute.activities.client.ActivityClientDetail;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.eventsClasses.ValidateFactureEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,12 +36,12 @@ public class FragmentVersementClient {
     MaterialFancyButton btn_valider, btn_cancel;
     private TextInputEditText edt_observation, edt_solde_actuel, edt_versement, edt_nouveau_solde;
     private double val_solde_actuel = 0.0, val_versement_actuel = 0.0, val_versement = 0.0, val_nouveau_solde= 0.0, val_nouveau_versement = 0.0;
-    private String observation = "";
+    private final String observation = "";
     private String CODE_CLIENT;
     private Boolean IS_EDIT;
     private String recordid;
 
-    private EventBus bus = EventBus.getDefault();
+    private final EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
     private NumberFormat nf;
@@ -68,8 +67,11 @@ public class FragmentVersementClient {
 
 
         //Specify the length and width through constants
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(layoutParams);
 
 
         btn_valider = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
@@ -131,7 +133,7 @@ public class FragmentVersementClient {
                 carnet_c.carnet_remarque = edt_observation.getText().toString();
 
                 if(!IS_EDIT){
-                    if(controller.Insert_into_carnet_c(carnet_c, val_nouveau_solde , val_nouveau_versement)){
+                    if(controller.insert_into_carnet_c(carnet_c, val_nouveau_solde , val_nouveau_versement)){
 
                         new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success!")

@@ -9,27 +9,29 @@ public class PostData_Bon1 {
     public Integer recordid;
     public String num_bon;
     public String date_bon;
-
     public String heure;
+    public String date_f;
+    public String heure_f;
     public String mode_rg;
     public String mode_tarif = "0";
     ///////////////////////
     public Integer nbr_p;
-    public Double tot_qte;
+    public double tot_qte;
     ///////////////////////
-    public Double tot_ht = 0.00;
-    public Double tot_tva = 0.00;
-    public Double timbre = 0.0;
-    public Double tot_ttc = 0.00;
-    public Double remise = 0.0;
-    public Double montant_bon = 0.0;
+    public double tot_ht = 0.00;
+    public double tot_tva = 0.00;
+    public double timbre = 0.0;
+    public double tot_ttc = 0.00;
+    public double remise = 0.0;
+    public double montant_bon = 0.0;
     ////////////////////
-    public Double solde_ancien = 0.00;
-    public Double verser = 0.00;
-    public Double reste = 0.00;
+    public double solde_ancien = 0.00;
+    public double verser = 0.00;
+    public double reste = 0.00;
     ////////////////////
-    public Double latitude;
-    public Double longitude;
+    public double latitude;
+    public double longitude;
+
      //////client///////
     public String code_client;
     public String client;
@@ -40,10 +42,10 @@ public class PostData_Bon1 {
     public String ai;
     public String nis;
     ////////////////////
-    public Double client_solde;
-    public Double credit_limit;
-    public Double latitude_client;
-    public Double longitude_client;
+    public double client_solde;
+    public double credit_limit;
+    public double latitude_client;
+    public double longitude_client;
     /////bon1/////////////
     public String code_depot;
     public String code_vendeur;

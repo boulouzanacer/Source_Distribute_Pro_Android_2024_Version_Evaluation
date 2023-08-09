@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="7dp"
+    android:paddingLeft="5dp"
     android:background="@drawable/font_black"
-    android:paddingRight="7dp"
+    android:paddingRight="5dp"
     tools:context="com.safesoft.proapp.distribute.activities.vente.ActivitySales">
 
     <androidx.recyclerview.widget.RecyclerView

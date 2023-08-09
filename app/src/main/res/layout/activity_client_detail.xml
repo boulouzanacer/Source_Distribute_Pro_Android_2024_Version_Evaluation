@@ -47,7 +47,6 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/code_client_text"
                             android:drawableLeft="@drawable/ic_baseline_calculate_24"
                             android:text="CODE:"
                             android:layout_weight="2"
@@ -74,7 +73,6 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/mode_tarif_text"
                             android:drawableLeft="@drawable/ic_baseline_low_priority_24"
                             android:text="M TARIF : "
                             android:layout_weight="3"
@@ -107,7 +105,6 @@
                     android:layout_height="0dp">
 
                     <TextView
-                        android:id="@+id/client_name_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
@@ -134,7 +131,6 @@
                     android:layout_height="0dp">
 
                     <TextView
-                        android:id="@+id/tel_text"
                         android:text="TEL   :"
                         android:layout_weight="1"
                         android:textSize="15dp"
@@ -180,7 +176,6 @@
                     android:layout_height="0dp">
 
                     <TextView
-                        android:id="@+id/adresse_text"
                         android:drawableLeft="@drawable/ic_baseline_home_24"
                         android:text="Adrs :"
                         android:layout_weight="1"
@@ -242,6 +237,7 @@
                     android:id="@+id/btn_itenerary"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
+                    android:onClick="onClick"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
@@ -349,12 +345,10 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:id="@+id/all_versement_lnr"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/rtl_header_versement"
                 android:background="@color/blue"
                 android:padding="5sp"
                 android:orientation="horizontal"
@@ -408,7 +402,6 @@
 
             </LinearLayout>
             <RelativeLayout
-                android:id="@+id/rtl_footer_versement"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -441,7 +434,6 @@
             android:padding="2dp">
 
             <TableRow
-                android:id="@+id/tr_item_1"
                 android:background="@drawable/table_row_last_bg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -472,7 +464,6 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/tr_item_2"
                 android:background="@drawable/table_row_last_bg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -505,7 +496,6 @@
 
 
             <TableRow
-                android:id="@+id/tr_item_3"
                 android:background="@drawable/table_row_last_bg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

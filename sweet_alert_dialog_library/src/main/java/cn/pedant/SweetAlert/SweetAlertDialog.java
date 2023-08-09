@@ -23,13 +23,13 @@ import java.util.List;
 
 public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     private View mDialogView;
-    private AnimationSet mModalInAnim;
-    private AnimationSet mModalOutAnim;
-    private Animation mOverlayOutAnim;
-    private Animation mErrorInAnim;
-    private AnimationSet mErrorXInAnim;
-    private AnimationSet mSuccessLayoutAnimSet;
-    private Animation mSuccessBowAnim;
+    private final AnimationSet mModalInAnim;
+    private final AnimationSet mModalOutAnim;
+    private final Animation mOverlayOutAnim;
+    private final Animation mErrorInAnim;
+    private final AnimationSet mErrorXInAnim;
+    private final AnimationSet mSuccessLayoutAnimSet;
+    private final Animation mSuccessBowAnim;
     private TextView mTitleTextView;
     private TextView mContentTextView;
     private String mTitleText;
@@ -50,7 +50,7 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     private ImageView mCustomImage;
     private Button mConfirmButton;
     private Button mCancelButton;
-    private ProgressHelper mProgressHelper;
+    private final ProgressHelper mProgressHelper;
     private FrameLayout mWarningFrame;
     private OnSweetClickListener mCancelClickListener;
     private OnSweetClickListener mConfirmClickListener;
@@ -63,8 +63,8 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     public static final int CUSTOM_IMAGE_TYPE = 4;
     public static final int PROGRESS_TYPE = 5;
 
-    public static interface OnSweetClickListener {
-        public void onClick (SweetAlertDialog sweetAlertDialog);
+    public interface OnSweetClickListener {
+        void onClick (SweetAlertDialog sweetAlertDialog);
     }
 
     public SweetAlertDialog(Context context) {

@@ -12,7 +12,7 @@ import com.github.ybq.android.spinkit.animation.AnimationUtils;
 @SuppressWarnings("WeakerAccess")
 public abstract class SpriteContainer extends Sprite {
 
-    private Sprite[] sprites;
+    private final Sprite[] sprites;
 
     private int color;
 

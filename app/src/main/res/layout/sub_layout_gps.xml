@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="10dp"
+    android:padding="5dp"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:id="@+id/param_gps"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
@@ -15,48 +14,30 @@
         android:textSize="18sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="@string/param_tres_gps" />
-    <TextView
-        android:id="@+id/descrip_code_depot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/a_vous_permet_d_activer_ou_d_sactiver_la_localisation_gps_cette_option_autorise_l_appareil_a_r_cup_rer_sa_postion"
-        android:textSize="12sp"
-        android:textColor="@color/gray" />
+        android:text="Paramètres localisation des bons" />
 
     <View
-        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_large_size"
         android:background="@color/divider" />
 
     <LinearLayout
-        android:id="@+id/prefSpacingType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/item_background_holo_light"
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingStart="8dip"
+        android:paddingStart="8dp"
         android:focusable="true"
         tools:ignore="RtlSymmetry">
 
-        <TextView
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:singleLine="true"
-            android:text="@string/localisation"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <Switch
             android:id="@+id/switch_gps"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="@string/localisation"
+            android:textSize="15sp"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 

@@ -49,7 +49,6 @@
 
             <include layout="@layout/zpref_scanner" />
 
-
             <Button
                 android:layout_width="match_parent"
                 android:id="@+id/bt10"
@@ -81,8 +80,6 @@
                 android:layout_height="match_parent" />
 
             <include layout="@layout/param_divers" />
-
-
 
 
         </LinearLayout>

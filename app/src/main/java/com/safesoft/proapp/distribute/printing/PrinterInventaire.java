@@ -67,7 +67,7 @@ public class PrinterInventaire {
     private static final int BLUETOOTH_PERMISSION = 3;
     private ProgressDialog progressDialog;
     private ProgressDialog progressDialog_wait_connecte;
-    private String PREFS = "ALL_PREFS";
+    private final String PREFS = "ALL_PREFS";
     private Activity mActivity;
 
     SharedPreferences prefs;
@@ -77,26 +77,24 @@ public class PrinterInventaire {
 
     private RTPrinter rtPrinter;
     private final ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
-    private PrinterInterface curPrinterInterface = null;
+    private final PrinterInterface curPrinterInterface = null;
 
     private String printStr;
     private PrinterFactory printerFactory;
     private TextSetting textSetting;
-    private String mChartsetName = "UTF-8";
+    private final String mChartsetName = "UTF-8";
     private Object configObj;
-    private ESCFontTypeEnum curESCFontType = null;
+    private final ESCFontTypeEnum curESCFontType = null;
     private ArrayList<PostData_Inv2> final_panier;
     private PostData_Produit produit;
     private PostData_Inv1 inv1;
     private DATABASE controller;
-    private String type_print;
 
     public void start_print_inv(Activity activity, ArrayList<PostData_Inv2> final_panier, PostData_Inv1 inv1)  throws UnsupportedEncodingException {
 
         mActivity = activity;
         this.final_panier = final_panier;
         this.inv1 = inv1;
-        this.type_print = "VENTE";
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
@@ -143,83 +141,11 @@ public class PrinterInventaire {
                 }
             }else {
                 Log.v("PRINTER", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimente est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
         }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
 
-
-           // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
-            //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
-           // assert WIFI_VALUE_PORT != null;
-            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
-            WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
-
-            runningTask = new LongOperation(wiFiConfigBean);
-            runningTask.execute();
-
-        }
-    }
-
-
-    public void start_print_etiquette(Activity activity, PostData_Produit produit) {
-
-        mActivity = activity;
-        this.produit = produit;
-        this.type_print = "ETIQUETTE";
-
-        AsyncTask<Void, Void, Boolean> runningTask;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
-            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-                return;
-            }
-
-        }
-
-        controller =  new DATABASE(mActivity);
-
-        BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
-        printerFactory = new ThermalPrinterFactory();
-        rtPrinter = printerFactory.create();
-        textSetting = new TextSetting();
-
-
-        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            BluetoothDevice device = null;
-            pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
-            boolean isfound = false;
-            Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
-            for(int i = 0; i< pairedDeviceList.size() ; i++){
-                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
-                    isfound = true;
-                    device = pairedDeviceList.get(i);
-
-                }
-            }
-            if(isfound){
-                Log.v("PRINTER", "Device found");
-                if(device != null){
-                    configObj = new BluetoothEdrConfigBean(device);
-                    BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
-                    runningTask = new LongOperation(bluetoothEdrConfigBean);
-                    runningTask.execute();
-                }
-            }else {
-                Log.v("PRINTER", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimente est connecté", Style.ALERT).show();
-            }
-
-        }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
-
-
-            // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
-            //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
-            // assert WIFI_VALUE_PORT != null;
             configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
@@ -296,13 +222,7 @@ public class PrinterInventaire {
             mProgressDialog.hide();
             if(result){
                 try {
-                    if(type_print.equals("VENTE")){
-                        print_bon();
-                    }else if(type_print.equals("ETIQUETTE")){
-                        print_etiquette();
-                    }else{
-
-                    }
+                    print_bon();
 
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -329,9 +249,7 @@ public class PrinterInventaire {
                 cmd.append(cmd.getCommonSettingCmd(commonSetting));
                 BitmapSetting bitmapSetting = new BitmapSetting();
                 bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
-
                 prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-
 
                 try {
 
@@ -362,17 +280,14 @@ public class PrinterInventaire {
                    // bitmapSetting.setBimtapLimitWidth(40 * 8);
 
 
-
-
+                    //textSetting.setIsEscSmallCharactor(SettingEnum.Enable);
                     cmd.append(cmd.getCommonSettingCmd(commonSetting));
 
                     textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
                     textSetting.setDoubleWidth(SettingEnum.Enable);
                     textSetting.setBold(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
                     textSetting.setBold(SettingEnum.Disable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
                     if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
@@ -392,7 +307,6 @@ public class PrinterInventaire {
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     ////////////////////////////////////// INFO CLIENT ///////////////////////////////////////////
                     textSetting.setAlign(CommonEnum.ALIGN_RIGHT);
-                    textSetting.setIsEscSmallCharactor(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, "Date :" + inv1.date_inv + " " + inv1.heure_inv));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
@@ -410,11 +324,9 @@ public class PrinterInventaire {
                     textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
                     textSetting.setDoubleWidth(SettingEnum.Enable);
                     textSetting.setBold(SettingEnum.Enable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
-                    cmd.append(cmd.getTextCmd(textSetting, "BL N°:" + inv1.num_inv));
+                    cmd.append(cmd.getTextCmd(textSetting, "INVENTAIRE N :" + inv1.num_inv));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     //cmd.append(cmd.getTextCmd(textSetting, "123456789.123456789.123456789.123456789.123456789.123456789.123456789."));
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setBold(SettingEnum.Disable);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
@@ -428,7 +340,7 @@ public class PrinterInventaire {
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
                     textSetting.setBold(SettingEnum.Enable);
                     String format0 = "%1$-19s %2$-9s %3$-5s %4$12s";
-                    cmd.append(cmd.getTextCmd(textSetting,  String.format(format0, "PRODUIT" ,  StringUtils.center("QTE",9) , StringUtils.center("U.G",5) , "P.U"   )));
+                    cmd.append(cmd.getTextCmd(textSetting,  String.format(format0, "PRODUIT" ,  StringUtils.center("QTE",9) , StringUtils.center("VRAC",5) , "P.U"   )));
                     textSetting.setBold(SettingEnum.Disable);
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
@@ -446,19 +358,19 @@ public class PrinterInventaire {
                         cmd.append(cmd.getTextCmd(textSetting, final_panier.get(i).produit));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                         nbr_colis = final_panier.get(i).nbr_colis;
-                        nbr_colis_Str   =  new DecimalFormat("####0.##").format(Double.valueOf(nbr_colis));
+                        nbr_colis_Str   =  new DecimalFormat("####0.##").format(nbr_colis);
 
                         colissage = final_panier.get(i).colissage;
-                        colissage_Str   =  new DecimalFormat("####0.##").format(Double.valueOf(colissage));
+                        colissage_Str   =  new DecimalFormat("####0.##").format(colissage);
 
                         qte = final_panier.get(i).qte_physique;
-                        qte_Str         =  new DecimalFormat("####0.##").format(Double.valueOf(qte));
+                        qte_Str         =  new DecimalFormat("####0.##").format(qte);
 
                         gte_gratuit = final_panier.get(i).vrac;
-                        gte_gratuit_Str =  new DecimalFormat( "####0.##").format(Double.valueOf(gte_gratuit));
+                        gte_gratuit_Str =  new DecimalFormat( "####0.##").format(gte_gratuit);
 
                         prix_unit = final_panier.get(i).pa_ht;
-                        prix_unit_Str   =  new DecimalFormat("####0.00").format(Double.valueOf(prix_unit));
+                        prix_unit_Str   =  new DecimalFormat("####0.00").format(prix_unit);
 
 
                         X1_Str = "X";
@@ -475,89 +387,22 @@ public class PrinterInventaire {
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str,6), StringUtils.center(colissage_Str,6), StringUtils.center(qte_Str,9) , StringUtils.center(gte_gratuit_Str,5) , prix_unit_Str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
 
-                       /* if(i<final_panier.size()-1){
-                            textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                            cmd.append(cmd.getTextCmd(textSetting, "------------------------"));
-                            textSetting.setAlign(CommonEnum.ALIGN_LEFT);
-                            cmd.append(cmd.getLFCRCmd()); // one line space
-                        }*/
-
 
                     }
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
                     cmd.append(cmd.getLFCRCmd()); // one line space
-                    /////////////////////////////IMPRESSION BON2////////////////////////////////////
-
-                    /////////////////////////////IMPRESSION TOTAL////////////////////////////////////
 
                     int nbr_produit;
-                    Double total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
-                    String nbr_produit_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+                    String nbr_produit_str;
 
                     nbr_produit = final_panier.size();
                     nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
-
-                 /*   total_bon = inv1.tot_ttc;
-                    total_bon_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(total_bon));
-
-                    remise_bon = inv1.remise;
-                    remise_bon_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(remise_bon));
-
-                    ancien_solde = inv1.solde_ancien;
-                    ancien_solde_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(ancien_solde));
-
-                    total_a_payer = inv1.montant_bon;
-                    total_a_payer_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(total_a_payer));
-
-                    versement = inv1.verser;
-                    versement_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(versement));
-
-                    nouveau_solde = inv1.reste;
-                    nouveau_solde_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(nouveau_solde));
-
-                    String format2 = "%1$13s%2$-9s%3$13s%4$13s";
-                    textSetting.setBold(SettingEnum.Enable);
-
-                    if(remise_bon !=0){
-
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL :" ,total_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "REMISE :" ,remise_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                    }
-
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "NBR PRODUIT :", StringUtils.center(nbr_produit_str,9), "TTC A PAYER :" , total_a_payer_str)));
-                    cmd.append(cmd.getLFCRCmd()); // one line space
-
-                    textSetting.setBold(SettingEnum.Disable);
-
-                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
-                    cmd.append(cmd.getLFCRCmd()); // one line space
-                    /////////////////////////////IMPRESSION TOTAL///////////////////////////////////
-                    //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
-
-
-                    textSetting.setBold(SettingEnum.Enable);
-                    textSetting.setDoubleWidth(SettingEnum.Enable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
-
-                    String format3 = "%1$16s%2$14s";
-
-                    //cmd.append(cmd.getTextCmd(textSetting, "123456789.123456789.123456789.123456789.123456789.123456789.123456789."));
-
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "ANCIEN SOLDE :", ancien_solde_str)));
-                    cmd.append(cmd.getLFCRCmd()); // one line space
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "TOTAL BON :", total_a_payer_str)));
-                    cmd.append(cmd.getLFCRCmd()); // one line space
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "VERSEMENT :", versement_str)));
-                    cmd.append(cmd.getLFCRCmd()); // one line space
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "NOUVEAU SOLDE :", nouveau_solde_str)));
-                    cmd.append(cmd.getLFCRCmd()); // one line space*/
+                    cmd.append(cmd.getTextCmd(textSetting, "NBR PRODUIT :" + nbr_produit_str));
 
                     textSetting.setBold(SettingEnum.Disable);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
-                    textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
-
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
                     cmd.append(cmd.getLFCRCmd()); // one line space
 
@@ -640,7 +485,7 @@ public class PrinterInventaire {
                     String prix_vente_str;
 
                     prix_vente = produit.pv1_ht * (1+(produit.tva/100));
-                    prix_vente_str   =  new DecimalFormat("##,##0.00").format(Double.valueOf(prix_vente));
+                    prix_vente_str   =  new DecimalFormat("##,##0.00").format(prix_vente);
 
                     textSetting.setBold(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, prix_vente_str + " DA"));

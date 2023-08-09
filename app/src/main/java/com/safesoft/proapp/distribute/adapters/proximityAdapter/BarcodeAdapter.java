@@ -16,11 +16,11 @@ import java.util.List;
  */
 public class BarcodeAdapter extends ArrayAdapter{
 
-    private Context mContext;
-    private List<String> mItemList;
-    private List<String> mTagList;
-    private LayoutInflater mInflater;
-    private int[] mColors;
+    private final Context mContext;
+    private final List<String> mItemList;
+    private final List<String> mTagList;
+    private final LayoutInflater mInflater;
+    private final int[] mColors;
 
     public BarcodeAdapter(Context context, List<String> itemList, List<String> tagList) {
         super(context,0,itemList);

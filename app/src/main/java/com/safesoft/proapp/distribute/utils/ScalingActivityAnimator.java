@@ -18,12 +18,12 @@ import com.safesoft.proapp.distribute.R;
  * Created by 晓勇 on 2015/8/21 0021.
  */
 public class ScalingActivityAnimator {
-  private Activity mActivity;
-  private View mMainView;
-  private View mPopupView;
+  private final Activity mActivity;
+  private final View mMainView;
+  private final View mPopupView;
   private PopupWindow mPopupWindow;
   private long duration =400;
-  private int screenHeight;
+  private final int screenHeight;
   private int popHeight ;
   /**
    * @param context

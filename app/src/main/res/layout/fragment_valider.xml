@@ -17,7 +17,6 @@
 
         <TextView
             android:layout_weight="1"
-            android:id="@+id/title_versement"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/blue"
@@ -39,7 +38,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
-                android:id="@+id/ancien_soldLayout"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contextClickable="false"
@@ -67,7 +65,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
-                android:id="@+id/montant_bon_actuelLayout"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contextClickable="false"
@@ -101,7 +98,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:id="@+id/sold_actuelLayout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
@@ -137,7 +133,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:id="@+id/versementLayout"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contextClickable="false"
@@ -172,7 +167,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:id="@+id/nouveau_soldeLayout"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contextClickable="false"

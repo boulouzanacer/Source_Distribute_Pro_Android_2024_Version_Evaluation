@@ -34,13 +34,13 @@ import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierInventaire;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventInventaire2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentQteInventaire;
-import com.safesoft.proapp.distribute.fragments.FragmentQteVente;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
@@ -102,6 +102,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     private Barcode barcodeResult;
     final String PREFS = "ALL_PREFS";
     String TYPE_ACTIVITY = "";
+    String SOURCE_EXPORT = "";
     SharedPreferences prefs;
 
     @Override
@@ -139,13 +140,15 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         //get num bon
         if(getIntent() !=null){
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
+            SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         }else {
             Crouton.makeText(ActivityInventaire.this, "Erreur séléction activity !", Style.ALERT).show();
             return;
         }
         if(TYPE_ACTIVITY.equals("NEW_INV")){
             //get num bon
-            NUM_INV = Get_Digits_String();
+            String selectQuery = "SELECT MAX(NUM_INV) AS max_id FROM Inv1 WHERE NUM_INV IS NOT NULL";
+            NUM_INV = controller.select_max_num_bon(selectQuery);
             // get date and time
             Calendar c = Calendar.getInstance();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
@@ -181,7 +184,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                     "Inv1.UTILISATEUR, " +
                     "Inv1.CODE_DEPOT, " +
                     "Inv1.EXPORTATION, " +
-                    "Inv1.IS_SENT, " +
+                    "Inv1.IS_EXPORTED, " +
                     "Inv1.DATE_EXPORT_INV, " +
                     "Inv1.BLOCAGE " +
 
@@ -212,7 +215,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             date_time_sub_title = inv1.date_inv + " " + inv1.heure_inv;
 
             edt_nom_inventaire.setText(inv1.nom_inv);
-            btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_edit_24);
+            btn_validate_inv_name.setBackgroundResource(R.drawable.baseline_edit_24);
             edt_nom_inventaire.setEnabled(false);
             btn_nom_inv_state_isactive = false;
 
@@ -250,24 +253,6 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         bus.register(this);
 
     }
-
-    public String Get_Digits_String(){
-        String _number = controller.Select_max_num_inv_inventaire("Inv1");
-        while(_number.length() < 6){
-            _number = "0" + _number;
-        }
-        return _number;
-    }
-    public String Get_Digitss_String(String number, Integer length) {
-        String _number = number;
-        while (_number.length() < length) {
-            _number = "0" + _number;
-        }
-        return _number;
-    }
-
-
-
 
     @SuppressLint({"CutPasteId", "WrongViewCast"})
     private void initViews() {
@@ -325,7 +310,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 activity = ActivityInventaire.this;
 
                 FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
-                fragmentSelectProduct.showDialogbox(activity, getBaseContext(),  "1", "INVENTAIRE");
+                fragmentSelectProduct.showDialogbox(activity, getBaseContext(),  "1", "VENTE");
                 break;
 
             case R.id.valide_inventaire:
@@ -385,48 +370,57 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 }
                 break;
             case R.id.btn_mofifier_bon:
-                if(inv1.is_sent == 1){
+
+                if(!SOURCE_EXPORT.equals("EXPORTED")){
+                    if(inv1.is_exported == 1){
+                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Cet inventaire est déja exporté, modification impossible")
+                                .show();
+                        return;
+                    }
+                    if(!inv1.blocage.equals("F")){
+                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Cet inventaire n'est pas encore validé")
+                                .show();
+                        return;
+
+                    } else  {
+                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Modification")
+                                .setContentText("Voulez-vous vraiment Modifier cet inventaire ?")
+                                .setCancelText("Non")
+                                .setConfirmText("Oui")
+                                .showCancelButton(true)
+                                .setCancelClickListener(Dialog::dismiss)
+                                .setConfirmClickListener(sDialog -> {
+
+                                    try{
+
+                                        if (controller.modifier_inv1_sql("Inv1",inv1.num_inv) ) {
+                                            inv1.blocage = "M";
+                                            validate_theme();
+                                        }
+
+
+                                    }catch (Exception e){
+
+                                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                                .setTitleText("Attention!")
+                                                .setContentText("problème lors de Modification d'inventaire : " + e.getMessage())
+                                                .show();
+                                    }
+                                    sDialog.dismiss();
+                                }).show();
+                    }
+                }else {
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Cet inventaire est déja exporté, modification impossible")
+                            .setContentText("Ce bon est déja exporté")
                             .show();
-                    return;
                 }
-                if(!inv1.blocage.equals("F")){
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire n'est pas encore validé")
-                            .show();
-                    return;
 
-                } else  {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Modification")
-                            .setContentText("Voulez-vous vraiment Modifier cet inventaire ?")
-                            .setCancelText("Non")
-                            .setConfirmText("Oui")
-                            .showCancelButton(true)
-                            .setCancelClickListener(Dialog::dismiss)
-                            .setConfirmClickListener(sDialog -> {
-
-                                try{
-
-                                    if (controller.modifier_inv1_sql("Inv1",inv1.num_inv) ) {
-                                        inv1.blocage = "M";
-                                        validate_theme();
-                                    };
-
-
-                                }catch (Exception e){
-
-                                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                            .setTitleText("Attention!")
-                                            .setContentText("problème lors de Modification d'inventaire : " + e.getMessage())
-                                            .show();
-                                }
-                                sDialog.dismiss();
-                            }).show();
-                }
             break;
             case R.id.btn_imp_bon:
                 if(!inv1.blocage.equals("F")){
@@ -444,8 +438,16 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
                 break;
             case R.id.btn_valide_inv_name:
-                if( Objects.requireNonNull(edt_nom_inventaire.getText()).length() <1){
 
+                if(inv1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Cet inventaire est déja validé")
+                            .show();
+                    return;
+                }
+
+                if( Objects.requireNonNull(edt_nom_inventaire.getText()).length() <1){
                     Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
                     return;
                 }
@@ -453,8 +455,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 inv1.nom_inv = edt_nom_inventaire.getText().toString();
 
                 if(btn_nom_inv_state_isactive){
-                    if(controller.Insert_into_Inv1("Inv1", inv1)){
-                        btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_edit_24);
+                    if(controller.insert_into_Inv1("Inv1", inv1)){
+                        btn_validate_inv_name.setBackgroundResource(R.drawable.baseline_edit_24);
                         edt_nom_inventaire.setEnabled(false);
                         btn_nom_inv_state_isactive = false;
                     }
@@ -641,6 +643,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     public void onBackPressed() {
         Sound( R.raw.back);
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int resid){
@@ -701,14 +704,14 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
 
     @Override
-    public void onClick(View v, int position, PostData_Produit item, String SOURCE_ACTIVITY) {
+    public void onClick(View v, int position, PostData_Produit item) {
 
         PostData_Inv2 inv2 = new PostData_Inv2();
         inv2.produit = item.produit;
         inv2.codebarre = item.code_barre;
         inv2.code_depot = CODE_DEPOT;
         inv2.qte_theorique = item.stock;
-        inv2.pa_ht = item.pa_ht;
+        //inv2.pa_ht = item.pa_ht;
         inv2.colissage = item.colissage;
 
         inv2.num_inv = NUM_INV;
@@ -725,7 +728,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
            try {
                if(SOURCE.equals("INV2_INSERT")){
-                   controller.Insert_into_inventaire2( item_panier.getData());
+                   controller.insert_into_inventaire2( item_panier.getData());
                }else if(SOURCE.equals("INV2_EDIT")){
                    controller.Update_inventaire2(item_panier.getData());
                }
@@ -759,19 +762,19 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
         PostData_Inv2 inv2 = new PostData_Inv2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
-                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                    "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
             produits = controller.select_produits_from_database(querry);
 
             if(produits.size() == 0){
-                String querry1 = "SELECT * FROM Codebarre WHERE CODE_BARRE_SYN = '"+resultscan+"'";
+                String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+ resultscan +"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PV1_HT, PV2_HT, PV3_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, DESTOCK_TYPE, " +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                        "CASE WHEN Produit.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
                 produits = controller.select_produits_from_database(querry2);
             }
@@ -781,18 +784,19 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             inv2.produit = produits.get(0).produit;
             inv2.codebarre = produits.get(0).code_barre;
             inv2.qte_theorique = produits.get(0).stock;
-            inv2.pa_ht = produits.get(0).pa_ht;
+            //inv2.pa_ht = produits.get(0).pa_ht;
             inv2.tva = produits.get(0).tva;
-
-
-
+            inv2.colissage = produits.get(0).colissage;
             inv2.num_inv = NUM_INV;
-            // inv2.code_depot = CODE_DEPOT;
+            inv2.code_depot = CODE_DEPOT;
+
             SOURCE = "INV2_INSERT";
             Activity activity = ActivityInventaire.this;
             FragmentQteInventaire fragmentqteinventaire = new FragmentQteInventaire();
             fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(),  inv2);
 
+        }else if(produits.size() > 1){
+            Crouton.makeText(ActivityInventaire.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
         }else{
             Crouton.makeText(ActivityInventaire.this, "Produit introuvable !", Style.ALERT).show();
         }

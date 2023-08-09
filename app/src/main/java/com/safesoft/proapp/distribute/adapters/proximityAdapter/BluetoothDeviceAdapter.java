@@ -24,10 +24,10 @@ import java.util.List;
  */
 public class BluetoothDeviceAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<BluetoothDevice> mList;
-    private LayoutInflater mInflater;
-    private Activity mActivity;
+    private final Context mContext;
+    private final List<BluetoothDevice> mList;
+    private final LayoutInflater mInflater;
+    private final Activity mActivity;
 
     public BluetoothDeviceAdapter(Context context, Activity activity, List<BluetoothDevice> list) {
         this.mContext = context;

@@ -9,11 +9,11 @@ import java.util.List;
  */
 
 public class CheckedPanierEventBon2 {
-  private PostData_Bon2 panier;
-  private Double qte_old;
-  private Double gratuit_old;
+  private final PostData_Bon2 panier;
+  private final double qte_old;
+  private final double gratuit_old;
 
-  public CheckedPanierEventBon2(PostData_Bon2 panier, Double qte_old, Double gratuit_old){
+  public CheckedPanierEventBon2(PostData_Bon2 panier, double qte_old, double gratuit_old){
     this.panier = panier;
     this.qte_old = qte_old;
     this.gratuit_old = gratuit_old;
@@ -22,10 +22,10 @@ public class CheckedPanierEventBon2 {
   public PostData_Bon2 getData(){
     return panier;
   }
-  public Double getQteOld(){
+  public double getQteOld(){
     return qte_old;
   }
-  public Double getGratuitOld(){
+  public double getGratuitOld(){
     return gratuit_old;
   }
 }

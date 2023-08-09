@@ -9,8 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/violet"
-        android:id="@+id/result_scan_space">
+        android:background="@color/violet">
 
 
         <LinearLayout
@@ -30,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:drawableStart="@android:drawable/ic_menu_search"
-                android:hint="@string/search_product"
+                android:hint="@string/rechercher_client"
                 android:inputType="text"
                 android:id="@+id/search_field"
                 android:autofillHints="" />

@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 public class ActivityChangePwd extends AppCompatActivity {
 
     private static final String TAG = "ActivityChangePwd";
-    private String PREFS = "ALL_PREFS";
+    private final String PREFS = "ALL_PREFS";
 
     private EditText _oldpasswordText;
     private EditText _passwordText;
@@ -65,7 +65,7 @@ public class ActivityChangePwd extends AppCompatActivity {
 
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.putString("PASSWORD", _passwordText.getText().toString());
-        editor.commit();
+        editor.apply();
 
 
 
@@ -96,7 +96,6 @@ public class ActivityChangePwd extends AppCompatActivity {
         _signupButton.setEnabled(true);
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public boolean validate() {
         boolean valid = true;
 
@@ -106,7 +105,7 @@ public class ActivityChangePwd extends AppCompatActivity {
 
         SharedPreferences prefs_login = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        if(!(prefs_login.getString("PASSWORD", "0000").equals(oldpassword)) && !(prefs_login.getString("PASSWORD", "0000").equals("0000"))){
+        if(!(prefs_login.getString("PASSWORD", "0000").equals(oldpassword))){
             valid = false;
             _oldpasswordText.setError("Remettre l'ancien mot de passe");
         }else{

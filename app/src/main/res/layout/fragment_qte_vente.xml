@@ -39,7 +39,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:id="@+id/stockavantLayout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
@@ -105,7 +104,6 @@
             android:layout_height="0dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/nbrColisLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
@@ -127,7 +125,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/colissageLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
@@ -199,7 +196,7 @@
 
 
         <LinearLayout
-            android:id="@+id/ly_prix_ttc"
+            android:id="@+id/ly_prix"
             android:layout_weight="1"
             android:weightSum="5"
             android:orientation="horizontal"
@@ -256,7 +253,6 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/prixttcLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_weight="2"
@@ -289,7 +285,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:id="@+id/stockapresLayout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"

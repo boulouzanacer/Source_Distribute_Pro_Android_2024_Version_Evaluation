@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+
+    <item
+        android:id="@+id/map"
+        android:title="Maps"
+        android:orderInCategory="1"
+        android:icon="@mipmap/maps_icon"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/add_client"
+        android:title="Ajouter client"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_add_black_24dp"
+        app:showAsAction="always" />
+
+</menu>

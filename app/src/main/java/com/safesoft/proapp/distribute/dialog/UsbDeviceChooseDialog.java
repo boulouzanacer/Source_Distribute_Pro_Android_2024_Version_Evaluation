@@ -19,7 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.proximityAdapter.UsbDeviceAdapter;
-import com.safesoft.proapp.distribute.receiver.UsbDeviceReceiver;
+import com.safesoft.proapp.distribute.printing.receiver.UsbDeviceReceiver;
 import com.safesoft.proapp.distribute.utils.LogUtils;
 
 import java.util.ArrayList;

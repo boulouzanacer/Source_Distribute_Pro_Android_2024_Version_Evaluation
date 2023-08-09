@@ -6,7 +6,7 @@ package com.safesoft.proapp.distribute.eventsClasses;
 
 public class DeleteItemEvent {
 
-  private String item_codebarre;
+  private final String item_codebarre;
 
   public DeleteItemEvent(String item_codebarre){
     this.item_codebarre = item_codebarre;

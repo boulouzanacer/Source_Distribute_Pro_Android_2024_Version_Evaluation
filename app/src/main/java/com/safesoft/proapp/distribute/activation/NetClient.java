@@ -17,12 +17,12 @@ public class NetClient {
      * Maximum size of buffer
      */
     public static final int BUFFER_SIZE = 2048;
-    private Socket socket = null;
+    private final Socket socket = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
 
     private String host = null;
-    private String macAddress = null;
+    private final String macAddress = null;
     private int port = 7999;
 
 
@@ -39,15 +39,13 @@ public class NetClient {
 
     private void connectWithServer() {
         try {
-            if (socket == null) {
-                SocketAddress sockaddr = new InetSocketAddress(host, port);
-                Socket socket = new Socket();
-                socket.connect(sockaddr, 1500);
+            SocketAddress sockaddr = new InetSocketAddress(host, port);
+            Socket socket = new Socket();
+            socket.connect(sockaddr, 1500);
 
-                //  socket = new Socket(host, port);
-                out = new PrintWriter(socket.getOutputStream());
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            }
+            //  socket = new Socket(host, port);
+            out = new PrintWriter(socket.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,6 +75,7 @@ public class NetClient {
 
     public String receiveDataFromServer() {
         try {
+
             String message = "";
             int charsRead = 0;
             char[] buffer = new char[BUFFER_SIZE];
@@ -87,7 +86,7 @@ public class NetClient {
             disConnectWithServer(); // disconnect server
             return message;
         } catch (IOException e) {
-            return "Error receiving response:  " + e.getMessage();
+            return "0.0.0.0";
         }
     }
 }

@@ -15,8 +15,8 @@ import java.util.List;
 
 public class WifiListAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<ScanResult> mScanResults;
+    private final Context mContext;
+    private final List<ScanResult> mScanResults;
 
     public WifiListAdapter(Context context, List<ScanResult> scanResults) {
         // TODO Auto-generated constructor stub

@@ -18,31 +18,8 @@
     </style>
 
 
-    <style name="ContentImageBadgeTitle" parent="AppTheme">
-        <item name="android:alpha">0.5</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="ContentImageBadgeText" parent="AppTheme">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-
-    </style>
-
     <style name="ContentMainBadgeTitle" parent="AppTheme">
         <item name="android:textColor">@color/contentBadgeTitle</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="TitleBadgeText" parent="AppTheme">
-
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="TitleBadgeTitle" parent="AppTheme">
-        <item name="android:textColor">@color/titleBadgeTitle</item>
         <item name="android:textSize">12sp</item>
     </style>
 
@@ -85,11 +62,6 @@
         <item name="android:background">@color/crimson</item>
     </style>
 
-    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <item name="android:paddingBottom">8dp</item>
-    </style>
-
 
     <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
@@ -101,16 +73,9 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="Theme.MyApplication.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-    <style name="Theme.MyApplication.AppBarOverlay"
-        parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.MyApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="BaseLine">
         <item name="android:layout_width">match_parent</item>
@@ -124,4 +89,8 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
+    <style name="animation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
 </resources>

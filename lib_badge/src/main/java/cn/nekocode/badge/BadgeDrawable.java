@@ -44,23 +44,23 @@ public class BadgeDrawable extends Drawable {
         private Typeface typeface = Typeface.DEFAULT_BOLD;
 
     }
-    private Config _CONFIG;
+    private final Config _CONFIG;
 
-    private ShapeDrawable backgroundDrawable;
-    private ShapeDrawable backgroundDrawableOfText2;
-    private ShapeDrawable backgroundDrawableOfText1;
+    private final ShapeDrawable backgroundDrawable;
+    private final ShapeDrawable backgroundDrawableOfText2;
+    private final ShapeDrawable backgroundDrawableOfText1;
     private int badgeWidth;
     private int badgeHeight;
-    private float[] outerR = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
-    private float[] outerROfText1 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
-    private float[] outerROfText2 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
-    private Paint paint;
+    private final float[] outerR = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
+    private final float[] outerROfText1 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
+    private final float[] outerROfText2 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
+    private final Paint paint;
     private Paint.FontMetrics fontMetrics;
     private int text1Width, text2Width;
     private boolean isNeedAutoSetBounds = false;
 
     public static class Builder {
-        private Config config;
+        private final Config config;
 
         public Builder() {
             config = new Config();

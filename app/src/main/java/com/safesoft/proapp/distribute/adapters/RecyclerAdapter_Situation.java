@@ -25,9 +25,9 @@ import java.util.Locale;
 
 public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdapter_Situation.MyViewHolder> {
 
-    private List<PostData_Carnet_c> carnet_c_tList;
+    private final List<PostData_Carnet_c> carnet_c_tList;
     private ItemClick itemClick;
-    private Context mContext;
+    private final Context mContext;
     private NumberFormat nf;
 
 

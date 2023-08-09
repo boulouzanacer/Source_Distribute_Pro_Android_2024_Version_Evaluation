@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
+import com.safesoft.proapp.distribute.activities.achats.ActivityAchats;
 import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,7 +25,7 @@ public class ActivityInventaireAchat extends AppCompatActivity {
 
 
     private  MediaPlayer mp;
-    private EventBus bus = EventBus.getDefault();
+    private final EventBus bus = EventBus.getDefault();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class ActivityInventaireAchat extends AppCompatActivity {
                 lunchActivity(ActivityInventaires.class);
                 break;
             case R.id.rlt_achat:
-                lunchActivity(ActivityAchat.class);
+                lunchActivity(ActivityAchats.class);
                 break;
         }
     }
@@ -64,9 +64,9 @@ public class ActivityInventaireAchat extends AppCompatActivity {
     protected void lunchActivity(Class cls){
 
         Intent exported_inventaire_intent = new Intent(ActivityInventaireAchat.this, cls);
-        exported_inventaire_intent.putExtra("SOURCE", "NOTEXPORTED");
+        exported_inventaire_intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
         startActivity(exported_inventaire_intent);
-
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override
@@ -75,7 +75,6 @@ public class ActivityInventaireAchat extends AppCompatActivity {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -83,17 +82,11 @@ public class ActivityInventaireAchat extends AppCompatActivity {
     public void onBackPressed() {
         Sound(R.raw.back);
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound){
         mp = MediaPlayer.create(this, SourceSound);
         mp.start();
-    }
-
-
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
     }
 }

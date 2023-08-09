@@ -11,8 +11,8 @@ import java.util.List;
  */
 
 public class PreparedBonEvent {
-  private PostData_Bon1 bon1;
-  private List<PostData_Bon2> panier;
+  private final PostData_Bon1 bon1;
+  private final List<PostData_Bon2> panier;
 
   public PreparedBonEvent(PostData_Bon1 bon1, List<PostData_Bon2> panier){
     this.bon1 = bon1;

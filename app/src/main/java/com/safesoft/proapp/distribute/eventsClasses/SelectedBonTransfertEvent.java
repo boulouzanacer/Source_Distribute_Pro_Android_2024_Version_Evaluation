@@ -6,7 +6,7 @@ package com.safesoft.proapp.distribute.eventsClasses;
 
 public class SelectedBonTransfertEvent {
 
-  private String num_bon;
+  private final String num_bon;
 
   public SelectedBonTransfertEvent(String num_bon){
     this.num_bon = num_bon;

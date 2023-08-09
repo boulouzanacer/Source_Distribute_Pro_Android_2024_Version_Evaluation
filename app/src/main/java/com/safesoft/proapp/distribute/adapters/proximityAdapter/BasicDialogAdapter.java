@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class BasicDialogAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<String> mList;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final List<String> mList;
+    private final LayoutInflater mInflater;
 
     public BasicDialogAdapter(Context context, List<String> list) {
         this.mContext = context;

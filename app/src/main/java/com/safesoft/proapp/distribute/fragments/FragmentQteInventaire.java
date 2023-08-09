@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -76,8 +77,11 @@ public class FragmentQteInventaire {
 
 
         //Specify the length and width through constants
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(layoutParams);
 
 
         btn_valider = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
@@ -189,6 +193,7 @@ public class FragmentQteInventaire {
                 val_ecart_colis = (double) (int) (val_ecart / val_colissage);
             }
             edt_ecart_colis.setText(nq.format(val_ecart_colis));
+
         }
 
 

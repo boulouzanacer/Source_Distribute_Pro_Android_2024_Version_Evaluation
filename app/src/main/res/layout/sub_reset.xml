@@ -11,7 +11,6 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/descrip_security"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/a_vous_permet_de_changer_le_mot_de_passe_du_param_tres_g_n_ral"
@@ -49,7 +48,6 @@
 
     </LinearLayout>
     <TextView
-        android:id="@+id/descrip_reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/a_vous_permet_de_r_initialiser_l_appareil_attention_cette_op_ration_va_supprimer_touts_vos_donn_es_sur_l_appareil"
@@ -57,7 +55,6 @@
         android:textColor="@color/gray" />
 
     <View
-        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_large_size"
         android:background="@color/divider" />

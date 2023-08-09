@@ -20,9 +20,9 @@ import java.util.List;
  */
 public class UsbDeviceAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<UsbDevice> mList;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final List<UsbDevice> mList;
+    private final LayoutInflater mInflater;
 
     public UsbDeviceAdapter(Context context, List<UsbDevice> list) {
         this.mContext = context;

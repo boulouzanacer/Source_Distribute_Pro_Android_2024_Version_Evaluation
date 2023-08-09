@@ -2,16 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/gray"
     android:id="@+id/root_view">
 
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/blue"
-        android:id="@+id/result_scan_space">
-
+        android:layout_height="match_parent"
+        android:background="@color/blue">
 
         <LinearLayout
             android:weightSum="5"
@@ -20,6 +19,7 @@
             android:orientation="horizontal"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -57,12 +57,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/layout_header"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_above="@+id/dateFilterContainer"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:scrollbars="vertical" />
 
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dateFilterContainer"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:hint="@string/famille">
 
+            <AutoCompleteTextView
+                android:id="@+id/famille_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="none"
+                tools:text="Toutes" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </RelativeLayout>
 

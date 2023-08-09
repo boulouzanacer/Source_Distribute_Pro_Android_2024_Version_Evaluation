@@ -8,9 +8,9 @@ import com.safesoft.proapp.distribute.postData.PostData_Inv2;
  */
 
 public class CheckedPanierEventInventaire2 {
-  private PostData_Inv2 panier;
-  private Double qte_physique_old;
-  private Double vrac_old;
+  private final PostData_Inv2 panier;
+  private final Double qte_physique_old;
+  private final Double vrac_old;
 
   public CheckedPanierEventInventaire2(PostData_Inv2 panier, Double qte_physique_old, Double vrac_old){
     this.panier = panier;

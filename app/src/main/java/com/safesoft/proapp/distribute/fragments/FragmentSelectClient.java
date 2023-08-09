@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -53,12 +53,15 @@ public class FragmentSelectClient {
     private AppCompatImageButton btn_cancel;
     private Button add_client;
 
+    String SOURCE;
     //PopupWindow display method
 
-    public void showDialogbox(Activity activity, Context context) {
+    public void showDialogbox(Activity activity, Context context, String SOURCE) {
 
         this.activity = activity;
-        mcontext = context;
+        this.mcontext = context;
+        this.SOURCE = SOURCE;
+
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
         ((DecimalFormat) nf).applyPattern("####0.00");
@@ -84,14 +87,12 @@ public class FragmentSelectClient {
         // Register as a subscriber
         //bus.register(this);
 
-
-
-
-
-
         //Specify the length and width through constants
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(layoutParams);
 
 
 
@@ -167,8 +168,8 @@ public class FragmentSelectClient {
             Intent intentAddClient = new Intent(ActivityEditSale.this, ActivityNewClient.class);
             startActivityForResult(intentAddClient, REQUEST_ACTIVITY_NEW_CLIENT);*/
 
-            FragmentNewClient fragmentnewclient = new FragmentNewClient();
-            fragmentnewclient.showDialogbox(activity, mcontext);
+            FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
+            fragmentnewclient.showDialogbox(activity, mcontext, "NEW_CLIENT", null);
             dialog.dismiss();
         });
 
@@ -178,7 +179,7 @@ public class FragmentSelectClient {
         if(isScan){
             editsearch.setText(text_search);
         }
-        adapter = new ListViewAdapterListClient(mcontext, getItems(text_search, isScan), dialog);
+        adapter = new ListViewAdapterListClient(mcontext, getItems(text_search, isScan), dialog, SOURCE);
         listview.setAdapter(adapter);
         //bus.register(adapter);
 

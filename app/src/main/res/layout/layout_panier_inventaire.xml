@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="0dp"
-    tools:context="com.safesoft.proapp.distribute.activities.ActivityTransfert2Detail">
+    tools:context="com.safesoft.proapp.distribute.activities.transfert.ActivityTransfert">
 
 
     <LinearLayout
-        android:id="@+id/LinearLayout_item_panier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/produit_item_border"

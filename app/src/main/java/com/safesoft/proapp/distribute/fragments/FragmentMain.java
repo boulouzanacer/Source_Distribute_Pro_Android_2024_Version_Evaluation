@@ -1,0 +1,185 @@
+package com.safesoft.proapp.distribute.fragments;
+
+import static android.content.Context.MODE_PRIVATE;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import androidx.fragment.app.Fragment;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.ImageButton;
+import android.media.MediaPlayer;
+
+import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.achats.ActivityAchats;
+import com.safesoft.proapp.distribute.activities.client.ActivityClients;
+import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
+import com.safesoft.proapp.distribute.activities.commande_achat.ActivityOrdersFournisseur;
+import com.safesoft.proapp.distribute.activities.fournisseur.ActivityFournisseurs;
+import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires;
+import com.safesoft.proapp.distribute.activities.login.ActivityLogin;
+import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
+import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrdersClient;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
+import com.safesoft.proapp.distribute.databases.DATABASE;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+public class FragmentMain extends Fragment implements View.OnClickListener{
+
+  SharedPreferences prefs;
+  private final String PREFS = "ALL_PREFS";
+  String CODE_DEPOT, CODE_VENDEUR;
+  View v ;
+
+  DATABASE controller;
+  private ImageButton BtnClient,BtnVente,BtnCommandeClient,BtnFournisseur,BtnAchat,BtnCommandeFournisseur,BtnProduit,BtnInventaire,BtnImportExport,BtnParametre;
+  public FragmentMain() {
+
+    // Required empty public constructor
+  }
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    v = inflater.inflate(R.layout.activity_main__distribute,container,false);
+
+    BtnClient= v.findViewById(R.id.btn_clients);
+    BtnVente  = v.findViewById(R.id.btn_ventes);
+    BtnCommandeClient = v.findViewById(R.id.btn_commande_client);
+
+    BtnFournisseur = v.findViewById(R.id.btn_fournisseur);
+    BtnAchat = v.findViewById(R.id.btn_achat);
+    BtnCommandeFournisseur = v.findViewById(R.id.btn_commande_fournisseur);
+
+    BtnProduit = v.findViewById(R.id.btn_produits);
+    BtnInventaire = v.findViewById(R.id.btn_inventaire);
+
+    BtnImportExport = v.findViewById(R.id.btn_import_export);
+    BtnParametre = v.findViewById(R.id.btn_parametres);
+
+    BtnClient.setOnClickListener(this);
+    BtnVente.setOnClickListener(this);
+    BtnCommandeClient.setOnClickListener(this);
+
+    BtnFournisseur.setOnClickListener(this);
+    BtnAchat.setOnClickListener(this);
+    BtnCommandeFournisseur.setOnClickListener(this);
+
+    BtnProduit.setOnClickListener(this);
+    BtnInventaire.setOnClickListener(this);
+
+    BtnImportExport.setOnClickListener(this);
+    BtnParametre.setOnClickListener(this);
+
+    return v;
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    prefs = requireActivity().getSharedPreferences(PREFS, MODE_PRIVATE);
+    CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+    CODE_VENDEUR = prefs.getString("CODE_VENDEUR", "000000");
+
+    controller = new DATABASE(requireContext());
+  }
+
+  @SuppressLint("NonConstantResourceId")
+  public void onClick(View v){
+
+    Animation fadeIn = new AlphaAnimation(0, 1);
+    fadeIn.setInterpolator(new AccelerateInterpolator()); //add this
+    fadeIn.setDuration(300);
+
+    MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.pellet);
+    mp.start();
+
+    switch (v.getId()){
+
+      case R.id.btn_clients:
+        BtnClient.startAnimation(fadeIn);
+        startActivity(ActivityClients.class, 1);
+        break;
+
+      case R.id.btn_ventes:
+        if(CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")){
+          new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                  .setTitleText("Important !")
+                  .setContentText("Vous étes en mode gestion des commandes, Veuillez régler les paramètres de VAN ( code, nom depot ) !" )
+                  .show();
+        }else {
+          BtnVente.startAnimation(fadeIn);
+          startActivity(ActivitySales.class, 2);
+        }
+        break;
+
+      case R.id.btn_commande_client:
+        if(CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")){
+          new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                  .setTitleText("Important !")
+                  .setContentText(" Veuillez régler les paramètres de VAN ( code, nom vendeur ) !" )
+                  .show();
+        }else {
+          BtnCommandeClient.startAnimation(fadeIn);
+          startActivity(ActivityOrdersClient.class, 3);
+        }
+        break;
+
+      case R.id.btn_fournisseur:
+        BtnFournisseur.startAnimation(fadeIn);
+        startActivity(ActivityFournisseurs.class, 4);
+        break;
+
+      case R.id.btn_achat:
+        BtnAchat.startAnimation(fadeIn);
+        startActivity(ActivityAchats.class, 5);
+        break;
+
+        case R.id.btn_commande_fournisseur:
+        BtnCommandeFournisseur.startAnimation(fadeIn);
+        startActivity(ActivityOrdersFournisseur.class, 6);
+        break;
+
+      case R.id.btn_produits:
+        BtnProduit.startAnimation(fadeIn);
+        startActivity(ActivityProduits.class, 7);
+        break;
+
+      case R.id.btn_inventaire:
+        BtnInventaire.startAnimation(fadeIn);
+        startActivity(ActivityInventaires.class, 8);
+        break;
+
+      case R.id.btn_import_export:
+        BtnImportExport.startAnimation(fadeIn);
+        startActivity(ActivityImportsExport.class, 9);
+        break;
+
+      case R.id.btn_parametres:
+        BtnParametre.startAnimation(fadeIn);
+        startActivity(ActivityLogin.class, 10);
+        break;
+
+      /*case R.id.btn_b_reception:
+        //BtnBonReception.playSoundEffect(SoundEffectConstants.CLICK);
+        startActivity(ActivityTransferts.class, REQUEST_ACTIVITY_BON_RECEPTION);
+        break*/
+    }
+  }
+
+
+  public void startActivity(Class clss, int request)
+  {
+    Intent intent = new Intent(getActivity(), clss);
+    intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
+    startActivityForResult(intent, request);
+    requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+  }
+
+}

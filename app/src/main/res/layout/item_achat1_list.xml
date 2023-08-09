@@ -1,103 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_root"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="130dp"
+    app:cardCornerRadius="5dp"
     android:layout_margin="2dp"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="130dp"
         android:background="@drawable/client_selector"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp">
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        tools:ignore="RtlSymmetry">
 
-        <TextView
-            android:id="@+id/num_achat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="000015"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/date_achat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/num_achat"
-            android:layout_marginTop="16dp"
-            android:text="14/08/2017"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/vert_clair"
-            android:textSize="13dp" />
 
         <TextView
             android:id="@+id/nbr_p"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="15"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/gray"
-            android:layout_below="@+id/date_achat"
-            android:layout_alignEnd="@+id/num_achat"
-            android:layout_marginTop="33dp" />
-
-        <ImageView
-            android:id="@+id/title_from_to_dots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/nbr_p"
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:layout_above="@+id/blocage"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toEndOf="@+id/date_achat"
-            android:src="@drawable/from_to_purple" />
-
-        <TextView
-            android:id="@+id/nom_achat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/date_achat"
-            android:layout_alignStart="@+id/title_from_to_dots"
-            android:layout_alignTop="@+id/title_from_to_dots"
-            android:layout_marginStart="11dp"
-            android:text="BOULOUZA  bbbbb"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
-
-        <TextView
-            android:id="@+id/date_exp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pas encore exporté"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/gray"
-            android:textSize="15dp"
-            android:layout_alignBottom="@+id/title_from_to_dots"
-            android:layout_alignStart="@+id/nom_achat" />
-
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="0dp"
+            android:text="@string/nbre_produit"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical">
+        </TextView>
 
         <com.haozhang.lib.SlantedTextView
             android:id="@+id/blocage"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/nom_achat"
-            android:gravity="center"
-            android:text="Validé"
+            android:layout_alignParentBottom="true"
+            android:text="@string/valider"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/vert"
-            android:textSize="15dp"
+            android:textSize="21sp"
             app:slantedBackgroundColor="@color/white"
             app:slantedLength="40dp"
             app:slantedMode="right_bottom"
             app:slantedText="IOS"
             app:slantedTextColor="@color/white"
             app:slantedTextSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="0dp"
+            android:layout_toStartOf="@+id/blocage"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/num_bon"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_000001"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:ignore="NestedWeights" />
+
+                <TextView
+                    android:id="@+id/date_bon"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_01_01_2022"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/vert_clair"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/heure_bon"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/red_btn_bg_pressed_color"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:weightSum="3"
+                android:orientation="vertical"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2">
+
+                    <TextView
+                        android:id="@+id/nom_fournisseur"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/nom_client"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black_overlay"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:weightSum="2"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <LinearLayout
+                        android:weightSum="3"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:text="@string/montant_bon"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:textSize="10sp"
+                            tools:ignore="NestedWeights,SmallSp" />
+
+                        <TextView
+                            android:layout_weight="2"
+                            android:id="@+id/montant"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:text="@string/_18_000_da"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/lnr_versement"
+                        android:weightSum="3"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:visibility="visible"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:text="@string/versement"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:textSize="10sp"
+                            tools:ignore="NestedWeights,SmallSp" />
+
+                        <TextView
+                            android:layout_weight="2"
+                            android:id="@+id/versement_bon"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:text="@string/_18_000_da"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
+

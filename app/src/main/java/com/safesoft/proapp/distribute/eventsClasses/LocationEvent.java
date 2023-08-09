@@ -7,7 +7,7 @@ import android.location.Location;
  */
 
 public class LocationEvent {
-  private Location mLocation;
+  private final Location mLocation;
 
   public LocationEvent(Location location){
     this.mLocation = location;

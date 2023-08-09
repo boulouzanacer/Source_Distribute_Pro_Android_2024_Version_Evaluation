@@ -8,7 +8,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Client;
 
 public class SelectedClientEvent {
 
-  private PostData_Client client;
+  private final PostData_Client client;
 
   public SelectedClientEvent(PostData_Client client){
     this.client = client;
