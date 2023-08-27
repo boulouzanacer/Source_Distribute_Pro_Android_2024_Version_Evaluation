@@ -3,14 +3,11 @@ package com.safesoft.proapp.distribute.activities;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.os.IBinder;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -46,7 +43,6 @@ import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer1;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer2;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.services.ServiceDistribute;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -72,9 +68,6 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class ActivityImportsExport extends AppCompatActivity {
-
-    private ServiceDistribute s;
-    private boolean mBound = false;
     private String Server;
     private String Username,Password;
     private final String PREFS = "ALL_PREFS";
@@ -113,7 +106,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Username = prefs.getString("username", "SYSDBA");
         Password = prefs.getString("password", "masterkey");
 
-
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         code_depot = prefs.getString("CODE_DEPOT", "000000");
         code_vendeur = prefs.getString("CODE_VENDEUR", "000000");
@@ -139,13 +131,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         }
 
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Intent intent = new Intent(this, ServiceDistribute.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     protected void initViews() {
@@ -595,10 +580,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                 //Date midnightDate = new Date(midnight);
                 SharedPreferences pref = getSharedPreferences(PREFS, 0);
                 currentDateTimeString = pref.getString("date_time", null);
-                String sql1 = "select " +
-                            " transfert1.num_bon" +
-                            " from transfert1 " +
-                            " WHERE ( CODE_DEPOT_SOURCE = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( CAST( transfert1.date_bon || ' ' || transfert1.heure AS timestamp) > '" + currentDateTimeString + "' ) ";
+                String sql1 = "SELECT " +
+                            " TRANSFERT1.num_bon" +
+                            " FROM TRANSFERT1 " +
+                            " WHERE ( CODE_DEPOT_SOURCE = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( CAST( TRANSFERT1.date_bon || ' ' || TRANSFERT1.heure AS timestamp) > '" + currentDateTimeString + "' ) ";
 
 
                 ResultSet rs1 = stmt.executeQuery(sql1);
@@ -696,10 +681,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                 //Date midnightDate = new Date(midnight);
                 SharedPreferences pref = getSharedPreferences(PREFS, 0);
                 currentDateTimeString = pref.getString("date_time", null);
-                String sql1 = "select " +
-                            " transfert1.num_bon " +
-                            " from transfert1 " +
-                            " WHERE ( CODE_DEPOT_DEST = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( CAST( transfert1.date_bon || ' ' || transfert1.heure AS timestamp) > '" + currentDateTimeString + "' )";
+                String sql1 = "SELECT " +
+                            " TRANSFERT1.num_bon " +
+                            " FROM TRANSFERT1 " +
+                            " WHERE ( CODE_DEPOT_DEST = '" + code_depot + "') AND ( BLOCAGE = 'F' )  AND ( CAST( TRANSFERT1.date_bon || ' ' || TRANSFERT1.heure AS timestamp) > '" + currentDateTimeString + "' )";
 
 
                 ResultSet rs1 = stmt.executeQuery(sql1);
@@ -775,30 +760,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         Import_bonTransfer_from_server_task nnn = new Import_bonTransfer_from_server_task(event.getNum_bon());
         nnn.execute();
     }
-
-    @Override
-    protected void onStop() {
-        // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
-        super.onStop();
-    }
-
-    private final ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder binder) {
-            ServiceDistribute.MyBinder b = (ServiceDistribute.MyBinder) binder;
-            s = b.getService();
-            mBound = true;
-            s.setContext(getBaseContext());
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            s = null;
-            mBound = false;
-        }
-    };
 
     public void progressDialogConfig() {
         mProgressDialog = new ProgressDialog(this);
@@ -907,18 +868,18 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 //============================ GET Trasfer1 ===========================================
 
-                String sql1 = "select " +
-                        "    transfert1.num_bon," +
-                        "    transfert1.date_bon," +
-                        "    transfert1.heure," +
-                        "    transfert1.code_depot_source," +
+                String sql1 = "SELECT " +
+                        "    TRANSFERT1.num_bon," +
+                        "    TRANSFERT1.date_bon," +
+                        "    TRANSFERT1.heure," +
+                        "    TRANSFERT1.code_depot_source," +
                         "    dep_source.nom_depot as nom_depot_source," +
-                        "    transfert1.code_depot_dest," +
+                        "    TRANSFERT1.code_depot_dest," +
                         "    dep_dest.nom_depot as nom_depot_dest," +
                         "   coalesce(TRANSFERT1.NBR_P,0) AS NBR_P " +
-                        "from transfert1 " +
-                        "left join depot1 as dep_source on ( dep_source.code_depot = transfert1.code_depot_source) " +
-                        "left join depot1 as dep_dest on ( dep_dest.code_depot = transfert1.code_depot_dest) " +
+                        " FROM TRANSFERT1 " +
+                        "left join depot1 as dep_source on ( dep_source.code_depot = TRANSFERT1.code_depot_source) " +
+                        "left join depot1 as dep_dest on ( dep_dest.code_depot = TRANSFERT1.code_depot_dest) " +
                         "WHERE NUM_BON = '" + num_bon + "'";
 
                 ResultSet rs1 = stmt.executeQuery(sql1);
@@ -947,7 +908,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                 String sql2 = "SELECT  TRANSFERT2.NUM_BON, TRANSFERT2.CODE_BARRE, PRODUIT.PRODUIT AS PRODUIT, TRANSFERT2.NBRE_COLIS, TRANSFERT2.COLISSAGE, coalesce(TRANSFERT2.QTE,0) AS QTE FROM TRANSFERT2, PRODUIT WHERE (TRANSFERT2.CODE_BARRE = PRODUIT.CODE_BARRE) AND NUM_BON = '" + num_bon + "'";
                 ResultSet rs2 = stmt.executeQuery(sql2);
 
-
                 while (rs2.next()) {
 
                     PostData_Transfer2 transfer2 = new PostData_Transfer2();
@@ -973,13 +933,14 @@ public class ActivityImportsExport extends AppCompatActivity {
                 boolean executed = controller.ExecuteTransactionTrasfer(transfer1s, transfer2s);
 
                // transfer2s.clear();
-               // transfer2s = controller.select_transfer2_from_database("SELECT * FROM Transfer2 WHERE NUM_BON = '" + num_bon + "' GROUP BY CODE_BARRE ");
+               // transfer2s = controller.select_transfer2_from_database("SELECT * FROM TRANSFERT2 WHERE NUM_BON = '" + num_bon + "' GROUP BY CODE_BARRE ");
 
                 PostData_Produit produit;
 
                 for (int i = 0; i < transfer2s.size(); i++) {
                     produit = new PostData_Produit();
-                    produit = controller.check_product_if_exist(transfer2s.get(i).code_barre);
+                    String querry  = "SELECT STOCK FROM PRODUIT WHERE CODE_BARRE = '" + transfer2s.get(i).code_barre.replace("'","''") + "'";
+                    produit = controller.check_product_if_exist(querry);
 
                     PostData_Produit produit_update = null;
 
@@ -1021,19 +982,18 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.photo = rs3.getBytes("PHOTO");
 
                         }
-                        controller.Update_produit(produit_update, transfer2s.get(i).code_barre);
+                        controller.update_produit(produit_update, transfer2s.get(i).code_barre);
 
 
                         //Get all syn codebarre of this product  and  Insert it into codebarre tables
                         String sql4 = "SELECT CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE WHERE CODEBARRE.CODE_BARRE = '" + transfer2s.get(i).code_barre.replace("'", "''") + "' ";
                         ResultSet rs4 = stmt.executeQuery(sql4);
 
-                        controller.Delete_Codebarre(transfer2s.get(i).code_barre);
+                        controller.delete_Codebarre(transfer2s.get(i).code_barre);
 
                         while (rs4.next()) {
 
                             PostData_Codebarre post_codebarre = new PostData_Codebarre();
-
                             post_codebarre.code_barre = rs4.getString("CODE_BARRE");
                             post_codebarre.code_barre_syn = rs4.getString("CODE_BARRE_SYN");
                             controller.insert_into_codebarre(post_codebarre);
@@ -1085,7 +1045,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                         while (rs4.next()) {
 
                             PostData_Codebarre post_codebarre = new PostData_Codebarre();
-
                             post_codebarre.code_barre = rs4.getString("CODE_BARRE");
                             post_codebarre.code_barre_syn = rs4.getString("CODE_BARRE_SYN");
 
@@ -1283,8 +1242,8 @@ public class ActivityImportsExport extends AppCompatActivity {
         List<String> list_num_bon_not_exported;
         List<String> list_recordid_versement_not_exported;
 
+        List<String> list_produit_not_exported;
         String messageError = "";
-
 
         @Override
         protected void onPreExecute() {
@@ -1301,6 +1260,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 ArrayList<PostData_Achat1> achat1s;
                 ArrayList<PostData_Bon2> achat2s;
                 PostData_Fournisseur fournisseur;
+                list_produit_not_exported = new ArrayList<>();
                 list_num_bon_not_exported = new ArrayList<>();
                 list_recordid_versement_not_exported = new ArrayList<>();
 
@@ -1354,8 +1314,10 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 achat1s = controller.select_all_achat1_from_database(querry);
 
+                list_produit_not_exported = update_produit_into_server(con, stmt);
 
                 prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+
                 String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
 
                 // Get CODE_CAISSE
@@ -1537,7 +1499,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             stmt.executeBatch();
                             con.commit();
                             // update bon as exported
-                            controller.Update_achats_commandes_as_exported(false, achat1s.get(i).num_bon);
+                            controller.update_achats_commandes_as_exported(false, achat1s.get(i).num_bon);
                             bon_inserted++;
                             stmt.clearBatch();
                             achat2s.clear();
@@ -1788,6 +1750,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int bon_inserted = 0;
         int total_versement = 0;
 
+        List<String> list_produit_not_exported;
         List<String> list_num_bon_not_exported;
         List<String> list_recordid_versement_not_exported;
 
@@ -1809,6 +1772,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 ArrayList<PostData_Bon1> bon1s;
                 ArrayList<PostData_Bon2> bon2s;
                 PostData_Client client;
+                list_produit_not_exported = new ArrayList<>();
                 list_num_bon_not_exported = new ArrayList<>();
                 list_recordid_versement_not_exported = new ArrayList<>();
 
@@ -1879,6 +1843,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 bon1s = controller.select_all_bon1_from_database(querry);
 
+                list_produit_not_exported = update_produit_into_server(con, stmt);
 
                 prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
                 String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
@@ -1917,21 +1882,27 @@ public class ActivityImportsExport extends AppCompatActivity {
                             String insert_client;
 
                             // insert client
-                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES (" +
-                                    "'" + client.code_client.replace("'", "''") + "' ," +
-                                    "'" + client.client.replace("'", "''") + "', " +
-                                    "'" + client.adresse.replace("'", "''") + "', " +
-                                    "'" + client.tel.replace("'", "''") + "', " +
-                                    "'" + client.rc.replace("'", "''") + "', " +
-                                    "'" + client.ifiscal.replace("'", "''") + "', " +
-                                    "'" + client.ai.replace("'", "''") + "', " +
-                                    "'" + client.nis.replace("'", "''") + "', " +
-                                    "'" + client.mode_tarif + "' , " +
-                                    " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
-                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
-                                    "'" + client.latitude + "'," +
-                                    "'" + client.longitude + "')";
+                            String deport_or_vendeur = "null";
+                            if(code_depot.equals("000000")){
+                                deport_or_vendeur  = code_vendeur;
+                            }else {
+                                deport_or_vendeur = code_depot;
+                            }
 
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
+                                    + client.code_client + "' , " +
+                                    "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
+                                    "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
+                                    "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
+                                    "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
+                                    "iif('"+ client.ifiscal +"' = '',0,'"+ client.ifiscal + "') , " +
+                                    "iif('"+ client.ai +"' = '',0,'"+ client.ai + "'),  " +
+                                    "iif('" + client.nis +"' = '',0,'" + client.nis +"'), " +
+                                    "'" + client.mode_tarif + "' , " +
+                                    "'" + client.latitude+"', " +
+                                    "'" + client.longitude + "'," +
+                                    "iif('" + code_depot +"' = '000000',null,'" + code_depot +"')," +
+                                    "iif('" + code_vendeur +"' = '000000',null,'" + code_vendeur +"'))";
 
                             stmt.executeUpdate(insert_client);
                             con.commit();
@@ -1968,6 +1939,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "BON2.DESTOCK_TYPE, " +
                                     "BON2.DESTOCK_CODE_BARRE, " +
                                     "BON2.DESTOCK_QTE, " +
+                                    "PRODUIT.ISNEW, " +
                                     "PRODUIT.STOCK " +
                                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                     "WHERE BON2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
@@ -2089,7 +2061,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             stmt.executeBatch();
                             con.commit();
                             // update bon as exported
-                            controller.Update_ventes_commandes_as_exported(false, bon1s.get(i).num_bon);
+                            controller.update_ventes_commandes_as_exported(false, bon1s.get(i).num_bon);
                             bon_inserted++;
                             stmt.clearBatch();
                             bon2s.clear();
@@ -2167,20 +2139,27 @@ public class ActivityImportsExport extends AppCompatActivity {
                              client = controller.select_client_from_database(bon1s.get(g).code_client);
                             String insert_client;
                             // insert client
-                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES (" +
-                                    "'" + client.code_client.replace("'", "''") + "' ," +
-                                    "'" + client.client.replace("'", "''") + "', " +
-                                    "'" + client.adresse.replace("'", "''") + "', " +
-                                    "'" + client.tel.replace("'", "''") + "', " +
-                                    "'" + client.rc.replace("'", "''") + "', " +
-                                    "'" + client.ifiscal.replace("'", "''") + "', " +
-                                    "'" + client.ai.replace("'", "''") + "', " +
-                                    "'" + client.nis.replace("'", "''") + "', " +
+                            String deport_or_vendeur = "null";
+                            if(code_depot.equals("000000")){
+                                deport_or_vendeur  = code_vendeur;
+                            }else {
+                                deport_or_vendeur = code_depot;
+                            }
+
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
+                                    + client.code_client + "' , " +
+                                    "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
+                                    "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
+                                    "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
+                                    "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
+                                    "iif('"+ client.ifiscal +"' = '',0,'"+ client.ifiscal + "') , " +
+                                    "iif('"+ client.ai +"' = '',0,'"+ client.ai + "'),  " +
+                                    "iif('" + client.nis +"' = '',0,'" + client.nis +"'), " +
                                     "'" + client.mode_tarif + "' , " +
-                                    " iif('" + code_depot + "' = '000000', null ,'" + code_depot + "'), " +
-                                    " iif('" + code_vendeur + "' = '000000', null ,'" + code_vendeur + "'), " +
-                                    "'" + client.latitude + "', " +
-                                    "'" + client.longitude + "')";
+                                    "'" + client.latitude+"', " +
+                                    "'" + client.longitude + "'," +
+                                    "iif('" + code_depot +"' = '000000',null,'" + code_depot +"')," +
+                                    "iif('" + code_vendeur +"' = '000000',null,'" + code_vendeur +"'))";
 
 
                             stmt.executeUpdate(insert_client);
@@ -2242,7 +2221,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                             stmt.executeBatch();
                             con.commit();
-                            controller.Update_versement_exported(all_versement_client.get(g).recordid);
+                            controller.update_versement_exported(all_versement_client.get(g).recordid);
                             stmt.clearBatch();
                             total_versement++;
 
@@ -2342,6 +2321,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int bon_inserted = 0;
         int total_versement = 0;
 
+        List<String> list_produit_not_exported;
         List<String> list_num_bon_not_exported;
         List<String> list_recordid_versement_not_exported;
 
@@ -2362,6 +2342,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 ArrayList<PostData_Bon1> bon1s_Temp;
                 ArrayList<PostData_Bon2> bon2s_Temp;
                 PostData_Client client;
+                list_produit_not_exported = new ArrayList<>();
                 list_num_bon_not_exported = new ArrayList<>();
                 list_recordid_versement_not_exported = new ArrayList<>();
 
@@ -2432,6 +2413,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 bon1s_Temp = controller.select_all_bon1_from_database(querry);
 
+                list_produit_not_exported = update_produit_into_server(con, stmt);
 
                 prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
                 String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
@@ -2468,20 +2450,27 @@ public class ActivityImportsExport extends AppCompatActivity {
                              client = controller.select_client_from_database(bon1s_Temp.get(i).code_client);
                             String insert_client;
                             // insert client
-                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES (" +
-                                    "'" + client.code_client.replace("'", "''") + "' ," +
-                                    "'" + client.client.replace("'", "''") + "', " +
-                                    "'" + client.adresse.replace("'", "''") + "', " +
-                                    "'" + client.tel.replace("'", "''") + "', " +
-                                    "'" + client.rc.replace("'", "''") + "', " +
-                                    "'" + client.ifiscal.replace("'", "''") + "', " +
-                                    "'" + client.ai.replace("'", "''") + "', " +
-                                    "'" + client.nis.replace("'", "''") + "', " +
+                            String deport_or_vendeur = "null";
+                            if(code_depot.equals("000000")){
+                                deport_or_vendeur  = code_vendeur;
+                            }else {
+                                deport_or_vendeur = code_depot;
+                            }
+
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
+                                    + client.code_client + "' , " +
+                                    "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
+                                    "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
+                                    "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
+                                    "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
+                                    "iif('"+ client.ifiscal +"' = '',0,'"+ client.ifiscal + "') , " +
+                                    "iif('"+ client.ai +"' = '',0,'"+ client.ai + "'),  " +
+                                    "iif('" + client.nis +"' = '',0,'" + client.nis +"'), " +
                                     "'" + client.mode_tarif + "' , " +
-                                    " iif('" + code_depot + "' = '000000', null,'" + code_depot + "')," +
-                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
-                                    " '" + client.latitude + "'," +
-                                    " '" + client.longitude + "')";
+                                    "'" + client.latitude+"', " +
+                                    "'" + client.longitude + "'," +
+                                    "iif('" + code_depot +"' = '000000',null,'" + code_depot +"')," +
+                                    "iif('" + code_vendeur +"' = '000000',null,'" + code_vendeur +"'))";
 
 
                             stmt.executeUpdate(insert_client);
@@ -2518,6 +2507,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "BON2_TEMP.DESTOCK_TYPE, " +
                                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                     "BON2_TEMP.DESTOCK_QTE, " +
+                                    "PRODUIT.ISNEW, " +
                                     "PRODUIT.STOCK " +
                                     "FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                     "WHERE BON2_TEMP.NUM_BON = '" + bon1s_Temp.get(i).num_bon + "'";
@@ -2534,12 +2524,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 recordid_numbon = rs1.getInt("RECORDID");
                             }
 
+                            String NUM_BON = Get_Digits_String(String.valueOf(recordid_numbon), 6);
 
                             String insert_into_journee = "UPDATE OR INSERT INTO JOURNEE  (DATE_JOURNEE) VALUES ( '" + format_distant.format(dt) + "' ) MATCHING (DATE_JOURNEE) ";
                             stmt.executeUpdate(insert_into_journee);
-
-                            String NUM_BON = Get_Digits_String(String.valueOf(recordid_numbon), 6);
-
 
                             String insert_into_bon1 = "INSERT INTO BCC1 (RECORDID, NUM_BON, DATE_BON, HEURE, CODE_CLIENT, TIMBRE, REMISE, VERSER, ANCIEN_SOLDE, MODE_RG, UTILISATEUR, MODE_TARIF, EXPORTATION, BLOCAGE, CODE_DEPOT, CODE_VENDEUR ";
                             if(TYPE_LOGICIEL.equals("PME PRO")){
@@ -2599,7 +2587,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             stmt.executeBatch();
                             con.commit();
                             // update bon as exported
-                            controller.Update_ventes_commandes_as_exported(true, bon1s_Temp.get(i).num_bon);
+                            controller.update_ventes_commandes_as_exported(true, bon1s_Temp.get(i).num_bon);
                             bon_inserted++;
                             stmt.clearBatch();
                             bon2s_Temp.clear();
@@ -2676,23 +2664,30 @@ public class ActivityImportsExport extends AppCompatActivity {
                             client = new PostData_Client();
 
                             // Select client from data base to insert it
-                             client = controller.select_client_from_database(all_versement_client.get(g).code_client);
+                            client = controller.select_client_from_database(all_versement_client.get(g).code_client);
                             String insert_client;
                             // insert client
-                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, CODE_DEPOT, CODE_VENDEUR, LATITUDE, LONGITUDE) VALUES ('"
-                                    + client.code_client.replace("'", "''") + "' ," +
-                                    "'" + client.client.replace("'", "''") + "', " +
-                                    "'" + client.adresse.replace("'", "''") + "', " +
-                                    "'" + client.tel.replace("'", "''") + "', " +
-                                    "'" + client.rc.replace("'", "''") + "', " +
-                                    "'" + client.ifiscal.replace("'", "''") + "', " +
-                                    "'" + client.ai.replace("'", "''") + "', " +
-                                    "'" + client.nis.replace("'", "''") + "', " +
+                            String deport_or_vendeur = "null";
+                            if(code_depot.equals("000000")){
+                                deport_or_vendeur  = code_vendeur;
+                            }else {
+                                deport_or_vendeur = code_depot;
+                            }
+
+                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
+                                    + client.code_client + "' , " +
+                                    "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
+                                    "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
+                                    "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
+                                    "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
+                                    "iif('"+ client.ifiscal +"' = '',0,'"+ client.ifiscal + "') , " +
+                                    "iif('"+ client.ai +"' = '',0,'"+ client.ai + "'),  " +
+                                    "iif('" + client.nis +"' = '',0,'" + client.nis +"'), " +
                                     "'" + client.mode_tarif + "' , " +
-                                    " iif('" + code_depot + "' = '000000', null ,'" + code_depot + "'), " +
-                                    " iif('" + code_vendeur + "' = '000000', null ,'" + code_vendeur + "'), " +
-                                    "'" + client.latitude + "' , " +
-                                    "'" + client.longitude + "')";
+                                    "'" + client.latitude+"', " +
+                                    "'" + client.longitude + "'," +
+                                    "iif('" + code_depot +"' = '000000',null,'" + code_depot +"')," +
+                                    "iif('" + code_vendeur +"' = '000000',null,'" + code_vendeur +"'))";
 
 
                             stmt.executeUpdate(insert_client);
@@ -2754,7 +2749,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                             stmt.executeBatch();
                             con.commit();
-                            controller.Update_versement_exported(all_versement_client.get(g).recordid);
+                            controller.update_versement_exported(all_versement_client.get(g).recordid);
                             stmt.clearBatch();
                             total_versement++;
 
@@ -3347,7 +3342,18 @@ public class ActivityImportsExport extends AppCompatActivity {
                 total_fournisseur = fournisseurs.size();
 
                 String sql12 = "SELECT  COUNT(*) FROM FOURNIS";
-                String sql0 = "SELECT  FOURNIS.CODE_FRS, FOURNIS.FOURNIS, coalesce(FOURNIS.ADRESSE , '') AS ADRESSE, coalesce(FOURNIS.TEL , '') AS TEL FROM FOURNIS";
+                String sql0 = "SELECT  FOURNIS.CODE_FRS, " +
+                        "FOURNIS.FOURNIS, " +
+                        "coalesce(FOURNIS.ADRESSE , '/') AS ADRESSE, " +
+                        "coalesce(FOURNIS.TEL , '/') AS TEL, " +
+                        "coalesce(FOURNIS.NUM_RC , '/') AS NUM_RC, " +
+                        "coalesce(FOURNIS.NUM_ART , '/') AS NUM_ART, " +
+                        "coalesce(FOURNIS.NUM_IF , '/') AS NUM_IF, " +
+                        "coalesce(FOURNIS.NUM_IS , '/') AS NUM_IS, " +
+                        "coalesce(FOURNIS.ACHATS , 0) AS ACHATS, " +
+                        "coalesce(FOURNIS.VERSER , 0) AS VERSER, " +
+                        "coalesce(FOURNIS.SOLDE , 0) AS SOLDE " +
+                        " FROM FOURNIS";
 
                 ResultSet rs12 = stmt.executeQuery(sql12);
 
@@ -3366,6 +3372,16 @@ public class ActivityImportsExport extends AppCompatActivity {
                     fournisseur.fournis = rs0.getString("FOURNIS");
                     fournisseur.tel = rs0.getString("TEL");
                     fournisseur.adresse = rs0.getString("ADRESSE");
+                    fournisseur.isNew = 0;
+
+                    fournisseur.rc = rs0.getString("NUM_RC");
+                    fournisseur.ai = rs0.getString("NUM_ART");
+                    fournisseur.ifiscal = rs0.getString("NUM_IF");
+                    fournisseur.nis = rs0.getString("NUM_IS");
+                    fournisseur.achat_montant = rs0.getDouble("ACHATS");
+                    fournisseur.verser_montant = rs0.getDouble("VERSER");
+                    fournisseur.solde_montant = rs0.getDouble("SOLDE");
+
 
                     fournisseurs.add(fournisseur);
 
@@ -3480,9 +3496,16 @@ public class ActivityImportsExport extends AppCompatActivity {
                         client = controller.select_client_from_database(clients.get(i).code_client);
                         String insert_client;
                         // ====insert client
+                        String deport_or_vendeur = "null";
+                        if(code_depot.equals("000000")){
+                            deport_or_vendeur  = code_vendeur;
+                        }else {
+                            deport_or_vendeur = code_depot;
+                        }
+
                         insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
-                                + clients.get(i).code_client + "' , " +
-                                "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''")+" ("+code_depot+")" +"') , " +
+                                + client.code_client + "' , " +
+                                "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
                                 "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
                                 "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
                                 "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
@@ -3506,7 +3529,22 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                 String sql12 = "SELECT  COUNT(*) FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0";
-                String sql0 = "SELECT  CLIENTS.CODE_CLIENT, CLIENTS.CLIENT, coalesce(CLIENTS.TEL , '') AS TEL, coalesce(CLIENTS.ADRESSE , '') AS ADRESSE, coalesce(CLIENTS.NUM_RC , '') AS NUM_RC, coalesce(CLIENTS.NUM_IF , '') AS NUM_IF , coalesce(CLIENTS.NUM_IS , '') AS NUM_IS , coalesce(CLIENTS.NUM_ART , '') AS NUM_ART , coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, coalesce(CLIENTS.ACHATS,0) AS ACHATS, coalesce(CLIENTS.VERSER,0) AS VERSER, coalesce(CLIENTS.SOLDE,0) AS SOLDE, LATITUDE, LONGITUDE , coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0";
+                String sql0 = "SELECT  CLIENTS.CODE_CLIENT, " +
+                        "CLIENTS.CLIENT, " +
+                        "coalesce(CLIENTS.TEL , '/') AS TEL, " +
+                        "coalesce(CLIENTS.ADRESSE , '/') AS ADRESSE, " +
+                        "coalesce(CLIENTS.NUM_RC , '/') AS NUM_RC, " +
+                        "coalesce(CLIENTS.NUM_IF , '/') AS NUM_IF , " +
+                        "coalesce(CLIENTS.NUM_IS , '/') AS NUM_IS , " +
+                        "coalesce(CLIENTS.NUM_ART , '/') AS NUM_ART , " +
+                        "coalesce(CLIENTS.MODE_TARIF , 0) AS MODE_TARIF, " +
+                        "coalesce(CLIENTS.ACHATS,0) AS ACHATS, " +
+                        "coalesce(CLIENTS.VERSER,0) AS VERSER, " +
+                        "coalesce(CLIENTS.SOLDE,0) AS SOLDE, " +
+                        "LATITUDE, " +
+                        "LONGITUDE , " +
+                        "coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT " +
+                        " FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0";
 
                 if(code_depot.equals("000000")){
                     if(code_vendeur.equals("000000")){
@@ -3547,6 +3585,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     client.latitude = rs0.getDouble("LATITUDE");
                     client.longitude = rs0.getDouble("LONGITUDE");
                     client.credit_limit = rs0.getDouble("CREDIT_LIMIT");
+                    client.isNew = 0;
 
                     clients.add(client);
 
@@ -3936,7 +3975,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         String erreurMessage = "";
 
+        List<String> list_produit_not_exported;
         List<String> list_num_inv_not_exported;
+
 
         public Export_inventaire_to_server_task(boolean all, String num_inv) {
             _all = all;
@@ -3956,6 +3997,9 @@ public class ActivityImportsExport extends AppCompatActivity {
             // TODO: attempt authentication against a network service.
             try {
 
+                list_num_inv_not_exported = new ArrayList<>();
+                list_produit_not_exported = new ArrayList<>();
+
                 System.setProperty("FBAdbLog", "true");
                 java.sql.DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
@@ -3964,19 +4008,15 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 Statement stmt = con.createStatement();
                 con.setAutoCommit(false);
-                list_num_inv_not_exported = new ArrayList<>();
 
-
-
-              /*  if(invs1.get(0).is_sent == 1){
-                    flag = 4;
-                }else{*/
                 SimpleDateFormat format_local = new SimpleDateFormat("dd/MM/yyyy");
                 SimpleDateFormat format_distant = new SimpleDateFormat("MM/dd/yyyy");
 
+                list_produit_not_exported = update_produit_into_server(con, stmt);
+
                 if (_all) {
                     invs1.clear();
-                    String querry = "SELECT * FROM Inv1 WHERE BLOCAGE = 'F'";
+                    String querry = "SELECT * FROM INV1 WHERE BLOCAGE = 'F'";
                     if (!code_depot.equals("000000")) {
                         querry =  querry + " AND CODE_DEPOT = '" + code_depot + "'";
                     }else{
@@ -4003,7 +4043,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             }
                             if(!inv_exist){
 
-                                String querry_select = "SELECT * FROM Inv2 WHERE NUM_INV = '" + invs1.get(i).num_inv + "'";
+                                String querry_select = "SELECT * FROM INV2 WHERE NUM_INV = '" + invs1.get(i).num_inv + "'";
                                 invs2 = controller.select_inventaire2_from_database(querry_select);
                                 String[] buffer = new String[invs2.size()];
 
@@ -4067,7 +4107,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                     /// else case export one invontory.
                     invs1.clear();
-                    String querry = "SELECT * FROM Inv1 WHERE NUM_INV = '" + _num_inv + "'";
+                    String querry = "SELECT * FROM INV1 WHERE NUM_INV = '" + _num_inv + "'";
                     if (!code_depot.equals("000000")) {
                         querry =  querry + "WHERE CODE_DEPOT = '" + code_depot + "' AND ( IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
                     }else{
@@ -4081,7 +4121,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                         try {
 
-                            String querry_select = "SELECT * FROM Inv2 WHERE NUM_INV = '" + invs1.get(i).num_inv + "'";
+                            String querry_select = "SELECT * FROM INV2 WHERE NUM_INV = '" + invs1.get(i).num_inv + "'";
                             invs2 = controller.select_inventaire2_from_database(querry_select);
                             String[] buffer = new String[invs2.size()];
 
@@ -4198,17 +4238,64 @@ public class ActivityImportsExport extends AppCompatActivity {
     }
    //------------------------------------------------------------------------------------------------
 
-    private void update_product_into_server(){
+    private List<String>  update_produit_into_server(Connection con, Statement stmt) throws SQLException {
+        List<String> list_produit_not_exported = new ArrayList<>();
         ArrayList<PostData_Produit> postData_produits = new ArrayList<>();
 
         //Get product and  Insert it into produit tables
-        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
-                        "FROM PRODUIT ORDER BY PRODUIT";
+                        "FROM PRODUIT WHERE ISNEW = 1 ORDER BY PRODUIT";
 
         postData_produits = controller.select_produits_from_database(querry);
 
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
+
+        for(int i = 0; i< postData_produits.size(); i++){
+            //insert produit into server
+
+            try {
+                String insert_into_produit = "";
+                insert_into_produit =  "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, STOCK, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
+                if(TYPE_LOGICIEL.equals("PME PRO")){
+                    insert_into_produit = insert_into_produit +  ", PV4_HT, PV5_HT, PV6_HT ";
+                }
+                insert_into_produit = insert_into_produit + ") VALUES (" +
+                                " '" + postData_produits.get(i).code_barre + "' , " +
+                                " '" + postData_produits.get(i).ref_produit + "' ," +
+                                " '" + postData_produits.get(i).produit.replace("'", " ") + "', "+
+                                " '" + postData_produits.get(i).pa_ht + "' ," +
+                                " '" + postData_produits.get(i).tva + "' ," +
+                                " '" + postData_produits.get(i).stock + "' ," +
+                                " '" + postData_produits.get(i).colissage + "', "+
+                                " '" + postData_produits.get(i).pv1_ht + "' ," +
+                                " '" + postData_produits.get(i).pv2_ht + "' ," +
+                                " '" + postData_produits.get(i).pv3_ht + "' ";
+
+                if(TYPE_LOGICIEL.equals("PME PRO")){
+                    insert_into_produit = insert_into_produit +  ", '" + postData_produits.get(i).pv4_ht + "' ," +
+                            " '" + postData_produits.get(i).pv5_ht + "' ," +
+                            " '" + postData_produits.get(i).pv6_ht + "' ";
+                }
+
+                insert_into_produit = insert_into_produit + ") MATCHING (CODE_BARRE)";
+
+                stmt.addBatch(insert_into_produit);
+
+                stmt.executeBatch();
+                con.commit();
+
+            }catch (Exception e){
+                con.rollback();
+                list_produit_not_exported.add(postData_produits.get(i).produit);
+            }
+
+            controller.update_produit_after_export(postData_produits.get(i).code_barre);
+
+        }
+        return list_produit_not_exported;
     }
 
     @Override

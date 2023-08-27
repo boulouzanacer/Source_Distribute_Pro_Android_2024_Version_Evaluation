@@ -1,6 +1,9 @@
 package com.safesoft.proapp.distribute.activities.client;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -21,22 +24,29 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.activities.ActivityRouting;
 import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterClients;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.printing.Printing;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityClients extends AppCompatActivity implements RecyclerAdapterClients.ItemClick{
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+public class ActivityClients extends AppCompatActivity implements RecyclerAdapterClients.ItemClick, RecyclerAdapterClients.ItemLongClick{
 
     private static final int REQUEST_ACTIVITY_NEW_CLIENT = 4000;
     RecyclerView recyclerView;
@@ -157,6 +167,63 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     }
 
     @Override
+    public void onLongClick(View v, int position) {
+        if(v.getId() == R.id.item_root){
+            final CharSequence[] items = {"Modifier", "Supprimer"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.blue_circle_24);
+            builder.setTitle("Choisissez une action");
+            builder.setItems(items, (dialog, item) -> {
+                switch (item) {
+                    case 0 -> {
+                        FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
+                        fragmentnewclient.showDialogbox(ActivityClients.this, getBaseContext(), "EDIT_CLIENT", clients.get(position));
+                    }
+                    case 1 ->{
+                        if(clients.get(position).isNew == 0){
+                            new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention. !")
+                                    .setContentText("Client importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")
+                                    .show();
+                            return;
+                        }
+
+                        String querry_has_bon1 = "SELECT CODE_CLIENT FROM BON1 WHERE IS_EXPORTED = 0 AND CODE_CLIENT = '" + clients.get(position).code_client + "'";
+                        String querry_has_bon1_temp = "SELECT CODE_CLIENT FROM BON1_TEMP WHERE IS_EXPORTED = 0 AND CODE_CLIENT = '" + clients.get(position).code_client + "'";
+                        if(controller.check_if_client_has_bon(querry_has_bon1) || controller.check_if_client_has_bon(querry_has_bon1_temp)){
+                            // you can't delete this client
+                            new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention. !")
+                                    .setContentText("Il exist des bons créer avec ce client")
+                                    .show();
+                        }else {
+                            new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.NORMAL_TYPE)
+                                    .setTitleText("Suppression")
+                                    .setContentText("Voulez-vous vraiment supprimer le client " + clients.get(position).client + " ?!")
+                                    .setCancelText("Anuuler")
+                                    .setConfirmText("Supprimer")
+                                    .showCancelButton(true)
+                                    .setCancelClickListener(Dialog::dismiss)
+                                    .setConfirmClickListener(sDialog -> {
+
+                                        controller.delete_client(clients.get(position).code_client);
+
+                                        setRecycle("");
+                                        sDialog.dismiss();
+
+                                    }).show();
+
+                        }
+
+                    }
+                }
+            });
+            builder.show();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_clients, menu);
@@ -221,9 +288,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                 startActivity(new Intent(ActivityClients.this, ActivityMaps.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
-        }
-
-        if(item.getItemId() == R.id.new_client){
+        }else if(item.getItemId() == R.id.new_client){
             FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
             fragmentnewclient.showDialogbox(ActivityClients.this, getBaseContext(), "NEW_CLIENT", null);
         }
@@ -248,4 +313,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         bus.unregister(this);
         super.onDestroy();
     }
+
+
 }

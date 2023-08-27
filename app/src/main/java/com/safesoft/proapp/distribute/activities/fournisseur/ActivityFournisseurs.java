@@ -1,6 +1,8 @@
 package com.safesoft.proapp.distribute.activities.fournisseur;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -23,13 +25,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.client.ActivityClientDetail;
+import com.safesoft.proapp.distribute.activities.client.ActivityClients;
 import com.safesoft.proapp.distribute.activities.client.TSPActivityMaps;
 import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterClients;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterFournisseurs;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
+import com.safesoft.proapp.distribute.eventsClasses.SelectedFournisseurEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
+import com.safesoft.proapp.distribute.fragments.FragmentNewEditFournisseur;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,7 +43,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityFournisseurs extends AppCompatActivity implements RecyclerAdapterFournisseurs.ItemClick{
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+public class ActivityFournisseurs extends AppCompatActivity implements RecyclerAdapterFournisseurs.ItemClick, RecyclerAdapterFournisseurs.ItemLongClick{
 
     private static final int REQUEST_ACTIVITY_NEW_CLIENT = 4000;
     RecyclerView recyclerView;
@@ -130,7 +137,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
 
     @Subscribe
-    public void onClientSelected(SelectedClientEvent clientEvent){
+    public void onFournisseurSelected(SelectedFournisseurEvent fournisseurEvent){
         setRecycle("");
     }
 
@@ -156,6 +163,64 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);*/
         }
 
+    }
+
+    @Override
+    public void onLongClick(View v, int position) {
+        if(v.getId() == R.id.item_root){
+            final CharSequence[] items = {"Modifier", "Supprimer"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.blue_circle_24);
+            builder.setTitle("Choisissez une action");
+            builder.setItems(items, (dialog, item) -> {
+                switch (item) {
+                    case 0 -> {
+                        FragmentNewEditFournisseur fragmentnewfournisseur = new FragmentNewEditFournisseur();
+                        fragmentnewfournisseur.showDialogbox(ActivityFournisseurs.this, getBaseContext(), "EDIT_FOURNISSEUR", fournisseurs.get(position));
+                    }
+                    case 1 ->{
+                        if(fournisseurs.get(position).isNew == 0){
+                            new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention. !")
+                                    .setContentText("Fournisseur importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")
+                                    .show();
+                            return;
+                        }
+
+                        String querry_has_bon1 = "SELECT CODE_FRS FROM ACHAT1 WHERE IS_EXPORTED = 0 AND CODE_FRS = '" + fournisseurs.get(position).code_frs + "'";
+                        String querry_has_bon1_temp = "SELECT CODE_FRS FROM ACHAT1_COM WHERE IS_EXPORTED = 0 AND CODE_FRS = '" + fournisseurs.get(position).code_frs + "'";
+
+                        if(controller.check_if_fournisseur_has_bon(querry_has_bon1) || controller.check_if_fournisseur_has_bon(querry_has_bon1_temp)){
+                            // you can't delete this fournisseur
+                            new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention. !")
+                                    .setContentText("Il exist des bons créer avec ce client")
+                                    .show();
+                        }else {
+                            new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.NORMAL_TYPE)
+                                    .setTitleText("Suppression")
+                                    .setContentText("Voulez-vous vraiment supprimer le fournisseur " + fournisseurs.get(position).fournis + " ?!")
+                                    .setCancelText("Anuuler")
+                                    .setConfirmText("Supprimer")
+                                    .showCancelButton(true)
+                                    .setCancelClickListener(Dialog::dismiss)
+                                    .setConfirmClickListener(sDialog -> {
+
+                                        controller.delete_fournisseur(fournisseurs.get(position).code_frs);
+
+                                        setRecycle("");
+                                        sDialog.dismiss();
+
+                                    }).show();
+
+                        }
+
+                    }
+                }
+            });
+            builder.show();
+        }
     }
 
     @Override
@@ -214,6 +279,9 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
+        }else if(item.getItemId() == R.id.new_fournisseur){
+            FragmentNewEditFournisseur fragmentnewfournisseur = new FragmentNewEditFournisseur();
+            fragmentnewfournisseur.showDialogbox(ActivityFournisseurs.this, getBaseContext(), "NEW_FOURNISSEUR", null);
         }
         return super.onOptionsItemSelected(item);
     }

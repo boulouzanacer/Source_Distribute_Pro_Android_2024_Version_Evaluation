@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 
@@ -34,8 +35,9 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class FragmentQte {
 
+    private DATABASE controller;
     MaterialFancyButton btn_valider, btn_cancel;
-    TextView txv_produit;
+    TextView txv_produit, txv_message;
     TextInputLayout stockavantLayout_colis, stockapresLayout_colis, prixhtLayout, tvaLayout, ugLayout;
     LinearLayout ly_prix_ttc, part_3_qtevente_Layout;
     TextInputEditText  edt_colissage, edt_nbr_colis, edt_qte, edt_gratuit, edt_prix_ht, edt_tva, edt_prix_ttc, edt_stock_avant, edt_stock_avant_colis, edt_stock_apres, edt_stock_apres_colis;
@@ -48,10 +50,11 @@ public class FragmentQte {
     NumberFormat nf,nq;
 
     PostData_Bon2 arrived_bon2;
+    boolean if_bon2_exist = false;
     private final boolean edit_price = true;
 
     private final String PREFS = "ALL_PREFS";
-    private String SOURCE;
+    private String SOURCE_LOCAL;
 
     SharedPreferences prefs;
 
@@ -62,7 +65,8 @@ public class FragmentQte {
         mContext = context;
         this.activity = activity;
         arrived_bon2 = bon2;
-        this.SOURCE = SOURCE;
+        this.SOURCE_LOCAL = SOURCE;
+        this.controller = new DATABASE(mContext);
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
@@ -114,6 +118,7 @@ public class FragmentQte {
 
 
         txv_produit = dialogview.findViewById(R.id.produit_title);
+        txv_message = dialogview.findViewById(R.id.message_title);
         edt_stock_avant = dialogview.findViewById(R.id.stockavant);
         edt_stock_avant_colis = dialogview.findViewById(R.id.stockavant_colis);
         edt_nbr_colis = dialogview.findViewById(R.id.nbrColis);
@@ -161,6 +166,107 @@ public class FragmentQte {
             part_3_qtevente_Layout.setWeightSum(3);
         }
 
+
+
+        //********************************************************************
+        if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT") || SOURCE_LOCAL.equals("ACHAT2_INSERT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")){
+            PostData_Bon2 checked_bon2 = new PostData_Bon2();
+            switch (SOURCE_LOCAL) {
+                case "BON2_INSERT" -> {
+                    String querry = "SELECT " +
+                            "BON2.RECORDID, " +
+                            "BON2.CODE_BARRE, " +
+                            "BON2.NUM_BON, " +
+                            "BON2.PRODUIT, " +
+                            "BON2.NBRE_COLIS, " +
+                            "BON2.COLISSAGE, " +
+                            "BON2.QTE, " +
+                            "BON2.QTE_GRAT, " +
+                            "BON2.PU, " +
+                            "BON2.TVA, " +
+                            "BON2.CODE_DEPOT, " +
+                            "BON2.DESTOCK_TYPE, " +
+                            "BON2.DESTOCK_CODE_BARRE, " +
+                            "BON2.DESTOCK_QTE, " +
+                            "PRODUIT.STOCK FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
+                            " WHERE BON2.NUM_BON = '"+ arrived_bon2.num_bon +"' AND BON2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
+
+                    checked_bon2 = controller.check_if_bon2_exist(querry);
+                    SOURCE_LOCAL = "BON2_EDIT";
+                }
+                case "BON2_TEMP_INSERT" -> {
+                    String querry = "SELECT " +
+                            "BON2_TEMP.RECORDID, " +
+                            "BON2_TEMP.CODE_BARRE, " +
+                            "BON2_TEMP.NUM_BON, " +
+                            "BON2_TEMP.PRODUIT, " +
+                            "BON2_TEMP.NBRE_COLIS, " +
+                            "BON2_TEMP.COLISSAGE, " +
+                            "BON2_TEMP.QTE, " +
+                            "BON2_TEMP.QTE_GRAT, " +
+                            "BON2_TEMP.PU, " +
+                            "BON2_TEMP.TVA, " +
+                            "BON2_TEMP.CODE_DEPOT, " +
+                            "BON2_TEMP.DESTOCK_TYPE, " +
+                            "BON2_TEMP.DESTOCK_CODE_BARRE, " +
+                            "BON2_TEMP.DESTOCK_QTE, " +
+                            "PRODUIT.STOCK FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
+                            " WHERE BON2_TEMP.NUM_BON = '"+ arrived_bon2.num_bon +"' AND BON2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
+                    checked_bon2 = controller.check_if_bon2_exist(querry);
+                    SOURCE_LOCAL = "BON2_TEMP_INSERT";
+                }
+                case "ACHAT2_INSERT" -> {
+                    String querry = "SELECT " +
+                            "ACHAT2.RECORDID, " +
+                            "ACHAT2.CODE_BARRE, " +
+                            "ACHAT2.NUM_BON, " +
+                            "ACHAT2.PRODUIT, " +
+                            "ACHAT2.NBRE_COLIS, " +
+                            "ACHAT2.COLISSAGE, " +
+                            "ACHAT2.QTE, " +
+                            "ACHAT2.QTE_GRAT, " +
+                            "ACHAT2.PU, " +
+                            "ACHAT2.TVA, " +
+                            "ACHAT2.CODE_DEPOT, " +
+                            "ACHAT2.DESTOCK_TYPE, " +
+                            "ACHAT2.DESTOCK_CODE_BARRE, " +
+                            "ACHAT2.DESTOCK_QTE, " +
+                            "PRODUIT.STOCK FROM ACHAT2 LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
+                            " WHERE ACHAT2.NUM_BON = '"+ arrived_bon2.num_bon +"' AND ACHAT2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
+                    checked_bon2 = controller.check_if_bon2_exist(querry);
+                    SOURCE_LOCAL = "ACHAT2_INSERT";
+                }
+                case "ACHAT2_TEMP_INSERT" -> {
+                    String querry = "SELECT " +
+                            "ACHAT2_TEMP.RECORDID, " +
+                            "ACHAT2_TEMP.CODE_BARRE, " +
+                            "ACHAT2_TEMP.NUM_BON, " +
+                            "ACHAT2_TEMP.PRODUIT, " +
+                            "ACHAT2_TEMP.NBRE_COLIS, " +
+                            "ACHAT2_TEMP.COLISSAGE, " +
+                            "ACHAT2_TEMP.QTE, " +
+                            "ACHAT2_TEMP.QTE_GRAT, " +
+                            "ACHAT2_TEMP.PU, " +
+                            "ACHAT2_TEMP.TVA, " +
+                            "ACHAT2_TEMP.CODE_DEPOT, " +
+                            "ACHAT2_TEMP.DESTOCK_TYPE, " +
+                            "ACHAT2_TEMP.DESTOCK_CODE_BARRE, " +
+                            "ACHAT2_TEMP.DESTOCK_QTE, " +
+                            "PRODUIT.STOCK FROM ACHAT2_TEMP LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
+                            " WHERE ACHAT2_TEMP.NUM_BON = '"+ arrived_bon2.num_bon +"' AND ACHAT2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
+                    checked_bon2 = controller.check_if_bon2_exist(querry);
+                    SOURCE_LOCAL = "ACHAT2_TEMP_INSERT";
+                }
+            }
+
+            if(checked_bon2 != null){
+                txv_message.setText("Produit déja inseré avec une quantité : " + checked_bon2.qte);
+                if_bon2_exist = true;
+                arrived_bon2 = checked_bon2;
+            }
+
+        }
+
         val_stock_avant = arrived_bon2.stock_produit;
         val_colissage = arrived_bon2.colissage;
         if(val_colissage==0){
@@ -180,9 +286,10 @@ public class FragmentQte {
             stockavantLayout_colis.setVisibility(View.VISIBLE);
             stockapresLayout_colis.setVisibility(View.VISIBLE);
         }
+        //******************************************************************
 
+        if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT") || SOURCE_LOCAL.equals("ACHAT2_INSERT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")){
 
-        if (SOURCE.equals("BON2_INSERT") || SOURCE.equals("BON2_TEMP_INSERT") || SOURCE.equals("ACHAT2_INSERT") || SOURCE.equals("ACHAT2_TEMP_INSERT")){
             edt_stock_apres.setText(nq.format(val_stock_avant));
             edt_stock_apres_colis.setText(nq.format(val_stock_avant_colis));
             val_nbr_colis = 0.0;
@@ -190,10 +297,10 @@ public class FragmentQte {
             val_gratuit_old = 0.0;
             val_qte = 0.0;
 
-        }else if(SOURCE.equals("BON2_EDIT") || SOURCE.equals("BON2_TEMP_EDIT") || SOURCE.equals("ACHAT2_EDIT") || SOURCE.equals("ACHAT2_TEMP_EDIT")){
-            if(SOURCE.equals("BON2_EDIT")){
+        }else if(SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_TEMP_EDIT") || SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_EDIT")){
+            if(SOURCE_LOCAL.equals("BON2_EDIT")){
                 val_stock_avant = arrived_bon2.stock_produit + arrived_bon2.qte + arrived_bon2.gratuit;
-            } else if (SOURCE.equals("ACHAT2_EDIT")) {
+            } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT")) {
                 val_stock_avant = arrived_bon2.stock_produit - arrived_bon2.qte - arrived_bon2.gratuit;
             }
 
@@ -259,12 +366,12 @@ public class FragmentQte {
 
         btn_valider.setOnClickListener(v -> {
 
-            if (SOURCE.equals("BON2_INSERT") || SOURCE.equals("BON2_EDIT")){
+            if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_EDIT")){
                 if(!(prefs.getBoolean("STOCK_MOINS", false))){
                     if(val_qte > val_stock_avant){
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Attention!")
-                                .setContentText("Stock produit insuffisant, insersion impossible! ")
+                                .setContentText("Stock produit insuffisant, insertion impossible! (Pour la désactiver Allez dans Paramètres -> Paramètres divers -> Cochez (Vente avec stock moins)")
                                 .show();
 
                         return;
@@ -299,7 +406,7 @@ public class FragmentQte {
                 arrived_bon2.p_u = val_prix_ht;
                 arrived_bon2.tva = val_tva;
 
-                CheckedPanierEventBon2 item_panier = new CheckedPanierEventBon2(arrived_bon2, val_qte_old, val_gratuit_old);
+                CheckedPanierEventBon2 item_panier = new CheckedPanierEventBon2(arrived_bon2, val_qte_old, val_gratuit_old, if_bon2_exist);
                 bus.post(item_panier);
 
                 dialog.dismiss();
@@ -542,14 +649,14 @@ public class FragmentQte {
             edt_qte.setText(nq.format(val_qte));
         }
 
-        if(SOURCE.equals("BON2_EDIT") || SOURCE.equals("BON2_INSERT")){
+        if(SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")){
             val_stock_apres = val_stock_avant - val_qte - val_gratuit;
             if(val_colissage == 0){
                 val_stock_apres_colis = 0.0;
             }else {
                 val_stock_apres_colis = (double) (int) (val_stock_apres / val_colissage);
             }
-        }else if(SOURCE.equals("ACHAT2_EDIT") || SOURCE.equals("ACHAT2_INSERT")){
+        }else if(SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")){
             val_stock_apres = val_stock_avant + val_qte + val_gratuit;
             if(val_colissage == 0){
                 val_stock_apres_colis = 0.0;
@@ -583,7 +690,7 @@ public class FragmentQte {
             val_qte = val_nbr_colis * val_colissage;
             edt_qte.setText(nq.format(val_qte));
         }
-        if(SOURCE.equals("BON2_EDIT") || SOURCE.equals("BON2_INSERT")){
+        if(SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")){
             val_stock_apres = val_stock_avant - val_qte - val_gratuit;
             if(val_colissage == 0.0){
                 val_stock_avant_colis = 0.0;
@@ -596,7 +703,7 @@ public class FragmentQte {
                 stockavantLayout_colis.setVisibility(View.VISIBLE);
                 stockapresLayout_colis.setVisibility(View.VISIBLE);
             }
-        }else if(SOURCE.equals("ACHAT2_EDIT") || SOURCE.equals("ACHAT2_INSERT")){
+        }else if(SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")){
             val_stock_apres = val_stock_avant + val_qte + val_gratuit;
             if(val_colissage == 0.0){
                 val_stock_avant_colis = 0.0;
@@ -641,9 +748,9 @@ public class FragmentQte {
         edt_stock_avant_colis.setText("");
         edt_stock_apres_colis.setText("");
 
-        if(SOURCE.equals("BON2_EDIT") || SOURCE.equals("BON2_INSERT")){
+        if(SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")){
             val_stock_apres = val_stock_avant - val_qte - val_gratuit;
-        }else if(SOURCE.equals("ACHAT2_EDIT") || SOURCE.equals("ACHAT2_INSERT")){
+        }else if(SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")){
             val_stock_apres = val_stock_avant + val_qte + val_gratuit;
         }
 
@@ -665,9 +772,9 @@ public class FragmentQte {
             val_gratuit = Double.parseDouble(edt_gratuit.getText().toString());
         }
 
-        if(SOURCE.equals("BON2_EDIT") || SOURCE.equals("BON2_INSERT")){
+        if(SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")){
             val_stock_apres = val_stock_avant - val_qte - val_gratuit;
-        }else if(SOURCE.equals("ACHAT2_EDIT") || SOURCE.equals("ACHAT2_INSERT")){
+        }else if(SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")){
             val_stock_apres = val_stock_avant + val_qte + val_gratuit;
         }
 

@@ -88,7 +88,7 @@ public class ActivityTransferts extends AppCompatActivity implements RecyclerAda
   public ArrayList<PostData_Transfer1> getItems() {
     transfert1s = new ArrayList<>();
 
-    String querry = "SELECT * FROM Transfer1 ORDER BY DATE_BON DESC";
+    String querry = "SELECT * FROM TRANSFERT1 ORDER BY DATE_BON DESC";
     // querry = "SELECT * FROM Events";
     transfert1s = controller.select_transfer1_from_database(querry);
 
@@ -154,25 +154,25 @@ public class ActivityTransferts extends AppCompatActivity implements RecyclerAda
 
     transfert1s  = controller.select_transfer1_from_database("" +
             "SELECT " +
-            "Transfer1.NUM_BON, " +
-            "Transfer1.DATE_BON, " +
+            "TRANSFERT1.NUM_BON, " +
+            "TRANSFERT1.DATE_BON, " +
 
-            "Transfer1.NOM_DEPOT_SOURCE, " +
-            "Transfer1.NOM_DEPOT_DEST " +
+            "TRANSFERT1.NOM_DEPOT_SOURCE, " +
+            "TRANSFERT1.NOM_DEPOT_DEST " +
 
 
-            "FROM Transfer1 " +
+            "FROM TRANSFERT1 " +
 
-            "WHERE Transfer1.NUM_BON = '" + num_bon + "'" );
+            "WHERE TRANSFERT1.NUM_BON = '" + num_bon + "'" );
     transfers2  = controller.select_transfer2_from_database("" +
             "SELECT " +
 
-            "Transfer2.PRODUIT, " +
-            "Transfer2.QTE " +
+            "TRANSFERT2.PRODUIT, " +
+            "TRANSFERT2.QTE " +
 
-            "FROM Transfer2 " +
+            "FROM TRANSFERT2 " +
 
-            "WHERE Transfer2.NUM_BON = '" + num_bon + "'" );
+            "WHERE TRANSFERT2.NUM_BON = '" + num_bon + "'" );
 
 
     if(printer_mode_integrate){

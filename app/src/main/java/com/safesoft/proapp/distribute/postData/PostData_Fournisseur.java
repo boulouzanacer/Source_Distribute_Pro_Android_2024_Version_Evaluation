@@ -17,5 +17,11 @@ public class PostData_Fournisseur {
     public double latitude = 0.0;
     public double longitude = 0.0;
 
+    public String rc;
+    public String ifiscal;
+    public String nis;
+    public String ai;
+
     public double credit_limit = 0.00;
+    public int isNew = 1;
 }

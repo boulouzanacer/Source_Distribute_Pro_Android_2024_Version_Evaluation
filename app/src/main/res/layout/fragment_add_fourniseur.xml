@@ -20,13 +20,15 @@
             android:layout_height="0dp">
 
             <TextView
-                android:text="Nouveau client"
+                android:text="Nouveau fournisseur"
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:textSize="23sp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
         </LinearLayout>
+
 
         <ScrollView
             android:layout_weight="7"
@@ -34,7 +36,7 @@
             android:layout_height="0dp">
 
             <LinearLayout
-                android:weightSum="8"
+                android:weightSum="6"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
@@ -52,13 +54,13 @@
                         android:layout_gravity="center"
                         app:errorMessage="@string/error_message_empty"
                         app:errorType="empty"
-                        android:hint="@string/nom_client"
+                        android:hint="@string/nom_fournisseur"
                         app:expandedHintEnabled="false"
                         app:helperText="  "
                         android:layout_margin="5dp">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_name"
+                            android:id="@+id/edt_fournisseur_name"
                             android:gravity="center"
                             android:inputType="text"
                             android:textStyle="bold"
@@ -90,7 +92,7 @@
                         android:layout_margin="5dp">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_adress"
+                            android:id="@+id/edt_fournisseur_adress"
                             android:gravity="center"
                             android:inputType="text"
                             android:textStyle="bold"
@@ -123,7 +125,7 @@
                         android:layout_margin="5dp">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_telephone"
+                            android:id="@+id/edt_fournisseur_telephone"
                             android:gravity="center"
                             android:inputType="numberDecimal"
                             android:textStyle="bold"
@@ -137,12 +139,15 @@
 
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_weight="1"
                     android:weightSum="2"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="0dp"
+                    android:baselineAligned="false">
+
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -155,7 +160,7 @@
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_registre"
+                            android:id="@+id/edt_fournisseur_registre"
                             android:gravity="center"
                             android:maxLines="1"
                             android:inputType="numberDecimal"
@@ -177,7 +182,7 @@
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_ai"
+                            android:id="@+id/edt_fournisseur_ai"
                             android:gravity="center"
                             android:maxLines="1"
                             android:inputType="numberDecimal"
@@ -187,10 +192,8 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-
-
-
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_weight="1"
@@ -210,7 +213,7 @@
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_nif"
+                            android:id="@+id/edt_fournisseur_nif"
                             android:gravity="center"
                             android:maxLines="1"
                             android:inputType="numberDecimal"
@@ -231,7 +234,7 @@
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_nis"
+                            android:id="@+id/edt_fournisseur_nis"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -242,94 +245,8 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
 
-
-
-
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_weight="2"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-                    <TextView
-                        android:text="MODE DE TARIF"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/rd_mode_tarif">
-
-                        <TableRow>
-                            <RadioButton
-                                android:id="@+id/rb_0"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Libre" />
-
-                        </TableRow>
-
-                        <TableRow
-                            android:weightSum="3">
-
-                            <RadioButton
-                                android:id="@+id/rb_1"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 1" />
-
-                            <RadioButton
-                                android:id="@+id/rb_2"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 2" />
-
-                            <RadioButton
-                                android:id="@+id/rb_3"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 3" />
-
-                        </TableRow>
-
-                        <TableRow
-                            android:weightSum="3">
-
-                            <RadioButton
-                                android:id="@+id/rb_4"
-                                android:layout_weight="1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 4" />
-
-                            <RadioButton
-                                android:id="@+id/rb_5"
-                                android:layout_weight="1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 5" />
-
-                            <RadioButton
-                                android:id="@+id/rb_6"
-                                android:layout_weight="1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 6" />
-
-                        </TableRow>
-
-                    </com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout>
-
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_weight="1"
@@ -354,20 +271,17 @@
                         android:id="@+id/btn_cancel"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="right"
+                        android:layout_gravity="end"
                         android:layout_weight="1"
                         android:background="@color/blue"
                         app:mfb_text="Annuler"
                         app:mfb_textColor="#FFFFFF" />
+
                 </LinearLayout>
 
             </LinearLayout>
 
         </ScrollView>
-
-
-
-
-
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

@@ -47,7 +47,7 @@ public class ActivityTransfert extends AppCompatActivity {
 
   protected ArrayList<PostData_Transfer2> getTransfert2(){
     arrayOfTransfert2 = new ArrayList<>();
-    arrayOfTransfert2 = controller.select_transfer2_from_database("SELECT * FROM Transfer2 WHERE NUM_BON = '" + NUM_BON+ "'" );
+    arrayOfTransfert2 = controller.select_transfer2_from_database("SELECT * FROM TRANSFERT2 WHERE NUM_BON = '" + NUM_BON+ "'" );
     return arrayOfTransfert2;
   }
 

@@ -3,19 +3,37 @@ package com.safesoft.proapp.distribute.activities.pdf;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintJob;
+import android.print.PrintManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.safesoft.proapp.distribute.R;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Objects;
 
 public class ActivityPDF extends AppCompatActivity {
@@ -131,9 +149,35 @@ public class ActivityPDF extends AppCompatActivity {
         if (id == R.id.share_pdf) {
             shareFile();
             return true;
+        }if (id == R.id.print_pdf) {
+
+            //https://stackoverflow.com/questions/33089808/print-existing-pdf-file-in-android
+            String pdf_path = null;
+            switch (SOURCE) {
+                case "FROM_SALE" -> pdf_path = getCacheDir()+ "/BON_VENTE_" + NUM_BON + ".pdf";
+                case "FROM_ORDER" -> pdf_path = getCacheDir() + "/BON_COMMANDE_" + NUM_BON + ".pdf";
+                case "FROM_ACHAT" -> pdf_path = getCacheDir() + "/BON_ACHAT_" + NUM_BON + ".pdf";
+                default -> {
+                }
+            }
+            printDocument(pdf_path);
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void printDocument(String path) {
+        PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+        try {
+            PrintDocumentAdapter printAdapter = new PdfFragmentPrintDocumentAdapter(this, path);
+            printManager.print("Document", printAdapter, new PrintAttributes.Builder().build());
+        }
+        catch(Exception e)
+            {
+               // Logger.logError(e);
+            }
+    }
+
+
 
     @Override
     public void onBackPressed() {

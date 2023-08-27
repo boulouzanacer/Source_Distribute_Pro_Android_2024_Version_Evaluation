@@ -147,7 +147,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         }
         if(TYPE_ACTIVITY.equals("NEW_INV")){
             //get num bon
-            String selectQuery = "SELECT MAX(NUM_INV) AS max_id FROM Inv1 WHERE NUM_INV IS NOT NULL";
+            String selectQuery = "SELECT MAX(NUM_INV) AS max_id FROM INV1 WHERE NUM_INV IS NOT NULL";
             NUM_INV = controller.select_max_num_bon(selectQuery);
             // get date and time
             Calendar c = Calendar.getInstance();
@@ -175,42 +175,42 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             }
 
             String querry = "SELECT " +
-                    "Inv1.NUM_INV, " +
-                    "Inv1.DATE_INV, " +
-                    "Inv1.HEURE_INV, " +
-                    "Inv1.LIBELLE, " +
-                    "Inv1.NBR_PRODUIT, " +
+                    "INV1.NUM_INV, " +
+                    "INV1.DATE_INV, " +
+                    "INV1.HEURE_INV, " +
+                    "INV1.LIBELLE, " +
+                    "INV1.NBR_PRODUIT, " +
 
-                    "Inv1.UTILISATEUR, " +
-                    "Inv1.CODE_DEPOT, " +
-                    "Inv1.EXPORTATION, " +
-                    "Inv1.IS_EXPORTED, " +
-                    "Inv1.DATE_EXPORT_INV, " +
-                    "Inv1.BLOCAGE " +
+                    "INV1.UTILISATEUR, " +
+                    "INV1.CODE_DEPOT, " +
+                    "INV1.EXPORTATION, " +
+                    "INV1.IS_EXPORTED, " +
+                    "INV1.DATE_EXPORT_INV, " +
+                    "INV1.BLOCAGE " +
 
-                    "FROM Inv1 " +
-                    "WHERE Inv1.NUM_INV ='"+ NUM_INV +"'";
+                    "FROM INV1 " +
+                    "WHERE INV1.NUM_INV ='"+ NUM_INV +"'";
 
             ///////////////////////////////////
             inv1 = controller.select_inventaire_from_database(querry);
 
             final_panier =  controller.select_inventaire2_from_database("" +
                     "SELECT " +
-                    "Inv2.RECORDID, " +
-                    "Inv2.CODE_BARRE, " +
-                    "Inv2.NUM_INV, " +
-                    "Inv2.PRODUIT, " +
-                    "Inv2.NBRE_COLIS, " +
-                    "Inv2.COLISSAGE, " +
-                    "Inv2.PA_HT, " +
-                    "Inv2.QTE, " +
-                    "Inv2.QTE_TMP, " +
-                    "Inv2.QTE_NEW, " +
-                    "Inv2.TVA, " +
-                    "Inv2.VRAC, " +
-                    "Inv2.CODE_DEPOT " +
-                    "FROM Inv2 " +
-                    "WHERE Inv2.NUM_INV = '" + NUM_INV+ "'" );
+                    "INV2.RECORDID, " +
+                    "INV2.CODE_BARRE, " +
+                    "INV2.NUM_INV, " +
+                    "INV2.PRODUIT, " +
+                    "INV2.NBRE_COLIS, " +
+                    "INV2.COLISSAGE, " +
+                    "INV2.PA_HT, " +
+                    "INV2.QTE, " +
+                    "INV2.QTE_TMP, " +
+                    "INV2.QTE_NEW, " +
+                    "INV2.TVA, " +
+                    "INV2.VRAC, " +
+                    "INV2.CODE_DEPOT " +
+                    "FROM INV2 " +
+                    "WHERE INV2.NUM_INV = '" + NUM_INV+ "'" );
             //private String formattedDate;
             date_time_sub_title = inv1.date_inv + " " + inv1.heure_inv;
 
@@ -339,7 +339,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                     return;
                 }
 
-                if (controller.validate_inv1_sql("Inv1", inv1.num_inv)) {
+                if (controller.validate_inv1_sql("INV1", inv1.num_inv)) {
                     inv1.blocage = "F";
                     validate_theme();
                 }
@@ -398,7 +398,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
                                     try{
 
-                                        if (controller.modifier_inv1_sql("Inv1",inv1.num_inv) ) {
+                                        if (controller.modifier_inv1_sql("INV1",inv1.num_inv) ) {
                                             inv1.blocage = "M";
                                             validate_theme();
                                         }
@@ -455,7 +455,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 inv1.nom_inv = edt_nom_inventaire.getText().toString();
 
                 if(btn_nom_inv_state_isactive){
-                    if(controller.insert_into_Inv1("Inv1", inv1)){
+                    if(controller.insert_into_Inv1("INV1", inv1)){
                         btn_validate_inv_name.setBackgroundResource(R.drawable.baseline_edit_24);
                         edt_nom_inventaire.setEnabled(false);
                         btn_nom_inv_state_isactive = false;
@@ -474,21 +474,21 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     protected void initData(){
         final_panier =  controller.select_inventaire2_from_database("" +
                 "SELECT " +
-                "Inv2.RECORDID, " +
-                "Inv2.CODE_BARRE, " +
-                "Inv2.NUM_INV, " +
-                "Inv2.PRODUIT, " +
-                "Inv2.NBRE_COLIS, " +
-                "Inv2.COLISSAGE, " +
-                "Inv2.PA_HT, " +
-                "Inv2.QTE, " +
-                "Inv2.QTE_TMP, " +
-                "Inv2.QTE_NEW, " +
-                "Inv2.TVA, " +
-                "Inv2.VRAC, " +
-                "Inv2.CODE_DEPOT " +
-                "FROM Inv2 " +
-                "WHERE Inv2.NUM_INV = '" + NUM_INV+ "'" );
+                "INV2.RECORDID, " +
+                "INV2.CODE_BARRE, " +
+                "INV2.NUM_INV, " +
+                "INV2.PRODUIT, " +
+                "INV2.NBRE_COLIS, " +
+                "INV2.COLISSAGE, " +
+                "INV2.PA_HT, " +
+                "INV2.QTE, " +
+                "INV2.QTE_TMP, " +
+                "INV2.QTE_NEW, " +
+                "INV2.TVA, " +
+                "INV2.VRAC, " +
+                "INV2.CODE_DEPOT " +
+                "FROM INV2 " +
+                "WHERE INV2.NUM_INV = '" + NUM_INV+ "'" );
 
         // Create the adapter to convert the array to views
         PanierAdapter = new ListViewAdapterPanierInventaire(this, R.layout.transfert2_items, final_panier);
@@ -538,7 +538,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
                             try{
                                 SOURCE = "INV2_DELETE";
-                                controller.delete_from_inv2("Inv2", final_panier.get(info.position).recordid);
+                                controller.delete_from_inv2("INV2", final_panier.get(info.position).recordid);
                                 initData();
                                 //PanierAdapter.RefrechPanier(final_panier);
                                 PanierAdapter = new ListViewAdapterPanierInventaire(ActivityInventaire.this, R.layout.transfert2_items, final_panier);
@@ -624,7 +624,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
         inv1.nbr_produit = final_panier.size();
         //update current inv1
-        controller.update_inv1_nbr_produit("Inv1", inv1);
+        controller.update_inv1_nbr_produit("INV1", inv1);
 
     }
 
@@ -728,7 +728,11 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
            try {
                if(SOURCE.equals("INV2_INSERT")){
-                   controller.insert_into_inventaire2( item_panier.getData());
+                   if(item_panier.getIfExist()){
+                       controller.Update_inventaire2(item_panier.getData());
+                   }else {
+                       controller.insert_into_inventaire2( item_panier.getData());
+                   }
                }else if(SOURCE.equals("INV2_EDIT")){
                    controller.Update_inventaire2(item_panier.getData());
                }
@@ -762,7 +766,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
         PostData_Inv2 inv2 = new PostData_Inv2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
@@ -772,7 +776,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+ resultscan +"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";

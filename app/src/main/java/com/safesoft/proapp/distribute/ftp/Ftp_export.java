@@ -17,6 +17,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
+import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
 
 import org.apache.commons.net.ftp.FTP;
@@ -215,6 +216,7 @@ public class Ftp_export {
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
+                    "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                     "WHERE BON2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
@@ -222,7 +224,32 @@ public class Ftp_export {
 
             bon2s = controller.select_bon2_from_database(querry_select);
 
+            String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
+
             for(int j = 0; j< bon2s.size(); j++){
+
+                ///////////////////////////////////PRODUIT /////////////////////////////////////////
+                PostData_Produit postData_produit = new PostData_Produit();
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
+                        "FROM PRODUIT WHERE CODE_BARRE = '"+ bon2s.get(j).codebarre+"'";
+
+                postData_produit = controller.select_one_produit_from_database(querry_isnew);
+                if(postData_produit != null){
+                    if(postData_produit.isNew == 1){
+                        F_SQL =  F_SQL + "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PA_HT, PRODUIT, TVA, STOCK, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", PV4_HT, PV5_HT, PV6_HT ";
+                        }
+                        F_SQL = F_SQL + ") VALUES ('"+ postData_produit.code_barre + "', '"+ postData_produit.ref_produit + "', '"+ postData_produit.pa_ht + "', '"+ postData_produit.produit + "', '"+ postData_produit.tva + "',  '"+ postData_produit.stock + "', '"+ postData_produit.colissage + "',  '"+ postData_produit.pv1_ht + "', '"+ postData_produit.pv2_ht + "', '"+ postData_produit.pv3_ht + "'";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", '"+ postData_produit.pv4_ht + "', '"+ postData_produit.pv5_ht + "', '"+ postData_produit.pv6_ht + "'";
+                        }
+                        F_SQL =  F_SQL + ") MATCHING (CODE_BARRE);\n";                     }
+                }
+                ///////////////////////////////////PRODUIT /////////////////////////////////////////
+
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
                 F_SQL =  F_SQL + "INSERT INTO BON2 (CODE_DEPOT,RECORDID,NUM_BON,";
                 F_SQL =  F_SQL + "CODE_BARRE,PRODUIT,DESTOCK_TYPE,DESTOCK_CODE_BARRE,DESTOCK_QTE,";
@@ -230,7 +257,7 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "TVA,PV_HT_AR,PV_HT,PA_HT)\n";
                 F_SQL =  F_SQL + "VALUES\n";
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BON2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
-                F_SQL =  F_SQL + "'" + bon2s.get(j).codebarre.replace("'", "''") + "','" + bon2s.get(j).produit.replace("'", "''") + "','" + bon2s.get(j).destock_type + "','" + bon2s.get(j).destock_code_barre + "','" + bon2s.get(j).destock_qte + "',";
+                F_SQL =  F_SQL + "'" + bon2s.get(j).codebarre.replace("'", "''") + "','" + bon2s.get(j).produit.replace("'", "''") + "', iif('" + bon2s.get(j).destock_type + "' = 'null', null,'" + bon2s.get(j).destock_type + "') , iif('" + bon2s.get(j).destock_code_barre + "' = 'null', null,'" + bon2s.get(j).destock_code_barre + "') ,'" + bon2s.get(j).destock_qte + "',";
                 F_SQL =  F_SQL + "" +  bon2s.get(j).nbr_colis + ","   + bon2s.get(j).colissage +","  + bon2s.get(j).qte + "," + bon2s.get(j).gratuit + ",";
                 F_SQL =  F_SQL + "" +  bon2s.get(j).tva + ","   + bon2s.get(j).p_u +","  + bon2s.get(j).p_u + "," + bon2s.get(j).p_u + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
@@ -466,6 +493,7 @@ public class Ftp_export {
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
+                    "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                     "WHERE BON2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
@@ -473,7 +501,33 @@ public class Ftp_export {
 
             bon2s = controller.select_bon2_from_database(querry_select);
 
+            String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
+
             for(int j = 0; j< bon2s.size(); j++){
+
+                ///////////////////////////////////PRODUIT ///////////////////////////////////////
+                PostData_Produit postData_produit = new PostData_Produit();
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
+                        "FROM PRODUIT WHERE CODE_BARRE = '"+ bon2s.get(j).codebarre+"'";
+
+                postData_produit = controller.select_one_produit_from_database(querry_isnew);
+                if(postData_produit != null){
+                    if(postData_produit.isNew == 1){
+                        F_SQL =  F_SQL + "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PA_HT, PRODUIT, TVA, STOCK, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", PV4_HT, PV5_HT, PV6_HT ";
+                        }
+                        F_SQL = F_SQL + ") VALUES ('"+ postData_produit.code_barre + "', '"+ postData_produit.ref_produit + "', '"+ postData_produit.pa_ht + "', '"+ postData_produit.produit + "', '"+ postData_produit.tva + "',  '"+ postData_produit.stock + "', '"+ postData_produit.colissage + "',  '"+ postData_produit.pv1_ht + "', '"+ postData_produit.pv2_ht + "', '"+ postData_produit.pv3_ht + "'";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", '"+ postData_produit.pv4_ht + "', '"+ postData_produit.pv5_ht + "', '"+ postData_produit.pv6_ht + "'";
+                        }
+                        F_SQL =  F_SQL + ") MATCHING (CODE_BARRE);\n";                    }
+                }
+                ///////////////////////////////////PRODUIT ///////////////////////////////////////
+
+
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
                 F_SQL =  F_SQL + "INSERT INTO BON2 (CODE_DEPOT,RECORDID,NUM_BON,";
                 F_SQL =  F_SQL + "CODE_BARRE,PRODUIT,DESTOCK_TYPE,DESTOCK_CODE_BARRE,DESTOCK_QTE,";
@@ -481,7 +535,7 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "TVA,PV_HT_AR,PV_HT,PA_HT)\n";
                 F_SQL =  F_SQL + "VALUES\n";
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BON2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
-                F_SQL =  F_SQL + "'" + bon2s.get(j).codebarre.replace("'", "''") + "','" + bon2s.get(j).produit.replace("'", "''") + "','" + bon2s.get(j).destock_type + "','" + bon2s.get(j).destock_code_barre + "','" + bon2s.get(j).destock_qte + "',";
+                F_SQL =  F_SQL + "'" + bon2s.get(j).codebarre.replace("'", "''") + "','" + bon2s.get(j).produit.replace("'", "''") + "', iif('" + bon2s.get(j).destock_type + "' = 'null', null,'" + bon2s.get(j).destock_type + "') , iif('" + bon2s.get(j).destock_code_barre + "' = 'null', null,'" + bon2s.get(j).destock_code_barre + "') , iif('" + bon2s.get(j).destock_qte + "' = '0.0', null,'" + bon2s.get(j).destock_qte + "'),";
                 F_SQL =  F_SQL + "" +  bon2s.get(j).nbr_colis + ","   + bon2s.get(j).colissage +","  + bon2s.get(j).qte + "," + bon2s.get(j).gratuit + ",";
                 F_SQL =  F_SQL + "" +  bon2s.get(j).tva + ","   + bon2s.get(j).p_u +","  + bon2s.get(j).p_u + "," + bon2s.get(j).p_u + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
@@ -717,6 +771,7 @@ public class Ftp_export {
                     "BON2_TEMP.DESTOCK_TYPE, " +
                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                     "BON2_TEMP.DESTOCK_QTE, " +
+                    "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                     "WHERE BON2_TEMP.NUM_BON = '" + bon1s_Temp.get(i).num_bon + "'";
@@ -724,7 +779,33 @@ public class Ftp_export {
 
             bon2s_Temp = controller.select_bon2_from_database(querry_select);
 
+            String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
+
             for(int j = 0; j< bon2s_Temp.size(); j++){
+
+                ///////////////////////////////////PRODUIT /////////////////////////////////////////
+                PostData_Produit postData_produit = new PostData_Produit();
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
+                        "FROM PRODUIT WHERE CODE_BARRE = '"+ bon2s_Temp.get(j).codebarre+"'";
+
+                postData_produit = controller.select_one_produit_from_database(querry_isnew);
+                if(postData_produit != null){
+                    if(postData_produit.isNew == 1){
+                        F_SQL =  F_SQL + "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PA_HT, PRODUIT, TVA, STOCK, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", PV4_HT, PV5_HT, PV6_HT ";
+                        }
+                        F_SQL = F_SQL + " ) VALUES ('"+ postData_produit.code_barre + "', '"+ postData_produit.ref_produit + "', '"+ postData_produit.pa_ht + "', '"+ postData_produit.produit + "', '"+ postData_produit.tva + "',  '"+ postData_produit.stock + "', '"+ postData_produit.colissage + "',  '"+ postData_produit.pv1_ht + "', '"+ postData_produit.pv2_ht + "', '"+ postData_produit.pv3_ht + "'";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", '"+ postData_produit.pv4_ht + "', '"+ postData_produit.pv5_ht + "', '"+ postData_produit.pv6_ht + "'";
+                        }
+                        F_SQL =  F_SQL + ") MATCHING (CODE_BARRE);\n";
+                    }
+                }
+                ///////////////////////////////////PRODUIT /////////////////////////////////////////
+
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
                 F_SQL =  F_SQL + "INSERT INTO BCC2 (CODE_DEPOT,RECORDID,NUM_BON,";
                 F_SQL =  F_SQL + "CODE_BARRE,PRODUIT,DESTOCK_TYPE,DESTOCK_CODE_BARRE,DESTOCK_QTE,";
@@ -732,7 +813,7 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "TVA,PV_HT_AR,PV_HT,PA_HT)\n";
                 F_SQL =  F_SQL + "VALUES\n";
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BCC2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
-                F_SQL =  F_SQL + "'" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "','" + bon2s_Temp.get(j).produit.replace("'", "''") + "','" + bon2s_Temp.get(j).destock_type + "','" + bon2s_Temp.get(j).destock_code_barre + "','" + bon2s_Temp.get(j).destock_qte + "',";
+                F_SQL =  F_SQL + "'" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "','" + bon2s_Temp.get(j).produit.replace("'", "''") + "', iif('" + bon2s_Temp.get(j).destock_type + "' = 'null', null,'" + bon2s_Temp.get(j).destock_type + "') , iif('" + bon2s_Temp.get(j).destock_code_barre + "' = 'null', null,'" + bon2s_Temp.get(j).destock_code_barre + "') ,'" + bon2s_Temp.get(j).destock_qte + "',";
                 F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).nbr_colis + ","   + bon2s_Temp.get(j).colissage +","  + bon2s_Temp.get(j).qte + "," + bon2s_Temp.get(j).gratuit + ",";
                 F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).tva + ","   + bon2s_Temp.get(j).p_u +","  + bon2s_Temp.get(j).p_u + "," + bon2s_Temp.get(j).p_u + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
@@ -843,20 +924,20 @@ public class Ftp_export {
         String F_SQL = "";
 
         String querry = "SELECT " +
-                "Inv1.NUM_INV, " +
-                "Inv1.DATE_INV, " +
-                "Inv1.HEURE_INV, " +
-                "Inv1.LIBELLE, " +
-                "Inv1.NBR_PRODUIT, " +
+                "INV1.NUM_INV, " +
+                "INV1.DATE_INV, " +
+                "INV1.HEURE_INV, " +
+                "INV1.LIBELLE, " +
+                "INV1.NBR_PRODUIT, " +
 
-                "Inv1.UTILISATEUR, " +
-                "Inv1.CODE_DEPOT, " +
-                "Inv1.EXPORTATION, " +
-                "Inv1.IS_EXPORTED, " +
-                "Inv1.DATE_EXPORT_INV, " +
-                "Inv1.BLOCAGE " +
-                "FROM Inv1 " +
-                "WHERE BLOCAGE = 'F' ORDER BY Inv1.NUM_INV";
+                "INV1.UTILISATEUR, " +
+                "INV1.CODE_DEPOT, " +
+                "INV1.EXPORTATION, " +
+                "INV1.IS_EXPORTED, " +
+                "INV1.DATE_EXPORT_INV, " +
+                "INV1.BLOCAGE " +
+                "FROM INV1 " +
+                "WHERE BLOCAGE = 'F' ORDER BY INV1.NUM_INV";
 
         try {
             Invs1 = controller.select_list_inventaire_from_database(querry);
@@ -889,27 +970,52 @@ public class Ftp_export {
 
             String querry_select = "" +
                     "SELECT " +
-                    "Inv2.RECORDID, " +
-                    "Inv2.CODE_BARRE, " +
-                    "Inv2.NUM_INV, " +
-                    "Inv2.PRODUIT, " +
-                    "Inv2.NBRE_COLIS, " +
-                    "Inv2.COLISSAGE, " +
-                    "Inv2.PA_HT, " +
-                    "Inv2.QTE, " +
-                    "Inv2.QTE_TMP, " +
-                    "Inv2.QTE_NEW, " +
-                    "Inv2.TVA, " +
-                    "Inv2.VRAC, " +
-                    "Inv2.CODE_DEPOT " +
-                    "FROM Inv2 " +
-                    "WHERE Inv2.NUM_INV = '" + Invs1.get(i).num_inv+ "'";
+                    "INV2.RECORDID, " +
+                    "INV2.CODE_BARRE, " +
+                    "INV2.NUM_INV, " +
+                    "INV2.PRODUIT, " +
+                    "INV2.NBRE_COLIS, " +
+                    "INV2.COLISSAGE, " +
+                    "INV2.PA_HT, " +
+                    "INV2.QTE, " +
+                    "INV2.QTE_TMP, " +
+                    "INV2.QTE_NEW, " +
+                    "INV2.TVA, " +
+                    "INV2.VRAC, " +
+                    "INV2.CODE_DEPOT " +
+                    "FROM INV2 " +
+                    "WHERE INV2.NUM_INV = '" + Invs1.get(i).num_inv+ "'";
 
             Inv2s = controller.select_inventaire2_from_database(querry_select);
 
+            String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
 
             for(int j = 0; j< Inv2s.size(); j++){
-                ///////////////////////////////////INV 2 ///////////////////////////////////////
+
+                ///////////////////////////////////PRODUIT /////////////////////////////////////////
+                PostData_Produit postData_produit = new PostData_Produit();
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
+                        "FROM PRODUIT WHERE CODE_BARRE = '"+ Inv2s.get(j).codebarre+"'";
+
+                postData_produit = controller.select_one_produit_from_database(querry_isnew);
+
+                if(postData_produit != null){
+                    if(postData_produit.isNew == 1){
+                        F_SQL =  F_SQL + "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PA_HT, PRODUIT, TVA, STOCK, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", PV4_HT, PV5_HT, PV6_HT ";
+                        }
+                        F_SQL = F_SQL + ") VALUES ('"+ postData_produit.code_barre + "', '"+ postData_produit.ref_produit + "', '"+ postData_produit.pa_ht + "', '"+ postData_produit.produit + "', '"+ postData_produit.tva + "',  '"+ postData_produit.stock + "', '"+ postData_produit.colissage + "',  '"+ postData_produit.pv1_ht + "', '"+ postData_produit.pv2_ht + "', '"+ postData_produit.pv3_ht + "'";
+                        if(TYPE_LOGICIEL.equals("PME PRO")){
+                            F_SQL =  F_SQL +  ", '"+ postData_produit.pv4_ht + "', '"+ postData_produit.pv5_ht + "', '"+ postData_produit.pv6_ht + "'";
+                        }
+                        F_SQL =  F_SQL + ") MATCHING (CODE_BARRE);\n";                     }
+                }
+                /////////////////////////////////// PRODUIT ////////////////////////////////////////
+
+                ///////////////////////////////////INV 2 ///////////////////////////////////////////
                 F_SQL =  F_SQL + "INSERT INTO INV2 (CODE_DEPOT,RECORDID,NUM_INV,";
                 F_SQL =  F_SQL + "CODE_BARRE, PA_HT,";
                 F_SQL =  F_SQL + "QTE, QTE_TMP,";
@@ -1023,7 +1129,7 @@ public class Ftp_export {
                             try {
                                 if( map.getKey().toString().endsWith(".BLV")){
                                     String num_bon = map.getKey().toString().substring(6, 12);
-                                    controller.Update_ventes_commandes_as_exported(false, num_bon);
+                                    controller.update_ventes_commandes_as_exported(false, num_bon);
                                 }
                             }catch (Exception e){
 
@@ -1131,7 +1237,7 @@ public class Ftp_export {
                                 try {
                                     if( map.getKey().toString().endsWith(".BLV")){
                                         String num_bon = map.getKey().toString().substring(6, 12);
-                                        controller.Update_ventes_commandes_as_exported(false, num_bon);
+                                        controller.update_ventes_commandes_as_exported(false, num_bon);
                                     }
                                 }catch (Exception e){
 
@@ -1243,7 +1349,7 @@ public class Ftp_export {
                                     try {
                                         if( map.getKey().toString().endsWith(".BLV")){
                                             String num_bon = map.getKey().toString().substring(9, 15);
-                                            controller.Update_ventes_commandes_as_exported(true, num_bon);
+                                            controller.update_ventes_commandes_as_exported(true, num_bon);
                                         }
                                     }catch (Exception e){
 
@@ -1254,7 +1360,7 @@ public class Ftp_export {
                                 try {
                                     if( map.getKey().toString().endsWith(".BLV")){
                                         String num_bon = map.getKey().toString().substring(9, 15);
-                                        controller.Update_ventes_commandes_as_exported(true, num_bon);
+                                        controller.update_ventes_commandes_as_exported(true, num_bon);
                                     }
                                 }catch (Exception e){
 

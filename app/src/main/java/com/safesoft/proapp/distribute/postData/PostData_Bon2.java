@@ -18,6 +18,7 @@ public class PostData_Bon2 implements Serializable{
   public double p_u;
   public String code_depot;
   public double stock_produit;
+  public int isNew = 0;
   public String destock_type;
   public String destock_code_barre;
   public double destock_qte;

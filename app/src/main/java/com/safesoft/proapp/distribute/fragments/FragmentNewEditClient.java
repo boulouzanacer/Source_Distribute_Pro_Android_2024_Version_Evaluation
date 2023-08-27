@@ -1,14 +1,18 @@
 package com.safesoft.proapp.distribute.fragments;
 
+import static android.content.ContentValues.TAG;
+import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -21,6 +25,7 @@ import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
+import com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -33,7 +38,7 @@ public class FragmentNewEditClient {
 
     MaterialFancyButton btn_valider, btn_cancel;
     TextInputEditText  edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai;
-    RadioGroup radioGroup_mode_tarif;
+    ToggleButtonGroupTableLayout radioGroup_mode_tarif;
     RadioButton selectedRadioButton;
     private Context mContext;
 
@@ -100,8 +105,57 @@ public class FragmentNewEditClient {
         edt_client_nis = dialogview.findViewById(R.id.edt_client_nis);
         edt_client_ai = dialogview.findViewById(R.id.edt_client_ai);
 
-        radioGroup_mode_tarif = (RadioGroup) dialogview.findViewById(R.id.rd_mode_tarif);
-        // onMontantRemiseChange();
+        radioGroup_mode_tarif = (ToggleButtonGroupTableLayout) dialogview.findViewById(R.id.rd_mode_tarif);
+        radioGroup_mode_tarif.check(R.id.rb_0);
+
+        RadioButton rb0 =  dialogview.findViewById(R.id.rb_0);
+        RadioButton rb1 =  dialogview.findViewById(R.id.rb_1);
+        RadioButton rb2 =  dialogview.findViewById(R.id.rb_2);
+        RadioButton rb3 =  dialogview.findViewById(R.id.rb_3);
+        RadioButton rb4 =  dialogview.findViewById(R.id.rb_4);
+        RadioButton rb5 =  dialogview.findViewById(R.id.rb_5);
+        RadioButton rb6 =  dialogview.findViewById(R.id.rb_6);
+
+
+
+        SharedPreferences prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
+
+        rb1.setText(prefs.getString("PV1_TITRE","Tarif 1"));
+        rb2.setText(prefs.getString("PV2_TITRE","Tarif 2"));
+        rb3.setText(prefs.getString("PV3_TITRE","Tarif 3"));
+        rb4.setText(prefs.getString("PV4_TITRE","Tarif 4"));
+        rb5.setText(prefs.getString("PV5_TITRE","Tarif 5"));
+        rb6.setText(prefs.getString("PV6_TITRE","Tarif 6"));
+
+        if(prefs.getString("PRIX_2","").equals("1")){
+            rb2.setVisibility(View.VISIBLE);
+        }else{
+            rb2.setVisibility(View.GONE);
+        }
+
+        if(prefs.getString("PRIX_3","").equals("1")){
+            rb3.setVisibility(View.VISIBLE);
+        }else{
+            rb3.setVisibility(View.GONE);
+        }
+
+        if(prefs.getString("PRIX_4","").equals("1")){
+            rb4.setVisibility(View.VISIBLE);
+        }else{
+            rb4.setVisibility(View.GONE);
+        }
+
+        if(prefs.getString("PRIX_5","").equals("1")){
+            rb5.setVisibility(View.VISIBLE);
+        }else{
+            rb5.setVisibility(View.GONE);
+        }
+
+        if(prefs.getString("PRIX_6","").equals("1")){
+            rb6.setVisibility(View.VISIBLE);
+        }else{
+            rb6.setVisibility(View.GONE);
+        }
 
         if(SOURCE_ACTIVITY.equals("EDIT_CLIENT")){
 
@@ -113,17 +167,27 @@ public class FragmentNewEditClient {
             edt_client_nis.setText(old_client.nis);
             edt_client_ai.setText(old_client.ai);
 
+            radioGroup_mode_tarif.clearCheck();
             if(old_client.mode_tarif.equals("0")){
-                radioGroup_mode_tarif.check(R.id.rb_1);
+                radioGroup_mode_tarif.check(R.id.rb_0);
             }
             if(old_client.mode_tarif.equals("1")){
-                radioGroup_mode_tarif.check(R.id.rb_2);
+                radioGroup_mode_tarif.check(R.id.rb_1);
             }
             if(old_client.mode_tarif.equals("2")){
-                radioGroup_mode_tarif.check(R.id.rb_3);
+                radioGroup_mode_tarif.check(R.id.rb_2);
             }
             if(old_client.mode_tarif.equals("3")){
+                radioGroup_mode_tarif.check(R.id.rb_3);
+            }
+            if(old_client.mode_tarif.equals("4")){
                 radioGroup_mode_tarif.check(R.id.rb_4);
+            }
+            if(old_client.mode_tarif.equals("5")){
+                radioGroup_mode_tarif.check(R.id.rb_5);
+            }
+            if(old_client.mode_tarif.equals("6")){
+                radioGroup_mode_tarif.check(R.id.rb_6);
             }
         }
 
@@ -147,16 +211,6 @@ public class FragmentNewEditClient {
 
             if (!hasError) {
 
-
-                SharedPreferences prefs = activity.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-                if(prefs.getString("PV_ID", "PV1").equals("PV1")){
-                    created_client.mode_tarif = "1";
-                }else if(prefs.getString("PV_ID", "PV1").equals("PV2")){
-                    created_client.mode_tarif = "2";
-                }else{
-                    created_client.mode_tarif = "3";
-                }
-
                 created_client.client = edt_client_name.getText().toString();
                 created_client.adresse =  edt_client_adress.getText().toString();
                 created_client.tel = edt_client_telephone.getText().toString();
@@ -166,23 +220,31 @@ public class FragmentNewEditClient {
                 created_client.ai = edt_client_ai.getText().toString();
 
                 created_client.mode_tarif ="0";
+                created_client.isNew = 1;
+
 
                 int selectedRadioButtonId = radioGroup_mode_tarif.getCheckedRadioButtonId();
                 if (selectedRadioButtonId != -1) {
-                    selectedRadioButton = dialogview.findViewById(selectedRadioButtonId);
-                    String selectedRbText = selectedRadioButton.getText().toString();
-                    if(selectedRbText.equals("Libre")){
+                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_0).getId()){
                         created_client.mode_tarif ="0";
                     }
-                    if(selectedRbText.equals("Tarif 1")){
+                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_1).getId()){
                         created_client.mode_tarif ="1";
                     }
-
-                    if(selectedRbText.equals("Tarif 2")){
+                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_2).getId()){
                         created_client.mode_tarif ="2";
                     }
-                    if(selectedRbText.equals("Tarif 3")){
+                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_3).getId()){
                         created_client.mode_tarif ="3";
+                    }
+                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_4).getId()){
+                        created_client.mode_tarif ="4";
+                    }
+                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_5).getId()){
+                        created_client.mode_tarif ="5";
+                    }
+                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_6).getId()){
+                        created_client.mode_tarif ="6";
                     }
                 }
 
@@ -191,17 +253,14 @@ public class FragmentNewEditClient {
                 CODE_VENDEUR = prefs2.getString("CODE_VENDEUR", "000000");
 
 
-
                 if(SOURCE_ACTIVITY.equals("EDIT_CLIENT")){
 
                     created_client.code_client = old_client.code_client;
 
                     //Insert client into database,
-                    boolean state_insert_client = controller.update_client(created_client);
-                    if(state_insert_client){
-
+                    boolean state_update_client = controller.update_client(created_client);
+                    if(state_update_client){
                         Crouton.makeText(activity, "Client bien modifier", Style.INFO).show();
-
                         SelectedClientEvent added_client = new SelectedClientEvent(created_client);
                         bus.post(added_client);
 
@@ -220,8 +279,8 @@ public class FragmentNewEditClient {
                     }
 
                     //update client into database,
-                    boolean state_update_client = controller.insert_into_client(created_client);
-                    if(state_update_client){
+                    boolean state_insert_client = controller.insert_into_client(created_client);
+                    if(state_insert_client){
 
                         Crouton.makeText(activity, "Client bien ajouté", Style.INFO).show();
 

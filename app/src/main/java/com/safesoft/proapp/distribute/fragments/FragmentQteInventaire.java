@@ -20,7 +20,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventInventaire2;
+import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,8 +34,9 @@ import java.util.Objects;
 
 public class FragmentQteInventaire {
 
+    private DATABASE controller;
     MaterialFancyButton btn_valider, btn_cancel;
-    TextView txv_produit;
+    TextView txv_produit, txv_message;
     LinearLayout part_3_qteinv_Layout;
     TextInputLayout stockavantLayout_colis, ecartLayout_colis, qteLayout, vracLayout;
     TextInputEditText  edt_colissage, edt_nbr_colis, edt_qte_physique, edt_vrac, edt_stock_avant, edt_stock_avant_colis, edt_ecart_qte, edt_ecart_colis;
@@ -50,6 +53,8 @@ public class FragmentQteInventaire {
     PostData_Inv2 arrived_inv2;
 
     private final String PREFS = "ALL_PREFS";
+    String SOURCE_LOCAL;
+    boolean if_inv2_exist = false;
 
     //PopupWindow display method
 
@@ -58,6 +63,8 @@ public class FragmentQteInventaire {
         mContext = context;
         this.activity = activity;
         arrived_inv2 = inv2;
+        this.SOURCE_LOCAL = SOURCE;
+        this.controller = new DATABASE(mContext);
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
@@ -105,6 +112,7 @@ public class FragmentQteInventaire {
         qteLayout = dialogview.findViewById(R.id.qteLayout);
 
         txv_produit = dialogview.findViewById(R.id.produit_title);
+        txv_message = dialogview.findViewById(R.id.message_title);
         edt_stock_avant = dialogview.findViewById(R.id.stockavant);
         edt_stock_avant_colis = dialogview.findViewById(R.id.stockavant_colis);
         edt_nbr_colis = dialogview.findViewById(R.id.nbrColis);
@@ -117,6 +125,38 @@ public class FragmentQteInventaire {
 
         part_3_qteinv_Layout = dialogview.findViewById(R.id.part_3_qteinv_Layout);
 
+
+
+
+        //********************************************************************
+        if (SOURCE_LOCAL.equals("INV2_INSERT")){
+            PostData_Inv2 checked_inv2 = new PostData_Inv2();
+            String querry = "SELECT " +
+                    "INV2.RECORDID, " +
+                    "INV2.CODE_BARRE, " +
+                    "INV2.NUM_INV, " +
+                    "INV2.PRODUIT, " +
+                    "INV2.NBRE_COLIS, " +
+                    "INV2.COLISSAGE, " +
+                    "INV2.PA_HT, " +
+                    "INV2.QTE, " +
+                    "INV2.QTE_TMP, " +
+                    "INV2.QTE_NEW, " +
+                    "INV2.TVA, " +
+                    "INV2.VRAC, " +
+                    "INV2.CODE_DEPOT " +
+                    "FROM INV2 " +
+                    "WHERE INV2.NUM_INV = '" + arrived_inv2.num_inv + "' AND INV2.CODE_BARRE = '" + arrived_inv2.codebarre + "'";
+            checked_inv2 = controller.check_if_inv2_exist(querry);
+            SOURCE_LOCAL = "BON2_EDIT";
+
+            if(checked_inv2 != null){
+                txv_message.setText("Produit déja inseré avec une quantité : " + checked_inv2.qte_physique);
+                if_inv2_exist = true;
+                arrived_inv2 = checked_inv2;
+            }
+
+        }
 
         val_stock_avant = arrived_inv2.qte_theorique;
         val_colissage = arrived_inv2.colissage;
@@ -144,7 +184,6 @@ public class FragmentQteInventaire {
             //vracLayout.setVisibility(View.VISIBLE);
             //part_3_qteinv_Layout.setWeightSum(4);
         }
-
 
         if (SOURCE.equals("INV2_INSERT")){
             edt_ecart_qte.setText(nq.format(val_stock_avant));
@@ -220,7 +259,7 @@ public class FragmentQteInventaire {
                 arrived_inv2.qte_physique = val_qte_physique;
                 arrived_inv2.vrac = val_vrac;
 
-                CheckedPanierEventInventaire2 item_panier = new CheckedPanierEventInventaire2(arrived_inv2, val_qte_physique, val_vrac);
+                CheckedPanierEventInventaire2 item_panier = new CheckedPanierEventInventaire2(arrived_inv2, val_qte_physique, val_vrac, if_inv2_exist);
 
                 bus.post(item_panier);
 

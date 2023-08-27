@@ -269,16 +269,14 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
 
     if (client.mode_tarif != null){
-      if(client.mode_tarif.equals("0")){
-        TvModeT.setText("LIBRE");
-      }else if(client.mode_tarif.equals("1")){
-        TvModeT.setText("1");
-
-      }else if(client.mode_tarif.equals("2")){
-        TvModeT.setText("2");
-
-      }else if(client.mode_tarif.equals("3")){
-        TvModeT.setText("3");
+      switch (client.mode_tarif) {
+        case "0" -> TvModeT.setText("LIBRE");
+        case "1" -> TvModeT.setText("1");
+        case "2" -> TvModeT.setText("2");
+        case "3" -> TvModeT.setText("3");
+        case "4" -> TvModeT.setText("4");
+        case "5" -> TvModeT.setText("5");
+        case "6" -> TvModeT.setText("6");
       }
 
     }
@@ -490,7 +488,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     client.latitude = event.getLocationData().getLatitude();
     client.longitude = event.getLocationData().getLongitude();
 
-    controller.update_client(client.latitude, client.longitude, client.code_client);
+    controller.update_position_client(client.latitude, client.longitude, client.code_client);
     if(progress != null){
       progress.dismiss();
     }
@@ -545,7 +543,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 .setCancelClickListener(Dialog::dismiss)
                 .setConfirmClickListener(sDialog -> {
 
-                  if(controller.Delete_versement(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)){
+                  if(controller.delete_versement(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)){
                     Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
                   }else {
                     Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();

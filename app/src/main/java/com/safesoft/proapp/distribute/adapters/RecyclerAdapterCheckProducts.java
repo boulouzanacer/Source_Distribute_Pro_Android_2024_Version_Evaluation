@@ -124,15 +124,16 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
             holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pa_ht));
         }else if(SOURCE.equals("VENTE")){
 
-            if(mode_tarif.equals("3")){
-                holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pv3_ht));
-            }else if(mode_tarif.equals("2")){
-                holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pv2_ht));
-            } else
-                holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pv1_ht));
+            switch (mode_tarif) {
+                case "6" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv6_ht * item.tva / 100) + item.pv6_ht));
+                case "5" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv5_ht * item.tva / 100) + item.pv5_ht));
+                case "4" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv4_ht * item.tva / 100) + item.pv4_ht));
+                case "3" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv3_ht* item.tva / 100 ) + item.pv3_ht));
+                case "2" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv2_ht * item.tva / 100) + item.pv2_ht));
+                default -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv1_ht * item.tva / 100) + item.pv1_ht));
+            }
 
         }
-
 
         holder.Stock_colis.setText(new DecimalFormat("##,##0.##").format(item.stock_colis));
 
@@ -181,7 +182,6 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
             if (generator!=null)
                 color = generator.getColor(produitList.get(position).produit);
         }
-
 
     }
 

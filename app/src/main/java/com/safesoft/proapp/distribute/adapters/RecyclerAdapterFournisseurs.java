@@ -27,6 +27,7 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
   private final List<PostData_Fournisseur> fournisList;
   private int color = 0;
   private ItemClick itemClick;
+  private ItemLongClick itemLongClick;
   private ColorGeneratorModified generator;
 
   static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -61,8 +62,11 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
   @Override
   public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
   {
+
     View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fournisseur, parent, false);
+
     itemClick =(ItemClick) parent.getContext();
+    itemLongClick =(ItemLongClick) parent.getContext();
 
     return new MyViewHolder(v);
   }
@@ -92,6 +96,15 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
       }
     });
 
+    holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        itemLongClick.onLongClick(v, holder.getAdapterPosition());
+        return false;
+      }
+    });
+
+
     String firstChar = "NO";
     if(item.fournis != null){
       if(item.fournis.length() == 1){
@@ -101,7 +114,6 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
       }else{
         firstChar = "NO";
       }
-
     }
 
     if (color == 0)
@@ -112,6 +124,7 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
 
     TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), color);
     holder.image.setImageDrawable(drawable);
+
   }
 
   @Override
@@ -123,6 +136,9 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
     void onClick(View v, int position);
   }
 
+  public interface ItemLongClick{
+    void onLongClick(View v, int position);
+  }
   public void refresh(List<PostData_Fournisseur> new_itemList){
     fournisList.clear();
     fournisList.addAll(new_itemList);

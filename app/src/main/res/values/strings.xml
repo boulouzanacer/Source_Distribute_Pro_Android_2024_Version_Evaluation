@@ -36,7 +36,7 @@
     <string name="nom_client_hint">Nom client</string>
     <string name="revendeur_hint">Revendeur</string>
     <string name="code_client_hint">Code client</string>
-    <string name="phone_client_hint">Num Téléphone Client</string>
+    <string name="phone_client_hint">Num Téléphone</string>
     <string name="solde_client_hint">Solde Client</string>
     <string name="registre_commerce_hint">R.C</string>
     <string name="nif_client">N.I.F</string>
@@ -414,5 +414,6 @@
     <string name="d_signation">Désignation</string>
     <string name="code_produit">Code produit</string>
     <string name="connexion_instantan">Connexion via internet</string>
+    <string name="nom_fournisseur">Nom fournisseur</string>
 
 </resources>

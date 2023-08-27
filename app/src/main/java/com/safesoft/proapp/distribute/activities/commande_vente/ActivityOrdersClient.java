@@ -268,6 +268,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "BON2_TEMP.DESTOCK_TYPE, " +
                                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                 "BON2_TEMP.DESTOCK_QTE, " +
+                                "PRODUIT.ISNEW, " +
                                 "PRODUIT.STOCK " +
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +

@@ -263,6 +263,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     "BON2_TEMP.DESTOCK_TYPE, " +
                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                     "BON2_TEMP.DESTOCK_QTE, " +
+                    "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2_TEMP " +
                     "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -418,15 +419,51 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 if(client_selected.mode_tarif.equals("0")){
 
                     if(btn_mode_tarif.getText().toString().equals("Tarif 1")){
-                        bon1_temp.mode_tarif = "2";
-                        btn_mode_tarif.setText("Tarif 2");
+                        if(prefs.getString("PRIX_2","").equals("1")){
+                            bon1_temp.mode_tarif = "2";
+                            btn_mode_tarif.setText("Tarif 2");
+                        }else {
+                            bon1_temp.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 2")){
-                        bon1_temp.mode_tarif = "3";
-                        btn_mode_tarif.setText("Tarif 3");
+                        if(prefs.getString("PRIX_3","").equals("1")){
+                            bon1_temp.mode_tarif = "3";
+                            btn_mode_tarif.setText("Tarif 3");
+                        }else {
+                            bon1_temp.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 3")) {
+                        if(prefs.getString("PRIX_4","").equals("1")){
+                            bon1_temp.mode_tarif = "4";
+                            btn_mode_tarif.setText("Tarif 4");
+                        }else {
+                            bon1_temp.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 4")) {
+                        if(prefs.getString("PRIX_5","").equals("1")){
+                            bon1_temp.mode_tarif = "6";
+                            btn_mode_tarif.setText("Tarif 5");
+                        }else {
+                            bon1_temp.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 5")) {
+                        if(prefs.getString("PRIX_6","").equals("1")){
+                            bon1_temp.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 6");
+                        }else {
+                            bon1_temp.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 6")) {
                         bon1_temp.mode_tarif = "1";
                         btn_mode_tarif.setText("Tarif 1");
                     }
+
+                    sauvegarder();
                 }else {
                     return;
                 }
@@ -647,20 +684,31 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             btn_mode_tarif.setText("Tarif 1");
 
             if(client_selected.mode_tarif != null){
-                if(client_selected.mode_tarif.equals("2")){
-                    // tarif 2
-                    btn_mode_tarif.setText("Tarif 2");
-                    bon1_temp.mode_tarif = "2";
-
-                }else if(client_selected.mode_tarif.equals("3")){
-                    // tarif 3
-                    btn_mode_tarif.setText("Tarif 3");
-                    bon1_temp.mode_tarif = "3";
-                }
-                else{
-                    // tarif 1
-                    btn_mode_tarif.setText("Tarif 1");
-                    bon1_temp.mode_tarif = "1";
+                switch (client_selected.mode_tarif) {
+                    case "2" -> {
+                        btn_mode_tarif.setText("Tarif 2");
+                        bon1_temp.mode_tarif = "2";
+                    }
+                    case "3" -> {
+                        btn_mode_tarif.setText("Tarif 3");
+                        bon1_temp.mode_tarif = "3";
+                    }
+                    case "4" -> {
+                        btn_mode_tarif.setText("Tarif 4");
+                        bon1_temp.mode_tarif = "3";
+                    }
+                    case "5" -> {
+                        btn_mode_tarif.setText("Tarif 5");
+                        bon1_temp.mode_tarif = "3";
+                    }
+                    case "6" -> {
+                        btn_mode_tarif.setText("Tarif 6");
+                        bon1_temp.mode_tarif = "3";
+                    }
+                    default -> {
+                        btn_mode_tarif.setText("Tarif 1");
+                        bon1_temp.mode_tarif = "1";
+                    }
                 }
             }else{
                 // tarif 1
@@ -669,17 +717,19 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             }
         }else {
 
-            if(bon1_temp.mode_tarif.equals("2")){
-                // tarif 2
-                btn_mode_tarif.setText("Tarif 2");
-
-            }else if(bon1_temp.mode_tarif.equals("3")){
-                // tarif 3
-                btn_mode_tarif.setText("Tarif 3");
-            }
-            else{
-                // tarif 1
-                btn_mode_tarif.setText("Tarif 1");
+            switch (bon1_temp.mode_tarif) {
+                case "2" ->
+                        btn_mode_tarif.setText("Tarif 2");
+                case "3" ->
+                        btn_mode_tarif.setText("Tarif 3");
+                case "4" ->
+                        btn_mode_tarif.setText("Tarif 4");
+                case "5" ->
+                        btn_mode_tarif.setText("Tarif 5");
+                case "6" ->
+                        btn_mode_tarif.setText("Tarif 6");
+                default ->
+                        btn_mode_tarif.setText("Tarif 1");
             }
         }
 
@@ -705,6 +755,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 "BON2_TEMP.DESTOCK_TYPE, " +
                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                 "BON2_TEMP.DESTOCK_QTE, " +
+                "PRODUIT.ISNEW, " +
                 "PRODUIT.STOCK " +
                 "FROM BON2_TEMP " +
                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -1064,9 +1115,13 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
            try {
                if(SOURCE.equals("BON2_TEMP_INSERT")){
-                   controller.insert_into_bon2("BON2_TEMP", NUM_BON, CODE_DEPOT,  item_panier.getData());
+                   if(item_panier.getIfExist()){
+                       controller.update_into_bon2("BON2_TEMP", NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
+                   }else {
+                       controller.insert_into_bon2("BON2_TEMP", NUM_BON, CODE_DEPOT,  item_panier.getData());
+                   }
                }else if(SOURCE.equals("BON2_TEMP_EDIT")){
-                   controller.update_into_bon2("BON2_TEM", NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
+                   controller.update_into_bon2("BON2_TEMP", NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
                }
 
                initData();
@@ -1124,7 +1179,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         ArrayList<PostData_Produit> produits;
         PostData_Bon2 bon2_temp = new PostData_Bon2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PTODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
@@ -1134,7 +1189,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+resultscan+"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, DESTOCK_TYPE, " +
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";

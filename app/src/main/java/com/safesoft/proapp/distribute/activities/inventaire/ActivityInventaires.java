@@ -134,15 +134,15 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     String querry = "";
     if(!SOURCE_EXPORT.equals("EXPORTED")){
       if(CODE_DEPOT.equals("000000")){
-        querry = "SELECT * FROM Inv1 WHERE IS_EXPORTED <> 1 OR IS_EXPORTED is null";
+        querry = "SELECT * FROM INV1 WHERE IS_EXPORTED <> 1 OR IS_EXPORTED is null";
       }else{
-        querry = "SELECT * FROM Inv1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"' AND ( IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
+        querry = "SELECT * FROM INV1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"' AND ( IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
       }
     }else {
       if(CODE_DEPOT.equals("000000")){
-        querry = "SELECT * FROM Inv1 WHERE IS_EXPORTED <> 0";
+        querry = "SELECT * FROM INV1 WHERE IS_EXPORTED <> 0";
       }else{
-        querry = "SELECT * FROM Inv1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"' AND ( IS_EXPORTED <> 0)";
+        querry = "SELECT * FROM INV1 WHERE CODE_DEPOT = '" + CODE_DEPOT+"' AND ( IS_EXPORTED <> 0)";
       }
     }
 
@@ -425,7 +425,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
         /// else case export one invontory.
         invs1.clear();
-        String querry = "SELECT * FROM Inv1";
+        String querry = "SELECT * FROM INV1";
         if (!code_depot.equals("000000")) {
           querry =  querry + " WHERE CODE_DEPOT = '" + code_depot + "' AND NUM_INV = '"+ _num_inv+"'";
         }else{
@@ -450,7 +450,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
             }
             if(!inv_exist){
 
-              String querry_select = "SELECT * FROM Inv2 WHERE NUM_INV = '" + invs1.get(0).num_inv + "'";
+              String querry_select = "SELECT * FROM INV2 WHERE NUM_INV = '" + invs1.get(0).num_inv + "'";
               invs2 = controller.select_inventaire2_from_database(querry_select);
               String[] buffer = new String[invs2.size()];
 

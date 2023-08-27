@@ -24,118 +24,130 @@ import java.util.List;
 
 public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapterClients.MyViewHolder> {
 
-  private final List<PostData_Client> fournisList;
-  private int color = 0;
-  private ItemClick itemClick;
-  private ColorGeneratorModified generator;
-  private final Context mContext;
+      private final List<PostData_Client> fournisList;
+      private int color = 0;
+      private ItemClick itemClick;
+      private ItemLongClick itemLongClick;
+      private ColorGeneratorModified generator;
+      private final Context mContext;
 
 
-  class MyViewHolder extends RecyclerView.ViewHolder {
+      class MyViewHolder extends RecyclerView.ViewHolder {
 
-    TextView ClientN;
-    CardView cardView;
-    ImageView image;
-    ImageView img_pos_client;
-    TextView Tel_clientN;
-    TextView Sld_clientN;
+        TextView ClientN;
+        CardView cardView;
+        ImageView image;
+        ImageView img_pos_client;
+        TextView Tel_clientN;
+        TextView Sld_clientN;
 
-    MyViewHolder(View view)
-    {
-      super(view);
-      cardView = (CardView) view.findViewById(R.id.item_root);
-      ClientN = (TextView) view.findViewById(R.id.client);
-      Tel_clientN = (TextView) view.findViewById(R.id.tel_client);
-      Sld_clientN = (TextView) view.findViewById(R.id.sld_client);
-      image = (ImageView) view.findViewById(R.id.imageId);
-      img_pos_client = (ImageView) view.findViewById(R.id.img_pos_client);
-    }
-  }
-
-
-  public RecyclerAdapterClients(Context context, List<PostData_Client> itemList)
-  {
-    this.fournisList = itemList;
-    if (color == 0)
-      generator = ColorGeneratorModified.MATERIAL;
-    mContext = context;
-  }
-
-  @Override
-  public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-  {
-    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clients, parent, false);
-    itemClick =(ItemClick) parent.getContext();
+        MyViewHolder(View view)
+        {
+          super(view);
+          cardView = (CardView) view.findViewById(R.id.item_root);
+          ClientN = (TextView) view.findViewById(R.id.client);
+          Tel_clientN = (TextView) view.findViewById(R.id.tel_client);
+          Sld_clientN = (TextView) view.findViewById(R.id.sld_client);
+          image = (ImageView) view.findViewById(R.id.imageId);
+          img_pos_client = (ImageView) view.findViewById(R.id.img_pos_client);
+        }
+      }
 
 
-    return new MyViewHolder(v);
-  }
+      public RecyclerAdapterClients(Context context, List<PostData_Client> itemList)
+      {
+        this.fournisList = itemList;
+        if (color == 0)
+          generator = ColorGeneratorModified.MATERIAL;
+        mContext = context;
+      }
 
-  @Override
-  public void onBindViewHolder(final MyViewHolder holder,int position) {
-
-    PostData_Client item = fournisList.get(position);
-
-    holder.ClientN.setTextSize(17);
-    holder.ClientN.setTypeface(null, Typeface.BOLD);
-    holder.ClientN.setText(item.client);
-
-    holder.Tel_clientN.setText("TEL : "+ item.tel);
-
-    holder.Sld_clientN.setTypeface(null, Typeface.BOLD);
-    holder.Sld_clientN.setText("Solde : "+item.solde_montant);
-
-    holder.Sld_clientN.setText("Solde :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
-
-    if(item.latitude == 0.0){
-       holder.img_pos_client.setImageResource(R.drawable.ic_baseline_wrong_location_24);
-    }else {
-      holder.img_pos_client.setImageResource(R.drawable.ic_baseline_location_on_24);
-    }
-    holder.cardView.setOnClickListener(new View.OnClickListener() {
       @Override
-      public void onClick(View view) {
-        itemClick.onClick(view,holder.getAdapterPosition());
+      public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+      {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clients, parent, false);
+        itemClick =(ItemClick) parent.getContext();
+        itemLongClick =(ItemLongClick) parent.getContext();
 
-
-
-      }
-    });
-
-    String firstChar = "NO";
-    if(item.client != null){
-      if(item.client.length() == 1){
-        firstChar = String.valueOf(item.client.charAt(0));
-      }else if(item.client.length() > 0){
-        firstChar = String.valueOf(item.client.charAt(0))+ item.client.charAt(1);
-      }else{
-        firstChar = "NO";
+        return new MyViewHolder(v);
       }
 
-    }
+      @Override
+      public void onBindViewHolder(final MyViewHolder holder,int position) {
 
-    if (color == 0)
-    {
-      if (generator!=null)
-        color = generator.getColor(fournisList.get(position).client);
-    }
+        PostData_Client item = fournisList.get(position);
 
-    TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), color);
-    holder.image.setImageDrawable(drawable);
-  }
+        holder.ClientN.setTextSize(17);
+        holder.ClientN.setTypeface(null, Typeface.BOLD);
+        holder.ClientN.setText(item.client);
 
-  @Override
-  public int getItemCount() {
-    return fournisList.size();
-  }
+        holder.Tel_clientN.setText("TEL : "+ item.tel);
 
-  public interface ItemClick{
-    void onClick(View v, int position);
-  }
+        holder.Sld_clientN.setTypeface(null, Typeface.BOLD);
+        holder.Sld_clientN.setText("Solde : "+item.solde_montant);
 
-  public void refresh(List<PostData_Client> new_itemList){
-    fournisList.clear();
-    fournisList.addAll(new_itemList);
-    notifyDataSetChanged();
-  }
+        holder.Sld_clientN.setText("Solde :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+
+        if(item.latitude == 0.0){
+           holder.img_pos_client.setImageResource(R.drawable.ic_baseline_wrong_location_24);
+        }else {
+          holder.img_pos_client.setImageResource(R.drawable.ic_baseline_location_on_24);
+        }
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            itemClick.onClick(view,holder.getAdapterPosition());
+          }
+        });
+
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+          @Override
+          public boolean onLongClick(View v) {
+            itemLongClick.onLongClick(v, holder.getAdapterPosition());
+            return true;
+          }
+        });
+
+        String firstChar = "NO";
+        if(item.client != null){
+          if(item.client.length() == 1){
+            firstChar = String.valueOf(item.client.charAt(0));
+          }else if(item.client.length() > 0){
+            firstChar = String.valueOf(item.client.charAt(0))+ item.client.charAt(1);
+          }else{
+            firstChar = "NO";
+          }
+
+        }
+
+        if (color == 0)
+        {
+          if (generator!=null)
+            color = generator.getColor(fournisList.get(position).client);
+        }
+
+        TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), color);
+        holder.image.setImageDrawable(drawable);
+      }
+
+      @Override
+      public int getItemCount() {
+        return fournisList.size();
+      }
+
+      public interface ItemClick{
+        void onClick(View v, int position);
+      }
+
+      public interface ItemLongClick{
+        void onLongClick(View v, int position);
+      }
+
+      public void refresh(List<PostData_Client> new_itemList){
+        fournisList.clear();
+        fournisList.addAll(new_itemList);
+        notifyDataSetChanged();
+      }
 }

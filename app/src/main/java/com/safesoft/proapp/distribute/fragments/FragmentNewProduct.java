@@ -504,6 +504,7 @@ public class FragmentNewProduct {
                 created_produit.tva =  Double.parseDouble(edt_tva.getText().toString());
                 created_produit.pa_ttc =  Double.parseDouble(edt_tva.getText().toString());
 
+                created_produit.isNew =  1;
 
                 created_produit.pv1_ht =  Double.parseDouble(edt_prix1_ht.getText().toString());
                 if(prefs.getString("PRIX_2","").equals("1")){

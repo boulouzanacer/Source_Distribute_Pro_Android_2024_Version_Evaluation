@@ -266,6 +266,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                                 "BON2.DESTOCK_TYPE, " +
                                 "BON2.DESTOCK_CODE_BARRE, " +
                                 "BON2.DESTOCK_QTE, " +
+                                "PRODUIT.ISNEW, " +
                                 "PRODUIT.STOCK " +
                                 "FROM BON2 " +
                                 "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +

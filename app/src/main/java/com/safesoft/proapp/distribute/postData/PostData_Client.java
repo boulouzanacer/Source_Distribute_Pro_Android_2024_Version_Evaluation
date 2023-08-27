@@ -21,5 +21,6 @@ public class PostData_Client {
     public String nis;
     public String ai;
     public double credit_limit = 0.00;
+    public int isNew = 1;
 
 }

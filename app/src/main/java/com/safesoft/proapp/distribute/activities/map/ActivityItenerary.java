@@ -12,20 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.DirectionsApi;
-import com.google.maps.DirectionsApiRequest;
-import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsLeg;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.DirectionsStep;
-import com.google.maps.model.EncodedPolyline;
 import com.safesoft.proapp.distribute.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class ActivityItenerary extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
