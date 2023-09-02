@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
+import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.printing.Printing;
@@ -154,8 +156,10 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
     if(prefs.getBoolean("AFFICHAGE_PA_HT", false)){
       TvPa_ht.setVisibility(View.VISIBLE);
+      TvPamp.setVisibility(View.VISIBLE);
     }else {
       TvPa_ht.setVisibility(View.GONE);
+      TvPamp.setVisibility(View.GONE);
     }
 
     final BadgeDrawable drawable_pamp = new BadgeDrawable.Builder()
@@ -301,6 +305,12 @@ public class ActivityProduitDetail extends AppCompatActivity {
       Printing printer = new Printing();
       printer.start_print_etiquette(bactivity, produit );
 
+    }else if(item.getItemId() == R.id.pdf){
+      Activity mActivity;
+      mActivity = ActivityProduitDetail.this;
+
+      GeneratePDF generate_pdf = new GeneratePDF();
+      generate_pdf.startPDFTicket(mActivity, produit.code_barre, produit.produit, produit.pv1_ht, "FROM_TICKET");
     }
     return super.onOptionsItemSelected(item);
   }

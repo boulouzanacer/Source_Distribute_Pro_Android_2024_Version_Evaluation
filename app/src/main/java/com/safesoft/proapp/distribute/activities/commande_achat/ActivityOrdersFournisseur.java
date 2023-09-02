@@ -98,39 +98,39 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         achat1s_com = new ArrayList<>();
 
         String querry = "SELECT " +
-                "ACHAT1_COM.RECORDID, " +
-                "ACHAT1_COM.NUM_BON, " +
-                "ACHAT1_COM.DATE_BON, " +
-                "ACHAT1_COM.HEURE, " +
-                "ACHAT1_COM.CODE_FRS, " +
-                "ACHAT1_COM.EXPORTATION, " +
-                "ACHAT1_COM.BLOCAGE, " +
+                "ACHAT1_TEMP.RECORDID, " +
+                "ACHAT1_TEMP.NUM_BON, " +
+                "ACHAT1_TEMP.DATE_BON, " +
+                "ACHAT1_TEMP.HEURE, " +
+                "ACHAT1_TEMP.CODE_FRS, " +
+                "ACHAT1_TEMP.EXPORTATION, " +
+                "ACHAT1_TEMP.BLOCAGE, " +
 
-                "ACHAT1_COM.NBR_P, " +
-                "ACHAT1_COM.TOT_QTE, " +
+                "ACHAT1_TEMP.NBR_P, " +
+                "ACHAT1_TEMP.TOT_QTE, " +
 
-                "ACHAT1_COM.TOT_HT, " +
-                "ACHAT1_COM.TOT_TVA, " +
-                "ACHAT1_COM.TIMBRE, " +
-                "ACHAT1_COM.TOT_HT + ACHAT1_COM.TOT_TVA + ACHAT1_COM.TIMBRE AS TOT_TTC, " +
-                "ACHAT1_COM.REMISE, " +
-                "ACHAT1_COM.TOT_HT + ACHAT1_COM.TOT_TVA + ACHAT1_COM.TIMBRE - ACHAT1_COM.REMISE AS MONTANT_BON, " +
+                "ACHAT1_TEMP.TOT_HT, " +
+                "ACHAT1_TEMP.TOT_TVA, " +
+                "ACHAT1_TEMP.TIMBRE, " +
+                "ACHAT1_TEMP.TOT_HT + ACHAT1_TEMP.TOT_TVA + ACHAT1_TEMP.TIMBRE AS TOT_TTC, " +
+                "ACHAT1_TEMP.REMISE, " +
+                "ACHAT1_TEMP.TOT_HT + ACHAT1_TEMP.TOT_TVA + ACHAT1_TEMP.TIMBRE - ACHAT1_TEMP.REMISE AS MONTANT_BON, " +
 
-                "ACHAT1_COM.ANCIEN_SOLDE, " +
-                "ACHAT1_COM.VERSER, " +
-                "ACHAT1_COM.ANCIEN_SOLDE + (ACHAT1_COM.TOT_HT + ACHAT1_COM.TOT_TVA + ACHAT1_COM.TIMBRE - ACHAT1_COM.REMISE) - ACHAT1_COM.VERSER AS RESTE, " +
+                "ACHAT1_TEMP.ANCIEN_SOLDE, " +
+                "ACHAT1_TEMP.VERSER, " +
+                "ACHAT1_TEMP.ANCIEN_SOLDE + (ACHAT1_TEMP.TOT_HT + ACHAT1_TEMP.TOT_TVA + ACHAT1_TEMP.TIMBRE - ACHAT1_TEMP.REMISE) - ACHAT1_TEMP.VERSER AS RESTE, " +
 
                 "FOURNIS.FOURNIS, " +
                 "FOURNIS.ADRESSE, " +
                 "FOURNIS.TEL " +
-                "FROM ACHAT1_COM " +
-                "LEFT JOIN FOURNIS ON (ACHAT1_COM.CODE_FRS = FOURNIS.CODE_FRS)";
+                "FROM ACHAT1_TEMP " +
+                "LEFT JOIN FOURNIS ON (ACHAT1_TEMP.CODE_FRS = FOURNIS.CODE_FRS)";
 
 
         if(!SOURCE_EXPORT.equals("EXPORTED")){
-            querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY ACHAT1_COM.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY ACHAT1_TEMP.NUM_BON ";
         }else {
-            querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY ACHAT1_COM.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY ACHAT1_TEMP.NUM_BON ";
         }
 
         achat1s_com = controller.select_all_achat1_from_database(querry);

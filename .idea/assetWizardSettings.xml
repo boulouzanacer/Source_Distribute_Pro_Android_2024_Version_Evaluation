@@ -309,7 +309,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/local_printshop/baseline_local_printshop_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/edit/baseline_edit_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -319,8 +319,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="baseline_local_printshop_24" />
+                            <entry key="color" value="2590ff" />
+                            <entry key="outputName" value="baseline_edit_versement_24" />
                             <entry key="sourceFile" value="D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2021" />
                           </map>
                         </option>

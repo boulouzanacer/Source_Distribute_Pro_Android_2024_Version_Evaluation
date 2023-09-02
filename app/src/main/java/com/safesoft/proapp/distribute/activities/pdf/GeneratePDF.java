@@ -13,9 +13,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.fonts.Font;
 import android.graphics.pdf.PdfDocument;
 import android.util.Base64;
+import android.view.Gravity;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
@@ -26,10 +35,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class GeneratePDF {
 
+    private static final int WHITE = 0xFFFFFFFF;
+    private static final int BLACK = 0xFF000000;
     Activity mActivity;
 
     // declaring width and height
@@ -86,7 +99,110 @@ public class GeneratePDF {
         generatePDFAchat();
     }
 
+
+    public void startPDFTicket(Activity mActivity, String code_bare, String produit, double prix, String SOURCE){
+        this.mActivity = mActivity;
+        this.SOURCE = SOURCE;
+
+        generatePDFTTicket(code_bare, produit, prix);
+    }
+
+    private void generatePDFTTicket(String code_bare, String produit, double prix){
+
+        PdfDocument pdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+        Paint title = new Paint();
+        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
+        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
+        Canvas canvas = myPage.getCanvas();
+
+
+        title.setTextAlign(Paint.Align.LEFT);
+        title.setTextSize(10);
+        canvas.drawText(center_value(45, produit) , 10, 20, title);
+
+        title.setTextSize(15);
+        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        canvas.drawText(center_value(5, new DecimalFormat("####0.00").format(prix) + " DA"), mergeleft + 30, 40, title);
+
+        // barcode image
+        Bitmap bitmap = null;
+
+        try {
+            bitmap = encodeAsBitmap(code_bare, BarcodeFormat.CODE_128, 600, 200);
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+        assert bitmap != null;
+        scaledbmp = Bitmap.createScaledBitmap(bitmap, 170, 60, false);
+        canvas.drawBitmap(scaledbmp, 0, 50, paint);
+
+        pdfDocument.finishPage(myPage);
+
+        File file = null;
+        file = new File(mActivity.getCacheDir(), "TICKET_PRODUIT.pdf");
+
+        try {
+            pdfDocument.writeTo(Files.newOutputStream(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        pdfDocument.close();
+
+        // open PDF
+        openPDF("");
+    }
+
+    Bitmap encodeAsBitmap(String contents, BarcodeFormat format, int img_width, int img_height) throws WriterException {
+        String contentsToEncode = contents;
+        if (contentsToEncode == null) {
+            return null;
+        }
+        Map<EncodeHintType, Object> hints = null;
+        String encoding = guessAppropriateEncoding(contentsToEncode);
+        if (encoding != null) {
+            hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+            hints.put(EncodeHintType.CHARACTER_SET, encoding);
+        }
+        MultiFormatWriter writer = new MultiFormatWriter();
+        BitMatrix result;
+        try {
+            result = writer.encode(contentsToEncode, format, img_width, img_height, hints);
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+        int width = result.getWidth();
+        int height = result.getHeight();
+        int[] pixels = new int[width * height];
+        for (int y = 0; y < height; y++) {
+            int offset = y * width;
+            for (int x = 0; x < width; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height,
+                Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bitmap;
+    }
+
+    private static String guessAppropriateEncoding(CharSequence contents) {
+        // Very crude at the moment
+        for (int i = 0; i < contents.length(); i++) {
+            if (contents.charAt(i) > 0xFF) {
+                return "UTF-8";
+            }
+        }
+        return null;
+    }
+
     private void generatePDFAchat() {
+
         // creating an object variable
         // for our PDF document.
         PdfDocument pdfDocument = new PdfDocument();

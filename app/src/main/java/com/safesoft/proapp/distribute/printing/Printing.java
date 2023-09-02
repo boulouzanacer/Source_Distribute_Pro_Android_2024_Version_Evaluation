@@ -48,6 +48,8 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
+import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
+import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 
@@ -80,8 +82,10 @@ public class Printing {
     private PostData_Produit produit;
     private PostData_Bon1 bon1;
     private PostData_Achat1 achat1;
+    private PostData_Carnet_c carnet_c_print;
     private String type_print;
 
+    /////////////////////////////////////// IMPRIMER BON ///////////////////////////////////////////
     public void start_print_bon(Activity activity, String type_print, ArrayList<PostData_Bon2> final_panier, PostData_Bon1 bon1, PostData_Achat1 achat1)  throws UnsupportedEncodingException {
 
         mActivity = activity;
@@ -149,6 +153,7 @@ public class Printing {
         }
     }
 
+    /////////////////////////////////// IMPRIMER ETIQUETTE /////////////////////////////////////////
     public void start_print_etiquette(Activity activity, PostData_Produit produit) {
 
         mActivity = activity;
@@ -171,6 +176,73 @@ public class Printing {
         rtPrinter = printerFactory.create();
         textSetting = new TextSetting();
 
+
+        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            BluetoothDevice device = null;
+            pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
+            boolean isfound = false;
+            Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            for(int i = 0; i< pairedDeviceList.size() ; i++){
+                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+                    isfound = true;
+                    device = pairedDeviceList.get(i);
+
+                }
+            }
+
+            if(isfound){
+                Log.v("PRINTER", "Device found");
+                if(device != null){
+                    configObj = new BluetoothEdrConfigBean(device);
+                    BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
+                    runningTask = new LongOperation(bluetoothEdrConfigBean);
+                    runningTask.execute();
+                }
+            }else {
+                Log.v("PRINTER", "Device not found");
+                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+            }
+
+        }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
+
+
+            // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
+            //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
+            // assert WIFI_VALUE_PORT != null;
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
+
+            runningTask = new LongOperation(wiFiConfigBean);
+            runningTask.execute();
+
+        }
+    }
+
+
+    /////////////////////////////////// IMPRIMER VERSEMENT /////////////////////////////////////////
+    public void start_print_versement_client(Activity activity, PostData_Carnet_c carnet_c_print ) {
+
+        mActivity = activity;
+        this.carnet_c_print = carnet_c_print;
+
+        this.type_print = "VERSEMENT_CLIENT";
+
+        AsyncTask<Void, Void, Boolean> runningTask;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                return;
+            }
+        }
+
+        BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
+        printerFactory = new ThermalPrinterFactory();
+        rtPrinter = printerFactory.create();
+        textSetting = new TextSetting();
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
         if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
@@ -292,6 +364,7 @@ public class Printing {
                         case "VENTE", "ORDER" -> print_bon();
                         case "ACHAT" -> print_achat();
                         case "ETIQUETTE" -> print_etiquette();
+                        case "VERSEMENT_CLIENT" -> print_versement_client();
                     }
 
                 } catch (UnsupportedEncodingException e) {
@@ -665,21 +738,6 @@ public class Printing {
                         cmd.append(cmd.getLFCRCmd());
                     }
 
-
-                    /*if (bmpPrintWidth > 72) {
-                        bmpPrintWidth = 72;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                et_pic_width.setText(bmpPrintWidth + "");
-                            }
-                        });
-                    }
-*/
-                    // bitmapSetting.setBimtapLimitWidth(40 * 8);
-
-
-
                     cmd.append(cmd.getCommonSettingCmd(commonSetting));
 
                     textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
@@ -1035,6 +1093,207 @@ public class Printing {
 
     }
 
+
+    void print_versement_client()  throws UnsupportedEncodingException {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Impression...");
+
+                CmdFactory cmdFactory = new EscFactory();
+                Cmd cmd = cmdFactory.create();
+                cmd.append(cmd.getHeaderCmd());
+                cmd.setChartsetName(mChartsetName);
+                //cmd.setPrinterCharacterTable(22);
+                CommonSetting commonSetting = new CommonSetting();
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                cmd.append(cmd.getCommonSettingCmd(commonSetting));
+                BitmapSetting bitmapSetting = new BitmapSetting();
+                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+
+                prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+
+
+                try {
+
+                    Bitmap mBitmap = null;
+                    String preBlank = "        ";
+
+                    String img_str= prefs.getString("COMPANY_LOGO", "");
+                    if (!img_str.equals("")){
+                        //decode string to image
+                        byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
+                        mBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+                        cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
+                        cmd.append(cmd.getLFCRCmd());
+                    }
+
+                    cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                    textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
+                    textSetting.setBold(SettingEnum.Disable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+
+                    if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
+                    }
+                    if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
+                    }
+                    if(!prefs.getString("COMPANY_TEL", "").equals("")){
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_TEL", "")));
+                    }
+
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    /////////////////////info bon //////////////////////////////////////////////////
+                    textSetting.setBold(SettingEnum.Enable);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "RECU DE PAIMENT CLIENT"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "N : " + carnet_c_print.carnet_num_bon));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    textSetting.setBold(SettingEnum.Disable);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+                    textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "Nous soussignes,"));
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Certifions avoir recu en date du : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, carnet_c_print.carnet_date));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "la somme de : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, new DecimalFormat("####0.00").format(carnet_c_print.carnet_versement)));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Mode de paiment : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, carnet_c_print.carnet_mode_rg));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "de la part de : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, carnet_c_print.client));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Adresse: "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, carnet_c_print.adresse));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Observation: "));
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    /////////////////////////////IMPRESSION TOTAL////////////////////////////////////
+
+                    Double  ancien_solde, nouveau_solde;
+                    String  ancien_solde_str, nouveau_solde_str;
+
+
+                    ancien_solde = carnet_c_print.carnet_achats;
+                    ancien_solde_str   =  new DecimalFormat("####0.00").format(ancien_solde);
+
+
+                    nouveau_solde = carnet_c_print.carnet_achats - carnet_c_print.carnet_versement;
+                    nouveau_solde_str   =  new DecimalFormat("####0.00").format(nouveau_solde);
+                    textSetting.setBold(SettingEnum.Enable);
+
+
+                    //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
+                    textSetting.setBold(SettingEnum.Disable);
+
+                    String format3 = "%1$16s%2$14s";
+
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "ANCIEN SOLDE :", ancien_solde_str)));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "NOUVEAU SOLDE :", nouveau_solde_str)));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    textSetting.setBold(SettingEnum.Disable);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Ce recu est etabli pour servir et valoir ce que de droit."));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    textSetting.setBold(SettingEnum.Enable);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    cmd.append(cmd.getTextCmd(textSetting, "Signature"));
+
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+
+                } catch (SdkException | IOException e) {
+                    e.printStackTrace();
+                }
+                if (rtPrinter != null) {
+                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                }
+                hideProgressDialog();
+            }
+        }).start();
+
+    }
 
     static class StringUtils {
 

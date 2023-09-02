@@ -185,9 +185,6 @@ public class FragmentQte {
                             "BON2.PU, " +
                             "BON2.TVA, " +
                             "BON2.CODE_DEPOT, " +
-                            "BON2.DESTOCK_TYPE, " +
-                            "BON2.DESTOCK_CODE_BARRE, " +
-                            "BON2.DESTOCK_QTE, " +
                             "PRODUIT.STOCK FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
                             " WHERE BON2.NUM_BON = '"+ arrived_bon2.num_bon +"' AND BON2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
 
@@ -207,9 +204,6 @@ public class FragmentQte {
                             "BON2_TEMP.PU, " +
                             "BON2_TEMP.TVA, " +
                             "BON2_TEMP.CODE_DEPOT, " +
-                            "BON2_TEMP.DESTOCK_TYPE, " +
-                            "BON2_TEMP.DESTOCK_CODE_BARRE, " +
-                            "BON2_TEMP.DESTOCK_QTE, " +
                             "PRODUIT.STOCK FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
                             " WHERE BON2_TEMP.NUM_BON = '"+ arrived_bon2.num_bon +"' AND BON2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
                     checked_bon2 = controller.check_if_bon2_exist(querry);
@@ -228,9 +222,6 @@ public class FragmentQte {
                             "ACHAT2.PU, " +
                             "ACHAT2.TVA, " +
                             "ACHAT2.CODE_DEPOT, " +
-                            "ACHAT2.DESTOCK_TYPE, " +
-                            "ACHAT2.DESTOCK_CODE_BARRE, " +
-                            "ACHAT2.DESTOCK_QTE, " +
                             "PRODUIT.STOCK FROM ACHAT2 LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
                             " WHERE ACHAT2.NUM_BON = '"+ arrived_bon2.num_bon +"' AND ACHAT2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
                     checked_bon2 = controller.check_if_bon2_exist(querry);
@@ -249,9 +240,6 @@ public class FragmentQte {
                             "ACHAT2_TEMP.PU, " +
                             "ACHAT2_TEMP.TVA, " +
                             "ACHAT2_TEMP.CODE_DEPOT, " +
-                            "ACHAT2_TEMP.DESTOCK_TYPE, " +
-                            "ACHAT2_TEMP.DESTOCK_CODE_BARRE, " +
-                            "ACHAT2_TEMP.DESTOCK_QTE, " +
                             "PRODUIT.STOCK FROM ACHAT2_TEMP LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
                             " WHERE ACHAT2_TEMP.NUM_BON = '"+ arrived_bon2.num_bon +"' AND ACHAT2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
                     checked_bon2 = controller.check_if_bon2_exist(querry);

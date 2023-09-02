@@ -6,9 +6,12 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/lnr_item_root"
         android:paddingTop="10sp"
         android:paddingBottom="10sp"
+        android:paddingStart="5sp"
         android:orientation="horizontal"
+        android:clickable="true"
         android:weightSum="10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -19,7 +22,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:layout_weight="3"
-            android:text="Date" />
+            android:text="01/01/2023" />
 
 
         <TextView
@@ -28,7 +31,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:layout_weight="2"
-            android:text="Heure" />
+            android:text="00:00:00" />
 
         <TextView
             android:id="@+id/montant_versement_value1"
@@ -38,7 +41,7 @@
             android:layout_weight="3"
             android:textStyle="bold"
             android:gravity="end"
-            android:text="Montant" />
+            android:text="0 DA" />
 
         <ImageButton
             android:id="@+id/btn_edit_situation"
@@ -46,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_marginStart="10dp"
-            android:src="@drawable/baseline_edit_24"
+            android:src="@drawable/baseline_edit_versement_24"
             android:layout_height="wrap_content"/>
 
         <ImageButton

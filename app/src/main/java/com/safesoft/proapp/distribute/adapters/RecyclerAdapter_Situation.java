@@ -1,13 +1,17 @@
 package com.safesoft.proapp.distribute.adapters;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.R;
@@ -25,6 +29,7 @@ import java.util.Locale;
 
 public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdapter_Situation.MyViewHolder> {
 
+    int rowindex = -1;
     private final List<PostData_Carnet_c> carnet_c_tList;
     private ItemClick itemClick;
     private final Context mContext;
@@ -35,6 +40,7 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
 
         TextView montant_value;
         CardView cardView;
+        LinearLayout lnr_item_root;
         TextView date_value;
         TextView heure_value;
         ImageButton btn_edit_situation, btn_remove_situation;
@@ -43,6 +49,8 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
             super(view);
 
             cardView = (CardView) view.findViewById(R.id.item_root);
+            lnr_item_root = (LinearLayout) view.findViewById(R.id.lnr_item_root);
+
             montant_value = (TextView) view.findViewById(R.id.montant_versement_value1);
             date_value = (TextView) view.findViewById(R.id.date_versement_value1);
             heure_value = (TextView) view.findViewById(R.id.heure_versement_value1);
@@ -50,6 +58,8 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
             btn_remove_situation =  view.findViewById(R.id.btn_remove_situation);
             nf = NumberFormat.getInstance(Locale.US);
             ((DecimalFormat) nf).applyPattern("##,##0.00");
+
+
         }
     }
 
@@ -69,9 +79,9 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder,int position) {
-        PostData_Carnet_c item = carnet_c_tList.get(position);
+    public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
+        PostData_Carnet_c item = carnet_c_tList.get(position);
         holder.montant_value.setTextSize(17);
         holder.date_value.setTextSize(17);
         holder.heure_value.setTextSize(17);
@@ -84,6 +94,23 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
        // holder.btn_edit_situation.setBackgroundResource(R.drawable.edit_situation__selector);
 
 
+
+
+        holder.lnr_item_root.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                itemClick.onClick(view,holder.getAdapterPosition(), item);
+                rowindex = position;
+                notifyDataSetChanged();
+            }
+        });
+
+        if (rowindex == position) {
+            holder.lnr_item_root.setBackgroundColor(Color.BLUE);
+        } else {
+            holder.lnr_item_root.setBackgroundColor(Color.TRANSPARENT);
+        }
         holder.btn_edit_situation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,13 +135,5 @@ public class RecyclerAdapter_Situation extends RecyclerView.Adapter<RecyclerAdap
 
     public interface ItemClick{
         void onClick(View v, int position, PostData_Carnet_c carnet_c);
-    }
-
-
-
-    public void refresh(List<PostData_Carnet_c> new_itemList){
-        carnet_c_tList.clear();
-        carnet_c_tList.addAll(new_itemList);
-        notifyDataSetChanged();
     }
 }

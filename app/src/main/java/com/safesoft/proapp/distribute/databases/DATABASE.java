@@ -254,7 +254,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "CODE_DEPOT VARCHAR)");
 
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT1_COM(" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT1_TEMP(" +
                 "RECORDID INTEGER, " +
                 "NUM_BON VARCHAR PRIMARY KEY, " +
                 "CODE_FRS VARCHAR, " +
@@ -276,7 +276,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT2_COM(" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT2_TEMP(" +
                 "RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "NUM_BON VARCHAR , " +
                 "CODE_BARRE VARCHAR, " +
@@ -1059,6 +1059,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 fournisseur.tel = cursor.getString(cursor.getColumnIndex("IFISCAL"));
                 fournisseur.tel = cursor.getString(cursor.getColumnIndex("AI"));
                 fournisseur.tel = cursor.getString(cursor.getColumnIndex("NIS"));
+
                 fournisseur.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
                 fournisseur.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
                 fournisseur.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
@@ -1191,6 +1192,7 @@ public class DATABASE extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
+                carnet_c.recordid = cursor.getString(cursor.getColumnIndex("RECORDID"));
                 carnet_c.code_client = cursor.getString(cursor.getColumnIndex("CODE_CLIENT"));
                 carnet_c.carnet_date = cursor.getString(cursor.getColumnIndex("DATE_CARNET"));
                 carnet_c.carnet_heure = cursor.getString(cursor.getColumnIndex("HEURE"));
@@ -1201,6 +1203,19 @@ public class DATABASE extends SQLiteOpenHelper {
                 carnet_c.carnet_mode_rg = cursor.getString(cursor.getColumnIndex("MODE_RG"));
                 carnet_c.carnet_remarque = cursor.getString(cursor.getColumnIndex("REMARQUES"));
                 carnet_c.carnet_utilisateur = cursor.getString(cursor.getColumnIndex("UTILISATEUR"));
+                carnet_c.exportation = cursor.getString(cursor.getColumnIndex("EXPORTATION"));
+
+                //CLIENT
+                carnet_c.client = cursor.getString(cursor.getColumnIndex("CLIENT"));
+                carnet_c.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
+                carnet_c.tel = cursor.getString(cursor.getColumnIndex("TEL"));
+                carnet_c.rc = cursor.getString(cursor.getColumnIndex("RC"));
+                carnet_c.ifiscal = cursor.getString(cursor.getColumnIndex("IFISCAL"));
+                carnet_c.ai = cursor.getString(cursor.getColumnIndex("AI"));
+                carnet_c.nis = cursor.getString(cursor.getColumnIndex("NIS"));
+                carnet_c.mode_tarif = cursor.getString(cursor.getColumnIndex("MODE_TARIF"));
+                carnet_c.latitude = cursor.getString(cursor.getColumnIndex("LATITUDE"));
+                carnet_c.longitude = cursor.getString(cursor.getColumnIndex("LONGITUDE"));
 
 
             } while (cursor.moveToNext());
@@ -2254,7 +2269,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 String[] selectionArgs1 = {num_bon};
 
                 if(isTemp){
-                    db.update("ACHAT1_COM", args1, selection1, selectionArgs1);
+                    db.update("ACHAT1_TEMP", args1, selection1, selectionArgs1);
                 }else{
                     db.update("ACHAT1", args1, selection1, selectionArgs1);
                 }
@@ -2326,9 +2341,6 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
                 bon2.p_u = cursor.getDouble(cursor.getColumnIndex("PU"));
                 bon2.stock_produit = cursor.getDouble(cursor.getColumnIndex("STOCK"));
-                bon2.destock_type = cursor.getString(cursor.getColumnIndex("DESTOCK_TYPE"));
-                bon2.destock_code_barre = cursor.getString(cursor.getColumnIndex("DESTOCK_CODE_BARRE"));
-                bon2.destock_qte = cursor.getDouble(cursor.getColumnIndex("DESTOCK_QTE"));
 
             } while (cursor.moveToNext());
         }
@@ -2831,8 +2843,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 if(isTemp){
                     selection = "NUM_BON=?";
                     String[] selectionArgs = {achat1.num_bon};
-                    db.delete("ACHAT1_COM", selection, selectionArgs);
-                    db.delete("ACHAT2_COM", selection, selectionArgs);
+                    db.delete("ACHAT1_TEMP", selection, selectionArgs);
+                    db.delete("ACHAT2_TEMP", selection, selectionArgs);
                 }else{
 
                     bon2_delete = new ArrayList<>();

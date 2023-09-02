@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.activities.client;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -30,9 +32,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.safesoft.proapp.distribute.activities.product.ActivityProduitDetail;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter_Situation;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
@@ -43,6 +47,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
+import com.safesoft.proapp.distribute.printing.Printing;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -91,10 +96,9 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   ArrayList<PostData_Carnet_c> carnet_cs;
   private String CODE_CLIENT;
   String url_static_map;
+  private PostData_Carnet_c carnet_c_print;
 
-  private PostData_Client client_print;
-  private ArrayList<PostData_Carnet_c> carnet_c_print;
-
+  PostData_Carnet_c selected_versement = null;
 
   @RequiresApi(api = Build.VERSION_CODES.S)
   @Override
@@ -242,13 +246,10 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
             "CARNET_C.UTILISATEUR, " +
             "CARNET_C.EXPORTATION " +
 
-
-
-
             "FROM CARNET_C " +
             "LEFT JOIN CLIENT ON " +
             "CARNET_C.CODE_CLIENT = CLIENT.CODE_CLIENT " +
-            "WHERE CARNET_C.CODE_CLIENT = '"+ client.code_client +"' ";
+            "WHERE CARNET_C.CODE_CLIENT = '"+ client.code_client +"' ORDER BY CARNET_C.HEURE DESC";
 
 
     // querry = "SELECT * FROM Events";
@@ -351,6 +352,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   }
 
   public void onClick(View v) {
+
     switch (v.getId()) {
       case R.id.btnCall:
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + client.tel));
@@ -383,20 +385,6 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
         break;
       case R.id.btn_itenerary:
-
-        /*if(client.latitude != 0 && client.longitude != 0){
-          Intent intent_itenerary = new Intent(ActivityClientDetail.this, ActivityItenerary.class);
-          intent_itenerary.putExtra("LATITUDE", client.latitude);
-          intent_itenerary.putExtra("LONGITUDE", client.longitude);
-          intent_itenerary.putExtra("CLIENT", client.client);
-          intent_itenerary.putExtra("ADRESSE", client.adresse);
-          intent_itenerary.putExtra("TEL", client.tel);
-          startActivity(intent_itenerary);
-          overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }else{
-          Crouton.makeText(ActivityClientDetail.this, "Client n'a pas de position gps", Style.ALERT).show();
-        }*/
-
         Uri gmmIntentUri = Uri.parse("google.navigation:q="+ client.latitude + "," + client.longitude);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
@@ -419,8 +407,13 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   public boolean onOptionsItemSelected(MenuItem item) {
     if(item.getItemId() == android.R.id.home){
       onBackPressed();
-    }else if(item.getItemId() == R.id.print_client){
-      //Print_versement();
+    }else if(item.getItemId() == R.id.print_versement){
+      if(selected_versement != null){
+        Print_versement();
+      }else {
+        Crouton.makeText(ActivityClientDetail.this, "Vous devez séléctionner une versement au-dessous !", Style.ALERT).show();
+      }
+
     }else if(item.getItemId() == R.id.edit_client){
       FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
       fragmentnewclient.showDialogbox(ActivityClientDetail.this, getBaseContext(), "EDIT_CLIENT", client);
@@ -482,6 +475,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
+
   @Subscribe
   public void onEvent(LocationEvent event){
     Log.e("TRACKKK", "Recieved location : " +  event.getLocationData().getLatitude() + "  //  " + event.getLocationData().getLongitude());
@@ -514,67 +508,75 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   public void onClick(View v, int position, final  PostData_Carnet_c carnet_c) {
 
     switch (v.getId()) {
-      case R.id.btn_edit_situation:
+      case R.id.btn_edit_situation ->
+              new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                      .setTitleText("Situation")
+                      .setContentText("Voulez-vous vraiment modifier cette situation?!")
+                      .setCancelText("Non")
+                      .setConfirmText("Modifier")
+                      .showCancelButton(true)
+                      .setCancelClickListener(Dialog::dismiss)
+                      .setConfirmClickListener(sDialog -> {
 
-        new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                .setTitleText("Situation")
-                .setContentText("Voulez-vous vraiment modifier cette situation?!")
-                .setCancelText("Non")
-                .setConfirmText("Modifier")
-                .showCancelButton(true)
-                .setCancelClickListener(Dialog::dismiss)
-                .setConfirmClickListener(sDialog -> {
+                        FragmentVersementClient fragmentversementclient = new FragmentVersementClient();
+                        fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, carnet_c.carnet_versement, carnet_c.carnet_remarque, client.code_client, true, carnet_c.recordid);
 
-                  FragmentVersementClient fragmentversementclient= new FragmentVersementClient();
-                  fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, carnet_c.carnet_versement, carnet_c.carnet_remarque , client.code_client, true, carnet_c.recordid);
+                        sDialog.dismiss();
+                      })
+                      .show();
+      case R.id.btn_remove_situation ->
+              new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                      .setTitleText("Suppression")
+                      .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_c.recordid + " ?!")
+                      .setCancelText("Anuuler")
+                      .setConfirmText("Supprimer")
+                      .showCancelButton(true)
+                      .setCancelClickListener(Dialog::dismiss)
+                      .setConfirmClickListener(sDialog -> {
 
-                  sDialog.dismiss();
-                })
-                .show();
-        break;
-      case R.id.btn_remove_situation:
+                        if (controller.delete_versement(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)) {
+                          Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
+                        } else {
+                          Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
+                        }
+                        Update_client_details();
 
-        new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                .setTitleText("Suppression")
-                .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_c.recordid + " ?!")
-                .setCancelText("Anuuler")
-                .setConfirmText("Supprimer")
-                .showCancelButton(true)
-                .setCancelClickListener(Dialog::dismiss)
-                .setConfirmClickListener(sDialog -> {
+                        sDialog.dismiss();
 
-                  if(controller.delete_versement(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)){
-                    Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
-                  }else {
-                    Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
-                  }
-                  Update_client_details();
+                      }).show();
+      case R.id.lnr_item_root ->{
+        Log.v("fffff","ggggggg : " + position);
+        selected_versement = carnet_c;
+        /*for (int i = 0; i < recyclerView.getChildCount(); i++) {
+          if(position == i ){
+           // recyclerView.getChildAt(i).setBackgroundColor(Color.BLUE);
+            recyclerView.getChildAt(i).setBackgroundResource(R.color.blue);
+          }else{
+            recyclerView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+          }
+        }*/
+      }
 
-                  sDialog.dismiss();
-
-                }).show();
-        break;
     }
   }
 
   protected void Print_versement(){
 
-    client_print = new PostData_Client();
-    carnet_c_print = new ArrayList<>();
 
-    client_print = controller.select_client_from_database(CODE_CLIENT);
-    carnet_c_print  = controller.select_carnet_c_from_database("SELECT CARNET_C.RECORDID, " +
+    carnet_c_print = new PostData_Carnet_c();
+    String querry = "SELECT CARNET_C.RECORDID, " +
             "CARNET_C.CODE_CLIENT, " +
             "CARNET_C.DATE_CARNET, " +
             "CLIENT.CLIENT, " +
             "CLIENT.LATITUDE, " +
+            "CLIENT.CODE_CLIENT, " +
 
             "CLIENT.LONGITUDE, " +
             "CLIENT.TEL, " +
             "CLIENT.CLIENT, " +
             "CLIENT.ADRESSE, " +
             "CLIENT.RC, " +
-            "CLIENT.IFISCAL, " +
+            "Client.IFISCAL, " +
             "CLIENT.AI, " +
             "CLIENT.NIS, " +
             "CLIENT.MODE_TARIF, " +
@@ -594,13 +596,18 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
             "FROM CARNET_C " +
             "LEFT JOIN CLIENT ON " +
-            "CLIENT.CODE_CLIENT = CARNET_C.CODE_CLIENT " +
-            "WHERE CARNET_C.CODE_CLIENT = '"+ client.code_client +"'");
+            "CARNET_C.CODE_CLIENT = CLIENT.CODE_CLIENT " +
+            "WHERE CARNET_C.CODE_CLIENT = '"+ client.code_client +"' ";
+   // carnet_c_print  = controller.select_carnet_c_from_database_single(querry);
+    carnet_c_print  = selected_versement;
 
 
-    if(printer_mode_integrate){
-      // prepareBon_IntegratePrinter();
-    }
+    Activity bactivity;
+    bactivity = ActivityClientDetail.this;
+
+    Printing printer = new Printing();
+    printer.start_print_versement_client(bactivity, carnet_c_print );
+
   }
 
 

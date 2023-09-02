@@ -1992,7 +1992,6 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                             stmt.addBatch(insert_into_bon1);
 
-
                             for (int j = 0; j < bon2s.size(); j++) {
                                 buffer[j] = "INSERT INTO BON2 (NUM_BON, CODE_BARRE, QTE, PV_HT_AR, PV_HT, TVA, NBRE_COLIS, COLISSAGE, DESTOCK_QTE, CODE_DEPOT, DESTOCK_CODE_BARRE, DESTOCK_TYPE ";
                                 if(TYPE_LOGICIEL.equals("PME PRO")){

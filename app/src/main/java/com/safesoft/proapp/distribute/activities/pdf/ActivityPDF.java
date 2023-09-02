@@ -63,6 +63,8 @@ public class ActivityPDF extends AppCompatActivity {
                         Objects.requireNonNull(getSupportActionBar()).setTitle("Bon de commande N° " + NUM_BON);
                 case "FROM_ACHAT" ->
                         Objects.requireNonNull(getSupportActionBar()).setTitle("Bon d'achat N° " + NUM_BON);
+                case "FROM_TICKET" ->
+                        Objects.requireNonNull(getSupportActionBar()).setTitle("TICKET PRODUIT ");
             }
             Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -87,6 +89,7 @@ public class ActivityPDF extends AppCompatActivity {
                     case "FROM_SALE" -> new File(getCacheDir(), "BON_VENTE_" + NUM_BON + ".pdf");
                     case "FROM_ORDER" -> new File(getCacheDir(), "BON_COMMANDE_" + NUM_BON + ".pdf");
                     case "FROM_ACHAT" -> new File(getCacheDir(), "BON_ACHAT_" + NUM_BON + ".pdf");
+                    case "FROM_TICKET" -> new File(getCacheDir(), "TICKET_PRODUIT.pdf");
                     default -> null;
                 };
                 pdfView.fromFile(file)
@@ -110,8 +113,10 @@ public class ActivityPDF extends AppCompatActivity {
                 case "FROM_SALE" -> new File(getCacheDir(), "BON_VENTE_" + NUM_BON + ".pdf");
                 case "FROM_ORDER" -> new File(getCacheDir(), "BON_COMMANDE_" + NUM_BON + ".pdf");
                 case "FROM_ACHAT" -> new File(getCacheDir(), "BON_ACHAT_" + NUM_BON + ".pdf");
+                case "FROM_TICKET" -> new File(getCacheDir(), "TICKET_PRODUIT.pdf");
                 default -> null;
             };
+            
             assert file != null;
             if (file.exists()) {
                 String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
@@ -157,6 +162,7 @@ public class ActivityPDF extends AppCompatActivity {
                 case "FROM_SALE" -> pdf_path = getCacheDir()+ "/BON_VENTE_" + NUM_BON + ".pdf";
                 case "FROM_ORDER" -> pdf_path = getCacheDir() + "/BON_COMMANDE_" + NUM_BON + ".pdf";
                 case "FROM_ACHAT" -> pdf_path = getCacheDir() + "/BON_ACHAT_" + NUM_BON + ".pdf";
+                case "FROM_TICKET" -> pdf_path = getCacheDir() + "/TICKET_PRODUIT.pdf";
                 default -> {
                 }
             }
@@ -176,8 +182,6 @@ public class ActivityPDF extends AppCompatActivity {
                // Logger.logError(e);
             }
     }
-
-
 
     @Override
     public void onBackPressed() {

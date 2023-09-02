@@ -157,7 +157,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
         if(TYPE_ACTIVITY.equals("NEW_ORDER_ACHAT")){
             //get num bon
-            NUM_BON = controller.select_max_num_bon("SELECT MAX(NUM_BON) AS max_id FROM ACHAT1_COM WHERE NUM_BON IS NOT NULL");
+            NUM_BON = controller.select_max_num_bon("SELECT MAX(NUM_BON) AS max_id FROM ACHAT1_TEMP WHERE NUM_BON IS NOT NULL");
             // get date and time
             Calendar c = Calendar.getInstance();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
@@ -183,37 +183,37 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             }
 
             String querry = "SELECT " +
-                    "ACHAT1_COM.RECORDID, " +
-                    "ACHAT1_COM.NUM_BON, " +
-                    "ACHAT1_COM.CODE_FRS, " +
-                    "ACHAT1_COM.DATE_BON, " +
-                    "ACHAT1_COM.HEURE, " +
-                    "ACHAT1_COM.NBR_P, " +
-                    "ACHAT1_COM.TOT_QTE, " +
-                    "ACHAT1_COM.EXPORTATION, " +
-                    "ACHAT1_COM.BLOCAGE, " +
-                    "ACHAT1_COM.CODE_DEPOT, " +
+                    "ACHAT1_TEMP.RECORDID, " +
+                    "ACHAT1_TEMP.NUM_BON, " +
+                    "ACHAT1_TEMP.CODE_FRS, " +
+                    "ACHAT1_TEMP.DATE_BON, " +
+                    "ACHAT1_TEMP.HEURE, " +
+                    "ACHAT1_TEMP.NBR_P, " +
+                    "ACHAT1_TEMP.TOT_QTE, " +
+                    "ACHAT1_TEMP.EXPORTATION, " +
+                    "ACHAT1_TEMP.BLOCAGE, " +
+                    "ACHAT1_TEMP.CODE_DEPOT, " +
 
-                    "ACHAT1_COM.NBR_P, " +
-                    "ACHAT1_COM.TOT_QTE, " +
+                    "ACHAT1_TEMP.NBR_P, " +
+                    "ACHAT1_TEMP.TOT_QTE, " +
 
-                    "ACHAT1_COM.TOT_HT, " +
-                    "ACHAT1_COM.TOT_TVA, " +
-                    "ACHAT1_COM.TIMBRE, " +
-                    "ACHAT1_COM.TOT_HT + ACHAT1_COM.TOT_TVA + ACHAT1_COM.TIMBRE AS TOT_TTC, " +
-                    "ACHAT1_COM.REMISE, " +
-                    "ACHAT1_COM.TOT_HT + ACHAT1_COM.TOT_TVA + ACHAT1_COM.TIMBRE - ACHAT1_COM.REMISE AS MONTANT_BON, " +
+                    "ACHAT1_TEMP.TOT_HT, " +
+                    "ACHAT1_TEMP.TOT_TVA, " +
+                    "ACHAT1_TEMP.TIMBRE, " +
+                    "ACHAT1_TEMP.TOT_HT + ACHAT1_TEMP.TOT_TVA + ACHAT1_TEMP.TIMBRE AS TOT_TTC, " +
+                    "ACHAT1_TEMP.REMISE, " +
+                    "ACHAT1_TEMP.TOT_HT + ACHAT1_TEMP.TOT_TVA + ACHAT1_TEMP.TIMBRE - ACHAT1_TEMP.REMISE AS MONTANT_BON, " +
 
-                    "ACHAT1_COM.ANCIEN_SOLDE, " +
-                    "ACHAT1_COM.VERSER, " +
-                    "ACHAT1_COM.ANCIEN_SOLDE + (ACHAT1_COM.TOT_HT + ACHAT1_COM.TOT_TVA + ACHAT1_COM.TIMBRE - ACHAT1_COM.REMISE) - ACHAT1_COM.VERSER AS RESTE, " +
+                    "ACHAT1_TEMP.ANCIEN_SOLDE, " +
+                    "ACHAT1_TEMP.VERSER, " +
+                    "ACHAT1_TEMP.ANCIEN_SOLDE + (ACHAT1_TEMP.TOT_HT + ACHAT1_TEMP.TOT_TVA + ACHAT1_TEMP.TIMBRE - ACHAT1_TEMP.REMISE) - ACHAT1_TEMP.VERSER AS RESTE, " +
 
                     "FOURNIS.FOURNIS, " +
                     "FOURNIS.ADRESSE, " +
                     "FOURNIS.TEL " +
-                    "FROM ACHAT1_COM " +
-                    "LEFT JOIN FOURNIS ON (ACHAT1_COM.CODE_FRS = FOURNIS.CODE_FRS) " +
-                    " WHERE ACHAT1_COM.NUM_BON ='"+ NUM_BON +"'";
+                    "FROM ACHAT1_TEMP " +
+                    "LEFT JOIN FOURNIS ON (ACHAT1_TEMP.CODE_FRS = FOURNIS.CODE_FRS) " +
+                    " WHERE ACHAT1_TEMP.NUM_BON ='"+ NUM_BON +"'";
 
             ///////////////////////////////////
             achat1_com = controller.select_one_acha1_from_database(querry);
@@ -221,22 +221,22 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
             final_panier =  controller.select_all_achat2_from_database("" +
                     "SELECT " +
-                    "ACHAT2_COM.RECORDID, " +
-                    "ACHAT2_COM.CODE_BARRE, " +
-                    "ACHAT2_COM.NUM_BON, " +
-                    "ACHAT2_COM.PRODUIT, " +
-                    "ACHAT2_COM.NBRE_COLIS, " +
-                    "ACHAT2_COM.COLISSAGE, " +
-                    "ACHAT2_COM.QTE, " +
-                    "ACHAT2_COM.QTE_GRAT, " +
-                    "ACHAT2_COM.PU, " +
-                    "ACHAT2_COM.TVA, " +
-                    "ACHAT2_COM.CODE_DEPOT, " +
-                    "ACHAT2_COM.QTE_GRAT, " +
+                    "ACHAT2_TEMP.RECORDID, " +
+                    "ACHAT2_TEMP.CODE_BARRE, " +
+                    "ACHAT2_TEMP.NUM_BON, " +
+                    "ACHAT2_TEMP.PRODUIT, " +
+                    "ACHAT2_TEMP.NBRE_COLIS, " +
+                    "ACHAT2_TEMP.COLISSAGE, " +
+                    "ACHAT2_TEMP.QTE, " +
+                    "ACHAT2_TEMP.QTE_GRAT, " +
+                    "ACHAT2_TEMP.PU, " +
+                    "ACHAT2_TEMP.TVA, " +
+                    "ACHAT2_TEMP.CODE_DEPOT, " +
+                    "ACHAT2_TEMP.QTE_GRAT, " +
                     "PRODUIT.STOCK " +
-                    "FROM ACHAT2_COM " +
-                    "LEFT JOIN PRODUIT ON (ACHAT2_COM.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                    "WHERE ACHAT2_COM.NUM_BON = '" + NUM_BON+ "'" );
+                    "FROM ACHAT2_TEMP " +
+                    "LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                    "WHERE ACHAT2_TEMP.NUM_BON = '" + NUM_BON+ "'" );
 
 
             //private String formattedDate;
@@ -482,7 +482,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                                 .setConfirmClickListener(sDialog -> {
 
                                     try{
-                                        if (controller.modifier_achat1_sql("ACHAT1_COM", achat1_com) ) {
+                                        if (controller.modifier_achat1_sql("ACHAT1_TEMP", achat1_com) ) {
                                             achat1_com.blocage = "M";
                                             validate_theme();
                                         }
@@ -572,7 +572,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         achat1_com.tel = fournisseur_selected.tel;
         achat1_com.adresse = fournisseur_selected.adresse;
 
-        if(!controller.insert_into_achat1("ACHAT1_COM", achat1_com)){
+        if(!controller.insert_into_achat1("ACHAT1_TEMP", achat1_com)){
             finish();
         }
     }
@@ -580,21 +580,21 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     protected void initData(){
         final_panier = controller.select_all_achat2_from_database("" +
                 "SELECT " +
-                "ACHAT2_COM.RECORDID, " +
-                "ACHAT2_COM.CODE_BARRE, " +
-                "ACHAT2_COM.NUM_BON, " +
-                "ACHAT2_COM.PRODUIT, " +
-                "ACHAT2_COM.NBRE_COLIS, " +
-                "ACHAT2_COM.COLISSAGE, " +
-                "ACHAT2_COM.QTE, " +
-                "ACHAT2_COM.QTE_GRAT, " +
-                "ACHAT2_COM.PU, " +
-                "ACHAT2_COM.TVA, " +
-                "ACHAT2_COM.CODE_DEPOT, " +
+                "ACHAT2_TEMP.RECORDID, " +
+                "ACHAT2_TEMP.CODE_BARRE, " +
+                "ACHAT2_TEMP.NUM_BON, " +
+                "ACHAT2_TEMP.PRODUIT, " +
+                "ACHAT2_TEMP.NBRE_COLIS, " +
+                "ACHAT2_TEMP.COLISSAGE, " +
+                "ACHAT2_TEMP.QTE, " +
+                "ACHAT2_TEMP.QTE_GRAT, " +
+                "ACHAT2_TEMP.PU, " +
+                "ACHAT2_TEMP.TVA, " +
+                "ACHAT2_TEMP.CODE_DEPOT, " +
                 "PRODUIT.STOCK " +
-                "FROM ACHAT2_COM " +
-                "LEFT JOIN PRODUIT ON (ACHAT2_COM.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                "WHERE ACHAT2_COM.NUM_BON = '" + achat1_com.num_bon + "'" );
+                "FROM ACHAT2_TEMP " +
+                "LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                "WHERE ACHAT2_TEMP.NUM_BON = '" + achat1_com.num_bon + "'" );
 
         // Create the adapter to convert the array to views
         PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
@@ -645,7 +645,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
                             try{
                                 SOURCE = "BON2_TEMP_DELETE";
-                                controller.delete_from_achat2("ACHAT2_COM", final_panier.get(info.position).recordid ,final_panier.get(info.position));
+                                controller.delete_from_achat2("ACHAT2_TEMP", final_panier.get(info.position).recordid ,final_panier.get(info.position));
                                 initData();
                                 //PanierAdapter.RefrechPanier(final_panier);
                                 PanierAdapter = new ListViewAdapterPanier(ActivityOrderFournisseur.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
@@ -836,7 +836,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         achat1_com.remise =  val_remise;
         achat1_com.montant_bon = val_total_ttc_remise;
         //update current bon1
-        controller.update_achat1("ACHAT1_COM",achat1_com.num_bon, achat1_com);
+        controller.update_achat1("ACHAT1_TEMP",achat1_com.num_bon, achat1_com);
 
     }
 
@@ -940,9 +940,9 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
            try {
                if(SOURCE.equals("BON2_TEMP_INSERT")){
-                   controller.insert_into_achat2("ACHAT2_COM",  item_panier.getData());
+                   controller.insert_into_achat2("ACHAT2_TEMP",  item_panier.getData());
                }else if(SOURCE.equals("BON2_TEMP_EDIT")){
-                   controller.update_into_achat2("ACHAT2_COM", NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
+                   controller.update_into_achat2("ACHAT2_TEMP", NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
                }
 
                initData();
@@ -957,7 +957,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     @Subscribe
     public void onVersementReceived(ValidateFactureEvent versement){
 
-      //  bon1_a_com.verser = 0.0;
+       // achat1_com.verser = 0.0;
 
        /* if (bon1_temp.verser != 0 ) {
             bon1_temp.mode_rg = "ESPECE";
@@ -967,7 +967,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
        // bon1_temp.reste = bon1_temp.solde_ancien + (bon1_temp.tot_ht + bon1_temp.tot_tva + bon1_temp.timbre - bon1_temp.remise) - bon1_temp.verser;
 
-        if (controller.validate_achat1_sql("ACHAT1_COM", achat1_com)) {
+        if (controller.validate_achat1_sql("ACHAT1_TEMP", achat1_com)) {
             achat1_com.blocage = "F";
         }
 

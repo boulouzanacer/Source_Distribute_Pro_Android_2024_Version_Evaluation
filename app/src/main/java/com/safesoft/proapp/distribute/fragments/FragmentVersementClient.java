@@ -46,7 +46,7 @@ public class FragmentVersementClient {
     AlertDialog dialog;
     private NumberFormat nf;
     private DATABASE controller;
-
+    private String NUM_BON_CARNET_C;
 
     //PopupWindow display method
     public void showDialogbox(Activity activity, double recieve_solde_client, double recieve_versement_client, double montant_versement, String recieve_observation, String recieve_code_client, boolean ifIsEdit, String recordid) {
@@ -89,6 +89,9 @@ public class FragmentVersementClient {
         btn_cancel.setFontIconSize(30);
 
 
+        //get num bon
+        String selectQuery = "SELECT MAX(NUM_BON) AS max_id FROM CARNET_C WHERE NUM_BON IS NOT NULL";
+        NUM_BON_CARNET_C = controller.select_max_num_bon(selectQuery);
 
         edt_solde_actuel =  dialogview.findViewById(R.id.solde_actuel);
         edt_versement =  dialogview.findViewById(R.id.versement);
@@ -128,7 +131,9 @@ public class FragmentVersementClient {
                 carnet_c.carnet_date = formattedDate;
                 carnet_c.carnet_heure = currentTime;
                 carnet_c.recordid = recordid;
+                carnet_c.carnet_num_bon = NUM_BON_CARNET_C;
                 carnet_c.code_client = CODE_CLIENT ;
+                carnet_c.carnet_achats = val_solde_actuel;
                 carnet_c.carnet_versement = val_versement;
                 carnet_c.carnet_remarque = edt_observation.getText().toString();
 

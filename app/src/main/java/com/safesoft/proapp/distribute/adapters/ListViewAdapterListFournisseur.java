@@ -68,9 +68,12 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
   }
 
   private class ViewHolder {
-    TextView fournisseur;
+    TextView txtv_fournisseur;
     TextView code_frs;
-    TextView tel;
+    TextView txtv_tel;
+    TextView txtv_achats;
+    TextView txtv_verser;
+    TextView txtv_solde;
   }
 
 
@@ -81,9 +84,12 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
     if (convertView == null) {
       holder = new ViewHolder();
       convertView = inflater.inflate(R.layout.item_fournisseur, null);
-      holder.fournisseur = (TextView) convertView.findViewById(R.id.fournisseur);
+      holder.txtv_fournisseur = (TextView) convertView.findViewById(R.id.fournisseur);
      // holder.code_frs = (TextView) convertView.findViewById(R.id.co);
-      holder.tel = (TextView) convertView.findViewById(R.id.tel_fournisseur);
+      holder.txtv_tel = (TextView) convertView.findViewById(R.id.tel_fournisseur);
+      holder.txtv_achats = (TextView) convertView.findViewById(R.id.achat_fournisseur);
+      holder.txtv_verser = (TextView) convertView.findViewById(R.id.verser_fournisseur);
+      holder.txtv_solde = (TextView) convertView.findViewById(R.id.sold_fournisseur);
 
       convertView.setTag(holder);
 
@@ -91,9 +97,13 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
       holder = (ViewHolder) convertView.getTag();
     }
 
-    holder.fournisseur.setText(list_fournisseurs.get(position).fournis);
+    holder.txtv_fournisseur.setText(list_fournisseurs.get(position).fournis);
   //  holder.code_client.setText(list_clients.get(position).code_client);
-    holder.tel.setText(list_fournisseurs.get(position).tel);
+    holder.txtv_tel.setText(list_fournisseurs.get(position).tel);
+
+    holder.txtv_achats.setText("" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).achat_montant)));
+    holder.txtv_verser.setText("" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).verser_montant)));
+    holder.txtv_solde.setText("" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).solde_montant)));
 
    // convertView.setBackgroundResource(R.drawable.selector_listview_client_row);
     //On item click event

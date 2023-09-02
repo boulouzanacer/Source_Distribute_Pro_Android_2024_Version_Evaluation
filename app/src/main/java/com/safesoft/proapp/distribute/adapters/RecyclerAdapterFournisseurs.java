@@ -16,6 +16,7 @@ import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -37,7 +38,9 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
     ImageView image;
     ImageView img_pos_fournisseur;
     TextView Tel_fournisseurN;
-    TextView Sld_fournisseurN;
+    TextView Achats_fournisseurN;
+    TextView Verser_fournisseurN;
+    TextView Sold_fournisseurN;
 
     MyViewHolder(View view)
     {
@@ -45,7 +48,9 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
       cardView = (CardView) view.findViewById(R.id.item_root);
       FournisseurN = (TextView) view.findViewById(R.id.fournisseur);
       Tel_fournisseurN = (TextView) view.findViewById(R.id.tel_fournisseur);
-      Sld_fournisseurN = (TextView) view.findViewById(R.id.sld_fournisseur);
+      Achats_fournisseurN = (TextView) view.findViewById(R.id.achat_fournisseur);
+      Verser_fournisseurN = (TextView) view.findViewById(R.id.verser_fournisseur);
+      Sold_fournisseurN = (TextView) view.findViewById(R.id.sold_fournisseur);
       image = (ImageView) view.findViewById(R.id.imageId);
       img_pos_fournisseur = (ImageView) view.findViewById(R.id.img_pos_fournisseur);
     }
@@ -82,10 +87,14 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
 
     holder.Tel_fournisseurN.setText("TEL : "+ item.tel);
 
-    holder.Sld_fournisseurN.setTypeface(null, Typeface.BOLD);
+    holder.Achats_fournisseurN.setTypeface(null, Typeface.BOLD);
+    holder.Verser_fournisseurN.setTypeface(null, Typeface.BOLD);
+    holder.Sold_fournisseurN.setTypeface(null, Typeface.BOLD);
     //holder.Sld_fournisseurN.setText("Solde : "+item.solde_montant);
 
-    holder.Sld_fournisseurN.setText("Solde :"+ item.solde_montant);
+    holder.Achats_fournisseurN.setText("Achats :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.achat_montant)));
+    holder.Verser_fournisseurN.setText("Verser :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_montant)));
+    holder.Sold_fournisseurN.setText("Solde :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
 
     holder.img_pos_fournisseur.setImageResource(R.drawable.ic_baseline_wrong_location_24);
 

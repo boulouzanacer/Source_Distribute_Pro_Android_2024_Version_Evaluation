@@ -49,9 +49,9 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
     private static final int REQUEST_ACTIVITY_NEW_CLIENT = 4000;
     RecyclerView recyclerView;
-    RecyclerAdapterFournisseurs adapter;
-    ArrayList<PostData_Fournisseur> fournisseurs;
-    DATABASE controller;
+    private RecyclerAdapterFournisseurs adapter;
+    private ArrayList<PostData_Fournisseur> fournisseurs;
+    private DATABASE controller;
     private  MediaPlayer mp;
     private EventBus bus;
     private TextView nbr_fournisseur;
@@ -189,7 +189,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                         }
 
                         String querry_has_bon1 = "SELECT CODE_FRS FROM ACHAT1 WHERE IS_EXPORTED = 0 AND CODE_FRS = '" + fournisseurs.get(position).code_frs + "'";
-                        String querry_has_bon1_temp = "SELECT CODE_FRS FROM ACHAT1_COM WHERE IS_EXPORTED = 0 AND CODE_FRS = '" + fournisseurs.get(position).code_frs + "'";
+                        String querry_has_bon1_temp = "SELECT CODE_FRS FROM ACHAT1_TEMP WHERE IS_EXPORTED = 0 AND CODE_FRS = '" + fournisseurs.get(position).code_frs + "'";
 
                         if(controller.check_if_fournisseur_has_bon(querry_has_bon1) || controller.check_if_fournisseur_has_bon(querry_has_bon1_temp)){
                             // you can't delete this fournisseur
