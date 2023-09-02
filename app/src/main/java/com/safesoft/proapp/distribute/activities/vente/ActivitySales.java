@@ -182,7 +182,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
     public void onLongClick(View v, final int position) {
 
         if (bon1s.get(position).blocage.equals("F")) {
-            final CharSequence[] items = {"Modifier", "Supprimer", "Imprimer"};
+            final CharSequence[] items = {"Marque retour", "Supprimer", "Imprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setIcon(R.drawable.blue_circle_24);
@@ -193,20 +193,21 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                         if(!SOURCE_EXPORT.equals("EXPORTED")){
                             new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Bon de vente")
-                                    .setContentText("Voulez-vous vraiment modifier ce bon ?!")
+                                    .setContentText("Voulez-vous vraiment tranferer vers un bon de retour ?!")
                                     .setCancelText("Non")
-                                    .setConfirmText("Modifier")
+                                    .setConfirmText("Bon retour")
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
 
                                         Sound(R.raw.beep);
 
-                                        Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
+                                        /*Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
                                         editIntent.putExtra("NUM_BON", bon1s.get(position).num_bon);
                                         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_SALE");
                                         editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-                                        startActivity(editIntent);
+                                        startActivity(editIntent);*/
+
                                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                         sDialog.dismiss();
                                     })
@@ -220,7 +221,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
                         break;
                     case 1:
-                        new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
+                        /*new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
                                 .setTitleText("Suppression")
                                 .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
                                 .setCancelText("Anuuler")
@@ -235,7 +236,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                                     sDialog.dismiss();
 
                                 })
-                                .show();
+                                .show();*/
 
                         break;
                     case 2:
