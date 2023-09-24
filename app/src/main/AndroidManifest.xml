@@ -41,9 +41,11 @@
         android:theme="@style/Theme.MyApplication"
         tools:node="merge"
         tools:replace="android:icon">
+
         <activity
             android:name=".activities.ActivityRouting"
             android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyApHcITtdXKD0hGcZhcN1MppH3pCyoqJ1s" />
@@ -53,6 +55,7 @@
             android:exported="false"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_tspmaps" />
+
         <activity
             android:name=".activities.pdf.ActivityPDF"
             android:exported="false" />
@@ -65,25 +68,28 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
-        </provider> <!-- Main classes -->
+        </provider>
+
 
         <activity
             android:name=".activation.ActivityCodeRevendeur"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
 
-
+        <!-- Main classes -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
 
         </activity>
 
@@ -100,7 +106,11 @@
         <activity android:name=".activities.transfert.ActivityTransferts" />
         <activity android:name=".activities.transfert.ActivityTransfert" /> <!-- Autre classes -->
         <activity android:name=".activities.ActivityImportsExport" />
-        <activity android:name=".activities.ActivitySetting" />
+        <activity android:name=".activities.ActivitySetting"
+            android:exported="true">
+
+        </activity>
+
         <activity android:name=".activities.ActivityInventaireAchat" /> <!-- login parametres classes -->
 
         <activity
@@ -109,7 +119,9 @@
 
         <activity
             android:name=".activities.login.ActivityChangePwd"
-            android:theme="@style/AppTheme.Dark" /> <!-- Achat classes -->
+            android:theme="@style/AppTheme.Dark" />
+
+        <!-- Achat classes -->
         <activity android:name=".activities.commande_achat.ActivityOrdersFournisseur" />
         <activity android:name=".activities.commande_achat.ActivityOrderFournisseur" />
         <activity android:name=".activities.fournisseur.ActivityFournisseurs" />
@@ -147,6 +159,7 @@
 
         <!-- Etat -->
         <activity android:name=".activities.vente.ActivityEtatV" />
+
         <activity android:name=".activities.commande_vente.ActivityEtatC" />
     </application>
 

@@ -83,7 +83,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         setRecycle();
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        printer_mode_integrate = Objects.equals(prefs1.getString("PRINTER", "INTEGRATE"), "INTEGRATE");
+        printer_mode_integrate = Objects.equals(prefs1.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
@@ -190,8 +190,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
-                    case 0:
-                        if(!SOURCE_EXPORT.equals("EXPORTED")){
+                    case 0 -> {
+                        if (!SOURCE_EXPORT.equals("EXPORTED")) {
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Bon de commande")
                                     .setContentText("Voulez-vous vraiment modifier ce bon ?!")
@@ -211,38 +211,33 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                         sDialog.dismiss();
                                     })
                                     .show();
-                        }else {
+                        } else {
 
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Information!")
                                     .setContentText("Ce bon est déja exporté")
                                     .show();
                         }
+                    }
+                    case 1 ->
+                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
+                                    .setTitleText("Suppression")
+                                    .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
+                                    .setCancelText("Anuuler")
+                                    .setConfirmText("Supprimer")
+                                    .showCancelButton(true)
+                                    .setCancelClickListener(Dialog::dismiss)
+                                    .setConfirmClickListener(sDialog -> {
 
+                                        controller.delete_bon_vente(true, bon1s_temp.get(position));
+                                        setRecycle();
 
-                        break;
-                    case 1:
-                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Suppression")
-                                .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
-                                .setCancelText("Anuuler")
-                                .setConfirmText("Supprimer")
-                                .showCancelButton(true)
-                                .setCancelClickListener(Dialog::dismiss)
-                                .setConfirmClickListener(sDialog -> {
+                                        sDialog.dismiss();
 
-                                    controller.delete_bon_vente(true, bon1s_temp.get(position));
-                                    setRecycle();
-
-                                    sDialog.dismiss();
-
-                                })
-                                .show();
-
-                        break;
-                    case 2:
-
-                        if(!bon1s_temp.get(position).blocage.equals("F")){
+                                    })
+                                    .show();
+                    case 2 -> {
+                        if (!bon1s_temp.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Information!")
                                     .setContentText("Ce bon n'est pas encore validé")
@@ -251,8 +246,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                         }
                         Activity bactivity;
                         bactivity = ActivityOrdersClient.this;
-
-                        final_panier =  controller.select_bon2_from_database("" +
+                        final_panier = controller.select_bon2_from_database("" +
                                 "SELECT " +
                                 "BON2_TEMP.RECORDID, " +
                                 "BON2_TEMP.CODE_BARRE, " +
@@ -272,14 +266,15 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "PRODUIT.STOCK " +
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                                "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'" );
+                                "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
                         Printing printer = new Printing();
+
                         try {
                             printer.start_print_bon(bactivity, "ORDER", final_panier, bon1s_temp.get(position), null);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                        break;
+                    }
                 }
             });
             builder.show();
@@ -310,7 +305,6 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             });
             builder.show();
         }
-
 
     }
 

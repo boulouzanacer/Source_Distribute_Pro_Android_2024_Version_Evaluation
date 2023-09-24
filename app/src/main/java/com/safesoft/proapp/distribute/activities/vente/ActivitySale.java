@@ -36,8 +36,10 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
 import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
@@ -125,7 +127,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     String SOURCE_EXPORT = "";
     String PARAMS_PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
     SharedPreferences prefs;
-
+    private PostData_Params params;
+    private MediaPlayer mp;
     @SuppressLint("SimpleDateFormat") SimpleDateFormat date_format;
     @SuppressLint("SimpleDateFormat") SimpleDateFormat heure_format;
     @Override
@@ -352,6 +355,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         total_ttc_remise = findViewById(R.id.total_ttc_remise);
         //TextView observation = findViewById(R.id.observation_value);
         txv_remise = findViewById(R.id.txv_remise);
+        TableRow tbr_remise = (TableRow) findViewById(R.id.tbr_remise);
 
         //checkbox
         checkBox_timbre = findViewById(R.id.checkbox_timbre);
@@ -373,7 +377,11 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             tr_total_timbre.setVisibility(View.GONE);
         }
 
-
+        if(prefs.getBoolean("AFFICHAGE_REMISE", true)){
+            tbr_remise.setVisibility(View.VISIBLE);
+        }else{
+            tbr_remise.setVisibility(View.GONE);
+        }
         intent_location = new Intent(this, ServiceLocation.class);
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -392,6 +400,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         nf = NumberFormat.getInstance(Locale.US);
         ((DecimalFormat) nf).applyPattern("##,##0.00");
 
+        params = new PostData_Params();
+        params = controller.select_params_from_database("SELECT * FROM PARAMS");
     }
 
 
@@ -426,7 +436,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 if(client_selected.mode_tarif.equals("0")){
 
                     if(btn_mode_tarif.getText().toString().equals("Tarif 1")){
-                        if(prefs.getString("PRIX_2","").equals("1")){
+                        if(params.prix_2 == 1){
                             bon1.mode_tarif = "2";
                             btn_mode_tarif.setText("Tarif 2");
                         }else {
@@ -434,7 +444,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 2")){
-                        if(prefs.getString("PRIX_3","").equals("1")){
+                        if(params.prix_3 == 1){
                             bon1.mode_tarif = "3";
                             btn_mode_tarif.setText("Tarif 3");
                         }else {
@@ -442,7 +452,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 3")) {
-                        if(prefs.getString("PRIX_4","").equals("1")){
+                        if(params.prix_4 == 1){
                             bon1.mode_tarif = "4";
                             btn_mode_tarif.setText("Tarif 4");
                         }else {
@@ -450,7 +460,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 4")) {
-                        if(prefs.getString("PRIX_5","").equals("1")){
+                        if(params.prix_5 == 1){
                             bon1.mode_tarif = "6";
                             btn_mode_tarif.setText("Tarif 5");
                         }else {
@@ -458,7 +468,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 5")) {
-                        if(prefs.getString("PRIX_6","").equals("1")){
+                        if(params.prix_6 == 1){
                             bon1.mode_tarif = "1";
                             btn_mode_tarif.setText("Tarif 6");
                         }else {
@@ -563,15 +573,19 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 }
                 break;
             case R.id.btn_mofifier_bon:
-                if(!SOURCE_EXPORT.equals("EXPORTED")){
-                    if(!bon1.blocage.equals("F")){
-                        new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Ce bon n'est pas encore validé")
-                                .show();
-                        return;
 
-                    } else  {
+                if(!bon1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon n'est pas encore validé")
+                            .show();
+                    return;
+
+                }
+
+                if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
+                    if(!SOURCE_EXPORT.equals("EXPORTED")){
+
                         new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Modification")
                                 .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
@@ -598,13 +612,18 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                                     }
                                     sDialog.dismiss();
                                 }).show();
+                    }else {
+                        new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Ce bon est déja exporté")
+                                .show();
                     }
-                }else {
+                }else{
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja exporté")
-                            .show();
-                }
+                            .setTitleText("Attention!!")
+                            .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
+                            .show();                     }
+
             break;
             case R.id.btn_imp_bon:
                 if(!bon1.blocage.equals("F")){
@@ -1118,6 +1137,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     }
 
+
     @Subscribe
     public void onItemPanierReceive(CheckedPanierEventBon2 item_panier){
 
@@ -1134,11 +1154,13 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                }
 
                initData();
+               Sound(R.raw.cashier_quotka);
 
            }catch (Exception e){
                Crouton.makeText(ActivitySale.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();
            }
     }
+
 
 
     @Subscribe
@@ -1164,6 +1186,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
         validate_theme();
     }
+
+
     public void validate_theme(){
         if (bon1.blocage.equals("F")) {
             //findViewById(R.id.client).setBackgroundColor(Color.LTGRAY);
@@ -1180,6 +1204,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         }
     }
+
 
     private void selectProductFromScan(String resultscan){
         ArrayList<PostData_Produit> produits;

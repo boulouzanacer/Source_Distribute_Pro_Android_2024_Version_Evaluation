@@ -38,7 +38,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Famille;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
-import com.safesoft.proapp.distribute.postData.PostData_Params2;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer1;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer2;
@@ -64,8 +64,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 public class ActivityImportsExport extends AppCompatActivity {
     private String Server;
@@ -1507,7 +1505,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                     }catch (Exception e){
                         con.rollback();
-                        list_num_bon_not_exported.add( achat1s.get(i).num_bon);
+                        list_num_bon_not_exported.add( e.getMessage());
                         stmt.clearBatch();
                     }
 
@@ -2190,12 +2188,11 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                             //String RECORDID_CRC = Get_Digits_String(String.valueOf(num_bon_carnet_c), 6);
-                            String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, EXPORTATION , CODE_VENDEUR, CODE_CAISSE) VALUES (" +
+                            String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, EXPORTATION , CODE_VENDEUR, CODE_CAISSE) VALUES (" +
                                     " '" + recordid_carnet_c + "', " +
                                     " '"  + all_versement_client.get(g).code_client.replace("'", "''") + "' ," +
                                     " '" + format2.format(dt) + "'  ," +
                                     " '" + all_versement_client.get(g).carnet_heure + "' ," +
-                                    " '" + all_versement_client.get(g).carnet_achats + "' ," +
                                     " '" + all_versement_client.get(g).carnet_versement + "' ," +
                                     " 'SITUATION-CLIENT' ," +
                                     " 'VRC" + recordid_carnet_c + "'," +
@@ -3185,88 +3182,117 @@ public class ActivityImportsExport extends AppCompatActivity {
                 editor.apply();
 
 
+                if(TYPE_LOGICIEL.equals("PME PRO")){
+                    //============================ GET PARAMS2 =========================================
+                    String sql2 = "SELECT PARAMS2.PARAMETRES, PARAMS2.VALEURE FROM PARAMS2";
+                    ResultSet rs2 = stmt.executeQuery(sql2);
 
-                //============================ GET PARAMS2 ===========================================
-                String sql2 = "SELECT PARAMS2.PARAMETRES, PARAMS2.VALEURE FROM PARAMS2";
-                ResultSet rs2 = stmt.executeQuery(sql2);
+                    PostData_Params params2 = new PostData_Params();
+                    while (rs2.next()) {
 
-                PostData_Params2 params2 = new PostData_Params2();
-                while (rs2.next()) {
+                        //======================= PRIX ACTIVE ========================
+                        if(rs2.getString("PARAMETRES").equals("PRIX_2")){
+                            params2.prix_2 = rs2.getInt("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PRIX_3")){
+                            params2.prix_3= rs2.getInt("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PRIX_4")){
+                            params2.prix_4 = rs2.getInt("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PRIX_5")){
+                            params2.prix_5 = rs2.getInt("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PRIX_6")){
+                            params2.prix_6 = rs2.getInt("VALEURE");
+                        }
 
-                    //======================= PRIX ACTIVE ========================
-                    if(rs2.getString("PARAMETRES").equals("PRIX_2")){
-                        params2.prix_2 = rs2.getString("VALEURE");
+                        //======================= PRIX TITRE ==========================
+                        if(rs2.getString("PARAMETRES").equals("PV1_TITRE")){
+                            params2.pv1_titre = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PV2_TITRE")){
+                            params2.pv2_titre= rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PV3_TITRE")){
+                            params2.pv3_titre = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PV4_TITRE")){
+                            params2.pv4_titre = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PV5_TITRE")){
+                            params2.pv5_titre = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("PV6_TITRE")){
+                            params2.pv6_titre = rs2.getString("VALEURE");
+                        }
+
+                        //====================== FTP =================================
+                        if(rs2.getString("PARAMETRES").equals("FTP0")){
+                            params2.ftp_server = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("FTP1")){
+                            params2.ftp_port = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("FTP2")){
+                            params2.ftp_user = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("FTP3")){
+                            params2.ftp_pass = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("EXP_FTP")){
+                            params2.ftp_imp = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("IMP_FTP")){
+                            params2.ftp_exp = rs2.getString("VALEURE");
+                        }
                     }
-                    if(rs2.getString("PARAMETRES").equals("PRIX_3")){
-                        params2.prix_3= rs2.getString("VALEURE");
+
+                }else {
+                    //============================ GET PARAMS2 =========================================
+                    String sql2 = "SELECT PARAMS2.PARAMETRES, PARAMS2.VALEURE FROM PARAMS2";
+                    ResultSet rs2 = stmt.executeQuery(sql2);
+
+                    PostData_Params params2 = new PostData_Params();
+                    while (rs2.next()) {
+
+                        //====================== FTP =================================
+                        if(rs2.getString("PARAMETRES").equals("FTP0")){
+                            params2.ftp_server = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("FTP1")){
+                            params2.ftp_port = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("FTP2")){
+                            params2.ftp_user = rs2.getString("VALEURE");
+                        }
+                        if(rs2.getString("PARAMETRES").equals("FTP3")){
+                            params2.ftp_pass = rs2.getString("VALEURE");
+                        }
+
+                        params2.ftp_imp = "EXP";
+                        params2.ftp_exp = "IMP";
                     }
-                    if(rs2.getString("PARAMETRES").equals("PRIX_4")){
-                        params2.prix_4 = rs2.getString("VALEURE");
+
+
+                    //============================ GET PARAMS =========================================
+                    String sql3 = "SELECT PARAMS.PRIX_2, PARAMS.PRIX_3 FROM PARAMS";
+                    ResultSet rs3 = stmt.executeQuery(sql3);
+                    while (rs3.next()) {
+                        //======================= PRIX ACTIVE ========================
+                        params2.prix_2 = rs3.getInt("PRIX_2");
+                        params2.prix_3 = rs3.getInt("PRIX_3");
+                        params2.prix_4 = 0;
+                        params2.prix_5 = 0;
+                        params2.prix_6 = 0;
+
+                        params2.pv1_titre = "PRIX 1";
+                        params2.pv2_titre = "PRIX 2";
+                        params2.pv3_titre = "PRIX 3";
                     }
-                    if(rs2.getString("PARAMETRES").equals("PRIX_5")){
-                        params2.prix_5 = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("PRIX_6")){
-                        params2.prix_6 = rs2.getString("VALEURE");
-                    }
-                    //======================= PRIX TITRE ==========================
-                    if(rs2.getString("PARAMETRES").equals("PV1_TITRE")){
-                        params2.pv1_titre = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("PV2_TITRE")){
-                        params2.pv2_titre= rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("PV3_TITRE")){
-                        params2.pv3_titre = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("PV4_TITRE")){
-                        params2.pv4_titre = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("PV5_TITRE")){
-                        params2.pv5_titre = rs2.getString("VALEURE");
-                    }
-                    //====================== FTP =================================
-                    if(rs2.getString("PARAMETRES").equals("FTP0")){
-                        params2.ftp_server = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("FTP1")){
-                        params2.ftp_port = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("FTP2")){
-                        params2.ftp_user = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("FTP3")){
-                        params2.ftp_pass = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("EXP_FTP")){
-                        params2.ftp_imp = rs2.getString("VALEURE");
-                    }
-                    if(rs2.getString("PARAMETRES").equals("IMP_FTP")){
-                        params2.ftp_exp = rs2.getString("VALEURE");
-                    }
+
+                    controller.insert_into_params(params2);
                 }
-
-                editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-
-                editor.putString("PRIX_2", params2.prix_2);
-                editor.putString("PRIX_3", params2.prix_3);
-                editor.putString("PRIX_4", params2.prix_4);
-                editor.putString("PRIX_5", params2.prix_5);
-                editor.putString("PRIX_6", params2.prix_6);
-
-                editor.putString("PV1_TITRE", params2.pv1_titre);
-                editor.putString("PV2_TITRE", params2.pv2_titre);
-                editor.putString("PV3_TITRE", params2.pv3_titre);
-                editor.putString("PV4_TITRE", params2.pv4_titre);
-                editor.putString("PV5_TITRE", params2.pv5_titre);
-
-                editor.putString("SERVEUR_FTP", params2.ftp_server);
-                editor.putString("PORT_FTP", params2.ftp_port);
-                editor.putString("USER_FTP", params2.ftp_user);
-                editor.putString("PASSWORD_FTP", params2.ftp_pass);
-                editor.putString("EXP_FTP", params2.ftp_exp);
-                editor.putString("IMP_FTP", params2.ftp_imp);
-                editor.apply();
 
                 stmt.close();
 
@@ -3930,8 +3956,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                 Date currentDateTime = Calendar.getInstance().getTime();
                 currentDateTimeString = sdf.format(currentDateTime);
-                SharedPreferences pref = getBaseContext().getSharedPreferences(PREFS, 0);
-                SharedPreferences.Editor editor = pref.edit();
+                prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
                 editor.putString("date_time", currentDateTimeString);
                 editor.apply();
 

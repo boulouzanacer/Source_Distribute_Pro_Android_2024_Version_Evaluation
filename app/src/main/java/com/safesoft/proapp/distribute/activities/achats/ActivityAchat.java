@@ -37,6 +37,8 @@ import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanier;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
@@ -94,25 +96,17 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
     private double val_total_ttc = 0.00;
     private double val_remise = 0.00;
     private double val_total_ttc_remise = 0.00;
-
     private EventBus bus;
-
     private String NUM_BON;
     private String CODE_DEPOT;
     private PostData_Fournisseur fournisseur_selected;
     private PostData_Achat1 achat1;
     private String SOURCE;
-
-
     private ExpandableHeightListView expandableListView;
-
     private NumberFormat nf;
-
     public static final String BARCODE_KEY = "BARCODE";
-
     private Barcode barcodeResult;
     final String PREFS = "ALL_PREFS";
-
     String TYPE_ACTIVITY = "";
     String SOURCE_EXPORT = "";
     String PARAMS_PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
@@ -247,6 +241,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                     "LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                     "WHERE ACHAT2.NUM_BON = '" + NUM_BON + "'" );
 
+
             //private String formattedDate;
             date_time_sub_title = achat1.date_bon + " " + achat1.heure;
 
@@ -302,6 +297,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         total_ttc_remise = findViewById(R.id.total_ttc_remise);
         //TextView observation = findViewById(R.id.observation_value);
         txv_remise = findViewById(R.id.txv_remise);
+        TableRow tbr_remise = (TableRow) findViewById(R.id.tbr_remise);
 
         //TablRow
         TableRow tr_total_ht = findViewById(R.id.tr_total_ht);
@@ -318,6 +314,13 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             tr_total_ht.setVisibility(View.GONE);
             tr_total_tva.setVisibility(View.GONE);
             tr_total_timbre.setVisibility(View.GONE);
+        }
+
+
+        if(prefs.getBoolean("AFFICHAGE_REMISE", true)){
+            tbr_remise.setVisibility(View.VISIBLE);
+        }else{
+            tbr_remise.setVisibility(View.GONE);
         }
 
         intent_location = new Intent(this, ServiceLocation.class);
@@ -450,15 +453,18 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                 }
                 break;
             case R.id.btn_mofifier_bon:
-                if(!SOURCE_EXPORT.equals("EXPORTED")){
-                    if(!achat1.blocage.equals("F")){
-                        new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Ce bon n'est pas encore validé")
-                                .show();
-                        return;
 
-                    } else  {
+                if(!achat1.blocage.equals("F")){
+                    new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon n'est pas encore validé")
+                            .show();
+                    return;
+                }
+                
+                if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
+                    if(!SOURCE_EXPORT.equals("EXPORTED")){
+
                         new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Modification")
                                 .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
@@ -474,10 +480,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                                             achat1.blocage = "M";
                                             validate_theme();
                                         }
-
-
                                     }catch (Exception e){
-
                                         new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
                                                 .setTitleText("Attention!")
                                                 .setContentText("problème lors de Modification de Bon : " + e.getMessage())
@@ -485,13 +488,19 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                                     }
                                     sDialog.dismiss();
                                 }).show();
+                    }else {
+                        new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Ce bon est déja exporté")
+                                .show();
                     }
-                }else {
+                }else{
                     new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja exporté")
-                            .show();
-                }
+                            .setTitleText("Attention!!")
+                            .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
+                            .show();                 }
+
+
             break;
             case R.id.btn_imp_bon:
                 if(!achat1.blocage.equals("F")){
@@ -925,6 +934,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                }
 
                initData();
+               Sound(R.raw.cashier_quotka);
 
            }catch (Exception e){
                Crouton.makeText(ActivityAchat.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();

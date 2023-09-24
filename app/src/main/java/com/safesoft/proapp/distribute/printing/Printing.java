@@ -3,6 +3,8 @@ package com.safesoft.proapp.distribute.printing;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.rt.printerlibrary.enumerate.BarcodeType.CODE128;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -21,15 +23,20 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean;
+import com.rt.printerlibrary.bean.LableSizeBean;
+import com.rt.printerlibrary.bean.Position;
 import com.rt.printerlibrary.bean.WiFiConfigBean;
 import com.rt.printerlibrary.cmd.Cmd;
 import com.rt.printerlibrary.cmd.EscFactory;
+import com.rt.printerlibrary.cmd.TscFactory;
 import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
 import com.rt.printerlibrary.enumerate.BarcodeType;
 import com.rt.printerlibrary.enumerate.BmpPrintMode;
 import com.rt.printerlibrary.enumerate.CommonEnum;
 import com.rt.printerlibrary.enumerate.ESCFontTypeEnum;
+import com.rt.printerlibrary.enumerate.PrintDirection;
+import com.rt.printerlibrary.enumerate.PrintRotation;
 import com.rt.printerlibrary.enumerate.SettingEnum;
 import com.rt.printerlibrary.exception.SdkException;
 import com.rt.printerlibrary.factory.cmd.CmdFactory;
@@ -52,6 +59,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
+import com.safesoft.proapp.distribute.utils.TonyUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -112,12 +120,12 @@ public class Printing {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
+        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
-            Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
             for(int i = 0; i< pairedDeviceList.size() ; i++){
                 if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
                     isfound = true;
@@ -126,7 +134,7 @@ public class Printing {
                 }
             }
             if(isfound){
-                Log.v("PRINTER", "Device found");
+                Log.v("PRINTER_CONX", "Device found");
                 if(device != null){
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
@@ -134,11 +142,11 @@ public class Printing {
                     runningTask.execute();
                 }
             }else {
-                Log.v("PRINTER", "Device not found");
+                Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
+        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
 
            // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
@@ -168,7 +176,6 @@ public class Printing {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return;
             }
-
         }
 
         BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
@@ -178,12 +185,12 @@ public class Printing {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
+        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
-            Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
             for(int i = 0; i< pairedDeviceList.size() ; i++){
                 if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
                     isfound = true;
@@ -193,7 +200,7 @@ public class Printing {
             }
 
             if(isfound){
-                Log.v("PRINTER", "Device found");
+                Log.v("PRINTER_CONX", "Device found");
                 if(device != null){
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
@@ -201,11 +208,79 @@ public class Printing {
                     runningTask.execute();
                 }
             }else {
-                Log.v("PRINTER", "Device not found");
+                Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
+        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+
+
+            // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
+            //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
+            // assert WIFI_VALUE_PORT != null;
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
+
+            runningTask = new LongOperation(wiFiConfigBean);
+            runningTask.execute();
+
+        }
+    }
+
+
+    /////////////////////////////////// IMPRIMER ETIQUETTE /////////////////////////////////////////
+    public void start_print_etiquette_code_barre(Activity activity, PostData_Produit produit) {
+
+        mActivity = activity;
+        this.produit = produit;
+        this.type_print = "ETIQUETTE_CODEBARRE";
+
+        AsyncTask<Void, Void, Boolean> runningTask;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                return;
+            }
+
+        }
+
+        BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
+        printerFactory = new ThermalPrinterFactory();
+        rtPrinter = printerFactory.create();
+        textSetting = new TextSetting();
+
+
+        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            BluetoothDevice device = null;
+            pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
+            boolean isfound = false;
+            Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            for(int i = 0; i< pairedDeviceList.size() ; i++){
+                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+                    isfound = true;
+                    device = pairedDeviceList.get(i);
+
+                }
+            }
+
+            if(isfound){
+                Log.v("PRINTER_CONX", "Device found");
+                if(device != null){
+                    configObj = new BluetoothEdrConfigBean(device);
+                    BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
+                    runningTask = new LongOperation(bluetoothEdrConfigBean);
+                    runningTask.execute();
+                }
+            }else {
+                Log.v("PRINTER_CONX", "Device not found");
+                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+            }
+
+        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
 
             // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
@@ -245,12 +320,12 @@ public class Printing {
         textSetting = new TextSetting();
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
+        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
-            Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
             for(int i = 0; i< pairedDeviceList.size() ; i++){
                 if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
                     isfound = true;
@@ -260,7 +335,7 @@ public class Printing {
             }
 
             if(isfound){
-                Log.v("PRINTER", "Device found");
+                Log.v("PRINTER_CONX", "Device found");
                 if(device != null){
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
@@ -268,11 +343,11 @@ public class Printing {
                     runningTask.execute();
                 }
             }else {
-                Log.v("PRINTER", "Device not found");
+                Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
+        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
 
             // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
@@ -322,14 +397,14 @@ public class Printing {
 
                 if(!BaseApplication.getInstance().getIsConnected()){
 
-                    if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
+                    if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
                         PIFactory piFactory = new BluetoothFactory();
                         PrinterInterface printerInterface = piFactory.create();
                         printerInterface.setConfigObject(bluetoothEdrConfigBean);
                         rtPrinter.setPrinterInterface(printerInterface);
                         rtPrinter.connect(bluetoothEdrConfigBean);
 
-                    }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
+                    }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
                         PIFactory piFactory = new WiFiFactory();
                         PrinterInterface printerInterface = piFactory.create();
@@ -364,6 +439,7 @@ public class Printing {
                         case "VENTE", "ORDER" -> print_bon();
                         case "ACHAT" -> print_achat();
                         case "ETIQUETTE" -> print_etiquette();
+                        case "ETIQUETTE_CODEBARRE" -> print_etiquette_code_barre(produit.code_barre, produit.produit, produit.pv1_ht * (1+(produit.tva/100)));
                         case "VERSEMENT_CLIENT" -> print_versement_client();
                     }
 
@@ -1021,6 +1097,7 @@ public class Printing {
 
                 showProgressDialog("Impression...");
 
+                BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
                 CmdFactory cmdFactory = new EscFactory();
                 Cmd cmd = cmdFactory.create();
                 cmd.append(cmd.getHeaderCmd());
@@ -1046,7 +1123,7 @@ public class Printing {
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
                     double prix_vente = produit.pv1_ht * (1+(produit.tva/100));
-                    String prix_vente_str   =  new DecimalFormat("").format(prix_vente);
+                    String prix_vente_str   =  new DecimalFormat("####0.00").format(prix_vente);
 
 
                     cmd.append(cmd.getTextCmd(textSetting, produit.produit));
@@ -1086,6 +1163,69 @@ public class Printing {
                 }
                 if (rtPrinter != null) {
                     rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                }
+                hideProgressDialog();
+            }
+        }).start();
+
+    }
+
+    void print_etiquette_code_barre(String barcodeContent, String produit, double prix_vente_ttc) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Impression...");
+
+                BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
+                try {
+                    int labelWidth = 80;
+                    int labelHeight = 40;
+
+                    CmdFactory tscFac = new TscFactory();
+                    Cmd tscCmd = tscFac.create();
+
+                    tscCmd.append(tscCmd.getHeaderCmd());
+                    CommonSetting commonSetting = new CommonSetting();
+                    commonSetting.setLableSizeBean(new LableSizeBean(labelWidth, labelHeight));
+                    commonSetting.setLabelGap(3);
+                    commonSetting.setPrintDirection(PrintDirection.NORMAL);
+                    tscCmd.append(tscCmd.getCommonSettingCmd(commonSetting));
+
+
+                    String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
+                    rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
+                    String prix_vente_str   =  new DecimalFormat("####0.00").format(prix_vente_ttc);
+                    String strPrintTxtPrix = TonyUtils.printText("20", "60", "TSS24.BF2", "0", "1", "1", prix_vente_str + ";");
+                    rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
+                    // String strPrint = TonyUtils.setPRINT("1", "1");
+                    // rtPrinter.writeMsg(strPrint.getBytes());
+
+                    // tscCmd.append(tscCmd.getLFCRCmd()); // one line space
+
+
+                    BarcodeSetting barcodeSetting = new BarcodeSetting();
+                    barcodeSetting.setNarrowInDot(2);//narrow bar setting, bar width
+                    barcodeSetting.setWideInDot(4);
+                    barcodeSetting.setHeightInDot(48);//bar height setting
+                    barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+                    barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
+                    int x = 20, y = 100;
+                    barcodeSetting.setPosition(new Position(x, y));
+
+
+
+                    byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
+                    tscCmd.append(barcodeCmd);
+
+                    tscCmd.append(tscCmd.getPrintCopies(1));
+                    tscCmd.append(tscCmd.getEndCmd());
+                    if (rtPrinter != null) {
+                        rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
+                    }
+                }catch (Exception e){
+                    e.getMessage();
                 }
                 hideProgressDialog();
             }

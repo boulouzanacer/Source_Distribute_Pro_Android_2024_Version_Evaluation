@@ -22,6 +22,7 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.fournisseur.ActivityFournisseurs;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterListClient;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterListFournisseur;
 import com.safesoft.proapp.distribute.databases.DATABASE;
@@ -54,6 +55,7 @@ public class FragmentSelectFournisseur {
     private AppCompatImageButton btn_scan;
     private AppCompatImageButton btn_cancel;
 
+    private Button add_fournisseur;
     //PopupWindow display method
 
     public void showDialogbox(Activity activity, Context context) {
@@ -105,6 +107,7 @@ public class FragmentSelectFournisseur {
 
 
         editsearch = (EditText) view.findViewById(R.id.search_field);
+        add_fournisseur = (Button) view.findViewById(R.id.add_fournisseur);
 
         btn_scan = view.findViewById(R.id.scan);
         btn_cancel = view.findViewById(R.id.cancel);
@@ -158,6 +161,22 @@ public class FragmentSelectFournisseur {
             dialog.dismiss();
         });
 
+
+        add_fournisseur.setOnClickListener(v -> {
+            /*if(bon1.blocage.equals("F")){
+                new SweetAlertDialog(ActivityEditSale.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+            Intent intentAddClient = new Intent(ActivityEditSale.this, ActivityNewClient.class);
+            startActivityForResult(intentAddClient, REQUEST_ACTIVITY_NEW_CLIENT);*/
+
+            FragmentNewEditFournisseur fragmentnewfournisseur = new FragmentNewEditFournisseur();
+            fragmentnewfournisseur.showDialogbox(this.activity, mcontext, "NEW_FOURNISSEUR", null);
+            dialog.dismiss();
+        });
     }
 
     private void setListview(String text_search, Boolean isScan) {

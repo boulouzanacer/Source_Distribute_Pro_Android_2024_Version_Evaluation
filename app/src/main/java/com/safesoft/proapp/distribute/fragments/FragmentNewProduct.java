@@ -31,6 +31,7 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
 import org.greenrobot.eventbus.EventBus;
@@ -84,7 +85,6 @@ public class FragmentNewProduct {
 
     RadioGroup radioGroup_mode_tarif;
     RadioButton selectedRadioButton;
-    private Context mContext;
 
     EventBus bus = EventBus.getDefault();
     Activity activity;
@@ -100,11 +100,11 @@ public class FragmentNewProduct {
     NumberFormat nf,nq;
     private Barcode barcodeResult;
 
+    private PostData_Params params;
     //PopupWindow display method
 
-    public void showDialogbox(Activity activity, Context context, String SOURCE_ACTIVITY, PostData_Client old_client) {
+    public void showDialogbox(Activity activity, String SOURCE_ACTIVITY, PostData_Client old_client) {
 
-        this.mContext = context;
         this.activity = activity;
         this.controller = new DATABASE(activity);
         this.old_client = old_client;
@@ -117,7 +117,7 @@ public class FragmentNewProduct {
         ((DecimalFormat) nq).applyPattern("####0.##");
 
 
-        SharedPreferences prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
+        SharedPreferences prefs = this.activity.getSharedPreferences(PREFS, MODE_PRIVATE);
         created_produit = new PostData_Produit();
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
@@ -241,51 +241,54 @@ public class FragmentNewProduct {
             }
         }*/
 
+        params = new PostData_Params();
+        params = controller.select_params_from_database("SELECT * FROM PARAMS");
 
-        txt_input_prix1_ht.setHint(prefs.getString("PV1_TITRE","Prix 1") + " (HT)");
-        txt_input_prix2_ht.setHint(prefs.getString("PV2_TITRE","Prix 2") + " (HT)");
-        txt_input_prix3_ht.setHint(prefs.getString("PV3_TITRE","Prix 3") + " (HT)");
-        txt_input_prix4_ht.setHint(prefs.getString("PV4_TITRE","Prix 4") + " (HT)");
-        txt_input_prix5_ht.setHint(prefs.getString("PV5_TITRE","Prix 5") + " (HT)");
-        txt_input_prix6_ht.setHint(prefs.getString("PV6_TITRE","Prix 6") + " (HT)");
+        txt_input_prix1_ht.setHint(params.pv1_titre + " (HT)");
+        txt_input_prix2_ht.setHint(params.pv2_titre + " (HT)");
+        txt_input_prix3_ht.setHint(params.pv3_titre + " (HT)");
+        txt_input_prix4_ht.setHint(params.pv4_titre + " (HT)");
+        txt_input_prix5_ht.setHint(params.pv5_titre + " (HT)");
+        txt_input_prix6_ht.setHint(params.pv6_titre + " (HT)");
 
-        txt_input_prix1_ttc.setHint(prefs.getString("PV1_TITRE","Prix 1") + " (TTC)");
-        txt_input_prix2_ttc.setHint(prefs.getString("PV2_TITRE","Prix 2") + " (TTC)");
-        txt_input_prix3_ttc.setHint(prefs.getString("PV3_TITRE","Prix 3") + " (TTC)");
-        txt_input_prix4_ttc.setHint(prefs.getString("PV4_TITRE","Prix 4") + " (TTC)");
-        txt_input_prix5_ttc.setHint(prefs.getString("PV5_TITRE","Prix 5") + " (TTC)");
-        txt_input_prix6_ttc.setHint(prefs.getString("PV6_TITRE","Prix 6") + " (TTC)");
+        txt_input_prix1_ttc.setHint(params.pv1_titre + " (TTC)");
+        txt_input_prix2_ttc.setHint(params.pv2_titre + " (TTC)");
+        txt_input_prix3_ttc.setHint(params.pv3_titre + " (TTC)");
+        txt_input_prix4_ttc.setHint(params.pv4_titre + " (TTC)");
+        txt_input_prix5_ttc.setHint(params.pv5_titre + " (TTC)");
+        txt_input_prix6_ttc.setHint(params.pv6_titre + " (TTC)");
 
 
-        if(prefs.getString("PRIX_2","").equals("1")){
+        if(params.prix_2 == 1){
             lnr_prix2.setVisibility(View.VISIBLE);
         }else{
             lnr_prix2.setVisibility(View.INVISIBLE);
         }
 
-        if(prefs.getString("PRIX_3","").equals("1")){
+        if(params.prix_3 == 1){
             lnr_prix3.setVisibility(View.VISIBLE);
         }else{
             lnr_prix3.setVisibility(View.INVISIBLE);
         }
 
-        if(prefs.getString("PRIX_4","").equals("1")){
+        if(params.prix_4 == 1){
             lnr_prix4.setVisibility(View.VISIBLE);
         }else{
             lnr_prix4.setVisibility(View.INVISIBLE);
         }
 
-        if(prefs.getString("PRIX_5","").equals("1")){
+        if(params.prix_5 == 1){
             lnr_prix5.setVisibility(View.VISIBLE);
         }else{
             lnr_prix5.setVisibility(View.INVISIBLE);
         }
 
-        if(prefs.getString("PRIX_6","").equals("1")){
+        if(params.prix_6 == 1){
             lnr_prix6.setVisibility(View.VISIBLE);
         }else{
             lnr_prix6.setVisibility(View.INVISIBLE);
         }
+
 
         if(prefs.getBoolean("AFFICHAGE_HT", false)){
             txt_input_prix_ht.setVisibility(View.VISIBLE);
@@ -397,41 +400,41 @@ public class FragmentNewProduct {
             }
 
             if (edt_prix1_ttc.getText().length() <= 0 ) {
-                edt_prix1_ttc.setError(prefs.getString("PV1_TITRE","Prix 1") + " (TTC) est obligatoire!!");
+                edt_prix1_ttc.setError(params.pv1_titre + " (TTC) est obligatoire!!");
                 hasError = true;
             }
 
-            if(prefs.getString("PRIX_2","").equals("1")){
+            if(params.prix_2 == 1){
                 if (edt_prix2_ttc.getText().length() <= 0 ) {
-                    edt_prix2_ttc.setError(prefs.getString("PV2_TITRE","Prix 2") + " (TTC) est obligatoire!!");
+                    edt_prix2_ttc.setError(params.pv2_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(prefs.getString("PRIX_3","").equals("1")){
+            if(params.prix_3 == 1){
                 if (edt_prix3_ttc.getText().length() <= 0 ) {
-                    edt_prix3_ttc.setError(prefs.getString("PV3_TITRE","Prix 3") + " (TTC) est obligatoire!!");
+                    edt_prix3_ttc.setError(params.pv3_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(prefs.getString("PRIX_4","").equals("1")){
+            if(params.prix_4 == 1){
                 if (edt_prix4_ttc.getText().length() <= 0 ) {
-                    edt_prix4_ttc.setError(prefs.getString("PV4_TITRE","Prix 4") + " (TTC) est obligatoire!!");
+                    edt_prix4_ttc.setError(params.pv4_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(prefs.getString("PRIX_5","").equals("1")){
+            if(params.prix_5 == 1){
                 if (edt_prix5_ttc.getText().length() <= 0 ) {
-                    edt_prix5_ttc.setError(prefs.getString("PV5_TITRE","Prix 5") + " (TTC) est obligatoire!!");
+                    edt_prix5_ttc.setError(params.pv5_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(prefs.getString("PRIX_6","").equals("1")){
+            if(params.prix_6 == 1){
                 if (edt_prix6_ttc.getText().length() <= 0 ) {
-                    edt_prix6_ttc.setError(prefs.getString("PV6_TITRE","Prix 6") + " (TTC) est obligatoire!!");
+                    edt_prix6_ttc.setError(params.pv6_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
@@ -453,35 +456,35 @@ public class FragmentNewProduct {
                     hasError = true;
                 }
 
-                if(prefs.getString("PRIX_2","").equals("1")){
+                if(params.prix_2 == 1){
                     if (edt_prix2_ht.getText().length() <= 0 ) {
                         edt_prix2_ht.setError("Prix 2 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(prefs.getString("PRIX_3","").equals("1")){
+                if(params.prix_3 == 1){
                     if (edt_prix3_ht.getText().length() <= 0 ) {
                         edt_prix3_ht.setError("Prix 3 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(prefs.getString("PRIX_4","").equals("1")){
+                if(params.prix_4 == 1){
                     if (edt_prix4_ht.getText().length() <= 0 ) {
                         edt_prix4_ht.setError("Prix 4 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(prefs.getString("PRIX_5","").equals("1")){
+                if(params.prix_5 == 1){
                     if (edt_prix5_ht.getText().length() <= 0 ) {
                         edt_prix5_ht.setError("Prix 5 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(prefs.getString("PRIX_6","").equals("1")){
+                if(params.prix_6 == 1){
                     if (edt_prix6_ht.getText().length() <= 0 ) {
                         edt_prix6_ht.setError("Prix 6 HT est obligatoire!!");
                         hasError = true;
@@ -507,60 +510,45 @@ public class FragmentNewProduct {
                 created_produit.isNew =  1;
 
                 created_produit.pv1_ht =  Double.parseDouble(edt_prix1_ht.getText().toString());
-                if(prefs.getString("PRIX_2","").equals("1")){
-                    created_produit.pv2_ht =  Double.parseDouble(edt_prix2_ht.getText().toString());
-                }else {
-                    created_produit.pv2_ht = 0.00;
-                }
-
-                if(prefs.getString("PRIX_3","").equals("1")){
-                    created_produit.pv3_ht =  Double.parseDouble(edt_prix3_ht.getText().toString());
-                }else {
-                    created_produit.pv3_ht = 0.00;
-                }
-
-                if(prefs.getString("PRIX_4","").equals("1")){
-                    created_produit.pv4_ht =  Double.parseDouble(edt_prix4_ht.getText().toString());
-                }else {
-                    created_produit.pv4_ht = 0.00;
-                }
-
-                if(prefs.getString("PRIX_5","").equals("1")){
-                    created_produit.pv5_ht =  Double.parseDouble(edt_prix5_ht.getText().toString());
-                }else {
-                    created_produit.pv5_ht = 0.00;
-                }
-
-                if(prefs.getString("PRIX_6","").equals("1")){
-                    created_produit.pv6_ht =  Double.parseDouble(edt_prix6_ht.getText().toString());
-                }else {
-                    created_produit.pv6_ht = 0.00;
-                }
-
                 created_produit.pv1_ttc =  Double.parseDouble(edt_prix1_ttc.getText().toString());
-                if(prefs.getString("PRIX_2","").equals("1")){
+
+                if(params.prix_2 == 1){
+                    created_produit.pv2_ht =  Double.parseDouble(edt_prix2_ht.getText().toString());
                     created_produit.pv2_ttc =  Double.parseDouble(edt_prix2_ttc.getText().toString());
                 }else {
+                    created_produit.pv2_ht = 0.00;
                     created_produit.pv2_ttc = 0.00;
                 }
-                if(prefs.getString("PRIX_3","").equals("1")){
+
+                if(params.prix_3 == 1){
+                    created_produit.pv3_ht =  Double.parseDouble(edt_prix3_ht.getText().toString());
                     created_produit.pv3_ttc =  Double.parseDouble(edt_prix3_ttc.getText().toString());
                 }else {
+                    created_produit.pv3_ht = 0.00;
                     created_produit.pv3_ttc = 0.00;
                 }
-                if(prefs.getString("PRIX_4","").equals("1")){
+
+                if(params.prix_4 == 1){
+                    created_produit.pv4_ht =  Double.parseDouble(edt_prix4_ht.getText().toString());
                     created_produit.pv4_ttc =  Double.parseDouble(edt_prix4_ttc.getText().toString());
                 }else {
+                    created_produit.pv4_ht = 0.00;
                     created_produit.pv4_ttc = 0.00;
                 }
-                if(prefs.getString("PRIX_5","").equals("1")){
+
+                if(params.prix_5 == 1){
+                    created_produit.pv5_ht =  Double.parseDouble(edt_prix5_ht.getText().toString());
                     created_produit.pv5_ttc =  Double.parseDouble(edt_prix5_ttc.getText().toString());
                 }else {
+                    created_produit.pv5_ht = 0.00;
                     created_produit.pv5_ttc = 0.00;
                 }
-                if(prefs.getString("PRIX_6","").equals("1")){
+
+                if(params.prix_6 == 1){
+                    created_produit.pv6_ht =  Double.parseDouble(edt_prix6_ht.getText().toString());
                     created_produit.pv6_ttc =  Double.parseDouble(edt_prix6_ttc.getText().toString());
                 }else {
+                    created_produit.pv6_ht = 0.00;
                     created_produit.pv6_ttc = 0.00;
                 }
 

@@ -145,7 +145,16 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         });
 
 
-        if(item.blocage.equals("F")){
+        if (item.montant_bon < 0) {
+            holder.blocage.setText("Retour")
+                    .setTextColor(Color.WHITE)
+                    .setSlantedBackgroundColor(Color.MAGENTA)
+                    .setTextSize(21)
+                    .setSlantedLength(80)
+                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+
+            holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
+        }else if(item.blocage.equals("F")){
             holder.blocage.setText("Validé")
                     .setTextColor(Color.WHITE)
                     .setSlantedBackgroundColor(Color.GREEN)
@@ -155,7 +164,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
 
             holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
 
-        }else {
+        } else {
             holder.blocage.setText("En attente")
                     .setTextColor(Color.WHITE)
                     .setSlantedBackgroundColor(Color.RED)

@@ -25,6 +25,7 @@ import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -116,42 +117,43 @@ public class FragmentNewEditClient {
         RadioButton rb5 =  dialogview.findViewById(R.id.rb_5);
         RadioButton rb6 =  dialogview.findViewById(R.id.rb_6);
 
-
+        PostData_Params params = new PostData_Params();
+        params = controller.select_params_from_database("SELECT * FROM PARAMS");
 
         SharedPreferences prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        rb1.setText(prefs.getString("PV1_TITRE","Tarif 1"));
-        rb2.setText(prefs.getString("PV2_TITRE","Tarif 2"));
-        rb3.setText(prefs.getString("PV3_TITRE","Tarif 3"));
-        rb4.setText(prefs.getString("PV4_TITRE","Tarif 4"));
-        rb5.setText(prefs.getString("PV5_TITRE","Tarif 5"));
-        rb6.setText(prefs.getString("PV6_TITRE","Tarif 6"));
+        rb1.setText(params.pv1_titre);
+        rb2.setText(params.pv2_titre);
+        rb3.setText(params.pv3_titre);
+        rb4.setText(params.pv4_titre);
+        rb5.setText(params.pv5_titre);
+        rb6.setText(params.pv6_titre);
 
-        if(prefs.getString("PRIX_2","").equals("1")){
+        if(params.prix_2 == 1){
             rb2.setVisibility(View.VISIBLE);
         }else{
             rb2.setVisibility(View.GONE);
         }
 
-        if(prefs.getString("PRIX_3","").equals("1")){
+        if(params.prix_3 == 1){
             rb3.setVisibility(View.VISIBLE);
         }else{
             rb3.setVisibility(View.GONE);
         }
 
-        if(prefs.getString("PRIX_4","").equals("1")){
+        if(params.prix_4 == 1){
             rb4.setVisibility(View.VISIBLE);
         }else{
             rb4.setVisibility(View.GONE);
         }
 
-        if(prefs.getString("PRIX_5","").equals("1")){
+        if(params.prix_5 == 1){
             rb5.setVisibility(View.VISIBLE);
         }else{
             rb5.setVisibility(View.GONE);
         }
 
-        if(prefs.getString("PRIX_6","").equals("1")){
+        if(params.prix_6 == 1){
             rb6.setVisibility(View.VISIBLE);
         }else{
             rb6.setVisibility(View.GONE);

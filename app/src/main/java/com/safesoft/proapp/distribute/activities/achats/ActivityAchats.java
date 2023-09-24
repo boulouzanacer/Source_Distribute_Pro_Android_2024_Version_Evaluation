@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterAchat1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
@@ -32,6 +33,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivityAchats extends AppCompatActivity implements RecyclerAdapterAchat1.ItemClick, RecyclerAdapterAchat1.ItemLongClick {
 
@@ -75,6 +78,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     private void initViews() {
 
         recyclerView = findViewById(R.id.recycler_view_vente);
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
     }
 
     @Override
@@ -83,7 +87,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         setRecycle();
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        printer_mode_integrate = Objects.equals(prefs1.getString("PRINTER", "INTEGRATE"), "INTEGRATE");
+        printer_mode_integrate = Objects.equals(prefs1.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
@@ -163,65 +167,78 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     public void onLongClick(View v, final int position) {
 
         if (achat1s.get(position).blocage.equals("F")) {
-            final CharSequence[] items = {"Modifier", "Supprimer", "Imprimer"};
+            final CharSequence[] items = {"Supprimer", "Imprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
-                    case 0:
-                        if(!SOURCE_EXPORT.equals("EXPORTED")){
+                  /*  case 0 -> {
+                        if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
+                            if (!SOURCE_EXPORT.equals("EXPORTED")) {
+                                new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.NORMAL_TYPE)
+                                        .setTitleText("Bon d'achat")
+                                        .setContentText("Voulez-vous vraiment modifier ce bon ?!")
+                                        .setCancelText("Non")
+                                        .setConfirmText("Modifier")
+                                        .showCancelButton(true)
+                                        .setCancelClickListener(Dialog::dismiss)
+                                        .setConfirmClickListener(sDialog -> {
+
+                                            Sound(R.raw.beep);
+
+                                            Intent editIntent = new Intent(ActivityAchats.this, ActivityAchat.class);
+                                            editIntent.putExtra("NUM_BON", achat1s.get(position).num_bon);
+                                            editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ACHAT");
+                                            editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
+                                            startActivity(editIntent);
+                                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                            sDialog.dismiss();
+                                        })
+                                        .show();
+                            } else {
+                                new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText("Information!")
+                                        .setContentText("Ce bon est déja exporté")
+                                        .show();
+                            }
+                        }else{
+                            new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention!!")
+                                    .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
+                                    .show();
+                        }
+
+                    }*/
+                    case 0 ->{
+                        if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
                             new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Bon d'achat")
-                                    .setContentText("Voulez-vous vraiment modifier ce bon ?!")
-                                    .setCancelText("Non")
-                                    .setConfirmText("Modifier")
+                                    .setTitleText("Suppression")
+                                    .setContentText("Voulez-vous vraiment supprimer le bon " + achat1s.get(position).num_bon + " ?!")
+                                    .setCancelText("Anuuler")
+                                    .setConfirmText("Supprimer")
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
 
-                                        Sound(R.raw.beep);
+                                        controller.delete_bon_achat(false, achat1s.get(position));
+                                        setRecycle();
 
-                                        Intent editIntent = new Intent(ActivityAchats.this, ActivitySale.class);
-                                        editIntent.putExtra("NUM_BON", achat1s.get(position).num_bon);
-                                        editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ACHAT");
-                                        editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-                                        startActivity(editIntent);
-                                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                         sDialog.dismiss();
+
                                     })
                                     .show();
                         }else{
                             new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Ce bon est déja exporté")
+                                    .setTitleText("Attention!!")
+                                    .setContentText("Vous n'avez pas l'autorisation de supprimer, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
                                     .show();
                         }
+                    }
 
-                        break;
-                    case 1:
-                        new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Suppression")
-                                .setContentText("Voulez-vous vraiment supprimer le bon " + achat1s.get(position).num_bon + " ?!")
-                                .setCancelText("Anuuler")
-                                .setConfirmText("Supprimer")
-                                .showCancelButton(true)
-                                .setCancelClickListener(Dialog::dismiss)
-                                .setConfirmClickListener(sDialog -> {
-
-                                    controller.delete_bon_achat(false, achat1s.get(position));
-                                    setRecycle();
-
-                                    sDialog.dismiss();
-
-                                })
-                                .show();
-
-                        break;
-                    case 2:
-
-                        if(!achat1s.get(position).blocage.equals("F")){
+                    case 1 -> {
+                        if (!achat1s.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Information!")
                                     .setContentText("Ce bon n'est pas encore validé")
@@ -230,8 +247,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                         }
                         Activity bactivity;
                         bactivity = ActivityAchats.this;
-
-                        final_panier =  controller.select_all_achat2_from_database("" +
+                        final_panier = controller.select_all_achat2_from_database("" +
                                 "SELECT " +
                                 "ACHAT2.RECORDID, " +
                                 "ACHAT2.CODE_BARRE, " +
@@ -248,16 +264,14 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                                 "PRODUIT.STOCK " +
                                 "FROM ACHAT2 " +
                                 "LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                                "WHERE ACHAT2.NUM_BON = '" + achat1s.get(position).num_bon + "'" );
-
-
+                                "WHERE ACHAT2.NUM_BON = '" + achat1s.get(position).num_bon + "'");
                         Printing printer = new Printing();
                         try {
                             printer.start_print_bon(bactivity, "ACHAT", final_panier, null, achat1s.get(position));
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                        break;
+                    }
                 }
             });
             builder.show();
@@ -288,8 +302,6 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
             });
             builder.show();
         }
-
-
     }
 
 
@@ -302,6 +314,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         // return true so that the menu pop up is opened
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -317,6 +330,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onBackPressed() {
         Sound(R.raw.back);
@@ -324,9 +338,11 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+
     public void Sound(int SourceSound) {
         MediaPlayer mp = MediaPlayer.create(this, SourceSound);
         mp.start();
     }
+
 
 }

@@ -294,7 +294,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         } else if (item.getItemId() == R.id.new_product) {
 
             FragmentNewProduct fragmentnewproduct = new FragmentNewProduct();
-            fragmentnewproduct.showDialogbox(ActivityProduits.this, getBaseContext(), "NEW_PRODUCT", null);
+            fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT", null);
         }
         return super.onOptionsItemSelected(item);
     }

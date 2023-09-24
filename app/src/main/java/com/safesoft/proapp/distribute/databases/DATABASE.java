@@ -11,11 +11,13 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -23,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.safesoft.proapp.distribute.postData.PostData_Famille;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Position;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
@@ -292,6 +295,25 @@ public class DATABASE extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS ROUTING(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_CLIENT VARCHAR UNIQUE, CLIENT VARCHAR , TEL VARCHAR, ADRESSE VARCHAR, LATITUDE REAL, LONGITUDE REAL, STATE INTEGER DEFAULT 0)");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS PARAMS(" +
+                "RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "PV1_TITRE VARCHAR, " +
+                "PRIX_2 INTEGER , " +
+                "PV2_TITRE VARCHAR, " +
+                "PRIX_3 INTEGER , " +
+                "PV3_TITRE VARCHAR, " +
+                "PRIX_4 INTEGER , " +
+                "PV4_TITRE VARCHAR, " +
+                "PRIX_5 INTEGER , " +
+                "PV5_TITRE VARCHAR, " +
+                "PRIX_6 INTEGER , " +
+                "PV6_TITRE VARCHAR , " +
+                "FTP_SERVER VARCHAR , " +
+                "FTP_PORT VARCHAR , " +
+                "FTP_USER VARCHAR , " +
+                "FTP_PASS VARCHAR , " +
+                "FTP_IMP VARCHAR , " +
+                "FTP_EXP VARCHAR)");
     }
 
     @Override
@@ -384,6 +406,44 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
+    public void insert_into_params(PostData_Params params){
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+
+            db.delete("PARAMS", null, null);
+
+            try {
+
+                ContentValues values = new ContentValues();
+                values.put("PV1_TITRE", params.pv1_titre);
+                values.put("PRIX_2", params.prix_2);
+                values.put("PV2_TITRE", params.pv2_titre);
+                values.put("PRIX_3", params.prix_3);
+                values.put("PV3_TITRE", params.pv3_titre);
+                values.put("PRIX_4", params.prix_4);
+                values.put("PV4_TITRE", params.pv4_titre);
+                values.put("PRIX_5", params.prix_5);
+                values.put("PV5_TITRE", params.pv5_titre);
+                values.put("PRIX_6", params.prix_6);
+                values.put("PV6_TITRE", params.pv6_titre);
+                values.put("FTP_SERVER", params.ftp_server);
+                values.put("FTP_PORT", params.ftp_port);
+                values.put("FTP_USER", params.ftp_user);
+                values.put("FTP_PASS", params.ftp_pass);
+                values.put("FTP_IMP", params.ftp_imp);
+                values.put("FTP_EXP", params.ftp_exp);
+
+                db.insert("PARAMS", null, values);
+
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }catch (SQLiteDatabaseLockedException sqlilock){
+            Log.v("TRACKKK", Objects.requireNonNull(sqlilock.getMessage()));
+        }
+    }
     public boolean insert_into_fournisseur(PostData_Fournisseur fournisseur){
         boolean executed = false;
         try {
@@ -916,8 +976,7 @@ public class DATABASE extends SQLiteOpenHelper {
         return executed;
     }
     //================================== UPDATE TABLE (Inventaires1) =======================================
-    public boolean update_versement_exported(String recordid){
-        boolean executed = false;
+    public void update_versement_exported(String recordid){
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -930,20 +989,17 @@ public class DATABASE extends SQLiteOpenHelper {
                 db.update("Carnet_c", args, selection, selectionArgs);
 
                 db.setTransactionSuccessful();
-                executed =  true;
             } finally {
                 db.endTransaction();
             }
         }catch (SQLiteDatabaseLockedException sqlilock){
             Log.v("TRACKKK", sqlilock.getMessage());
         }
-        return executed;
     }
 
 
     //================================== UPDATE TABLE (Inventaires1) =======================================
-    public boolean delete_Codebarre(String code_barre){
-        boolean executed = false;
+    public void delete_Codebarre(String code_barre){
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -954,14 +1010,46 @@ public class DATABASE extends SQLiteOpenHelper {
                 db.delete("CODEBARRE", selection, selectionArgs);
 
                 db.setTransactionSuccessful();
-                executed =  true;
             } finally {
                 db.endTransaction();
             }
         }catch (SQLiteDatabaseLockedException sqlilock){
             Log.v("TRACKKK", sqlilock.getMessage());
         }
-        return executed;
+    }
+
+
+    @SuppressLint("Range")
+    public PostData_Params select_params_from_database(String querry){
+        PostData_Params params = new PostData_Params();;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(querry, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+                params.pv1_titre = cursor.getString(cursor.getColumnIndex("PV1_TITRE"));
+                params.prix_2 = cursor.getInt(cursor.getColumnIndex("PRIX_2"));
+                params.pv2_titre = cursor.getString(cursor.getColumnIndex("PV2_TITRE"));
+                params.prix_3 = cursor.getInt(cursor.getColumnIndex("PRIX_3"));
+                params.pv3_titre = cursor.getString(cursor.getColumnIndex("PV3_TITRE"));
+                params.prix_4 = cursor.getInt(cursor.getColumnIndex("PRIX_4"));
+                params.pv4_titre = cursor.getString(cursor.getColumnIndex("PV4_TITRE"));
+                params.prix_5 = cursor.getInt(cursor.getColumnIndex("PRIX_5"));
+                params.pv5_titre = cursor.getString(cursor.getColumnIndex("PV5_TITRE"));
+                params.prix_6 = cursor.getInt(cursor.getColumnIndex("PRIX_6"));
+                params.pv6_titre = cursor.getString(cursor.getColumnIndex("PV6_TITRE"));
+                params.ftp_server = cursor.getString(cursor.getColumnIndex("FTP_SERVER"));
+                params.ftp_port = cursor.getString(cursor.getColumnIndex("FTP_PORT"));
+                params.ftp_user = cursor.getString(cursor.getColumnIndex("FTP_USER"));
+                params.ftp_pass = cursor.getString(cursor.getColumnIndex("FTP_PASS"));
+                params.ftp_imp = cursor.getString(cursor.getColumnIndex("FTP_IMP"));
+                params.ftp_exp = cursor.getString(cursor.getColumnIndex("FTP_EXP"));
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return params;
     }
 
 
@@ -990,6 +1078,7 @@ public class DATABASE extends SQLiteOpenHelper {
         cursor.close();
         return transfer1s;
     }
+
     @SuppressLint("Range")
     public ArrayList<PostData_Position> select_position_from_database(String querry){
         ArrayList<PostData_Position> transfer1s = new ArrayList<PostData_Position>();
@@ -1056,9 +1145,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 fournisseur.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
                 fournisseur.tel = cursor.getString(cursor.getColumnIndex("TEL"));
                 fournisseur.rc = cursor.getString(cursor.getColumnIndex("RC"));
-                fournisseur.tel = cursor.getString(cursor.getColumnIndex("IFISCAL"));
-                fournisseur.tel = cursor.getString(cursor.getColumnIndex("AI"));
-                fournisseur.tel = cursor.getString(cursor.getColumnIndex("NIS"));
+                fournisseur.ifiscal = cursor.getString(cursor.getColumnIndex("IFISCAL"));
+                fournisseur.ai = cursor.getString(cursor.getColumnIndex("AI"));
+                fournisseur.nis = cursor.getString(cursor.getColumnIndex("NIS"));
 
                 fournisseur.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
                 fournisseur.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
@@ -4049,6 +4138,70 @@ public class DATABASE extends SQLiteOpenHelper {
         }
 
         return executed;
+    }
+
+    public boolean backup(String outFileName) {
+
+        //database path
+        final String inFileName = mContext.getDatabasePath(DATABASE_NAME).toString();
+
+        try {
+
+            File dbFile = new File(inFileName);
+            FileInputStream fis = new FileInputStream(dbFile);
+
+            // Open the empty db as the output stream
+            OutputStream output = new FileOutputStream(outFileName);
+
+            // Transfer bytes from the input file to the output file
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+
+            // Close the streams
+            output.flush();
+            output.close();
+            fis.close();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean importDB(String inFileName) {
+
+        final String outFileName = mContext.getDatabasePath(DATABASE_NAME).toString();
+
+        try {
+
+            File dbFile = new File(inFileName);
+            FileInputStream fis = new FileInputStream(dbFile);
+
+            // Open the empty db as the output stream
+            OutputStream output = new FileOutputStream(outFileName);
+
+            // Transfer bytes from the input file to the output file
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+
+            // Close the streams
+            output.flush();
+            output.close();
+            fis.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -11,6 +11,8 @@
     <include layout="@layout/sub_layout_ht" />
     <include layout="@layout/sub_layout_pa" />
     <include layout="@layout/sub_layout_stock_moins" />
+    <include layout="@layout/sub_layout_remise" />
+    <include layout="@layout/sub_layout_modifier_bon" />
     <include layout="@layout/sub_layout_edit_prix" />
     <include layout="@layout/sub_layout_famille" />
     <include layout="@layout/sub_layout_filtre" />

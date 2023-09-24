@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
@@ -30,6 +31,9 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.fournisseur.ActivityFournisseurs;
+import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
@@ -74,6 +78,7 @@ public class FragmentSelectProduct {
     AutoCompleteTextView famille_dropdown;
     private String selected_famile = "Toutes";
     String SOURCE;
+    private Button add_product;
 
     //PopupWindow display method
     public void showDialogbox(Activity activity, Context context,  String mode_tariff_client, String SOURCE) {
@@ -136,6 +141,8 @@ public class FragmentSelectProduct {
         editsearch = (EditText) view.findViewById(R.id.search_field);
         btn_scan = view.findViewById(R.id.scan);
         btn_cancel = view.findViewById(R.id.cancel);
+
+        add_product = (Button) view.findViewById(R.id.add_product);
 
         ArrayList<PostData_Bon2> final_panier = new ArrayList<>();
         ArrayList<PostData_Produit> temp_produits = new ArrayList<>();
@@ -202,6 +209,22 @@ public class FragmentSelectProduct {
 
         });
         btn_cancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        add_product.setOnClickListener(v -> {
+            /*if(bon1.blocage.equals("F")){
+                new SweetAlertDialog(ActivityEditSale.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+            Intent intentAddClient = new Intent(ActivityEditSale.this, ActivityNewClient.class);
+            startActivityForResult(intentAddClient, REQUEST_ACTIVITY_NEW_CLIENT);*/
+
+            FragmentNewProduct fragmentnewproduct = new FragmentNewProduct();
+            fragmentnewproduct.showDialogbox(this.activity, "NEW_PRODUCT", null);
             dialog.dismiss();
         });
 

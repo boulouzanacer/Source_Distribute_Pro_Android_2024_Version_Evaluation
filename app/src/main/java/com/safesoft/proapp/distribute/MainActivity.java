@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbardrawer);
-    toolbar.setSubtitle("Version : 30.08.23");
+    toolbar.setSubtitle("Version : 20.09.23");
     setSupportActionBar(toolbar);
 
     objFrgment = new FragmentMain();
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
   protected void onStart() {
     super.onStart();
 
-    BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
+    BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
     printerFactory = new ThermalPrinterFactory();
     rtPrinter = printerFactory.create();
 

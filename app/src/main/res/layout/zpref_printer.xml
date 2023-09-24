@@ -37,7 +37,7 @@
         tools:ignore="RtlSymmetry">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fadingEdge="horizontal"
             android:textColor="@color/black"
@@ -54,14 +54,14 @@
             <RadioButton
                 android:id="@+id/rb_connect_bluetooth"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Bluetooth" />
 
             <RadioButton
                 android:id="@+id/rb_connect_wifi"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="WiFi" />
@@ -69,7 +69,7 @@
             <RadioButton
                 android:id="@+id/rb_connect_usb"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="USB"
                 android:visibility="visible" />
@@ -77,10 +77,45 @@
             <RadioButton
                 android:id="@+id/rb_connect_com"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="COM"
                 android:visibility="visible" />
+
+        </com.safesoft.proapp.distribute.view.FlowRadioGroup>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadingEdge="horizontal"
+            android:textColor="@color/black"
+            android:text="@string/model_imprimente"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+        <com.safesoft.proapp.distribute.view.FlowRadioGroup
+            android:id="@+id/rg_type"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_type_ticket"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Impriment ticket " />
+
+            <RadioButton
+                android:id="@+id/rb_type_codebarre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Impriment codebarre " />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 

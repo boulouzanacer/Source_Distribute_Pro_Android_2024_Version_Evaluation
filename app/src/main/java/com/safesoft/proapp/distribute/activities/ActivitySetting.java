@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
+import static com.rt.printerlibrary.enumerate.BarcodeType.CODE128;
+
 import android.Manifest;
 //import android.content.Context;
 import android.annotation.SuppressLint;
@@ -29,6 +31,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 //import android.telephony.TelephonyManager;
+import android.os.Environment;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -64,13 +67,21 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mhadikz.toaster.Toaster;
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean;
+import com.rt.printerlibrary.bean.LableSizeBean;
+import com.rt.printerlibrary.bean.Position;
 import com.rt.printerlibrary.bean.UsbConfigBean;
 import com.rt.printerlibrary.bean.WiFiConfigBean;
 import com.rt.printerlibrary.cmd.Cmd;
 import com.rt.printerlibrary.cmd.EscFactory;
+import com.rt.printerlibrary.cmd.TscFactory;
 import com.rt.printerlibrary.connect.PrinterInterface;
+import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
 import com.rt.printerlibrary.enumerate.CommonEnum;
 import com.rt.printerlibrary.enumerate.ConnectStateEnum;
+import com.rt.printerlibrary.enumerate.PrintDirection;
+import com.rt.printerlibrary.enumerate.PrintRotation;
+import com.rt.printerlibrary.enumerate.SettingEnum;
+import com.rt.printerlibrary.exception.SdkException;
 import com.rt.printerlibrary.factory.cmd.CmdFactory;
 import com.rt.printerlibrary.factory.connect.BluetoothFactory;
 import com.rt.printerlibrary.factory.connect.PIFactory;
@@ -81,6 +92,7 @@ import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory;
 import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
+import com.rt.printerlibrary.setting.BarcodeSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
 import com.safesoft.proapp.distribute.MainActivity;
@@ -88,15 +100,20 @@ import com.safesoft.proapp.distribute.activation.NetClient;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.databases.backup.LocalBackup;
 import com.safesoft.proapp.distribute.dialog.BluetoothDeviceChooseDialog;
 import com.safesoft.proapp.distribute.dialog.UsbDeviceChooseDialog;
 import com.safesoft.proapp.distribute.fragments.PasswordResetDialogFragment;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 import com.safesoft.proapp.distribute.utils.SPUtils;
 import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
+import com.safesoft.proapp.distribute.utils.TonyUtils;
 import com.safesoft.proapp.distribute.view.FlowRadioGroup;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -140,13 +157,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private String WIFI_VALUE_PORT= "9100";
     //////////////////////// SharedPreferences /////////////////////
 
-
-
     private Boolean isRunning = false;
     private String username;
     private String password;
 
     private FlowRadioGroup rg_connect;
+    private FlowRadioGroup rg_type;
     private Button btn_disConnect, btn_connect;
     private TextView tv_device_selected;
     private Button btn_connected_list;
@@ -173,10 +189,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     @BaseEnum.ConnectType
     private int checkedConType = BaseEnum.CON_WIFI;
+    private int checkedImpType = BaseEnum.IMP_TYPE_TICKET;
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
-
-
 
     private final String SP_KEY_IP = "ip";
     private final String SP_KEY_PORT = "port";
@@ -187,6 +202,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private final List<String> NO_PERMISSION = new ArrayList<String>();
     private static final int REQUEST_CAMERA = 0;
+    private DATABASE controller;
+    private PostData_Params params;
+    private LocalBackup localBackup;
+
 
     private void CheckAllPermission() {
         NO_PERMISSION.clear();
@@ -211,6 +230,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true); //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Parametres");
+
+        controller = new DATABASE(this);
+        localBackup = new LocalBackup(this);
+
+        params = new PostData_Params();
+        try {
+            params = controller.select_params_from_database("SELECT * FROM PARAMS");
+        }catch (Exception e){
+
+        }
+
 
         initView();
         init();
@@ -368,6 +398,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_divers.setVisibility(View.GONE);
             }
         });
+
         bt11.setOnClickListener(view -> {
 
             if (param_reset.isShown())
@@ -462,23 +493,23 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
         nom_serveur_ftp = findViewById(R.id.serveur_ftp);
-        nom_serveur_ftp.setText(prefs.getString("SERVEUR_FTP", ""));
+
 
         num_port_ftp = findViewById(R.id.port_ftp);
-        num_port_ftp.setText(prefs.getString("PORT_FTP", "21"));
-
         nom_utilisateur_ftp = findViewById(R.id.utilisateur_ftp);
-        nom_utilisateur_ftp.setText(prefs.getString("USER_FTP", ""));
-
         password_ftp = findViewById(R.id.pwd_ftp);
-        password_ftp.setText(prefs.getString("PASSWORD_FTP", ""));
-
         ch_exp_ftp = findViewById(R.id.exp_ftp);
-        ch_exp_ftp.setText(prefs.getString("EXP_FTP", "IMP"));
-
         ch_imp_ftp = findViewById(R.id.imp_ftp);
-        ch_imp_ftp.setText(prefs.getString("IMP_FTP", "EXP"));
 
+
+        if(params != null){
+            nom_serveur_ftp.setText(params.ftp_server);
+            num_port_ftp.setText(params.ftp_port);
+            nom_utilisateur_ftp.setText(params.ftp_user);
+            password_ftp.setText(params.ftp_pass);
+            ch_exp_ftp.setText(params.ftp_imp);
+            ch_imp_ftp.setText(params.ftp_exp);
+        }
 
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -486,12 +517,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
 
         rg_connect = findViewById(R.id.rg_connect);
+        rg_type = findViewById(R.id.rg_type);
         btn_connect = findViewById(R.id.btn_connect);
         btn_disConnect = findViewById(R.id.btn_disConnect);
         tv_device_selected = findViewById(R.id.tv_device_selected);
         btn_connected_list = findViewById(R.id.btn_connected_list);
         pb_connect = findViewById(R.id.pb_connect);
-        rg_connect = findViewById(R.id.rg_connect);
         btn_test_impression = findViewById(R.id.btn_test);
 
 
@@ -628,6 +659,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_stock_moins = findViewById(R.id.switch_stock_moins);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_remise = findViewById(R.id.switch_remise);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_modifier_bon = findViewById(R.id.switch_modifier_bon);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_edit_prix = findViewById(R.id.switch_edit_prix);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_famille = findViewById(R.id.switch_famille);
@@ -645,6 +680,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
         switch_pa_ht.setChecked(prefs.getBoolean("AFFICHAGE_PA_HT", false));
         switch_stock_moins.setChecked(prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false));
+        switch_remise.setChecked(prefs.getBoolean("AFFICHAGE_REMISE", true));
+        switch_modifier_bon.setChecked(prefs.getBoolean("AUTORISE_MODIFY_BON", true));
         switch_edit_prix.setChecked(prefs.getBoolean("EDIT_PRICE", false));
         switch_famille.setChecked(prefs.getBoolean("MODE_FAMILLE", false));
         switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
@@ -671,6 +708,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_stock_moins.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("AFFICHAGE_STOCK_MOINS", isChecked);
+            editor.apply();
+        });
+
+        switch_remise.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("AFFICHAGE_REMISE", isChecked);
+            editor.apply();
+        });
+
+        switch_modifier_bon.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("AUTORISE_MODIFY_BON", isChecked);
             editor.apply();
         });
 
@@ -702,8 +751,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         String img_str= prefs.getString("COMPANY_LOGO", "");
         if (!img_str.equals("")){
             //decode string to image
-            String base = img_str;
-            byte[] imageAsBytes = Base64.decode(base.getBytes(), Base64.DEFAULT);
+            byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
             company_logo.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length) );
            // company_logo.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length) );
         }
@@ -712,7 +760,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     public void init() {
 
-        BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
+        BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
         printerFactory = new ThermalPrinterFactory();
         rtPrinter = printerFactory.create();
        // rtPrinter.setPrinterInterface(curPrinterInterface);
@@ -737,7 +785,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         radioButtonCheckListener();//single button listener
         // Shared preference
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if (Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")) {
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
             rg_connect.check(R.id.rb_connect_bluetooth);
             tv_device_selected.setText(prefs.getString("PRINTER_NAME", "Aucune imprimante"));
             if(Objects.equals(prefs.getString("PRINTER_NAME", "Aucune imprimante"), "Aucune imprimante")){
@@ -746,7 +794,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
             }
 
-        } else if (Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")) {
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
             rg_connect.check(R.id.rb_connect_wifi);
             WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
             WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
@@ -756,12 +804,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }else{
                 tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
             }
-        }else if (Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "USB")) {
+        }else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "USB")) {
             rg_connect.check(R.id.rb_connect_usb);
-        }else if (Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "COM")) {
+        }else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "COM")) {
             rg_connect.check(R.id.rb_connect_com);
         }
 
+        if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_TICKET")) {
+            rg_type.check(R.id.rb_type_ticket);
+        }else if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_CODEBARRE")) {
+            rg_type.check(R.id.rb_type_codebarre);
+        }
 
     }
 
@@ -772,19 +825,29 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                // doDisConnect();
                 switch (i) {
-                    case R.id.rb_connect_wifi://WiFi
-                        checkedConType = BaseEnum.CON_WIFI;
-                        break;
-                    case R.id.rb_connect_bluetooth://bluetooth
-                        checkedConType = BaseEnum.CON_BLUETOOTH;
-                        break;
-                    case R.id.rb_connect_usb://usb
-                        checkedConType = BaseEnum.CON_USB;
-                        break;
-                    case R.id.rb_connect_com://串口-AP02
-                        checkedConType = BaseEnum.CON_COM;
-                        break;
+                    case R.id.rb_connect_wifi ->//WiFi
+                            checkedConType = BaseEnum.CON_WIFI;
+                    case R.id.rb_connect_bluetooth ->//bluetooth
+                            checkedConType = BaseEnum.CON_BLUETOOTH;
+                    case R.id.rb_connect_usb ->//usb
+                            checkedConType = BaseEnum.CON_USB;
+                    case R.id.rb_connect_com ->//串口-AP02
+                            checkedConType = BaseEnum.CON_COM;
                 }
+            }
+        });
+
+        rg_type.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                // doDisConnect();
+                switch (i) {
+                    case R.id.rb_type_ticket ->//Ticket
+                            checkedImpType = BaseEnum.IMP_TYPE_TICKET;
+                    case R.id.rb_type_codebarre ->//codebarre
+                            checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
+                }
+                saveConfigImpType(checkedImpType);
             }
         });
     }
@@ -812,6 +875,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     textPrint();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
+                } catch (SdkException e) {
+                    throw new RuntimeException(e);
                 }
                 break;
             default:
@@ -830,7 +895,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         tv_device_selected.setText(printerInterface.getConfigObject().toString());
                         tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
                         setPrintEnable(true);
-                        saveConfigInsharedpref(checkedConType);
+                        saveConfigConx(checkedConType);
                         break;
                     case CommonEnum.CONNECT_STATE_INTERRUPTED:
 
@@ -851,27 +916,40 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     }
 
 
-    private void saveConfigInsharedpref(int conType){
+    private void saveConfigConx(int conType){
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         switch (conType) {
-            case BaseEnum.CON_WIFI://WiFi
-                editor.putString("PRINTER", "WIFI");
+            case BaseEnum.CON_WIFI -> {//WiFi
+                editor.putString("PRINTER_CONX", "WIFI");
                 editor.putString("PRINTER_IP", WIFI_VALUE_IP);
                 editor.putString("PRINTER_PORT", WIFI_VALUE_PORT);
-                break;
-            case BaseEnum.CON_BLUETOOTH://bluetooth
-                editor.putString("PRINTER", "BLUETOOTH");
+            }
+            case BaseEnum.CON_BLUETOOTH -> {//bluetooth
+                editor.putString("PRINTER_CONX", "BLUETOOTH");
                 editor.putString("PRINTER_MAC", BT_VALUE_MAC);
                 editor.putString("PRINTER_NAME", BT_VALUE_NAME);
-                break;
-            case BaseEnum.CON_USB://usb
-                editor.putString("PRINTER", "USB");
-                //editor.putString("PRINTER_MAC", "USB");
-                break;
-            case BaseEnum.CON_COM://串口-AP02
-                editor.putString("PRINTER", "COM");
-                //editor.putString("PRINTER_MAC", "COM");
-                break;
+            }
+            case BaseEnum.CON_USB ->//usb
+                    editor.putString("PRINTER_CONX", "USB");
+
+            //editor.putString("PRINTER_MAC", "USB");
+            case BaseEnum.CON_COM ->//串口-AP02
+                    editor.putString("PRINTER_CONX", "COM");
+
+            //editor.putString("PRINTER_MAC", "COM");
+        }
+        editor.apply();
+    }
+
+    private void saveConfigImpType(int impType){
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        switch (impType) {
+            case BaseEnum.IMP_TYPE_TICKET -> {//ticket
+                editor.putString("PRINTER_TYPE", "IMP_TICKET");
+            }
+            case BaseEnum.IMP_TYPE_CODEBARRE -> {//codebarre
+                editor.putString("PRINTER_TYPE", "IMP_CODEBARRE");
+            }
         }
         editor.apply();
     }
@@ -956,55 +1034,50 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         pb_connect.setVisibility(View.VISIBLE);
 
         switch (checkedConType) {
-            case BaseEnum.CON_WIFI:
-
-                if(configObj != null){
+            case BaseEnum.CON_WIFI -> {
+                if (configObj != null) {
                     WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
                     connectWifi(wiFiConfigBean);
-                }else{
+                } else {
                     WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
                     WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
                     assert WIFI_VALUE_PORT != null;
-                    configObj = new WiFiConfigBean(WIFI_VALUE_IP , Integer.parseInt(WIFI_VALUE_PORT));
+                    configObj = new WiFiConfigBean(WIFI_VALUE_IP, Integer.parseInt(WIFI_VALUE_PORT));
                     WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
                     connectWifi(wiFiConfigBean);
                     tv_device_selected.setText(configObj.toString());
                     tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
                     isConfigPrintEnable(configObj);
                 }
-                break;
-            case BaseEnum.CON_BLUETOOTH:
-                if(configObj != null){
+            }
+            case BaseEnum.CON_BLUETOOTH -> {
+                if (configObj != null) {
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     connectBluetooth(bluetoothEdrConfigBean);
-                }else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                    {
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-                            return ;
+                            return;
                         }
                     }
                     BluetoothDevice device = getDevice();
                     BT_VALUE_MAC = device.getAddress();
                     BT_VALUE_NAME = device.getName();
 
-                    if(device != null){
+                    if (device != null) {
                         configObj = new BluetoothEdrConfigBean(device);
                         BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                         connectBluetooth(bluetoothEdrConfigBean);
                         tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
                     }
                 }
-
-                break;
-            case BaseEnum.CON_USB:
+            }
+            case BaseEnum.CON_USB -> {
                 UsbConfigBean usbConfigBean = (UsbConfigBean) configObj;
                 connectUSB(usbConfigBean);
-                break;
-            default:
-                pb_connect.setVisibility(View.GONE);
-                break;
+            }
+            default -> pb_connect.setVisibility(View.GONE);
         }
 
     }
@@ -1022,7 +1095,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
         boolean isfound = false;
-        Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+        Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
         for(int i = 0; i< pairedDeviceList.size(); i++){
             if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
                 device = pairedDeviceList.get(i);
@@ -1050,26 +1123,78 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private void showConnectDialog() {
         switch (checkedConType) {
-            case BaseEnum.CON_WIFI:
-                showWifiChooseDialog();
-                break;
-            case BaseEnum.CON_BLUETOOTH:
-                showBluetoothDeviceChooseDialog();
-                break;
-            case BaseEnum.CON_USB:
-                showUSBDeviceChooseDialog();
-                break;
-            default:
-                break;
+            case BaseEnum.CON_WIFI -> showWifiChooseDialog();
+            case BaseEnum.CON_BLUETOOTH -> showBluetoothDeviceChooseDialog();
+            case BaseEnum.CON_USB -> showUSBDeviceChooseDialog();
+            case BaseEnum.CON_COM, BaseEnum.NONE -> {}
         }
     }
 
 
-    private void textPrint() throws UnsupportedEncodingException {
-
-        if (BaseApplication.getInstance().getCurrentCmdType() == BaseEnum.CMD_ESC) {
-            escPrint();
+    private void textPrint() throws UnsupportedEncodingException, SdkException {
+        switch (checkedImpType) {
+            case BaseEnum.IMP_TYPE_TICKET -> {
+                BaseApplication.getInstance().setCurrentCmdType(BaseEnum.CMD_ESC);
+                escPrint();
+            }
+            case BaseEnum.IMP_TYPE_CODEBARRE -> {
+                BaseApplication.getInstance().setCurrentCmdType(BaseEnum.CMD_TSC);
+                tscPrintBarCode("123456789");
+            }
         }
+    }
+
+
+    private void tscPrintBarCode(String barcodeContent) {
+
+        try {
+            int labelWidth = 80;
+            int labelHeight = 40;
+
+            CmdFactory tscFac = new TscFactory();
+            Cmd tscCmd = tscFac.create();
+
+            tscCmd.append(tscCmd.getHeaderCmd());
+            CommonSetting commonSetting = new CommonSetting();
+            commonSetting.setLableSizeBean(new LableSizeBean(labelWidth, labelHeight));
+            commonSetting.setLabelGap(3);
+            commonSetting.setPrintDirection(PrintDirection.NORMAL);
+            tscCmd.append(tscCmd.getCommonSettingCmd(commonSetting));
+
+
+            String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS24.BF2", "0", "1", "1", "TEST PRODUIT;");
+            rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
+            String strPrintTxtPrix = TonyUtils.printText("20", "60", "TSS24.BF2", "0", "1", "1", "300.00 DA");
+            rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
+          //  String strPrint = TonyUtils.setPRINT("1", "1");
+         //   rtPrinter.writeMsg(strPrint.getBytes());
+
+           // tscCmd.append(tscCmd.getLFCRCmd()); // one line space
+
+
+            BarcodeSetting barcodeSetting = new BarcodeSetting();
+            barcodeSetting.setNarrowInDot(2);//narrow bar setting, bar width
+            barcodeSetting.setWideInDot(4);
+            barcodeSetting.setHeightInDot(48);//bar height setting
+            barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+            barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
+            int x = 20, y = 100;
+            barcodeSetting.setPosition(new Position(x, y));
+
+
+
+            byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
+            tscCmd.append(barcodeCmd);
+
+            tscCmd.append(tscCmd.getPrintCopies(1));
+            tscCmd.append(tscCmd.getEndCmd());
+            if (rtPrinter != null) {
+                rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
+            }
+        }catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
     private void escPrint() throws UnsupportedEncodingException {
@@ -1320,7 +1445,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
             case R.id.backup:
 
-                Backup_db_to_ftp();
+                backup_db();
+
+                break;
+            case R.id.restore:
+
+                restore_db();
 
                 break;
             case R.id.password_change:
@@ -1401,7 +1531,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     }
 
     //Backup ftp function
-    private void Backup_db_to_ftp() {
+   /* private void Backup_db_to_ftp() {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 454545);
@@ -1418,8 +1548,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }*/
+
+
+     private void backup_db() {
+         String outFileName = Environment.getExternalStorageDirectory() + File.separator + getResources().getString(R.string.app_name) + File.separator;
+         localBackup.performBackup(controller, outFileName);
     }
 
+    private void restore_db() {
+        localBackup.performRestore(controller);
+    }
 
     public void sendRequest(String username_safe_event, String password_safe_event) {
             new Thread(new Runnable() {
@@ -1493,6 +1632,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         String _Username;
         String _Password;
         Connection con = null;
+        String errorMessage;
 
         public TestConnection_Setting(String server, String database, String username, String password) {
             super();
@@ -1527,6 +1667,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             } catch (Exception ex) {
                 con = null;
                 Log.e("TRACKKK", "FAILED TO CONNECT WITH SERVER " + ex.getMessage());
+                errorMessage = ex.getMessage();
             }
             return executed;
         }
@@ -1553,6 +1694,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 Animation shake = AnimationUtils.loadAnimation(ActivitySetting.this, R.anim.shakanimation);
                 btntest.startAnimation(shake);
                 Sound(R.raw.error);
+                new Toaster.Builder(ActivitySetting.this)
+                        .setTitle("Erreur connexion")
+                        .setDescription("" + errorMessage)
+                        .setDuration(Toaster.LENGTH_LONG)
+                        .setStatus(Toaster.Status.ERROR)
+                        .show();
             }
             super.onPostExecute(aBoolean);
         }

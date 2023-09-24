@@ -116,13 +116,13 @@ public class PrinterInventaire {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
+        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
 
-            Log.v("PRINTER", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
             for(int i = 0; i< pairedDeviceList.size() ; i++){
                 if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
                     isfound = true;
@@ -132,7 +132,7 @@ public class PrinterInventaire {
             }
 
             if(isfound){
-                Log.v("PRINTER", "Device found");
+                Log.v("PRINTER_CONX", "Device found");
                 if(device != null){
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
@@ -140,11 +140,11 @@ public class PrinterInventaire {
                     runningTask.execute();
                 }
             }else {
-                Log.v("PRINTER", "Device not found");
+                Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
+        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
             configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
@@ -189,14 +189,14 @@ public class PrinterInventaire {
 
                 if(!BaseApplication.getInstance().getIsConnected()){
 
-                    if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "BLUETOOTH")){
+                    if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
                         PIFactory piFactory = new BluetoothFactory();
                         PrinterInterface printerInterface = piFactory.create();
                         printerInterface.setConfigObject(bluetoothEdrConfigBean);
                         rtPrinter.setPrinterInterface(printerInterface);
                         rtPrinter.connect(bluetoothEdrConfigBean);
 
-                    }else if(Objects.equals(prefs.getString("PRINTER", "BLUETOOTH"), "WIFI")){
+                    }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
                         PIFactory piFactory = new WiFiFactory();
                         PrinterInterface printerInterface = piFactory.create();

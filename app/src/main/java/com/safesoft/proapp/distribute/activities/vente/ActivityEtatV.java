@@ -109,7 +109,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     initAdapter();
 
     SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-      printer_mode_integrate = prefs1.getString("PRINTER", "INTEGRATE").equals("INTEGRATE");
+      printer_mode_integrate = prefs1.getString("PRINTER_CONX", "INTEGRATE").equals("INTEGRATE");
 
     super.onStart();
   }

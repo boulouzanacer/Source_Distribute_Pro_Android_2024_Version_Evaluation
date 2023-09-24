@@ -260,6 +260,7 @@
 
 
             <TableRow
+                android:id="@+id/tbr_remise"
                 android:background="@drawable/table_row_bg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

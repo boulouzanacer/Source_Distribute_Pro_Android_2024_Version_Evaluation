@@ -65,7 +65,7 @@ public class ActivityTransferts extends AppCompatActivity implements RecyclerAda
     setRecycle();
 
     SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-      printer_mode_integrate = prefs1.getString("PRINTER", "INTEGRATE").equals("INTEGRATE");
+      printer_mode_integrate = prefs1.getString("PRINTER_CONX", "INTEGRATE").equals("INTEGRATE");
 
     // Declare US print format
     nf = NumberFormat.getInstance(Locale.US);

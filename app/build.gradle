@@ -10,7 +10,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 33
         versionCode 537
-        versionName "30.08.23"
+        versionName "20.09.23"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
     }

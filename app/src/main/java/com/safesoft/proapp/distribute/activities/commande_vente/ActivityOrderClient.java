@@ -55,6 +55,7 @@ import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.printing.Printing;
 
@@ -121,6 +122,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     String SOURCE_EXPORT = "";
     String PARAMS_PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
     SharedPreferences prefs;
+
+    private PostData_Params params;
 
     @SuppressLint("SimpleDateFormat") SimpleDateFormat date_format;
     @SuppressLint("SimpleDateFormat") SimpleDateFormat heure_format;
@@ -345,6 +348,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         total_ttc_remise = findViewById(R.id.total_ttc_remise);
         //TextView observation = findViewById(R.id.observation_value);
         txv_remise = findViewById(R.id.txv_remise);
+        TableRow tbr_remise = (TableRow) findViewById(R.id.tbr_remise);
 
         //checkbox
         checkBox_timbre = findViewById(R.id.checkbox_timbre);
@@ -366,6 +370,12 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             tr_total_timbre.setVisibility(View.GONE);
         }
 
+        if(prefs.getBoolean("AFFICHAGE_REMISE", true)){
+            tbr_remise.setVisibility(View.VISIBLE);
+        }else{
+            tbr_remise.setVisibility(View.GONE);
+        }
+
         intent_location = new Intent(this, ServiceLocation.class);
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -384,6 +394,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         nf = NumberFormat.getInstance(Locale.US);
         ((DecimalFormat) nf).applyPattern("##,##0.00");
 
+        params = new PostData_Params();
+        params = controller.select_params_from_database("SELECT * FROM PARAMS");
     }
 
 
@@ -419,7 +431,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 if(client_selected.mode_tarif.equals("0")){
 
                     if(btn_mode_tarif.getText().toString().equals("Tarif 1")){
-                        if(prefs.getString("PRIX_2","").equals("1")){
+                        if(params.prix_2 == 1){
                             bon1_temp.mode_tarif = "2";
                             btn_mode_tarif.setText("Tarif 2");
                         }else {
@@ -427,7 +439,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 2")){
-                        if(prefs.getString("PRIX_3","").equals("1")){
+                        if(params.prix_3 == 1){
                             bon1_temp.mode_tarif = "3";
                             btn_mode_tarif.setText("Tarif 3");
                         }else {
@@ -435,7 +447,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 3")) {
-                        if(prefs.getString("PRIX_4","").equals("1")){
+                        if(params.prix_4 == 1){
                             bon1_temp.mode_tarif = "4";
                             btn_mode_tarif.setText("Tarif 4");
                         }else {
@@ -443,7 +455,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 4")) {
-                        if(prefs.getString("PRIX_5","").equals("1")){
+                        if(params.prix_5 == 1){
                             bon1_temp.mode_tarif = "6";
                             btn_mode_tarif.setText("Tarif 5");
                         }else {
@@ -451,7 +463,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 5")) {
-                        if(prefs.getString("PRIX_6","").equals("1")){
+                        if(params.prix_6 == 1){
                             bon1_temp.mode_tarif = "1";
                             btn_mode_tarif.setText("Tarif 6");
                         }else {
@@ -1125,6 +1137,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                }
 
                initData();
+               Sound(R.raw.cashier_quotka);
 
            }catch (Exception e){
                Crouton.makeText(ActivityOrderClient.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();
@@ -1137,12 +1150,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     public void onVersementReceived(ValidateFactureEvent versement){
 
         bon1_temp.verser = 0.0;
-
-        if (bon1_temp.verser != 0 ) {
-            bon1_temp.mode_rg = "ESPECE";
-        } else{
-            bon1_temp.mode_rg = "A TERME";
-        }
+        bon1_temp.mode_rg = "A TERME";
 
         bon1_temp.reste = bon1_temp.solde_ancien + (bon1_temp.tot_ht + bon1_temp.tot_tva + bon1_temp.timbre - bon1_temp.remise) - bon1_temp.verser;
 

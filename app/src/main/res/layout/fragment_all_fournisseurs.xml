@@ -68,14 +68,13 @@
         <LinearLayout
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:visibility="gone"
             android:id="@+id/layout_footer"
             android:layout_width="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/add_client"
+                android:id="@+id/add_fournisseur"
                 android:text="Ajouter fournisseur"
                 android:textAllCaps="false"
                 android:backgroundTint="@color/gray"

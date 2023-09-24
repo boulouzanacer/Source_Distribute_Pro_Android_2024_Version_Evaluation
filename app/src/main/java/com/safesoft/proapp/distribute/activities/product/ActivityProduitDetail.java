@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
+import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.printing.Printing;
@@ -41,6 +43,8 @@ public class ActivityProduitDetail extends AppCompatActivity {
   private LinearLayout Lnr_pv1, Lnr_pv2, Lnr_pv3, Lnr_pv4, Lnr_pv5, Lnr_pv6;
   private  MediaPlayer mp;
   private NumberFormat nf;
+  SharedPreferences prefs;
+  private DATABASE controller;
   private final String PREFS = "ALL_PREFS";
 
   @Override
@@ -76,6 +80,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
     nf = NumberFormat.getInstance(Locale.US);
     ((DecimalFormat) nf).applyPattern("####0.##");
 
+    controller = new DATABASE(this);
     iniData(produit);
   }
 
@@ -119,8 +124,9 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
   protected void iniData(PostData_Produit produit) {
 
-    SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-
+    prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+    PostData_Params params = new PostData_Params();
+    params = controller.select_params_from_database("SELECT * FROM PARAMS");
     if(produit.photo != null) {
       ImgProduit.setImageBitmap(BitmapFactory.decodeByteArray(produit.photo, 0, produit.photo.length));
     }
@@ -137,12 +143,13 @@ public class ActivityProduitDetail extends AppCompatActivity {
     if (produit.produit != null)
       TvProduit.setText(produit.produit);
 
-    TvPv1_title.setText(prefs.getString("PV1_TITRE","Prix 1") + " (HT)");
-    TvPv2_title.setText(prefs.getString("PV2_TITRE","Prix 2") + " (HT)");
-    TvPv3_title.setText(prefs.getString("PV3_TITRE","Prix 3") + " (HT)");
-    TvPv4_title.setText(prefs.getString("PV4_TITRE","Prix 4") + " (HT)");
-    TvPv5_title.setText(prefs.getString("PV5_TITRE","Prix 5") + " (HT)");
-    TvPv6_title.setText(prefs.getString("PV6_TITRE","Prix 6") + " (HT)");
+
+    TvPv1_title.setText(params.pv1_titre + " (HT)");
+    TvPv2_title.setText(params.pv2_titre + " (HT)");
+    TvPv3_title.setText(params.pv3_titre + " (HT)");
+    TvPv4_title.setText(params.pv4_titre + " (HT)");
+    TvPv5_title.setText(params.pv5_titre + " (HT)");
+    TvPv6_title.setText(params.pv6_titre + " (HT)");
 
     final BadgeDrawable drawable_pa_ht = new BadgeDrawable.Builder()
             .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
@@ -251,31 +258,31 @@ public class ActivityProduitDetail extends AppCompatActivity {
       Description.setText(produit.description);
     }
 
-    if(prefs.getString("PRIX_2","").equals("1")){
+    if(params.prix_2 == 1){
       Lnr_pv2.setVisibility(View.VISIBLE);
     }else{
       Lnr_pv2.setVisibility(View.GONE);
     }
 
-    if(prefs.getString("PRIX_3","").equals("1")){
+    if(params.prix_3 == 1){
       Lnr_pv3.setVisibility(View.VISIBLE);
     }else{
       Lnr_pv3.setVisibility(View.GONE);
     }
 
-    if(prefs.getString("PRIX_4","").equals("1")){
+    if(params.prix_4 == 1){
       Lnr_pv4.setVisibility(View.VISIBLE);
     }else{
       Lnr_pv4.setVisibility(View.GONE);
     }
 
-    if(prefs.getString("PRIX_5","").equals("1")){
+    if(params.prix_5 == 1){
       Lnr_pv5.setVisibility(View.VISIBLE);
     }else{
       Lnr_pv5.setVisibility(View.GONE);
     }
 
-    if(prefs.getString("PRIX_6","").equals("1")){
+    if(params.prix_6 == 1){
       Lnr_pv6.setVisibility(View.VISIBLE);
     }else{
       Lnr_pv6.setVisibility(View.GONE);
@@ -301,9 +308,14 @@ public class ActivityProduitDetail extends AppCompatActivity {
     }else if(item.getItemId() == R.id.print){
       Activity bactivity;
       bactivity = ActivityProduitDetail.this;
-
       Printing printer = new Printing();
-      printer.start_print_etiquette(bactivity, produit );
+      prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+      if(prefs.getString("PRINTER_TYPE", "IMP_TICKET").equals("IMP_TICKET")){
+        printer.start_print_etiquette(bactivity, produit );
+      }else{
+        printer.start_print_etiquette_code_barre(bactivity, produit );
+      }
+
 
     }else if(item.getItemId() == R.id.pdf){
       Activity mActivity;
