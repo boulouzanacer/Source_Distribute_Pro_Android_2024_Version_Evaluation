@@ -2,6 +2,7 @@ package com.safesoft.proapp.distribute.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import androidx.cardview.widget.CardView;
@@ -31,8 +32,11 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
   private final List<PostData_Produit> produitList;
   private int color = 0;
   private ItemClick itemClick;
+  private ItemLongClick itemLongClick;
   private ColorGeneratorModified generator;
   private final Context mContext;
+  SharedPreferences prefs;
+  private final String PREFS = "ALL_PREFS";
 
 
   class MyViewHolder extends RecyclerView.ViewHolder {
@@ -81,6 +85,7 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     View v = new MyCardView(parent.getContext());
 
     itemClick = (ItemClick) parent.getContext();
+    itemLongClick = (ItemLongClick) parent.getContext();
 
     return new MyViewHolder(v);
   }
@@ -89,6 +94,8 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
   @Override
   public void onBindViewHolder(final MyViewHolder holder,int position) {
     PostData_Produit item = produitList.get(position);
+
+    prefs = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
 
     holder.Produit.setTextSize(17);
     holder.Produit.setTypeface(null, Typeface.BOLD);
@@ -103,11 +110,7 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
 
       holder.stock_vrac.setText("");
       holder.vrac_title.setText("");
-
-
-
-        }else {
-
+    }else {
 
       holder.colissage_title.setText(R.string.colis);
       holder.colissage.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.colissage)));
@@ -136,6 +139,14 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
       }
     });
 
+    holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View view) {
+        itemLongClick.onLongClick(view,holder.getAdapterPosition());
+        return false;
+      }
+    });
+
     String firstChar = "NO";
     if(item.produit != null){
       if(item.produit.length() == 1){
@@ -155,15 +166,21 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     }
 
 
-    if(item.photo != null)
-    {
-      holder.image.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
+   if(prefs.getBoolean("SHOW_PROD_PIC", false)){
+     if(item.photo != null)
+     {
+       holder.image.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
 
-    }else
-    {
+     }else
+     {
        TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), ContextCompat.getColor(mContext, R.color.blue));
-        holder.image.setImageDrawable(drawable);
-    }
+       holder.image.setImageDrawable(drawable);
+     }
+   }else{
+     TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), ContextCompat.getColor(mContext, R.color.blue));
+     holder.image.setImageDrawable(drawable);
+   }
+
   }
 
   @Override
@@ -175,9 +192,8 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     void onClick(View v, int position);
   }
 
-  public void refresh(List<PostData_Produit> new_itemList){
-    produitList.clear();
-    produitList.addAll(new_itemList);
-    notifyDataSetChanged();
+
+  public interface ItemLongClick{
+    void onLongClick(View v, int position);
   }
 }

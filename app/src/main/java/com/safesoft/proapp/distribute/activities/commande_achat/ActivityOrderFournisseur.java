@@ -60,6 +60,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -676,7 +677,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     Activity activity;
                     activity = ActivityOrderFournisseur.this;
                     FragmentQte fragmentqte = new FragmentQte();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position) , final_panier.get(info.position).p_u * (1 + (final_panier.get(info.position).tva/ 100)));
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
 
                 }catch (Exception e){
 
@@ -895,7 +896,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 .withText("Scanning...")
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
-                    public void onResult(Barcode barcode) {
+                    public void onResult(Barcode barcode) throws ParseException {
                         // Sound( R.raw.bleep);
                        // setRecycle(barcode.rawValue, true);
                         selectProductFromScan(barcode.rawValue);
@@ -916,7 +917,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
 
     @Override
-    public void onClick(View v, int position, PostData_Produit item) {
+    public void onClick(View v, int position, PostData_Produit item) throws ParseException {
 
 
         PostData_Bon2 achat2_com = new PostData_Bon2();
@@ -928,10 +929,11 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         achat2_com.num_bon = NUM_BON;
         achat2_com.code_depot = CODE_DEPOT;
         achat2_com.stock_produit = item.stock;
+
         SOURCE = "ACHAT2_TEMP_INSERT";
         Activity activity = ActivityOrderFournisseur.this;
         FragmentQte fragmentachat = new FragmentQte();
-        fragmentachat.showDialogbox(SOURCE, activity, getBaseContext(),  achat2_com , achat2_com.p_u * (1 + (achat2_com.tva / 100)));
+        fragmentachat.showDialogbox(SOURCE, activity, getBaseContext(),  achat2_com );
 
     }
 
@@ -991,12 +993,12 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         }
     }
 
-    private void selectProductFromScan(String resultscan){
+    private void selectProductFromScan(String resultscan) throws ParseException {
 
         ArrayList<PostData_Produit> produits;
         PostData_Bon2 bon2_temp = new PostData_Bon2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
@@ -1006,7 +1008,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+resultscan+"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
@@ -1026,18 +1028,16 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             bon2_temp.p_u = produits.get(0).pa_ht;
             bon2_temp.tva = produits.get(0).tva;
             bon2_temp.colissage = produits.get(0).colissage;
-            /*if(bon1_a_com.mode_tarif.equals("3")){
-                bon2_temp.p_u = produits.get(0).pv3_ht;
-            }else if(bon1_a_com.mode_tarif.equals("2")){
-                bon2_temp.p_u = produits.get(0).pv2_ht;
-            } else
-                bon2_temp.p_u = produits.get(0).pv1_ht;*/
+            bon2_temp.promo = produits.get(0).promo;
+            bon2_temp.d1 = produits.get(0).d1;
+            bon2_temp.d2 = produits.get(0).d2;
+            bon2_temp.pp1_ht = produits.get(0).pp1_ht;
 
 
             SOURCE = "BON2_TEMP_INSERT";
             Activity activity = ActivityOrderFournisseur.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp , bon2_temp.p_u * (1 + (bon2_temp.tva / 100)));
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivityOrderFournisseur.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();

@@ -71,6 +71,11 @@ public class ActivityProduitDetail extends AppCompatActivity {
     produit.photo = getIntent().getByteArrayExtra("PHOTO");
     produit.description = getIntent().getStringExtra("DESCRIPTION");
 
+    produit.promo = getIntent().getIntExtra("PROMO", 0);
+    produit.d1 = getIntent().getStringExtra("D1");
+    produit.d2 = getIntent().getStringExtra("D2");
+    produit.pp1_ht = getIntent().getDoubleExtra("PP1_HT",0);
+
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setTitle("Détails produit");
 

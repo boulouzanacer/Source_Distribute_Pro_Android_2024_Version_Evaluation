@@ -17,6 +17,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
 
@@ -76,17 +77,24 @@ public class Ftp_export {
         mActivity = activity;
 
         controller =  new DATABASE(mActivity);
-        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        PostData_Params params2 = new PostData_Params();
+
+        try {
+            params2 = controller.select_params_from_database("SELECT * FROM PARAMS");
+        }catch (Exception ignored){
+
+        }
+
+        if(params2 != null){
+            serverIp = params2.ftp_server;
+            serverPort = params2.ftp_port;
+            username = params2.ftp_user;
+            password = params2.ftp_pass;
+            ftp_exp = params2.ftp_imp;
+            ftp_imp_def = params2.ftp_exp;
+        }
+
         //config
-        serverIp = Objects.requireNonNull(prefs.getString("SERVEUR_FTP", "")).trim();
-        serverPort = prefs.getString("PORT_FTP", "21").trim();
-
-        username = prefs.getString("USER_FTP", "").trim();
-        password = prefs.getString("PASSWORD_FTP", "").trim();
-
-        ftp_exp = prefs.getString("IMP_FTP", "EXP").trim();
-        ftp_imp_def = prefs.getString("EXP_FTP", "IMP").trim();
-
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
         code_depot = prefs.getString("CODE_DEPOT", "000000");
         nom_depot = prefs.getString("NOM_DEPOT", code_depot);
@@ -216,6 +224,8 @@ public class Ftp_export {
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
+                    "PRODUIT.PA_HT, " +
+                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -230,7 +240,7 @@ public class Ftp_export {
 
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
                 PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '"+ bon2s.get(j).codebarre+"'";
@@ -493,6 +503,8 @@ public class Ftp_export {
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
+                    "PRODUIT.PA_HT, " +
+                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -507,7 +519,7 @@ public class Ftp_export {
 
                 ///////////////////////////////////PRODUIT ///////////////////////////////////////
                 PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '"+ bon2s.get(j).codebarre+"'";
@@ -537,7 +549,7 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BON2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
                 F_SQL =  F_SQL + "'" + bon2s.get(j).codebarre.replace("'", "''") + "','" + bon2s.get(j).produit.replace("'", "''") + "', iif('" + bon2s.get(j).destock_type + "' = 'null', null,'" + bon2s.get(j).destock_type + "') , iif('" + bon2s.get(j).destock_code_barre + "' = 'null', null,'" + bon2s.get(j).destock_code_barre + "') , iif('" + bon2s.get(j).destock_qte + "' = '0.0', null,'" + bon2s.get(j).destock_qte + "'),";
                 F_SQL =  F_SQL + "" +  bon2s.get(j).nbr_colis + ","   + bon2s.get(j).colissage +","  + bon2s.get(j).qte + "," + bon2s.get(j).gratuit + ",";
-                F_SQL =  F_SQL + "" +  bon2s.get(j).tva + ","   + bon2s.get(j).p_u +","  + bon2s.get(j).p_u + "," + bon2s.get(j).p_u + ");\n";
+                F_SQL =  F_SQL + "" +  bon2s.get(j).tva + ","   + bon2s.get(j).p_u +","  + bon2s.get(j).p_u + "," + bon2s.get(j).pamp + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
             }
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
@@ -771,6 +783,8 @@ public class Ftp_export {
                     "BON2_TEMP.DESTOCK_TYPE, " +
                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                     "BON2_TEMP.DESTOCK_QTE, " +
+                    "PRODUIT.PA_HT, " +
+                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -785,7 +799,7 @@ public class Ftp_export {
 
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
                 PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '"+ bon2s_Temp.get(j).codebarre+"'";
@@ -815,7 +829,7 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BCC2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
                 F_SQL =  F_SQL + "'" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "','" + bon2s_Temp.get(j).produit.replace("'", "''") + "', iif('" + bon2s_Temp.get(j).destock_type + "' = 'null', null,'" + bon2s_Temp.get(j).destock_type + "') , iif('" + bon2s_Temp.get(j).destock_code_barre + "' = 'null', null,'" + bon2s_Temp.get(j).destock_code_barre + "') ,'" + bon2s_Temp.get(j).destock_qte + "',";
                 F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).nbr_colis + ","   + bon2s_Temp.get(j).colissage +","  + bon2s_Temp.get(j).qte + "," + bon2s_Temp.get(j).gratuit + ",";
-                F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).tva + ","   + bon2s_Temp.get(j).p_u +","  + bon2s_Temp.get(j).p_u + "," + bon2s_Temp.get(j).p_u + ");\n";
+                F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).tva + ","   + bon2s_Temp.get(j).p_u +","  + bon2s_Temp.get(j).p_u + "," + bon2s_Temp.get(j).pamp + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
             }
 
@@ -994,7 +1008,7 @@ public class Ftp_export {
 
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
                 PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '"+ Inv2s.get(j).codebarre+"'";
@@ -1065,10 +1079,11 @@ public class Ftp_export {
         try
         {
             con = new FTPClient();
-            con.connect(serverIp);
             con.setDefaultPort(Integer.parseInt(serverPort));
-
-            return con.login(username, password);
+            con.setConnectTimeout(5000);
+            con.connect(serverIp);
+            con.login(username, password);
+            return true;
         }
         catch (Exception e)
         {

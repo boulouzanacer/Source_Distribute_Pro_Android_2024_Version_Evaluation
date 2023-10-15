@@ -186,31 +186,10 @@
                 <LinearLayout
                     android:id="@+id/ly_nbr_colis_colissage_qte"
                     android:layout_weight="1"
-                    android:weightSum="3"
+                    android:weightSum="2"
                     android:layout_width="match_parent"
                     android:orientation="horizontal"
                     android:layout_height="0dp">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_margin="5dp"
-                        android:layout_gravity="center"
-                        android:hint="@string/n_colis"
-                        app:expandedHintEnabled="false"
-                        android:layout_height="wrap_content">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_nbr_colis"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:inputType="numberSigned|numberDecimal"
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -239,13 +218,14 @@
                         android:layout_weight="1"
                         android:layout_margin="5dp"
                         android:layout_gravity="center"
-                        android:hint="@string/qt"
+                        android:hint="@string/stock_ini"
+                        android:enabled="false"
                         android:visibility="visible"
                         app:expandedHintEnabled="false"
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_qte"
+                            android:id="@+id/edt_stock_ini"
                             android:gravity="center"
                             android:maxLines="1"
                             android:inputType="numberSigned|numberDecimal"

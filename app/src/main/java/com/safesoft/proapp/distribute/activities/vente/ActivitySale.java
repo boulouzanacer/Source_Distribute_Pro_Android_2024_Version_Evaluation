@@ -265,6 +265,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
+                    "PRODUIT.PA_HT, " +
+                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2 " +
@@ -785,6 +787,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 "BON2.DESTOCK_TYPE, " +
                 "BON2.DESTOCK_CODE_BARRE, " +
                 "BON2.DESTOCK_QTE, " +
+                "PRODUIT.PA_HT, " +
+                "PRODUIT.PAMP, " +
                 "PRODUIT.ISNEW, " +
                 "PRODUIT.STOCK " +
                 "FROM BON2 " +
@@ -870,7 +874,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     Activity activity;
                     activity = ActivitySale.this;
                     FragmentQte fragmentqte = new FragmentQte();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position) , final_panier.get(info.position).p_u * (1 + (final_panier.get(info.position).tva/ 100)));
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
 
                 }catch (Exception e){
 
@@ -1088,7 +1092,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 .withText("Scanning...")
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
-                    public void onResult(Barcode barcode) {
+                    public void onResult(Barcode barcode) throws ParseException {
                         // Sound( R.raw.bleep);
                        // setRecycle(barcode.rawValue, true);
                         selectProductFromScan(barcode.rawValue);
@@ -1108,7 +1112,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
 
     @Override
-    public void onClick(View v, int position, PostData_Produit item) {
+    public void onClick(View v, int position, PostData_Produit item) throws ParseException {
 
             PostData_Bon2 bon2 = new PostData_Bon2();
             bon2.produit = item.produit;
@@ -1119,21 +1123,27 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             bon2.destock_qte = item.destock_qte;
             bon2.tva = item.tva;
             bon2.colissage = item.colissage;
-        switch (bon1.mode_tarif) {
-            case "6" -> bon2.p_u = item.pv6_ht;
-            case "5" -> bon2.p_u = item.pv5_ht;
-            case "4" -> bon2.p_u = item.pv4_ht;
-            case "3" -> bon2.p_u = item.pv3_ht;
-            case "2" -> bon2.p_u = item.pv2_ht;
-            default -> bon2.p_u = item.pv1_ht;
-        }
+
+            bon2.promo = item.promo;
+            bon2.d1 = item.d1;
+            bon2.d2 = item.d2;
+            bon2.pp1_ht = item.pp1_ht;
+
+            switch (bon1.mode_tarif) {
+                case "6" -> bon2.p_u = item.pv6_ht;
+                case "5" -> bon2.p_u = item.pv5_ht;
+                case "4" -> bon2.p_u = item.pv4_ht;
+                case "3" -> bon2.p_u = item.pv3_ht;
+                case "2" -> bon2.p_u = item.pv2_ht;
+                default -> bon2.p_u = item.pv1_ht;
+            }
 
             bon2.num_bon = NUM_BON;
             bon2.code_depot = CODE_DEPOT;
             SOURCE = "BON2_INSERT";
             Activity activity = ActivitySale.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2 , bon2.p_u * (1 + (bon2.tva / 100)));
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
 
     }
 
@@ -1206,7 +1216,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     }
 
 
-    private void selectProductFromScan(String resultscan){
+    private void selectProductFromScan(String resultscan) throws ParseException {
         ArrayList<PostData_Produit> produits;
         PostData_Bon2 bon2 = new PostData_Bon2();
 
@@ -1238,18 +1248,25 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             bon2.destock_qte = produits.get(0).destock_qte;
             bon2.tva = produits.get(0).tva;
             bon2.colissage = produits.get(0).colissage;
-            if(bon1.mode_tarif.equals("3")){
-                bon2.p_u = produits.get(0).pv3_ht;
-            }else if(bon1.mode_tarif.equals("2")){
-                bon2.p_u = produits.get(0).pv2_ht;
-            } else
-                bon2.p_u = produits.get(0).pv1_ht;
+            bon2.promo = produits.get(0).promo;
+            bon2.d1 = produits.get(0).d1;
+            bon2.d2 = produits.get(0).d2;
+            bon2.pp1_ht = produits.get(0).pp1_ht;
+
+            switch (bon1.mode_tarif) {
+                case "6" -> bon2.p_u = produits.get(0).pv6_ht;
+                case "5" -> bon2.p_u = produits.get(0).pv5_ht;
+                case "4" -> bon2.p_u = produits.get(0).pv4_ht;
+                case "3" -> bon2.p_u = produits.get(0).pv3_ht;
+                case "2" -> bon2.p_u = produits.get(0).pv2_ht;
+                default -> bon2.p_u = produits.get(0).pv1_ht;
+            }
 
 
             SOURCE = "BON2_INSERT";
             Activity activity = ActivitySale.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2 , bon2.p_u * (1 + (bon2.tva / 100)));
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivitySale.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();

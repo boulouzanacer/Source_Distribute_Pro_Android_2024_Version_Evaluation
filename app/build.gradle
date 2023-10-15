@@ -3,14 +3,14 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
 
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 537
-        versionName "20.09.23"
+        versionName "15.10.23"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
     }

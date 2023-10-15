@@ -421,5 +421,6 @@
     <string name="afficher_remise">Afficher remise</string>
     <string name="param_tres_modification_de_bon">Paramètres modification de bon</string>
     <string name="autoriser_la_modification_de_bon">Autoriser la modification de bon</string>
+    <string name="stock_ini">Stock ini</string>
 
 </resources>

@@ -15,6 +15,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParseException;
+
 public class MaterialBarcodeScanner {
 
     /**
@@ -43,7 +45,7 @@ public class MaterialBarcodeScanner {
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onBarcodeScannerResult(Barcode barcode){
+    public void onBarcodeScannerResult(Barcode barcode) throws ParseException {
         onResultListener.onResult(barcode);
         EventBus.getDefault().removeStickyEvent(barcode);
         EventBus.getDefault().unregister(this);
@@ -54,7 +56,7 @@ public class MaterialBarcodeScanner {
      * Interface definition for a callback to be invoked when a view is clicked.
      */
     public interface OnResultListener {
-        void onResult(Barcode barcode);
+        void onResult(Barcode barcode) throws ParseException;
     }
 
     /**

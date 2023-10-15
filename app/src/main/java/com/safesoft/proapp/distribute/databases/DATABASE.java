@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -74,14 +73,40 @@ public class DATABASE extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         Log.v("TRACKKK","================>  ONCREATE EXECUTED");
 
+
         db.execSQL("CREATE TABLE IF NOT EXISTS PRODUIT(PRODUIT_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "CODE_BARRE VARCHAR , REF_PRODUIT VARCHAR, PRODUIT VARCHAR, PA_HT DOUBLE, TVA DOUBLE, PAMP DOUBLE, " +
-                "PV1_HT DOUBLE, PV2_HT DOUBLE, PV3_HT DOUBLE , PV4_HT DOUBLE, PV5_HT DOUBLE, PV6_HT DOUBLE, STOCK DOUBLE, COLISSAGE DOUBLE, PHOTO BLOB, DETAILLE VARCHAR, " +
-                "DESTOCK_TYPE VARCHAR, DESTOCK_CODE_BARRE VARCHAR, DESTOCK_QTE DOUBLE, FAMILLE VARCHAR, ISNEW INTEGER)");
+                "CODE_BARRE VARCHAR, " +
+                "REF_PRODUIT VARCHAR, " +
+                "PRODUIT VARCHAR, " +
+                "PA_HT DOUBLE, " +
+                "TVA DOUBLE, " +
+                "PAMP DOUBLE, " +
+                "PV1_HT DOUBLE, " +
+                "PV2_HT DOUBLE, " +
+                "PV3_HT DOUBLE , " +
+                "PV4_HT DOUBLE, " +
+                "PV5_HT DOUBLE, " +
+                "PV6_HT DOUBLE, " +
+                "STOCK DOUBLE, " +
+                "COLISSAGE DOUBLE, " +
+                "PHOTO BLOB, " +
+                "DETAILLE VARCHAR, " +
+                "DESTOCK_TYPE VARCHAR, " +
+                "DESTOCK_CODE_BARRE VARCHAR, " +
+                "DESTOCK_QTE DOUBLE, " +
+                "FAMILLE VARCHAR, " +
+                "PROMO INTEGER, " +
+                "D1 VARCHAR, " +
+                "D2 VARCHAR, " +
+                "PP1_HT DOUBLE, " +
+                "ISNEW INTEGER)");
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS CODEBARRE(CODEBARRE_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR, CODE_BARRE_SYN VARCHAR)");
 
+
         db.execSQL("CREATE TABLE IF NOT EXISTS COMPOSANT(COMPOSANT_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR, CODE_BARRE2 VARCHAR, QTE DOUBLE)");
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS BON1(" +
                 "RECORDID INTEGER, " +
@@ -110,7 +135,6 @@ public class DATABASE extends SQLiteOpenHelper {
                 "BLOCAGE VARCHAR, " +
                 "VERSER DOUBLE, "+
                 "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
-
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS BON2(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -210,6 +234,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS INV1(NUM_INV VARCHAR PRIMARY KEY, DATE_INV VARCHAR, HEURE_INV VARCHAR, LIBELLE VARCHAR, NBR_PRODUIT VARCHAR, UTILISATEUR VARCHAR, CODE_DEPOT VARCHAR, IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)), DATE_EXPORT_INV VARCHAR, BLOCAGE VARCHAR, EXPORTATION VARCHAR)");
+
         db.execSQL("CREATE TABLE IF NOT EXISTS INV2(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR , NUM_INV VARCHAR, PRODUIT VARCHAR, NBRE_COLIS DOUBLE, COLISSAGE DOUBLE, PA_HT DOUBLE, QTE DOUBLE, QTE_TMP DOUBLE, QTE_NEW DOUBLE, TVA DOUBLE, VRAC VARCHAR, CODE_DEPOT VARCHAR )");
 
        // db.execSQL("CREATE TABLE IF NOT EXISTS Achats1(ACHAT1ID INTEGER, NUM_ACHAT VARCHAR PRIMARY KEY, NOM_ACHAT VARCHAR , DATE_ACHAT VARCHAR, HEURE_ACHAT VARCHAR, UTILISATEUR VARCHAR, CODE_DEPOT VARCHAR, IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)), DATE_EXPORT_ACHAT VARCHAR)");
@@ -221,6 +246,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS FOURNIS(FOURNIS_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_FRS VARCHAR, FOURNIS VARCHAR, ADRESSE VARCHAR, TEL VARCHAR, ACHATS DOUBLE DEFAULT 0.0, VERSER DOUBLE DEFAULT 0.0, SOLDE DOUBLE DEFAULT 0.0, LATITUDE REAL DEFAULT 0.0, LONGITUDE REAL DEFAULT 0.0, RC VARCHAR, IFISCAL VARCHAR, AI VARCHAR,  NIS VARCHAR, ISNEW INTEGER)");
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT1(" +
                 "RECORDID INTEGER, " +
@@ -242,6 +268,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "BLOCAGE VARCHAR, " +
                 "CODE_DEPOT VARCHAR, " +
                 "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT2(" +
                 "RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -444,6 +471,35 @@ public class DATABASE extends SQLiteOpenHelper {
             Log.v("TRACKKK", Objects.requireNonNull(sqlilock.getMessage()));
         }
     }
+
+
+    public void update_ftp_params(PostData_Params params){
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+
+            try {
+
+                ContentValues values = new ContentValues();
+                values.put("FTP_SERVER", params.ftp_server);
+                values.put("FTP_PORT", params.ftp_port);
+                values.put("FTP_USER", params.ftp_user);
+                values.put("FTP_PASS", params.ftp_pass);
+                values.put("FTP_IMP", params.ftp_imp);
+                values.put("FTP_EXP", params.ftp_exp);
+
+                db.update("PARAMS", values,null, null);
+
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }catch (SQLiteDatabaseLockedException sqlilock){
+            Log.v("TRACKKK", Objects.requireNonNull(sqlilock.getMessage()));
+        }
+    }
+
+
     public boolean insert_into_fournisseur(PostData_Fournisseur fournisseur){
         boolean executed = false;
         try {
@@ -627,6 +683,12 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("DESTOCK_TYPE", produit.destock_type);
                 values.put("DESTOCK_CODE_BARRE", produit.destock_code_barre);
                 values.put("DESTOCK_QTE", produit.destock_qte);
+
+                values.put("PROMO", produit.promo);
+                values.put("D1", produit.d1);
+                values.put("D2", produit.d2);
+                values.put("PP1_HT", produit.pp1_ht);
+
                 values.put("ISNEW", produit.isNew);
 
                 db.insert("PRODUIT", null, values);
@@ -868,7 +930,17 @@ public class DATABASE extends SQLiteOpenHelper {
                 args.put("PV1_HT", produit_to_update.pv1_ht);
                 args.put("PV2_HT", produit_to_update.pv2_ht);
                 args.put("PV3_HT", produit_to_update.pv3_ht);
+                args.put("PV4_HT", produit_to_update.pv4_ht);
+                args.put("PV5_HT", produit_to_update.pv5_ht);
+                args.put("PV6_HT", produit_to_update.pv6_ht);
+
                 args.put("PHOTO", produit_to_update.photo);
+
+                args.put("PROMO", produit_to_update.promo);
+                args.put("D1", produit_to_update.d1);
+                args.put("D2", produit_to_update.d2);
+                args.put("PP1_HT", produit_to_update.pp1_ht);
+
                 String selection = "CODE_BARRE=?";
                 String[] selectionArgs = {code_barre};
                 db.update("PRODUIT", args, selection, selectionArgs);
@@ -1347,6 +1419,7 @@ public class DATABASE extends SQLiteOpenHelper {
         return fournisseur;
     }
 
+
     //============================== FUNCTION SELECT Clients FROM Client TABLE ===============================
     @SuppressLint("Range")
     public PostData_Client select_client_from_database(String code_client){
@@ -1455,6 +1528,12 @@ public class DATABASE extends SQLiteOpenHelper {
                 produit.destock_type = cursor.getString(cursor.getColumnIndex("DESTOCK_TYPE"));
                 produit.destock_code_barre = cursor.getString(cursor.getColumnIndex("DESTOCK_CODE_BARRE"));
                 produit.destock_qte = cursor.getDouble(cursor.getColumnIndex("DESTOCK_QTE"));
+
+                produit.promo = cursor.getInt(cursor.getColumnIndex("PROMO"));
+                produit.d1 = cursor.getString(cursor.getColumnIndex("D1"));
+                produit.d2 = cursor.getString(cursor.getColumnIndex("D2"));
+                produit.pp1_ht = cursor.getDouble(cursor.getColumnIndex("PP1_HT"));
+
                 produit.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
 
                 produits.add(produit);
@@ -1498,6 +1577,12 @@ public class DATABASE extends SQLiteOpenHelper {
                 produit.destock_type = cursor.getString(cursor.getColumnIndex("DESTOCK_TYPE"));
                 produit.destock_code_barre = cursor.getString(cursor.getColumnIndex("DESTOCK_CODE_BARRE"));
                 produit.destock_qte = cursor.getDouble(cursor.getColumnIndex("DESTOCK_QTE"));
+
+                produit.promo = cursor.getInt(cursor.getColumnIndex("PROMO"));
+                produit.d1 = cursor.getString(cursor.getColumnIndex("D1"));
+                produit.d2 = cursor.getString(cursor.getColumnIndex("D2"));
+                produit.pp1_ht = cursor.getDouble(cursor.getColumnIndex("PP1_HT"));
+
                 produit.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
 
             } while (cursor.moveToNext());
@@ -2437,7 +2522,7 @@ public class DATABASE extends SQLiteOpenHelper {
         return  bon2;
     }
 
-    public boolean check_if_fournisseur_has_bon(String querry){
+    public boolean check_if_has_bon(String querry){
         //check if client has bons
         boolean has_bon = false;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -2452,24 +2537,6 @@ public class DATABASE extends SQLiteOpenHelper {
         cursor.close();
         return  has_bon;
     }
-
-    @SuppressLint("Range")
-    public boolean check_if_client_has_bon(String querry){
-        //check if client has bons
-        boolean has_bon = false;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery( querry , null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                has_bon = true;
-                break;
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return  has_bon;
-    }
-
 
     @SuppressLint("Range")
     public PostData_Inv2 check_if_inv2_exist(String querry){
@@ -2520,6 +2587,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon2.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
                 bon2.qte = cursor.getDouble(cursor.getColumnIndex("QTE"));
                 bon2.gratuit = cursor.getDouble(cursor.getColumnIndex("QTE_GRAT"));
+                bon2.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
+                bon2.pamp = cursor.getDouble(cursor.getColumnIndex("PAMP"));
                 bon2.p_u = cursor.getDouble(cursor.getColumnIndex("PU"));
                 bon2.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
                 bon2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
@@ -2794,6 +2863,8 @@ public class DATABASE extends SQLiteOpenHelper {
                             "Bon2.DESTOCK_TYPE, " +
                             "Bon2.DESTOCK_CODE_BARRE, " +
                             "Bon2.DESTOCK_QTE, " +
+                            "PRODUIT.PA_HT, " +
+                            "PRODUIT.PAMP, " +
                             "PRODUIT.ISNEW, " +
                             "PRODUIT.STOCK " +
                             "FROM Bon2 " +
@@ -2883,6 +2954,8 @@ public class DATABASE extends SQLiteOpenHelper {
                             "Bon2.DESTOCK_TYPE, " +
                             "Bon2.DESTOCK_CODE_BARRE, " +
                             "Bon2.DESTOCK_QTE, " +
+                            "PRODUIT.PA_HT, " +
+                            "PRODUIT.PAMP, " +
                             "PRODUIT.ISNEW, " +
                             "PRODUIT.STOCK " +
                             "FROM Bon2 " +
@@ -3942,6 +4015,28 @@ public class DATABASE extends SQLiteOpenHelper {
             executed =  false;
         }
         return executed;
+    }
+
+    public void delete_produit(String code_barre){
+        boolean executed = false;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            try {
+
+                String whereClause = "CODE_BARRE=?";
+                String[] whereArgs = {code_barre};
+                db.delete("PRODUIT", whereClause, whereArgs);
+
+                db.setTransactionSuccessful();
+                executed =  true;
+            } finally {
+                db.endTransaction();
+            }
+        }catch (SQLiteDatabaseLockedException sqlilock){
+            Log.v("TRACKKK", sqlilock.getMessage());
+            executed =  false;
+        }
     }
 
     public boolean validate_bon1_sql(String _table, PostData_Bon1 bon1){

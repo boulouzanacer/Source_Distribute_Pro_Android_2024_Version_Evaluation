@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
@@ -25,6 +27,7 @@ import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,10 +52,11 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     private final String mode_tarif;
     private final String PREFS = "ALL_PREFS";
     private boolean stock_moins = false;
-    private boolean photo_pr = false;
-    private final AlertDialog dialog;
 
+    private final AlertDialog dialog;
     private String SOURCE;
+
+    SharedPreferences prefs;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -96,8 +100,6 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         bon2_list = new ArrayList<>();
         SharedPreferences prefs3 = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         stock_moins = prefs3.getBoolean("STOCK_MOINS", false);
-
-        photo_pr = prefs3.getBoolean("PR_PRO", false);
         this.dialog = dialog;
         setHasStableIds(true);
     }
@@ -117,7 +119,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         final PostData_Produit item = produitList.get(position);
 
-
+        prefs = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
         holder.Produit.setText(item.produit);
 
         if(SOURCE.equals("ACHAT")){
@@ -153,18 +155,13 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         }
         holder.Qte_r.setText(new DecimalFormat("##,##0.##").format(item.stock));
 
-        if(item.photo != null)
-        {
-            holder.photopr.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
-        }
 
-//        if(photo_pr)
-//        {
-//            if(item.photo != null)
-//            {
-//                holder.photopr.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
-//            }
-//        }
+        if(prefs.getBoolean("SHOW_PROD_PIC", false)){
+            if(item.photo != null)
+            {
+                holder.photopr.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
+            }
+        }
 
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +169,11 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
             public void onClick(View view) {
 
 
-                itemClick.onClick(view, holder.getAdapterPosition(), item);
+                try {
+                    itemClick.onClick(view, holder.getAdapterPosition(), item);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
 
                 dialog.dismiss();
             }
@@ -196,12 +197,6 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     }
 
     public interface ItemClick{
-        void onClick(View v, int position, PostData_Produit item);
-    }
-
-    public void refresh(List<PostData_Produit> new_itemList){
-        produitList.clear();
-        produitList.addAll(new_itemList);
-        notifyDataSetChanged();
+        void onClick(View v, int position, PostData_Produit item) throws ParseException;
     }
 }

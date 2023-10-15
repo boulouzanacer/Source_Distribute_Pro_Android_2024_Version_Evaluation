@@ -242,6 +242,8 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                                 "BON2_TEMP.DESTOCK_TYPE, " +
                                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                 "BON2_TEMP.DESTOCK_QTE, " +
+                                "PRODUIT.PA_HT, " +
+                                "PRODUIT.PAMP, " +
                                 "PRODUIT.ISNEW, " +
                                 "PRODUIT.STOCK " +
                                 "FROM BON2_TEMP " +

@@ -1,17 +1,28 @@
 package com.safesoft.proapp.distribute.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.media.ExifInterface;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,6 +30,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.safesoft.proapp.distribute.activation.NetClient;
+import com.safesoft.proapp.distribute.activities.achats.ActivityAchats;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityEtatC;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrdersClient;
 import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires;
@@ -43,12 +55,20 @@ import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer1;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer2;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.utils.ImageUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -60,6 +80,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -301,7 +322,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                 Ftp_export export_inventaire_ftp = new Ftp_export();
                 export_inventaire_ftp.start(iactivity, "INVENTAIRE", "");
             }
-            case R.id.rlt_exported_ventes -> {
+            case R.id.rlt_exported_achats -> {
+                Intent exported_achats_intent = new Intent(ActivityImportsExport.this, ActivityAchats.class);
+                exported_achats_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
+                startActivity(exported_achats_intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }case R.id.rlt_exported_ventes -> {
                 Intent exported_ventes_intent = new Intent(ActivityImportsExport.this, ActivitySales.class);
                 exported_ventes_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
                 startActivity(exported_ventes_intent);
@@ -949,6 +975,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 "PRODUIT.COLISSAGE, " +
                                 "coalesce(PRODUIT.PA_HT,0) AS PA_HT, " +
                                 "coalesce(PRODUIT.TVA,0) AS TVA, " +
+
+                                "coalesce(PRODUIT.PROMO,0) AS PROMO , " +
+                                "PRODUIT.D1, " +
+                                "PRODUIT.D2, " +
+                                "cast(coalesce(PRODUIT.PP1_HT,0) as decimal (17,2)) AS PP1_HT , " +
+
                                 "cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , " +
                                 "cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, " +
                                 "cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT ";
@@ -979,6 +1011,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.colissage = rs3.getDouble("COLISSAGE");
                             produit_update.photo = rs3.getBytes("PHOTO");
 
+                            produit_update.promo = rs3.getInt("PROMO");
+                            produit_update.d1 = rs3.getString("D1");
+                            produit_update.d2 = rs3.getString("D2");
+                            produit_update.pp1_ht = rs3.getDouble("PP1_HT");
+
                         }
                         controller.update_produit(produit_update, transfer2s.get(i).code_barre);
 
@@ -1005,6 +1042,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 "PRODUIT.PRODUIT, " +
                                 "coalesce(PRODUIT.PA_HT,0) AS PA_HT, " +
                                 "coalesce(PRODUIT.TVA,0) AS TVA, " +
+
+                                "coalesce(PRODUIT.PROMO,0) AS PROMO , " +
+                                "PRODUIT.D1, " +
+                                "PRODUIT.D2, " +
+                                "cast(coalesce(PRODUIT.PP1_HT,0) as decimal (17,2)) AS PP1_HT , " +
+
                                 "cast(coalesce(PRODUIT.PV1_HT,0) as decimal (17,2)) AS PV1_HT , " +
                                 "cast (coalesce(PRODUIT.PV2_HT,0) as decimal(17,2))  AS PV2_HT, " +
                                 "cast (coalesce(PRODUIT.PV3_HT,0) as decimal(17,2)) AS PV3_HT ";
@@ -1031,6 +1074,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.colissage = rs3.getDouble("COLISSAGE");
                             produit_update.stock = transfer2s.get(i).qte;
                             produit_update.photo = rs3.getBytes("PHOTO");
+
+                            produit_update.promo = rs3.getInt("PROMO");
+                            produit_update.d1 = rs3.getString("D1");
+                            produit_update.d2 = rs3.getString("D2");
+                            produit_update.pp1_ht = rs3.getDouble("PP1_HT");
 
                         }
 
@@ -1351,12 +1399,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                             String insert_fournisseur;
 
                             // insert fournisseur
-                            insert_fournisseur = "INSERT INTO FOURNIS (CODE_FRS, FOURNIS, ADRESSE, TEL, CODE_DEPOT) VALUES ('"
+                            insert_fournisseur = "INSERT INTO FOURNIS (CODE_FRS, FOURNIS, ADRESSE, TEL) VALUES ('"
                                     + achat1s.get(i).code_frs.replace("'", "''") + "' ," +
                                     "'" + achat1s.get(i).fournis.replace("'", "''") + "', " +
                                     "'" + achat1s.get(i).adresse.replace("'", "''") + "', " +
-                                    "'" + achat1s.get(i).tel.replace("'", "''") + "', " +
-                                    "'" + achat1s.get(i).code_depot.replace("'", "''") + "')";
+                                    "'" + achat1s.get(i).tel.replace("'", "''") + "')";
 
 
                             stmt.executeUpdate(insert_fournisseur);
@@ -1457,42 +1504,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 stmt.addBatch(buffer[j]);
                             }
 
-                            //   stmt.executeBatch();
-
-                            /*String requete_situation = "INSERT INTO CARNET_C (CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, CODE_VENDEUR, CODE_CAISSE) VALUES ('"
-                                    + achat1s.get(i).code_frs.replace("'", "''") + "', " +
-                                    " '" + format2.format(dt) + "', " +
-                                    " '" + achat1s.get(i).heure + "', " +
-                                    " '" + achat1s.get(i).montant_bon + "' ," +
-                                    " '" + achat1s.get(i).verser + "' ," +
-                                    " 'BL-VENTE' ," +
-                                    " '" + NUM_BON + "'," +
-                                    " '" + achat1s.get(i).mode_rg + "'," +
-                                    " 'TERMINAL_MOBILE'," +
-                                    " ' '," +
-                                    " iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')," +
-                                    " iif('" + CODE_CAISSE + "' = '000000', null ,'" + CODE_CAISSE + "'))";
-
-                            stmt.addBatch(requete_situation);*/
-
-
-                           /* if (!CODE_CAISSE.equals("000000")) {
-                                if (achat1s.get(i).verser != 0) {
-
-                                    String requete_caisse = "INSERT INTO CAISSE2 (CODE_CAISSE, CODE_CAISSE1, DATE_CAISSE, ENTREE , SORTIE, SOURCE , NUM_SOURCE , MODE_RG , REMARQUE , UTILISATEUR) VALUES ('"
-                                            + CODE_CAISSE + "' ," +
-                                            " '" + CODE_CAISSE + "'," +
-                                            " '" + format2.format(dt) + "' ," +
-                                            " '" + achat1s.get(i).verser + "', " +
-                                            " '0'," +
-                                            " 'BL-VENTE' ," +
-                                            " '" + NUM_BON + "'," +
-                                            " 'ESPECE'," +
-                                            " ' '," +
-                                            " 'TERMINAL_MOBILE')";
-                                    stmt.addBatch(requete_caisse);
-                                }
-                            }*/
 
                             stmt.executeBatch();
                             con.commit();
@@ -1937,6 +1948,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "BON2.DESTOCK_TYPE, " +
                                     "BON2.DESTOCK_CODE_BARRE, " +
                                     "BON2.DESTOCK_QTE, " +
+                                    "PRODUIT.PA_HT, " +
+                                    "PRODUIT.PAMP, " +
                                     "PRODUIT.ISNEW, " +
                                     "PRODUIT.STOCK " +
                                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -1991,7 +2004,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             stmt.addBatch(insert_into_bon1);
 
                             for (int j = 0; j < bon2s.size(); j++) {
-                                buffer[j] = "INSERT INTO BON2 (NUM_BON, CODE_BARRE, QTE, PV_HT_AR, PV_HT, TVA, NBRE_COLIS, COLISSAGE, DESTOCK_QTE, CODE_DEPOT, DESTOCK_CODE_BARRE, DESTOCK_TYPE ";
+                                buffer[j] = "INSERT INTO BON2 (NUM_BON, CODE_BARRE, QTE, PA_HT, PV_HT_AR, PV_HT, TVA, NBRE_COLIS, COLISSAGE, DESTOCK_QTE, CODE_DEPOT, DESTOCK_CODE_BARRE, DESTOCK_TYPE ";
                                 if(TYPE_LOGICIEL.equals("PME PRO")){
                                     buffer[j] = buffer[j] + ", QTE_GRAT, PRODUIT ";
                                 }
@@ -1999,6 +2012,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                         " '" + NUM_BON + "' ," +
                                         " '" + bon2s.get(j).codebarre.replace("'", "''") + "' ," +
                                         " '" + bon2s.get(j).qte + "'," +
+                                        " '" + bon2s.get(j).pamp + "' ," +
                                         " '" + bon2s.get(j).p_u + "' ," +
                                         " '" + bon2s.get(j).p_u + "' ," +
                                         " '" + bon2s.get(j).tva + "' ," +
@@ -2503,6 +2517,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "BON2_TEMP.DESTOCK_TYPE, " +
                                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                     "BON2_TEMP.DESTOCK_QTE, " +
+                                    "PRODUIT.PA_HT, " +
+                                    "PRODUIT.PAMP, " +
                                     "PRODUIT.ISNEW, " +
                                     "PRODUIT.STOCK " +
                                     "FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -2555,7 +2571,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                             for (int j = 0; j < bon2s_Temp.size(); j++) {
 
-                                buffer[j] = "INSERT INTO BCC2 (NUM_BON, CODE_BARRE, QTE, PV_HT, TVA, NBRE_COLIS, COLISSAGE, DESTOCK_QTE, CODE_DEPOT, DESTOCK_CODE_BARRE, DESTOCK_TYPE ";
+                                buffer[j] = "INSERT INTO BCC2 (NUM_BON, CODE_BARRE, QTE, PA_HT, PV_HT, TVA, NBRE_COLIS, COLISSAGE, DESTOCK_QTE, CODE_DEPOT, DESTOCK_CODE_BARRE, DESTOCK_TYPE ";
                                 if(TYPE_LOGICIEL.equals("PME PRO")){
                                     buffer[j] = buffer[j] + ", QTE_GRAT, PRODUIT ";
                                 }
@@ -2563,6 +2579,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 buffer[j] = buffer[j] + ") VALUES ( '" + NUM_BON + "' ," +
                                         " '" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "' ," +
                                         " '" + bon2s_Temp.get(j).qte + "'," +
+                                        " '" + bon2s_Temp.get(j).pamp + "' ," +
                                         " '" + bon2s_Temp.get(j).p_u + "' ," +
                                         " '" + bon2s_Temp.get(j).tva + "' ," +
                                         " '" + bon2s_Temp.get(j).nbr_colis + "'," +
@@ -3181,13 +3198,13 @@ public class ActivityImportsExport extends AppCompatActivity {
                 }
                 editor.apply();
 
+                PostData_Params params2 = new PostData_Params();
 
                 if(TYPE_LOGICIEL.equals("PME PRO")){
                     //============================ GET PARAMS2 =========================================
                     String sql2 = "SELECT PARAMS2.PARAMETRES, PARAMS2.VALEURE FROM PARAMS2";
                     ResultSet rs2 = stmt.executeQuery(sql2);
 
-                    PostData_Params params2 = new PostData_Params();
                     while (rs2.next()) {
 
                         //======================= PRIX ACTIVE ========================
@@ -3253,7 +3270,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                     String sql2 = "SELECT PARAMS2.PARAMETRES, PARAMS2.VALEURE FROM PARAMS2";
                     ResultSet rs2 = stmt.executeQuery(sql2);
 
-                    PostData_Params params2 = new PostData_Params();
                     while (rs2.next()) {
 
                         //====================== FTP =================================
@@ -3290,12 +3306,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                         params2.pv2_titre = "PRIX 2";
                         params2.pv3_titre = "PRIX 3";
                     }
-
-                    controller.insert_into_params(params2);
                 }
 
                 stmt.close();
-
+                controller.insert_into_params(params2);
                 flag = 1;
 
             } catch (Exception e) {
@@ -3752,6 +3766,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                             "coalesce(PRODUIT.PA_HT,0) AS PA_HT, " +
                             "coalesce(PRODUIT.TVA,0) AS TVA, " +
                             "coalesce(PRODUIT.PAMP_HT,0) AS PAMP, " +
+
+                            "coalesce(PRODUIT.PROMO,0) AS PROMO , " +
+                            "coalesce(PRODUIT.D1,'01-01-1900') AS D1, " +
+                            "coalesce(PRODUIT.D2,'01-01-1900') AS D2, " +
+                            "cast(coalesce(PRODUIT.PP1_HT,0) as decimal (17,2)) AS PP1_HT , " +
+
                             "coalesce(PRODUIT.PV1_HT,0) AS PV1_HT, " +
                             "coalesce(PRODUIT.PV2_HT,0) AS PV2_HT, " +
                             "coalesce(PRODUIT.PV3_HT,0) AS PV3_HT, " +
@@ -3769,6 +3789,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                                       ", PRODUIT.PHOTO ";
                     }
                     sql3 = sql3 + " FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0)=0  ";
+
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
                     ResultSet rs3 = stmt.executeQuery(sql3);
                     PostData_Produit produit_update;
@@ -3791,13 +3814,30 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv4_ht = rs3.getDouble("PV4_HT");
                             produit_update.pv5_ht = rs3.getDouble("PV5_HT");
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
-                            produit_update.photo = rs3.getBytes("PHOTO");
+                            //compressImage(rs3.getBytes("PHOTO"));
+                            produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
+                           // produit_update.photo = rs3.getBytes("PHOTO");
                         }
                         produit_update.description = rs3.getString("DETAILLE");
                         produit_update.famille = rs3.getString("FAMILLE");
                         produit_update.destock_type = rs3.getString("DESTOCK_TYPE");
                         produit_update.destock_code_barre = rs3.getString("DESTOCK_CODE_BARRE");
                         produit_update.destock_qte = rs3.getDouble("DESTOCK_QTE");
+
+                        produit_update.promo = rs3.getInt("PROMO");
+                        if(produit_update.promo == 1){
+
+                            Date dt1 = format2.parse(rs3.getString("D1"));
+                            assert dt1 != null;
+                            produit_update.d1 = format.format(dt1);
+
+                            Date dt2 = format2.parse(rs3.getString("D2"));
+                            assert dt2 != null;
+                            produit_update.d2 = format.format(dt2);
+                        }
+
+                        produit_update.pp1_ht = rs3.getDouble("PP1_HT");
+
                         produit_update.isNew = 0;
 
                         produits.add(produit_update);
@@ -3843,6 +3883,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                             " coalesce(PRODUIT.PA_HT, 0) AS PA_HT," +
                             " coalesce(PRODUIT.TVA, 0) AS TVA," +
                             " coalesce(PRODUIT.PAMP_HT, 0) AS PAMP," +
+
+                            "coalesce(PRODUIT.PROMO,0) AS PROMO , " +
+                            "coalesce(PRODUIT.D1,'01-01-1900') AS D1, " +
+                            "coalesce(PRODUIT.D2,'01-01-1900') AS D2, " +
+                            "cast(coalesce(PRODUIT.PP1_HT,0) as decimal (17,2)) AS PP1_HT , " +
+
                             " coalesce(PRODUIT.PV1_HT,0) AS PV1_HT, " +
                             " coalesce(PRODUIT.PV2_HT,0) AS PV2_HT, " +
                             " coalesce(PRODUIT.PV3_HT,0) AS PV3_HT, " +
@@ -3867,6 +3913,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 " WHERE DEPOT2.code_depot = '" + code_depot + "' AND Coalesce(PRODUIT.SUP,0)=0 ";
                     }
 
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
                     ResultSet rs3 = stmt.executeQuery(sql3);
                     PostData_Produit produit_update;
                     while (rs3.next()) {
@@ -3889,6 +3938,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv4_ht = rs3.getDouble("PV4_HT");
                             produit_update.pv5_ht = rs3.getDouble("PV5_HT");
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
+                          //  compressImage(rs3.getBytes("PHOTO"));
                             produit_update.photo = rs3.getBytes("PHOTO");
                         }
 
@@ -3897,6 +3947,18 @@ public class ActivityImportsExport extends AppCompatActivity {
                         produit_update.destock_type = rs3.getString("DESTOCK_TYPE");
                         produit_update.destock_code_barre = rs3.getString("DESTOCK_CODE_BARRE");
                         produit_update.destock_qte = rs3.getDouble("DESTOCK_QTE");
+
+                        produit_update.promo = rs3.getInt("PROMO");
+                        if(produit_update.promo == 1){
+                            Date dt1 = format2.parse(rs3.getString("D1"));
+                            assert dt1 != null;
+                            produit_update.d1 = format.format(dt1);
+                            Date dt2 = format2.parse(rs3.getString("D2"));
+                            assert dt2 != null;
+                            produit_update.d2 = format.format(dt2);
+                        }
+                        produit_update.pp1_ht = rs3.getDouble("PP1_HT");
+
                         produit_update.isNew = 0;
 
                         produits.add(produit_update);
@@ -3929,7 +3991,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             } catch (Exception e) {
                 con = null;
-                if(e.getMessage().contains("SQL Error")){
+                if(e.getMessage().contains("SQL Error") || (e.getMessage().contains("java.lang.NullPointerException"))){
                     flag = 3;
                 }else if (e.getMessage().contains("Unable to complete network request to host")) {
                     flag = 2;
@@ -3978,6 +4040,168 @@ public class ActivityImportsExport extends AppCompatActivity {
             }
             super.onPostExecute(result);
 
+        }
+
+        public String compressImage(byte [] b) {
+            if(b!= null){
+                //String filePath = getRealPathFromURI(imageUri);
+                Bitmap scaledBitmap = null;
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+
+//      by setting this field as true, the actual bitmap pixels are not loaded in the memory. Just the bounds are loaded. If
+//      you try the use the bitmap here, you will get null.
+                options.inJustDecodeBounds = true;
+                Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length, options);
+                int actualHeight = options.outHeight;
+                int actualWidth = options.outWidth;
+
+//      max Height and width values of the compressed image is taken as 816x612
+
+                float maxHeight = 816.0f;
+                float maxWidth = 612.0f;
+                float imgRatio = actualWidth / actualHeight;
+                float maxRatio = maxWidth / maxHeight;
+
+//      width and height values are set maintaining the aspect ratio of the image
+
+                if (actualHeight > maxHeight || actualWidth > maxWidth) {
+                    if (imgRatio < maxRatio) {
+                        imgRatio = maxHeight / actualHeight;
+                        actualWidth = (int) (imgRatio * actualWidth);
+                        actualHeight = (int) maxHeight;
+                    } else if (imgRatio > maxRatio) {
+                        imgRatio = maxWidth / actualWidth;
+                        actualHeight = (int) (imgRatio * actualHeight);
+                        actualWidth = (int) maxWidth;
+                    } else {
+                        actualHeight = (int) maxHeight;
+                        actualWidth = (int) maxWidth;
+                    }
+                }
+
+//      setting inSampleSize value allows to load a scaled down version of the original image
+
+                options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
+
+//      inJustDecodeBounds set to false to load the actual bitmap
+                options.inJustDecodeBounds = false;
+
+//      this options allow android to claim the bitmap memory if it runs low on memory
+                options.inPurgeable = true;
+                options.inInputShareable = true;
+                options.inTempStorage = new byte[16 * 1024];
+
+                try {
+//          load the bitmap from its path
+                    bmp = BitmapFactory.decodeByteArray(b, 0, b.length, options);
+                } catch (OutOfMemoryError exception) {
+                    exception.printStackTrace();
+
+                }
+                try {
+                    scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);
+                } catch (OutOfMemoryError exception) {
+                    exception.printStackTrace();
+                }
+
+                float ratioX = actualWidth / (float) options.outWidth;
+                float ratioY = actualHeight / (float) options.outHeight;
+                float middleX = actualWidth / 2.0f;
+                float middleY = actualHeight / 2.0f;
+
+                Matrix scaleMatrix = new Matrix();
+                scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+                Canvas canvas = new Canvas(scaledBitmap);
+                canvas.setMatrix(scaleMatrix);
+                canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+                // check the rotation of the image and display it properly
+                ExifInterface exif;
+                try {
+                    exif = new ExifInterface(Arrays.toString(b));
+
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+                    Log.d("EXIF", "Exif: " + orientation);
+                    Matrix matrix = new Matrix();
+                    if (orientation == 6) {
+                        matrix.postRotate(90);
+                        Log.d("EXIF", "Exif: " + orientation);
+                    } else if (orientation == 3) {
+                        matrix.postRotate(180);
+                        Log.d("EXIF", "Exif: " + orientation);
+                    } else if (orientation == 8) {
+                        matrix.postRotate(270);
+                        Log.d("EXIF", "Exif: " + orientation);
+                    }
+                    scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    scaledBitmap.recycle();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                FileOutputStream out = null;
+                String filename = getFilename();
+                try {
+                    out = new FileOutputStream(filename);
+
+//          write the compressed bitmap at the destination specified by filename.
+                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                return filename;
+            }
+
+            return "";
+        }
+
+        public String getFilename() {
+            File file = new File(Environment.getExternalStorageDirectory().getPath(), "MyFolder/Images");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            String uriSting = (file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".jpg");
+            return uriSting;
+
+        }
+
+        private String getRealPathFromURI(String contentURI) {
+            Uri contentUri = Uri.parse(contentURI);
+            Cursor cursor = getContentResolver().query(contentUri, null, null, null, null);
+            if (cursor == null) {
+                return contentUri.getPath();
+            } else {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                return cursor.getString(index);
+            }
+        }
+
+        public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+            final int height = options.outHeight;
+            final int width = options.outWidth;
+            int inSampleSize = 1;
+
+            if (height > reqHeight || width > reqWidth) {
+                final int heightRatio = Math.round((float) height / (float) reqHeight);
+                final int widthRatio = Math.round((float) width / (float) reqWidth);
+                inSampleSize = Math.min(heightRatio, widthRatio);
+            }
+            final float totalPixels = width * height;
+            final float totalReqPixelsCap = reqWidth * reqHeight * 2;
+            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+                inSampleSize++;
+            }
+
+            return inSampleSize;
         }
     }
 
@@ -4268,7 +4492,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         ArrayList<PostData_Produit> postData_produits = new ArrayList<>();
 
         //Get product and  Insert it into produit tables
-        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE ISNEW = 1 ORDER BY PRODUIT";
@@ -4283,7 +4507,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             try {
                 String insert_into_produit = "";
-                insert_into_produit =  "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, STOCK, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
+                insert_into_produit =  "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
                 if(TYPE_LOGICIEL.equals("PME PRO")){
                     insert_into_produit = insert_into_produit +  ", PV4_HT, PV5_HT, PV6_HT ";
                 }
@@ -4293,14 +4517,14 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 " '" + postData_produits.get(i).produit.replace("'", " ") + "', "+
                                 " '" + postData_produits.get(i).pa_ht + "' ," +
                                 " '" + postData_produits.get(i).tva + "' ," +
-                                " '" + postData_produits.get(i).stock + "' ," +
                                 " '" + postData_produits.get(i).colissage + "', "+
                                 " '" + postData_produits.get(i).pv1_ht + "' ," +
                                 " '" + postData_produits.get(i).pv2_ht + "' ," +
                                 " '" + postData_produits.get(i).pv3_ht + "' ";
 
                 if(TYPE_LOGICIEL.equals("PME PRO")){
-                    insert_into_produit = insert_into_produit +  ", '" + postData_produits.get(i).pv4_ht + "' ," +
+                    insert_into_produit = insert_into_produit +  ", " +
+                            " '" + postData_produits.get(i).pv4_ht + "' ," +
                             " '" + postData_produits.get(i).pv5_ht + "' ," +
                             " '" + postData_produits.get(i).pv6_ht + "' ";
                 }

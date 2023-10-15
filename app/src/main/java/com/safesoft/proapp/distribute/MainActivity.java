@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbardrawer);
-    toolbar.setSubtitle("Version : 20.09.23");
+    toolbar.setSubtitle("Version : 07.10.23");
     setSupportActionBar(toolbar);
 
     objFrgment = new FragmentMain();

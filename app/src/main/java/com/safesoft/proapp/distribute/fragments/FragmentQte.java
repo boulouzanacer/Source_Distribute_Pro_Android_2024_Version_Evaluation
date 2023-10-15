@@ -7,11 +7,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +32,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -37,7 +44,7 @@ public class FragmentQte {
 
     private DATABASE controller;
     MaterialFancyButton btn_valider, btn_cancel;
-    TextView txv_produit, txv_message;
+    TextView txv_produit, txv_message, txv_promotion;
     TextInputLayout stockavantLayout_colis, stockapresLayout_colis, prixhtLayout, tvaLayout, ugLayout;
     LinearLayout ly_prix_ttc, part_3_qtevente_Layout;
     TextInputEditText  edt_colissage, edt_nbr_colis, edt_qte, edt_gratuit, edt_prix_ht, edt_tva, edt_prix_ttc, edt_stock_avant, edt_stock_avant_colis, edt_stock_apres, edt_stock_apres_colis;
@@ -57,10 +64,11 @@ public class FragmentQte {
     private String SOURCE_LOCAL;
 
     SharedPreferences prefs;
+    String TYPE_LOGICIEL;
 
     //PopupWindow display method
 
-    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Bon2 bon2, double prix_ttc) {
+    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Bon2 bon2) throws ParseException {
 
         mContext = context;
         this.activity = activity;
@@ -119,6 +127,7 @@ public class FragmentQte {
 
         txv_produit = dialogview.findViewById(R.id.produit_title);
         txv_message = dialogview.findViewById(R.id.message_title);
+        txv_promotion = dialogview.findViewById(R.id.promotion_title);
         edt_stock_avant = dialogview.findViewById(R.id.stockavant);
         edt_stock_avant_colis = dialogview.findViewById(R.id.stockavant_colis);
         edt_nbr_colis = dialogview.findViewById(R.id.nbrColis);
@@ -132,9 +141,8 @@ public class FragmentQte {
         edt_stock_apres = dialogview.findViewById(R.id.stockapres);
         edt_stock_apres_colis = dialogview.findViewById(R.id.stockapres_colis);
 
-
-
         prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
+
         if(prefs.getBoolean("AFFICHAGE_HT", false)){
             tvaLayout.setVisibility(View.VISIBLE);
             prixhtLayout.setVisibility(View.VISIBLE);
@@ -146,7 +154,6 @@ public class FragmentQte {
             ly_prix_ttc.setWeightSum(2);
         }
 
-        prefs = context.getSharedPreferences(PREFS, MODE_PRIVATE);
         if(prefs.getBoolean("EDIT_PRICE", false)){
             edt_prix_ttc.setEnabled(false);
             edt_prix_ht.setEnabled(false);
@@ -157,15 +164,20 @@ public class FragmentQte {
             edt_tva.setEnabled(true);
         }
 
-        prefs = context.getSharedPreferences(PREFS, MODE_PRIVATE);
+
         if(prefs.getBoolean("VENTE_WITH_QTE_GRAT", false)){
-            ugLayout.setVisibility(View.VISIBLE);
-            part_3_qtevente_Layout.setWeightSum(4);
+            TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
+            if(TYPE_LOGICIEL.equals("PME PRO")){
+                ugLayout.setVisibility(View.VISIBLE);
+                part_3_qtevente_Layout.setWeightSum(4);
+            }else{
+                ugLayout.setVisibility(View.GONE);
+                part_3_qtevente_Layout.setWeightSum(3);
+            }
         }else{
             ugLayout.setVisibility(View.GONE);
             part_3_qtevente_Layout.setWeightSum(3);
         }
-
 
 
         //********************************************************************
@@ -263,9 +275,38 @@ public class FragmentQte {
             val_stock_avant_colis = (double) (int) (val_stock_avant / val_colissage);
         }
 
-        val_prix_ht = arrived_bon2.p_u;
+        if(bon2.promo == 1){
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            Date d1 = format.parse(bon2.d1);
+            Date d2 = format.parse(bon2.d2);
+            Date today = Calendar.getInstance().getTime();
+            assert d1 != null;
+            assert d2 != null;
+            if(d1.getTime() == d2.getTime()){
+                if(d1.before(today)){
+                    val_prix_ht = arrived_bon2.pp1_ht;
+                    txv_promotion.setText("Produit en promotion");
+                    startBlinkanimation(txv_promotion);
+                }else {
+                    val_prix_ht = arrived_bon2.p_u;
+                    txv_promotion.setText("");
+                }
+            }else if(d1.getTime() <= today.getTime() && today.getTime() <= d2.getTime()){
+                val_prix_ht = arrived_bon2.pp1_ht;
+                txv_promotion.setText("Produit en promotion");
+                startBlinkanimation(txv_promotion);
+            }else {
+                val_prix_ht = arrived_bon2.p_u;
+                txv_promotion.setText("");
+            }
+
+        }else {
+            val_prix_ht = arrived_bon2.p_u;
+            txv_promotion.setText("");
+        }
+
         val_tva = arrived_bon2.tva;
-        val_prix_ttc = prix_ttc;
+        val_prix_ttc = val_prix_ht * (1+(bon2.tva/100));
 
         if(val_colissage == 0.0){
             stockavantLayout_colis.setVisibility(View.GONE);
@@ -346,9 +387,14 @@ public class FragmentQte {
         edt_stock_avant.setText(nq.format(val_stock_avant));
         edt_stock_avant_colis.setText(nq.format(val_stock_avant_colis));
 
+
+
         edt_prix_ht.setText(nf.format(val_prix_ht));
         edt_tva.setText(nq.format(val_tva));
         edt_prix_ttc.setText(nf.format(val_prix_ttc));
+
+        // pour barré un text
+        //edt_prix_ttc.setPaintFlags(edt_prix_ttc.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         // onMontantRemiseChange();
 
@@ -802,4 +848,13 @@ public class FragmentQte {
         edt_prix_ht.setText(nf.format(val_prix_ht));
     }
 
+
+    private void startBlinkanimation(View view){
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(100); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+        view.startAnimation(anim);
+    }
 }

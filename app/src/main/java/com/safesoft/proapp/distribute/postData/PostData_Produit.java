@@ -41,5 +41,11 @@ public class PostData_Produit implements Serializable {
     public String destock_type;
     public String destock_code_barre;
     public double destock_qte;
+    ////////PROMO////////////////
+    public int promo = 0;
+    public String d1;
+    public String d2;
+    public double pp1_ht;
+
     public int isNew = 0;
 }

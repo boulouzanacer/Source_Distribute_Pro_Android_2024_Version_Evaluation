@@ -50,7 +50,7 @@ public class FragmentNewProduct {
     final String ALLOWED_CHARACTERS_CODEBARRE ="0123456789ABCDEFGHJK";
     final String ALLOWED_CHARACTERS_REFERENCE ="012345678-9RSTUVWXYZ";
 
-    double val_nbr_colis, val_colissage, val_qte,
+    double  val_colissage, val_stock_ini,
             val_prix_achat_ht, val_tva, val_prix_achat_ttc,
             val_prix1_ht, val_prix1_ttc,
             val_prix2_ht, val_prix2_ttc,
@@ -61,8 +61,8 @@ public class FragmentNewProduct {
     ImageButton generate_codebarre, scan_codebarre;
     ImageButton generate_reference, scan_reference;
     MaterialFancyButton btn_valider, btn_cancel;
-    TextInputEditText  edt_designation, edt_codebarre, edt_reference,
-            edt_nbr_colis, edt_colissage, edt_qte,
+    TextInputEditText  edt_designation, edt_codebarre,
+            edt_reference, edt_colissage, edt_stock_ini,
             edt_prix_achat_ht, edt_tva, edt_prix_achat_ttc,
             edt_prix1_ht, edt_prix1_ttc,
             edt_prix2_ht, edt_prix2_ttc,
@@ -83,16 +83,11 @@ public class FragmentNewProduct {
 
     LinearLayout ly_prix_achat;
 
-    RadioGroup radioGroup_mode_tarif;
-    RadioButton selectedRadioButton;
-
     EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
 
     private final String PREFS = "ALL_PREFS";
-
-    private String CODE_DEPOT, CODE_VENDEUR;
 
     PostData_Produit created_produit;
     private DATABASE controller;
@@ -192,9 +187,8 @@ public class FragmentNewProduct {
         edt_codebarre = dialogview.findViewById(R.id.edt_codebarre);
         edt_reference = dialogview.findViewById(R.id.edt_reference);
 
-        edt_nbr_colis = dialogview.findViewById(R.id.edt_nbr_colis);
         edt_colissage = dialogview.findViewById(R.id.edt_colissage);
-        edt_qte = dialogview.findViewById(R.id.edt_qte);
+        edt_stock_ini = dialogview.findViewById(R.id.edt_stock_ini);
 
         edt_prix_achat_ht = dialogview.findViewById(R.id.edt_prix_achat_ht);
         edt_tva = dialogview.findViewById(R.id.edt_tva);
@@ -388,10 +382,20 @@ public class FragmentNewProduct {
 
             //===================================================================
 
-            if (edt_qte.getText().length() <= 0 ) {
-                edt_qte.setError("Quantité est obligatoire!!");
-                hasError = true;
+            if (edt_stock_ini.getText().length() <= 0 ) {
+                edt_stock_ini.setText("0");
+                val_stock_ini = 0;
+            }else {
+                val_stock_ini = Double.parseDouble(edt_stock_ini.getText().toString());
             }
+
+            if (edt_colissage.getText().length() <= 0 ) {
+                edt_colissage.setText("0");
+                val_colissage = 0;
+            }else {
+                val_colissage = Double.parseDouble(edt_colissage.getText().toString());
+            }
+
             //===================================================================
 
             if (edt_prix_achat_ttc.getText().length() <= 0 ) {
@@ -499,9 +503,8 @@ public class FragmentNewProduct {
                 created_produit.code_barre =  edt_codebarre.getText().toString();
                 created_produit.ref_produit =  edt_reference.getText().toString();
 
-                created_produit.stock_colis =  val_nbr_colis;
                 created_produit.colissage =  val_colissage;
-                created_produit.stock =  val_qte;
+                created_produit.stock =  val_stock_ini;
 
                 created_produit.pa_ht =  Double.parseDouble(edt_prix_achat_ht.getText().toString());
                 created_produit.tva =  Double.parseDouble(edt_tva.getText().toString());
@@ -552,33 +555,6 @@ public class FragmentNewProduct {
                     created_produit.pv6_ttc = 0.00;
                 }
 
-                /*created_client.mode_tarif ="0";
-
-                int selectedRadioButtonId = radioGroup_mode_tarif.getCheckedRadioButtonId();
-                if (selectedRadioButtonId != -1) {
-                    selectedRadioButton = dialogview.findViewById(selectedRadioButtonId);
-                    String selectedRbText = selectedRadioButton.getText().toString();
-                    if(selectedRbText.equals("Libre")){
-                        created_client.mode_tarif ="0";
-                    }
-                    if(selectedRbText.equals("Tarif 1")){
-                        created_client.mode_tarif ="1";
-                    }
-
-                    if(selectedRbText.equals("Tarif 2")){
-                        created_client.mode_tarif ="2";
-                    }
-                    if(selectedRbText.equals("Tarif 3")){
-                        created_client.mode_tarif ="3";
-                    }
-                }*/
-
-                SharedPreferences prefs2 = activity.getSharedPreferences(PREFS, MODE_PRIVATE);
-                CODE_DEPOT = prefs2.getString("CODE_DEPOT", "000000");
-                CODE_VENDEUR = prefs2.getString("CODE_VENDEUR", "000000");
-
-
-
                 if(SOURCE_ACTIVITY.equals("EDIT_PRODUIT")){
 
                     //created_client.code_client = old_client.code_client;
@@ -616,86 +592,6 @@ public class FragmentNewProduct {
             }
 
         });
-
-        edt_nbr_colis.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                if(!edt_colissage.isFocused() && !edt_qte.isFocused()){
-                    try{
-
-                        onNbrColisChange();
-
-                    }catch (Exception ignored){
-
-                    }
-                }
-
-            }
-        });
-
-
-        edt_colissage.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                if(!edt_nbr_colis.isFocused() && !edt_qte.isFocused()){
-
-                    try{
-
-                        onColissageChange();
-
-                    }catch (Exception ignored){
-
-                    }
-                }
-
-            }
-        });
-
-        edt_qte.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                if(!edt_nbr_colis.isFocused() && !edt_colissage.isFocused()){
-                    try{
-                        onQteChange();
-                    }catch (Exception ignored){
-
-                    }
-                }
-
-            }
-        });
-
 
         edt_prix_achat_ht.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1121,68 +1017,6 @@ public class FragmentNewProduct {
             dialog.dismiss();
         });
 
-
-    }
-
-    void onNbrColisChange(){
-
-        if(edt_nbr_colis.getText().toString().isEmpty()){
-            val_nbr_colis = 0.00;
-        }else {
-            val_nbr_colis = Double.parseDouble(edt_nbr_colis.getText().toString());
-        }
-
-
-        if(edt_colissage.getText().toString().isEmpty()){
-            val_colissage = 0.00;
-            edt_colissage.setText("0");
-        }else {
-            val_colissage = Double.parseDouble(edt_colissage.getText().toString());
-        }
-
-        val_qte = val_nbr_colis * val_colissage;
-
-        edt_qte.setText(nq.format(val_qte));
-
-    }
-
-
-    void onColissageChange(){
-        if(edt_colissage.getText().toString().isEmpty()){
-            val_colissage = 0.00;
-        }else {
-            val_colissage = Double.parseDouble(edt_colissage.getText().toString());
-        }
-
-        if(edt_nbr_colis.getText().toString().isEmpty()){
-            val_nbr_colis = 0.00;
-        }else {
-            val_nbr_colis = Double.parseDouble(edt_nbr_colis.getText().toString());
-        }
-
-        if(val_colissage == 0 || val_nbr_colis == 0){
-            val_qte = 0.0;
-            edt_qte.setText("0");
-
-        }else {
-            val_qte = val_nbr_colis * val_colissage;
-            edt_qte.setText(nq.format(val_qte));
-        }
-
-    }
-
-    void onQteChange(){
-
-        if(edt_qte.getText().toString().isEmpty()){
-            val_qte = 0.00;
-        }else {
-            val_qte = Double.parseDouble(edt_qte.getText().toString());
-        }
-
-        val_nbr_colis = 0.0;
-        edt_nbr_colis.setText("0");
-        val_colissage = 0.0;
-        edt_colissage.setText("0");
 
     }
 

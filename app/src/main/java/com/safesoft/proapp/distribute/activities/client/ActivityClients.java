@@ -191,7 +191,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
                         String querry_has_bon1 = "SELECT CODE_CLIENT FROM BON1 WHERE IS_EXPORTED = 0 AND CODE_CLIENT = '" + clients.get(position).code_client + "'";
                         String querry_has_bon1_temp = "SELECT CODE_CLIENT FROM BON1_TEMP WHERE IS_EXPORTED = 0 AND CODE_CLIENT = '" + clients.get(position).code_client + "'";
-                        if(controller.check_if_client_has_bon(querry_has_bon1) || controller.check_if_client_has_bon(querry_has_bon1_temp)){
+                        if(controller.check_if_has_bon(querry_has_bon1) || controller.check_if_has_bon(querry_has_bon1_temp)){
                             // you can't delete this client
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")

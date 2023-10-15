@@ -266,6 +266,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     "BON2_TEMP.DESTOCK_TYPE, " +
                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                     "BON2_TEMP.DESTOCK_QTE, " +
+                    "PRODUIT.PA_HT, " +
+                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2_TEMP " +
@@ -767,6 +769,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 "BON2_TEMP.DESTOCK_TYPE, " +
                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                 "BON2_TEMP.DESTOCK_QTE, " +
+                "PRODUIT.PA_HT, " +
+                "PRODUIT.PAMP, " +
                 "PRODUIT.ISNEW, " +
                 "PRODUIT.STOCK " +
                 "FROM BON2_TEMP " +
@@ -853,7 +857,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     Activity activity;
                     activity = ActivityOrderClient.this;
                     FragmentQte fragmentqte = new FragmentQte();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position) , final_panier.get(info.position).p_u * (1 + (final_panier.get(info.position).tva/ 100)));
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
 
                 }catch (Exception e){
 
@@ -1073,7 +1077,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 .withText("Scanning...")
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
-                    public void onResult(Barcode barcode) {
+                    public void onResult(Barcode barcode) throws ParseException {
                         // Sound( R.raw.bleep);
                        // setRecycle(barcode.rawValue, true);
                         selectProductFromScan(barcode.rawValue);
@@ -1094,7 +1098,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
 
     @Override
-    public void onClick(View v, int position, PostData_Produit item) {
+    public void onClick(View v, int position, PostData_Produit item) throws ParseException {
 
         PostData_Bon2 bon2_temp = new PostData_Bon2();
         bon2_temp.produit = item.produit;
@@ -1106,19 +1110,26 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         //bon2_temp.pa_ht = item.pa_ht;
         bon2_temp.tva = item.tva;
         bon2_temp.colissage = item.colissage;
-        if(bon1_temp.mode_tarif.equals("3")){
-            bon2_temp.p_u = item.pv3_ht;
-        }else if(bon1_temp.mode_tarif.equals("2")){
-            bon2_temp.p_u = item.pv2_ht;
-        } else
-            bon2_temp.p_u = item.pv1_ht;
+        bon2_temp.promo = item.promo;
+        bon2_temp.d1 = item.d1;
+        bon2_temp.d2 = item.d2;
+        bon2_temp.pp1_ht = item.pp1_ht;
+
+        switch (bon1_temp.mode_tarif) {
+            case "6" -> bon2_temp.p_u = item.pv6_ht;
+            case "5" -> bon2_temp.p_u = item.pv5_ht;
+            case "4" -> bon2_temp.p_u = item.pv4_ht;
+            case "3" -> bon2_temp.p_u = item.pv3_ht;
+            case "2" -> bon2_temp.p_u = item.pv2_ht;
+            default -> bon2_temp.p_u = item.pv1_ht;
+        }
 
         bon2_temp.num_bon = NUM_BON;
         bon2_temp.code_depot = CODE_DEPOT;
         SOURCE = "BON2_TEMP_INSERT";
         Activity activity = ActivityOrderClient.this;
         FragmentQte fragmentqte = new FragmentQte();
-        fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp , bon2_temp.p_u * (1 + (bon2_temp.tva / 100)));
+        fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp);
 
     }
 
@@ -1183,11 +1194,11 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         }
     }
 
-    private void selectProductFromScan(String resultscan){
+    private void selectProductFromScan(String resultscan) throws ParseException {
         ArrayList<PostData_Produit> produits;
         PostData_Bon2 bon2_temp = new PostData_Bon2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PTODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
@@ -1197,7 +1208,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+resultscan+"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
@@ -1216,18 +1227,25 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             //bon2_temp.pa_ht = produits.get(0).pa_ht;
             bon2_temp.tva = produits.get(0).tva;
             bon2_temp.colissage = produits.get(0).colissage;
-            if(bon1_temp.mode_tarif.equals("3")){
-                bon2_temp.p_u = produits.get(0).pv3_ht;
-            }else if(bon1_temp.mode_tarif.equals("2")){
-                bon2_temp.p_u = produits.get(0).pv2_ht;
-            } else
-                bon2_temp.p_u = produits.get(0).pv1_ht;
+            bon2_temp.promo = produits.get(0).promo;
+            bon2_temp.d1 = produits.get(0).d1;
+            bon2_temp.d2 = produits.get(0).d2;
+            bon2_temp.pp1_ht = produits.get(0).pp1_ht;
+
+            switch (bon1_temp.mode_tarif) {
+                case "6" -> bon2_temp.p_u = produits.get(0).pv6_ht;
+                case "5" -> bon2_temp.p_u = produits.get(0).pv5_ht;
+                case "4" -> bon2_temp.p_u = produits.get(0).pv4_ht;
+                case "3" -> bon2_temp.p_u = produits.get(0).pv3_ht;
+                case "2" -> bon2_temp.p_u = produits.get(0).pv2_ht;
+                default -> bon2_temp.p_u = produits.get(0).pv1_ht;
+            }
 
 
             SOURCE = "BON2_TEMP_INSERT";
             Activity activity = ActivityOrderClient.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp , bon2_temp.p_u * (1 + (bon2_temp.tva / 100)));
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivityOrderClient.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();

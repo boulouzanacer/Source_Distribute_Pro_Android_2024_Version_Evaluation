@@ -617,9 +617,9 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
-            case R.id.delete_produit:
-                if(achat1.blocage.equals("F")){
+        switch (item.getItemId()) {
+            case R.id.delete_produit -> {
+                if (achat1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -635,16 +635,17 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
 
-                            try{
+                            try {
 
                                 SOURCE = "ACHAT2_DELETE";
-                                controller.delete_from_achat2("ACHAT2", final_panier.get(info.position).recordid ,final_panier.get(info.position));
+                                assert info != null;
+                                controller.delete_from_achat2("ACHAT2", final_panier.get(info.position).recordid, final_panier.get(info.position));
                                 initData();
                                 //PanierAdapter.RefrechPanier(final_panier);
                                 PanierAdapter = new ListViewAdapterPanier(ActivityAchat.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
                                 expandableListView.setAdapter(PanierAdapter);
 
-                            }catch (Exception e){
+                            } catch (Exception e) {
 
                                 new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
                                         .setTitleText("Attention!")
@@ -655,33 +656,35 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                             sDialog.dismiss();
                         }).show();
                 return true;
-
-            case R.id.edit_produit:
-                if(achat1.blocage.equals("F")){
+            }
+            case R.id.edit_produit -> {
+                if (achat1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
                             .show();
-                    return true ;
+                    return true;
                 }
-                try{
+                try {
                     SOURCE = "ACHAT2_EDIT";
                     Activity activity;
                     activity = ActivityAchat.this;
                     FragmentQte fragmentqte = new FragmentQte();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position) , final_panier.get(info.position).p_u * (1 + (final_panier.get(info.position).tva/ 100)));
+                    assert info != null;
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
 
-                }catch (Exception e){
+                } catch (Exception e) {
 
                     new SweetAlertDialog(ActivityAchat.this, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Attention!")
                             .setContentText("Error : " + e.getMessage())
                             .show();
                 }
-
                 return true;
-            default:
+            }
+            default -> {
                 return super.onContextItemSelected(item);
+            }
         }
     }
 
@@ -874,7 +877,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                 .withText("Scanning...")
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
-                    public void onResult(Barcode barcode) {
+                    public void onResult(Barcode barcode) throws ParseException {
                         // Sound( R.raw.bleep);
                        // setRecycle(barcode.rawValue, true);
                         selectProductFromScan(barcode.rawValue);
@@ -895,7 +898,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
 
 
     @Override
-    public void onClick(View v, int position, PostData_Produit item) {
+    public void onClick(View v, int position, PostData_Produit item) throws ParseException {
 
             PostData_Bon2 bon2 = new PostData_Bon2();
             bon2.produit = item.produit;
@@ -904,17 +907,20 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             bon2.destock_type = item.destock_type;
             bon2.destock_code_barre = item.destock_code_barre;
             bon2.destock_qte = item.destock_qte;
-            bon2.p_u = item.pa_ht;
             bon2.tva = item.tva;
             bon2.colissage = item.colissage;
             bon2.p_u = item.pa_ht;
+            bon2.promo = item.promo;
+            bon2.d1 = item.d1;
+            bon2.d2 = item.d2;
+            bon2.pp1_ht = item.pp1_ht;
 
             bon2.num_bon = NUM_BON;
             bon2.code_depot = CODE_DEPOT;
             SOURCE = "ACHAT2_INSERT";
             Activity activity = ActivityAchat.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2 , bon2.p_u * (1 + (bon2.tva / 100)));
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
 
     }
 
@@ -982,11 +988,11 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         }
     }
 
-    private void selectProductFromScan(String resultscan){
+    private void selectProductFromScan(String resultscan) throws ParseException {
         ArrayList<PostData_Produit> produits;
         PostData_Bon2 bon2 = new PostData_Bon2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
@@ -996,7 +1002,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                 String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+resultscan+"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
@@ -1015,11 +1021,16 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             bon2.tva = produits.get(0).tva;
             bon2.colissage = produits.get(0).colissage;
             bon2.p_u = produits.get(0).pa_ht;
+            bon2.promo = produits.get(0).promo;
+            bon2.d1 = produits.get(0).d1;
+            bon2.d2 = produits.get(0).d2;
+            bon2.pp1_ht = produits.get(0).pp1_ht;
+
 
             SOURCE = "ACHAT2_INSERT";
             Activity activity = ActivityAchat.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2 , bon2.p_u * (1 + (bon2.tva / 100)));
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivityAchat.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();

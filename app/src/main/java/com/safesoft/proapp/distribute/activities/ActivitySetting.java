@@ -474,11 +474,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
-        chkbx_produit.setChecked(prefs.getBoolean("PR_PRO", false));
+        chkbx_produit.setChecked(prefs.getBoolean("SHOW_PROD_PIC", false));
 
         chkbx_produit.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("PR_PRO", isChecked);
+            editor.putBoolean("SHOW_PROD_PIC", isChecked);
             editor.apply();
         });
 
@@ -572,14 +572,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
             //// sauvegaure de parametre de serveur FTP
 
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putString("SERVEUR_FTP", nom_serveur_ftp.getText().toString());
-            editor.putString("PORT_FTP", num_port_ftp.getText().toString());
-            editor.putString("USER_FTP", nom_utilisateur_ftp.getText().toString());
-            editor.putString("PASSWORD_FTP", password_ftp.getText().toString());
-            editor.putString("EXP_FTP", ch_exp_ftp.getText().toString());
-            editor.putString("IMP_FTP", ch_imp_ftp.getText().toString());
-            editor.apply();
+            //====================== FTP =================================
+            PostData_Params params2 = new PostData_Params();
+
+            params2.ftp_server = nom_serveur_ftp.getText().toString();
+            params2.ftp_port = num_port_ftp.getText().toString();
+            params2.ftp_user = nom_utilisateur_ftp.getText().toString();
+            params2.ftp_pass = password_ftp.getText().toString();
+            params2.ftp_imp = ch_exp_ftp.getText().toString();
+            params2.ftp_exp = ch_imp_ftp.getText().toString();
+
+            controller.update_ftp_params(params2);
 
             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Success!")
