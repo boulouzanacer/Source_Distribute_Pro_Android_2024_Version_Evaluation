@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,13 +36,12 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
   private PrinterFactory printerFactory;
   final String PREFS = "ALL_PREFS";
 
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbardrawer);
-    toolbar.setSubtitle("Version : 07.10.23");
+    toolbar.setSubtitle("Version : 30.11.23");
     setSupportActionBar(toolbar);
 
     objFrgment = new FragmentMain();
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
   }
 
+
   @Override
   protected void onStart() {
     super.onStart();
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     PrinterObserverManager.getInstance().add(this);
 
   }
-
 
 
   public void startActivity(Class clss, int request)

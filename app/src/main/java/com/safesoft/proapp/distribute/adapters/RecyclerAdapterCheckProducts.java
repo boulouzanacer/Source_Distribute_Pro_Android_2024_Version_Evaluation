@@ -11,12 +11,16 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.ceylonlabs.imageviewpopup.ImagePopup;
+import com.safesoft.proapp.distribute.activities.product.ActivityProduitDetail;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
@@ -41,17 +45,13 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerAdapterCheckProducts.MyViewHolder> {
 
     private final List<PostData_Produit> produitList;
-    ArrayList<PostData_Produit> temp_list = new ArrayList<>();
-    private final ArrayList<PostData_Bon2> bon2_list;
     private int color = 0;
     private ItemClick itemClick;
     private ColorGeneratorModified generator;
     private final Context mContext;
     private final Activity mActivity;
-    private final EventBus bus;
     private final String mode_tarif;
     private final String PREFS = "ALL_PREFS";
-    private boolean stock_moins = false;
 
     private final AlertDialog dialog;
     private String SOURCE;
@@ -78,9 +78,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
             Qte_r = (TextView) view.findViewById(R.id.qte_r);
             photopr = view.findViewById(R.id.img_product);
-            //
-           // Decrease = (Button) view.findViewById(R.id.btnDec);
-            //qte = (EditText) view.findViewById(R.id.qte);
+
             mScalingActivityAnimator = new ScalingActivityAnimator(mContext, mActivity, R.id.root_view, R.layout.pop_view);
             this.setIsRecyclable(false);
         }
@@ -94,12 +92,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         this.mContext = context;
         this.mActivity = activity;
         this.SOURCE = SOURCE;
-
-        bus = EventBus.getDefault();
         this.mode_tarif = mode_tarif;
-        bon2_list = new ArrayList<>();
-        SharedPreferences prefs3 = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        stock_moins = prefs3.getBoolean("STOCK_MOINS", false);
         this.dialog = dialog;
         setHasStableIds(true);
     }
@@ -119,7 +112,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         final PostData_Produit item = produitList.get(position);
 
-        prefs = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
+        prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         holder.Produit.setText(item.produit);
 
         if(SOURCE.equals("ACHAT")){
@@ -162,7 +155,6 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
                 holder.photopr.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
             }
         }
-
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

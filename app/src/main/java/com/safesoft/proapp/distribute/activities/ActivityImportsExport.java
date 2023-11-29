@@ -27,6 +27,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.safesoft.proapp.distribute.activation.NetClient;
@@ -94,7 +95,13 @@ public class ActivityImportsExport extends AppCompatActivity {
     private DATABASE controller;
     private ProgressDialog mProgressDialog;
     private ProgressDialog mProgressDialog_Free;
-    private RelativeLayout Import_bon, Import_client, Import_produit, Export_vente, Export_vente_ftp, Export_commande, Export_commande_ftp, Export_inventaire, EtatV, EtatC, Exported_Vente, Exported_Commande;
+    private RelativeLayout
+            Import_bon, Import_client, Import_produit,
+            Export_achat, Export_vente,Export_commande,Export_inventaire,
+            Export_achat_ftp, Export_vente_ftp, Export_commande_ftp,Export_inventaire_ftp,
+            EtatV, EtatC,
+            Exported_Achat, Exported_Vente, Exported_Commande, Exported_Inventaire;
+    private Button Btn1, Btn2, Btn3, Btn4, Btn5;
     private String code_depot, code_vendeur;
     String currentDateTimeString = null;
     private Context mContext;
@@ -149,19 +156,62 @@ public class ActivityImportsExport extends AppCompatActivity {
             EtatC.setVisibility(View.GONE);
         }
 
+        if(!prefs.getBoolean("MODULE_ACHAT", true)){
+            Btn2.setVisibility(View.GONE);
+            Export_achat.setVisibility(View.GONE);
+            Export_achat_ftp.setVisibility(View.GONE);
+            Exported_Achat.setVisibility(View.GONE);
+        }
 
+        if(!prefs.getBoolean("MODULE_VENTE", true)){
+            Btn3.setVisibility(View.GONE);
+            Export_vente.setVisibility(View.GONE);
+            Export_vente_ftp.setVisibility(View.GONE);
+            Exported_Vente.setVisibility(View.GONE);
+            EtatV.setVisibility(View.GONE);
+        }
+
+        if(!prefs.getBoolean("MODULE_COMMANDE", true)){
+            Btn4.setVisibility(View.GONE);
+            Export_commande.setVisibility(View.GONE);
+            Export_commande_ftp.setVisibility(View.GONE);
+            Exported_Commande.setVisibility(View.GONE);
+            EtatC.setVisibility(View.GONE);
+        }
+
+        if(!prefs.getBoolean("MODULE_VENTE", true) && !prefs.getBoolean("MODULE_ACHAT", true) && !prefs.getBoolean("MODULE_COMMANDE", true) ){
+            Import_client.setVisibility(View.GONE);
+        }
+        if(!prefs.getBoolean("MODULE_INVENTAIRE", true)){
+            Btn5.setVisibility(View.GONE);
+            Export_inventaire.setVisibility(View.GONE);
+            Export_inventaire_ftp.setVisibility(View.GONE);
+            Exported_Inventaire.setVisibility(View.GONE);
+        }
     }
 
     protected void initViews() {
+
+        Btn1 = findViewById(R.id.bt1);
+        Btn2 = findViewById(R.id.bt2);
+        Btn3 = findViewById(R.id.bt3);
+        Btn4 = findViewById(R.id.bt4);
+        Btn5 = findViewById(R.id.bt5);
         //Import_bon = (RelativeLayout) findViewById(R.id.rlt_import_bon);
-        //Import_client = (RelativeLayout) findViewById(R.id.rlt_import_client);
+        Import_client = (RelativeLayout) findViewById(R.id.rlt_import_client);
+        Export_achat = (RelativeLayout) findViewById(R.id.rlt_export_achats);
+        Export_achat_ftp = (RelativeLayout) findViewById(R.id.rlt_export_achats_ftp);
         Export_vente = (RelativeLayout) findViewById(R.id.rlt_export_ventes);
         Export_vente_ftp = (RelativeLayout) findViewById(R.id.rlt_export_ventes_ftp);
         Export_commande = (RelativeLayout) findViewById(R.id.rlt_export_commandes);
+        Export_inventaire = (RelativeLayout) findViewById(R.id.rlt_export_inventaires);
         Export_commande_ftp = (RelativeLayout) findViewById(R.id.rlt_export_commandes_ftp);
+        Export_inventaire_ftp = (RelativeLayout) findViewById(R.id.rlt_export_inventaires_ftp);
         //Export_inventaire = (RelativeLayout) findViewById(R.id.rlt_export_inventaires);
+        Exported_Achat = (RelativeLayout) findViewById(R.id.rlt_exported_achats);
         Exported_Vente = (RelativeLayout) findViewById(R.id.rlt_exported_ventes);
         Exported_Commande = (RelativeLayout) findViewById(R.id.rlt_exported_commandes);
+        Exported_Inventaire = (RelativeLayout) findViewById(R.id.rlt_exported_inventaires);
         EtatV = (RelativeLayout) findViewById(R.id.rlt_etatv);
         EtatC = (RelativeLayout) findViewById(R.id.rlt_etatc);
 
@@ -3669,11 +3719,15 @@ public class ActivityImportsExport extends AppCompatActivity {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Attention. !")
                         .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                        .showSendButton(true)
+                        .setSendText("Envoyer")
                         .show();
             }else if(result == 3){
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Attention. !")
                         .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                        .showSendButton(true)
+                        .setSendText("Envoyer")
                         .show();
             }
             super.onPostExecute(result);
@@ -3788,7 +3842,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                       ", coalesce(PRODUIT.PV6_HT,0) AS PV6_HT" +
                                       ", PRODUIT.PHOTO ";
                     }
-                    sql3 = sql3 + " FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0)=0  ";
+                    sql3 = sql3 + " FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0)=0 ";
 
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                     SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -3819,7 +3873,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                            // produit_update.photo = rs3.getBytes("PHOTO");
                         }
                         produit_update.description = rs3.getString("DETAILLE");
-                        produit_update.famille = rs3.getString("FAMILLE");
+                        produit_update.famille = rs3.getString("FAMILLE").trim();
                         produit_update.destock_type = rs3.getString("DESTOCK_TYPE");
                         produit_update.destock_code_barre = rs3.getString("DESTOCK_CODE_BARRE");
                         produit_update.destock_qte = rs3.getDouble("DESTOCK_QTE");
@@ -3938,8 +3992,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv4_ht = rs3.getDouble("PV4_HT");
                             produit_update.pv5_ht = rs3.getDouble("PV5_HT");
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
-                          //  compressImage(rs3.getBytes("PHOTO"));
                             produit_update.photo = rs3.getBytes("PHOTO");
+                            //produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
                         }
 
                         produit_update.description = rs3.getString("DETAILLE");
@@ -4231,7 +4285,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         public Export_inventaire_to_server_task(boolean all, String num_inv) {
             _all = all;
             _num_inv = num_inv;
-
         }
 
         @Override

@@ -157,14 +157,13 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
       }else{
         firstChar = "NO";
       }
-
     }
+
 
    if (color == 0){
      if (generator!=null)
         color = generator.getColor(produitList.get(position).produit);
     }
-
 
    if(prefs.getBoolean("SHOW_PROD_PIC", false)){
      if(item.photo != null)
@@ -196,4 +195,5 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
   public interface ItemLongClick{
     void onLongClick(View v, int position);
   }
+
 }

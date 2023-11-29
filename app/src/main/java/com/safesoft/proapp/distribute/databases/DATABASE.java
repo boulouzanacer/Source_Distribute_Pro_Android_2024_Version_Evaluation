@@ -323,7 +323,7 @@ public class DATABASE extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS ROUTING(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_CLIENT VARCHAR UNIQUE, CLIENT VARCHAR , TEL VARCHAR, ADRESSE VARCHAR, LATITUDE REAL, LONGITUDE REAL, STATE INTEGER DEFAULT 0)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PARAMS(" +
-                "RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "RECORDID INTEGER PRIMARY KEY, " +
                 "PV1_TITRE VARCHAR, " +
                 "PRIX_2 INTEGER , " +
                 "PV2_TITRE VARCHAR, " +
@@ -481,6 +481,7 @@ public class DATABASE extends SQLiteOpenHelper {
             try {
 
                 ContentValues values = new ContentValues();
+                values.put("RECORDID", 1);
                 values.put("FTP_SERVER", params.ftp_server);
                 values.put("FTP_PORT", params.ftp_port);
                 values.put("FTP_USER", params.ftp_user);
@@ -488,7 +489,12 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("FTP_IMP", params.ftp_imp);
                 values.put("FTP_EXP", params.ftp_exp);
 
-                db.update("PARAMS", values,null, null);
+                int id = (int) db.insertWithOnConflict("PARAMS", null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1) {
+                    db.update("PARAMS", values,null, null);
+                }
+
+
 
                 db.setTransactionSuccessful();
             } finally {

@@ -183,14 +183,14 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     public void onLongClick(View v, final int position) {
 
         if (bon1s_temp.get(position).blocage.equals("F")) {
-            final CharSequence[] items = {"Modifier", "Supprimer", "Imprimer"};
+            final CharSequence[] items = {"Supprimer", "Imprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
-                    case 0 -> {
+                    /*case 0 -> {
                         if (!SOURCE_EXPORT.equals("EXPORTED")) {
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Bon de commande")
@@ -218,8 +218,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                     .setContentText("Ce bon est déja exporté")
                                     .show();
                         }
-                    }
-                    case 1 ->
+                    }*/
+                    case 0 ->
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Suppression")
                                     .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
@@ -236,7 +236,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
                                     })
                                     .show();
-                    case 2 -> {
+                    case 1 -> {
                         if (!bon1s_temp.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Information!")

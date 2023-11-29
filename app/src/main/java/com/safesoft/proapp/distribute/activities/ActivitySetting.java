@@ -671,13 +671,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         Switch switch_famille = findViewById(R.id.switch_famille);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_filtre_recherche = findViewById(R.id.switch_filtre_recherche);
-        /////////////////////////////////// SWITCH IMPORTATION /////////////////////////////////////
 
-        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        //////////////////////////////////// SWITCH EXPORTATION ////////////////////////////////////
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_module_achat = findViewById(R.id.switch_module_achat);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_module_vente = findViewById(R.id.switch_module_vente);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_module_commande = findViewById(R.id.switch_module_commande);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_module_inventaire = findViewById(R.id.switch_module_inventaire);
+
 
         //////////////////////////////// SWITCH GPS LOCALISATION ///////////////////////////////////
-
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
@@ -688,6 +693,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_edit_prix.setChecked(prefs.getBoolean("EDIT_PRICE", false));
         switch_famille.setChecked(prefs.getBoolean("MODE_FAMILLE", false));
         switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
+
+        switch_module_achat.setChecked(prefs.getBoolean("MODULE_ACHAT", true));
+        switch_module_vente.setChecked(prefs.getBoolean("MODULE_VENTE", true));
+        switch_module_commande.setChecked(prefs.getBoolean("MODULE_COMMANDE", true));
+        switch_module_inventaire.setChecked(prefs.getBoolean("MODULE_INVENTAIRE", true));
+
 
         switch_gps.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -741,6 +752,30 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_filtre_recherche.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("FILTRE_SEARCH", isChecked);
+            editor.apply();
+        });
+
+        switch_module_achat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("MODULE_ACHAT", isChecked);
+            editor.apply();
+        });
+
+        switch_module_vente.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("MODULE_VENTE", isChecked);
+            editor.apply();
+        });
+
+        switch_module_commande.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("MODULE_COMMANDE", isChecked);
+            editor.apply();
+        });
+
+        switch_module_inventaire.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("MODULE_INVENTAIRE", isChecked);
             editor.apply();
         });
 

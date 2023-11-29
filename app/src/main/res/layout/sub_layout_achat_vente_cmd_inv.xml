@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="5dp"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        style="@style/HeaderText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/black_overlay"
+        android:maxLines="2"
+        android:lines="2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="Paramètres activation achats, vente,\n commande, inventaire" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_large_size"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background_holo_light"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:paddingStart="8dp"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
+
+        <Switch
+            android:id="@+id/switch_module_achat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Activer module achats"
+            android:textAlignment="textStart"
+            android:checked="true"
+            android:textSize="15sp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background_holo_light"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:paddingStart="8dp"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
+
+        <Switch
+            android:id="@+id/switch_module_vente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Activer module ventes"
+            android:textAlignment="textStart"
+            android:checked="true"
+            android:textSize="15sp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background_holo_light"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:paddingStart="8dp"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
+
+        <Switch
+            android:id="@+id/switch_module_commande"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Activer module commandes"
+            android:textAlignment="textStart"
+            android:checked="true"
+            android:textSize="15sp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background_holo_light"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:paddingStart="8dp"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry">
+
+        <Switch
+            android:id="@+id/switch_module_inventaire"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Activer module inventaire"
+            android:textAlignment="textStart"
+            android:checked="true"
+            android:textSize="15sp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_size"
+        android:background="@color/divider" />
+
+</LinearLayout>

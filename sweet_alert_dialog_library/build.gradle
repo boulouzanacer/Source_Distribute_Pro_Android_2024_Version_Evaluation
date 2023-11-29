@@ -4,10 +4,10 @@ version = "1.0"
 project.group = "com.safesoft.uk2015.restopro"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 26
     }
 
     lintOptions {

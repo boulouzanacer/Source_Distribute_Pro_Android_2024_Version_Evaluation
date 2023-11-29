@@ -35,8 +35,10 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     private String mTitleText;
     private String mContentText;
     private boolean mShowCancel;
+    private boolean mShowSend;
     private boolean mShowContent;
     private String mCancelText;
+    private String mSendText;
     private String mConfirmText;
     private int mAlertType;
     private FrameLayout mErrorFrame;
@@ -50,6 +52,7 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     private ImageView mCustomImage;
     private Button mConfirmButton;
     private Button mCancelButton;
+    private Button mSendButton;
     private final ProgressHelper mProgressHelper;
     private FrameLayout mWarningFrame;
     private OnSweetClickListener mCancelClickListener;
@@ -81,18 +84,6 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         mErrorXInAnim = (AnimationSet)OptAnimationLoader.loadAnimation(getContext(), R.anim.error_x_in);
         // 2.3.x system don't support alpha-animation on layer-list drawable
         // remove it from animation set
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            List<Animation> childAnims = mErrorXInAnim.getAnimations();
-            int idx = 0;
-            for (;idx < childAnims.size();idx++) {
-                if (childAnims.get(idx) instanceof AlphaAnimation) {
-                    break;
-                }
-            }
-            if (idx < childAnims.size()) {
-                childAnims.remove(idx);
-            }
-        }
         mSuccessBowAnim = OptAnimationLoader.loadAnimation(getContext(), R.anim.success_bow_roate);
         mSuccessLayoutAnimSet = (AnimationSet)OptAnimationLoader.loadAnimation(getContext(), R.anim.success_mask_layout);
         mModalInAnim = (AnimationSet) OptAnimationLoader.loadAnimation(getContext(), R.anim.modal_in);
@@ -153,13 +144,16 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         mWarningFrame = (FrameLayout)findViewById(R.id.warning_frame);
         mConfirmButton = (Button)findViewById(R.id.confirm_button);
         mCancelButton = (Button)findViewById(R.id.cancel_button);
+        mSendButton = (Button)findViewById(R.id.send_button);
         mProgressHelper.setProgressWheel((ProgressWheel)findViewById(R.id.progressWheel));
         mConfirmButton.setOnClickListener(this);
         mCancelButton.setOnClickListener(this);
+        mSendButton.setOnClickListener(this);
 
         setTitleText(mTitleText);
         setContentText(mContentText);
         setCancelText(mCancelText);
+        setSendText(mSendText);
         setConfirmText(mConfirmText);
         changeAlertType(mAlertType, true);
 
@@ -278,10 +272,22 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         return mShowCancel;
     }
 
+    public boolean isShowSendButton () {
+        return mShowSend;
+    }
+
     public SweetAlertDialog showCancelButton (boolean isShow) {
         mShowCancel = isShow;
         if (mCancelButton != null) {
             mCancelButton.setVisibility(mShowCancel ? View.VISIBLE : View.GONE);
+        }
+        return this;
+    }
+
+    public SweetAlertDialog showSendButton (boolean isShow) {
+        mShowSend = isShow;
+        if (mSendButton != null) {
+            mSendButton.setVisibility(mShowSend ? View.VISIBLE : View.GONE);
         }
         return this;
     }
@@ -302,6 +308,10 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         return mCancelText;
     }
 
+    public String getSendText () {
+        return mSendText;
+    }
+
     public SweetAlertDialog setCancelText (String text) {
         mCancelText = text;
         if (mCancelButton != null && mCancelText != null) {
@@ -311,6 +321,14 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         return this;
     }
 
+    public SweetAlertDialog setSendText (String text) {
+        mSendText = text;
+        if (mSendButton != null && mSendText != null) {
+            showCancelButton(true);
+            mSendButton.setText(mSendText);
+        }
+        return this;
+    }
     public String getConfirmText () {
         return mConfirmText;
     }

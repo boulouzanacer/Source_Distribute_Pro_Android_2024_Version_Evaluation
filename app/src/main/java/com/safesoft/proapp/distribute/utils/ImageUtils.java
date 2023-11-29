@@ -26,8 +26,8 @@ public class ImageUtils {
         if(b == null)
             return null;
 
-        float maxHeight = 1920.0f;
-        float maxWidth = 1080.0f;
+        float maxHeight = 500.0f;
+        float maxWidth = 500.0f;
         Bitmap scaledBitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;

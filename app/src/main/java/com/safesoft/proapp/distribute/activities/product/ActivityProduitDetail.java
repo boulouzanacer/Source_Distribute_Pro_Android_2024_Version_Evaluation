@@ -3,12 +3,14 @@ package com.safesoft.proapp.distribute.activities.product;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ceylonlabs.imageviewpopup.ImagePopup;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.databases.DATABASE;
@@ -40,6 +43,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
           TvPv1_title, TvPv2_title, TvPv3_title, TvPv4_title, TvPv5_title, TvPv6_title,
           TvTva, TvStock , Colissage, Description;
 
+  ImagePopup imagePopup;
   private LinearLayout Lnr_pv1, Lnr_pv2, Lnr_pv3, Lnr_pv4, Lnr_pv5, Lnr_pv6;
   private  MediaPlayer mp;
   private NumberFormat nf;
@@ -52,6 +56,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_produit_detail);
 
+    controller = new DATABASE(this);
     produit = new PostData_Produit();
 
     produit.code_barre = getIntent().getStringExtra("CODE_BARRE");
@@ -85,13 +90,14 @@ public class ActivityProduitDetail extends AppCompatActivity {
     nf = NumberFormat.getInstance(Locale.US);
     ((DecimalFormat) nf).applyPattern("####0.##");
 
-    controller = new DATABASE(this);
+
     iniData(produit);
   }
 
   protected void initViews() {
     //Image
     ImgProduit = (ImageView) findViewById(R.id.imageProduit);
+    imagePopup = new ImagePopup(ActivityProduitDetail.this);
 
     //TextView
     TvCodebarre = (TextView) findViewById(R.id.codebarre);
@@ -132,12 +138,21 @@ public class ActivityProduitDetail extends AppCompatActivity {
     prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
     PostData_Params params = new PostData_Params();
     params = controller.select_params_from_database("SELECT * FROM PARAMS");
-    if(produit.photo != null) {
-      ImgProduit.setImageBitmap(BitmapFactory.decodeByteArray(produit.photo, 0, produit.photo.length));
+
+
+    if(prefs.getBoolean("SHOW_PROD_PIC", false)){
+      if(produit.photo != null) {
+        ImgProduit.setImageBitmap(BitmapFactory.decodeByteArray(produit.photo, 0, produit.photo.length));
+      }
     }
-    else{
-      ImgProduit.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.noimg));
-    }
+
+    imagePopup.setWindowHeight(800); // Optional
+    imagePopup.setWindowWidth(800); // Optional
+    imagePopup.setBackgroundColor(Color.BLACK);  // Optional
+    imagePopup.setFullScreen(true); // Optional
+    imagePopup.setHideCloseIcon(true);  // Optional
+    imagePopup.setImageOnClickClose(true);  // Optional
+    imagePopup.initiatePopup(ImgProduit.getDrawable()); // Load Image from Drawable
 
     if (produit.code_barre != null)
       TvCodebarre.setText(produit.code_barre);
@@ -293,6 +308,13 @@ public class ActivityProduitDetail extends AppCompatActivity {
       Lnr_pv6.setVisibility(View.GONE);
     }
 
+    ImgProduit.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Log.v("sssss", "zzzzzz");
+        imagePopup.viewPopup();
+      }
+    });
   }
 
 

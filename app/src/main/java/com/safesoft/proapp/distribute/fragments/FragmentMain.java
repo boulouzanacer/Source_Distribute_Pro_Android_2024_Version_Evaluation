@@ -16,6 +16,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.media.MediaPlayer;
+import android.widget.LinearLayout;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchats;
@@ -38,7 +39,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
   private final String PREFS = "ALL_PREFS";
   String CODE_DEPOT, CODE_VENDEUR;
   View v ;
-
+  LinearLayout lnr_achat, lnr_vente_commande;
   DATABASE controller;
   private ImageButton BtnClient,BtnVente,BtnCommandeClient,BtnFournisseur,BtnAchat,BtnCommandeFournisseur,BtnProduit,BtnInventaire,BtnImportExport,BtnParametre;
   public FragmentMain() {
@@ -49,19 +50,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     v = inflater.inflate(R.layout.activity_main__distribute,container,false);
 
-    BtnClient= v.findViewById(R.id.btn_clients);
-    BtnVente  = v.findViewById(R.id.btn_ventes);
-    BtnCommandeClient = v.findViewById(R.id.btn_commande_client);
-
-    BtnFournisseur = v.findViewById(R.id.btn_fournisseur);
-    BtnAchat = v.findViewById(R.id.btn_achat);
-    BtnCommandeFournisseur = v.findViewById(R.id.btn_commande_fournisseur);
-
-    BtnProduit = v.findViewById(R.id.btn_produits);
-    BtnInventaire = v.findViewById(R.id.btn_inventaire);
-
-    BtnImportExport = v.findViewById(R.id.btn_import_export);
-    BtnParametre = v.findViewById(R.id.btn_parametres);
+    initView(v);
 
     BtnClient.setOnClickListener(this);
     BtnVente.setOnClickListener(this);
@@ -80,14 +69,67 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     return v;
   }
 
+  private void initView(View v){
+
+    lnr_achat = v.findViewById(R.id.lnr_achat);
+    lnr_vente_commande = v.findViewById(R.id.lnr_vente_commande);
+
+    BtnClient= v.findViewById(R.id.btn_clients);
+    BtnVente  = v.findViewById(R.id.btn_ventes);
+    BtnCommandeClient = v.findViewById(R.id.btn_commande_client);
+
+    BtnFournisseur = v.findViewById(R.id.btn_fournisseur);
+    BtnAchat = v.findViewById(R.id.btn_achat);
+    BtnCommandeFournisseur = v.findViewById(R.id.btn_commande_fournisseur);
+
+    BtnProduit = v.findViewById(R.id.btn_produits);
+    BtnInventaire = v.findViewById(R.id.btn_inventaire);
+
+    BtnImportExport = v.findViewById(R.id.btn_import_export);
+    BtnParametre = v.findViewById(R.id.btn_parametres);
+  }
+
   @Override
   public void onResume() {
     super.onResume();
+    controller = new DATABASE(requireContext());
     prefs = requireActivity().getSharedPreferences(PREFS, MODE_PRIVATE);
+
     CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
     CODE_VENDEUR = prefs.getString("CODE_VENDEUR", "000000");
 
-    controller = new DATABASE(requireContext());
+
+    //Show btn
+    if(prefs.getBoolean("MODULE_ACHAT", true)){
+      lnr_achat.setVisibility(View.VISIBLE);
+    }else {
+      lnr_achat.setVisibility(View.GONE);
+    }
+
+
+    if(prefs.getBoolean("MODULE_VENTE", true)){
+      BtnVente.setVisibility(View.VISIBLE);
+      lnr_vente_commande.setVisibility(View.VISIBLE);
+    }else {
+      BtnVente.setVisibility(View.GONE);
+      lnr_vente_commande.setVisibility(View.GONE);
+    }
+
+    if(prefs.getBoolean("MODULE_COMMANDE", true)){
+      BtnCommandeClient.setVisibility(View.VISIBLE);
+      lnr_vente_commande.setVisibility(View.VISIBLE);
+    }else {
+      BtnCommandeClient.setVisibility(View.GONE);
+     // lnr_vente_commande.setVisibility(View.GONE);
+    }
+
+    if(prefs.getBoolean("MODULE_INVENTAIRE", true)){
+      //BtnClient.setVisibility(View.VISIBLE);
+      BtnInventaire.setVisibility(View.VISIBLE);
+    }else {
+      //BtnClient.setVisibility(View.GONE);
+      BtnInventaire.setVisibility(View.GONE);
+    }
   }
 
   @SuppressLint("NonConstantResourceId")
@@ -100,71 +142,61 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.pellet);
     mp.start();
 
-    switch (v.getId()){
-
-      case R.id.btn_clients:
+    switch (v.getId()) {
+      case R.id.btn_clients -> {
         BtnClient.startAnimation(fadeIn);
         startActivity(ActivityClients.class, 1);
-        break;
-
-      case R.id.btn_ventes:
-        if(CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")){
+      }
+      case R.id.btn_ventes -> {
+        if (CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")) {
           new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                   .setTitleText("Important !")
-                  .setContentText("Vous étes en mode gestion des commandes, Veuillez régler les paramètres de VAN ( code, nom depot ) !" )
+                  .setContentText("Veuillez régler les paramètres de VAN ( code, nom depot ) !")
                   .show();
-        }else {
+        } else {
           BtnVente.startAnimation(fadeIn);
           startActivity(ActivitySales.class, 2);
         }
-        break;
-
-      case R.id.btn_commande_client:
-        if(CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")){
+      }
+      case R.id.btn_commande_client -> {
+        if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
           new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                   .setTitleText("Important !")
-                  .setContentText(" Veuillez régler les paramètres de VAN ( code, nom vendeur ) !" )
+                  .setContentText(" Veuillez régler les paramètres de VAN ( code, nom vendeur ) !")
                   .show();
-        }else {
+        } else {
           BtnCommandeClient.startAnimation(fadeIn);
           startActivity(ActivityOrdersClient.class, 3);
         }
-        break;
-
-      case R.id.btn_fournisseur:
+      }
+      case R.id.btn_fournisseur -> {
         BtnFournisseur.startAnimation(fadeIn);
         startActivity(ActivityFournisseurs.class, 4);
-        break;
-
-      case R.id.btn_achat:
+      }
+      case R.id.btn_achat -> {
         BtnAchat.startAnimation(fadeIn);
         startActivity(ActivityAchats.class, 5);
-        break;
-
-        case R.id.btn_commande_fournisseur:
+      }
+      case R.id.btn_commande_fournisseur -> {
         BtnCommandeFournisseur.startAnimation(fadeIn);
         startActivity(ActivityOrdersFournisseur.class, 6);
-        break;
-
-      case R.id.btn_produits:
+      }
+      case R.id.btn_produits -> {
         BtnProduit.startAnimation(fadeIn);
         startActivity(ActivityProduits.class, 7);
-        break;
-
-      case R.id.btn_inventaire:
+      }
+      case R.id.btn_inventaire -> {
         BtnInventaire.startAnimation(fadeIn);
         startActivity(ActivityInventaires.class, 8);
-        break;
-
-      case R.id.btn_import_export:
+      }
+      case R.id.btn_import_export -> {
         BtnImportExport.startAnimation(fadeIn);
         startActivity(ActivityImportsExport.class, 9);
-        break;
-
-      case R.id.btn_parametres:
+      }
+      case R.id.btn_parametres -> {
         BtnParametre.startAnimation(fadeIn);
         startActivity(ActivityLogin.class, 10);
-        break;
+      }
 
       /*case R.id.btn_b_reception:
         //BtnBonReception.playSoundEffect(SoundEffectConstants.CLICK);

@@ -8,6 +8,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/lnr_vente_commande"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
@@ -23,7 +24,9 @@
             android:backgroundTint="@color/green_white_1"
             android:layout_height="match_parent"
             android:src="@mipmap/client"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:contentDescription="client" />
+
 
         <ImageButton
             android:id="@+id/btn_ventes"
@@ -35,7 +38,9 @@
             android:backgroundTint="@color/green_white_2"
             android:layout_weight="1"
             android:onClick="onClick"
-            android:src="@mipmap/vente" />
+            android:src="@mipmap/vente"
+            android:contentDescription="vente" />
+
 
         <ImageButton
             android:id="@+id/btn_commande_client"
@@ -46,11 +51,13 @@
             android:background="@drawable/imagebutton_rounded"
             android:backgroundTint="@color/green_white_3"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:contentDescription="commande" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lnr_achat"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:padding="10dp"
@@ -80,7 +87,8 @@
             android:backgroundTint="@color/blue_white_1"
             android:src="@drawable/baseline_achat_24"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:contentDescription="achat" />
 
         <ImageButton
             android:id="@+id/btn_fournisseur"
@@ -91,7 +99,8 @@
             android:background="@drawable/imagebutton_rounded"
             android:backgroundTint="@color/blue_white_2"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:contentDescription="fournisseur" />
 
 
     </LinearLayout>
@@ -113,7 +122,8 @@
             android:backgroundTint="@color/rouge"
             android:layout_height="match_parent"
             android:src="@mipmap/produit"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:contentDescription="produit" />
 
         <ImageButton
             android:id="@+id/btn_inventaire"
@@ -124,7 +134,8 @@
             android:backgroundTint="@color/gray"
             android:src="@mipmap/inventaire"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:contentDescription="inventaire" />
 
     </LinearLayout>
 
@@ -144,7 +155,8 @@
             android:backgroundTint="@color/violet"
             android:src="@mipmap/import_export"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:contentDescription="import/export" />
 
         <ImageButton
             android:id="@+id/btn_parametres"
@@ -155,6 +167,7 @@
             android:background="@drawable/imagebutton_rounded"
             android:backgroundTint="@color/colorAccent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:contentDescription="parametre" />
     </LinearLayout>
 </LinearLayout>

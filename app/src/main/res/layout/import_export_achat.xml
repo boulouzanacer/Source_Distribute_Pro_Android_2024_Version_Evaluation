@@ -109,11 +109,11 @@
 
 
     <RelativeLayout
-        android:id="@+id/rlt_etatv"
+        android:id="@+id/rlt_etata"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:visibility="visible"
+        android:visibility="gone"
         android:onClick="onRelativeClick"
         android:background="@drawable/import_export_selector"
         android:paddingLeft="15dp"

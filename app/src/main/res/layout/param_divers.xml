@@ -8,6 +8,7 @@
     android:layout_height="wrap_content">
 
     <include layout="@layout/sub_layout_objectif" />
+    <include layout="@layout/sub_layout_achat_vente_cmd_inv" />
     <include layout="@layout/sub_layout_ht" />
     <include layout="@layout/sub_layout_pa" />
     <include layout="@layout/sub_layout_stock_moins" />

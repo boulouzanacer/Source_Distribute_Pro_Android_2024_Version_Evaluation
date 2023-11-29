@@ -103,7 +103,6 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     final String PREFS = "ALL_PREFS";
     String TYPE_ACTIVITY = "";
     String SOURCE_EXPORT = "";
-    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +144,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             Crouton.makeText(ActivityInventaire.this, "Erreur séléction activity !", Style.ALERT).show();
             return;
         }
+
         if(TYPE_ACTIVITY.equals("NEW_INV")){
             //get num bon
             String selectQuery = "SELECT MAX(NUM_INV) AS max_id FROM INV1 WHERE NUM_INV IS NOT NULL";
@@ -711,7 +711,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         inv2.codebarre = item.code_barre;
         inv2.code_depot = CODE_DEPOT;
         inv2.qte_theorique = item.stock;
-        //inv2.pa_ht = item.pa_ht;
+        inv2.pa_ht = item.pamp;
         inv2.colissage = item.colissage;
 
         inv2.num_inv = NUM_INV;
@@ -788,7 +788,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             inv2.produit = produits.get(0).produit;
             inv2.codebarre = produits.get(0).code_barre;
             inv2.qte_theorique = produits.get(0).stock;
-            //inv2.pa_ht = produits.get(0).pa_ht;
+            inv2.pa_ht = produits.get(0).pamp;
             inv2.tva = produits.get(0).tva;
             inv2.colissage = produits.get(0).colissage;
             inv2.num_inv = NUM_INV;

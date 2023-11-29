@@ -429,7 +429,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
         if (!code_depot.equals("000000")) {
           querry =  querry + " WHERE CODE_DEPOT = '" + code_depot + "' AND NUM_INV = '"+ _num_inv+"'";
         }else{
-          querry = querry + " WHERE AND NUM_INV = '"+ _num_inv+"' AND (IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
+          querry = querry + " WHERE NUM_INV = '"+ _num_inv+"' AND (IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
         }
 
         invs1 = controller.select_list_inventaire_from_database(querry);
