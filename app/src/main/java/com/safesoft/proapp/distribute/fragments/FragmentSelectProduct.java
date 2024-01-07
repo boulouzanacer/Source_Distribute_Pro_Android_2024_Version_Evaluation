@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -238,6 +239,11 @@ public class FragmentSelectProduct {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mcontext);
         recyclerView.setLayoutManager(layoutManager);
+
+        prefs = mcontext.getSharedPreferences(PREFS, MODE_PRIVATE);
+        int LAST_CLICKED_POSITION = prefs.getInt("LAST_CLICKED_POSITION", 0);
+        recyclerView.scrollToPosition(LAST_CLICKED_POSITION);
+
         adapter = new RecyclerAdapterCheckProducts(mcontext , activity, getItems(text_search, isScan), mode_tariff_client, dialog, SOURCE);
         recyclerView.setAdapter(adapter);
         //bus.register(adapter);

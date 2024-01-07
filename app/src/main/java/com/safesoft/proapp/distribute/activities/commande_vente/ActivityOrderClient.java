@@ -1131,6 +1131,10 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         FragmentQte fragmentqte = new FragmentQte();
         fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp);
 
+        //Save clicked item position in list
+        //save permanently
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs.edit().putInt("LAST_CLICKED_POSITION", position).apply();
     }
 
     @Subscribe

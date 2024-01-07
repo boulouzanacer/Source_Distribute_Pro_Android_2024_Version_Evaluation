@@ -43,6 +43,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     DATABASE controller;
 
     private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
     Boolean printer_mode_integrate = true;
 
     private String SOURCE_EXPORT = "";
@@ -69,6 +70,10 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
         editor.apply();
+
+        //Reset last item selected in list product
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs.edit().putInt("LAST_CLICKED_POSITION", 0).apply();
     }
 
     private void initViews() {
@@ -82,8 +87,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
         setRecycle();
 
-        SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        printer_mode_integrate = Objects.equals(prefs1.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        printer_mode_integrate = Objects.equals(prefs.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);

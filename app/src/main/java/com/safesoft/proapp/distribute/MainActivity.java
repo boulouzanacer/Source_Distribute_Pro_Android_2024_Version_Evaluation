@@ -6,11 +6,17 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.rt.printerlibrary.connect.PrinterInterface;
@@ -20,14 +26,18 @@ import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory;
 import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
+import com.safesoft.proapp.distribute.activities.ActivityInfo;
+import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.fragments.FragmentMain;
+import com.safesoft.proapp.distribute.fragments.FragmentNewProduct;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements PrinterObserver {
   Fragment objFrgment;
@@ -41,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbardrawer);
-    toolbar.setSubtitle("Version : 30.11.23");
+    toolbar.setSubtitle("Version : 13.12.23");
     setSupportActionBar(toolbar);
 
     objFrgment = new FragmentMain();
@@ -114,5 +124,23 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     //byte[] bbytes = bytes;
     //PrinterInterface printerInterfacebb = printerInterface;
     //String a = "dddd";
+  }
+
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.main, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.info) {
+      Intent info_intent = new Intent(this, ActivityInfo.class);
+      startActivity(info_intent);
+      overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+    return super.onOptionsItemSelected(item);
   }
 }

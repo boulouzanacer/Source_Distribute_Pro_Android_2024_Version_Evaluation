@@ -3603,7 +3603,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     //=============================== FUNCTION TO INSERT INTO Inventaires2 TABLE ===============================
-    public boolean insert_into_inventaire2(PostData_Inv2 inv2s){
+    public void insert_into_inventaire2(PostData_Inv2 inv2s){
         boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -3630,7 +3630,6 @@ public class DATABASE extends SQLiteOpenHelper {
         }catch (SQLiteDatabaseLockedException sqlilock){
             Log.v("TRACKKK", sqlilock.getMessage());
         }
-        return executed;
 
     }
 

@@ -125,9 +125,6 @@ public class FragmentQteInventaire {
 
         part_3_qteinv_Layout = dialogview.findViewById(R.id.part_3_qteinv_Layout);
 
-
-
-
         //********************************************************************
         if (SOURCE_LOCAL.equals("INV2_INSERT")){
             PostData_Inv2 checked_inv2 = new PostData_Inv2();

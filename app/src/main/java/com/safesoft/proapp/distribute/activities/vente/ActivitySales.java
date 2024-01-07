@@ -73,6 +73,10 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         editor.remove("FILTRE_SEARCH_VALUE");
         editor.apply();
 
+        //Reset last item selected in list product
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs.edit().putInt("LAST_CLICKED_POSITION", 0).apply();
+
     }
 
     private void initViews() {

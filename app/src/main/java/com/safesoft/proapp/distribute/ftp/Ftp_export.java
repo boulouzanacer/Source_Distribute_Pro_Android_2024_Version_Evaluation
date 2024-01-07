@@ -650,11 +650,11 @@ public class Ftp_export {
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             F_SQL =  F_SQL + "INSERT INTO CARNET_C (CODE_VENDEUR, RECORDID,NUM_BON,EXPORTATION,CODE_CAISSE,";
             F_SQL =  F_SQL + "CODE_CLIENT,DATE_CARNET,HEURE,SOURCE,UTILISATEUR,MODE_RG,";
-            F_SQL =  F_SQL + "ACHATS,VERSEMENTS)\n";
+            F_SQL =  F_SQL + "VERSEMENTS)\n";
             F_SQL =  F_SQL + "VALUES \n";
             F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
-            F_SQL =  F_SQL + " '" + all_versement_client.get(i).carnet_achats + "'," + all_versement_client.get(i).carnet_versement +");\n";
+            F_SQL =  F_SQL + "'" + all_versement_client.get(i).carnet_versement +"');\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             ///////////////////////////////////CAISSE //////////////////////////////////////////
             if (all_versement_client.get(i).carnet_versement !=0 ) {

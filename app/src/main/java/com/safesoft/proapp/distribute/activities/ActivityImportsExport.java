@@ -2782,12 +2782,11 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                             //String RECORDID_CRC = Get_Digits_String(String.valueOf(num_bon_carnet_c), 6);
-                            String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, ACHATS, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, EXPORTATION , CODE_VENDEUR, CODE_CAISSE) VALUES (" +
+                            String buffer_versement = "INSERT INTO CARNET_C (RECORDID, CODE_CLIENT, DATE_CARNET, HEURE, VERSEMENTS, SOURCE, NUM_BON, MODE_RG, UTILISATEUR, REMARQUES, EXPORTATION , CODE_VENDEUR, CODE_CAISSE) VALUES (" +
                                     " '" + recordid_carnet_c + "', " +
                                     " '"  + all_versement_client.get(g).code_client.replace("'", "''") + "' ," +
                                     " '" + format_distant.format(dt) + "'  ," +
                                     " '" + all_versement_client.get(g).carnet_heure + "' ," +
-                                    " '" + all_versement_client.get(g).carnet_achats + "' ," +
                                     " '" + all_versement_client.get(g).carnet_versement + "' ," +
                                     " 'SITUATION-CLIENT' ," +
                                     " 'VRC" + recordid_carnet_c + "'," +
@@ -4351,6 +4350,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                                 String ggg = "SELECT distinct gen_id(gen_inv1_id,1) as RECORDID FROM rdb$database";
                                 ResultSet rs1 = stmt.executeQuery(ggg);
+
                                 while (rs1.next()) {
                                     recordid_inv1 = rs1.getInt("RECORDID");
                                 }

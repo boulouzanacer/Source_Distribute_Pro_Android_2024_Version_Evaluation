@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
@@ -1144,6 +1145,11 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             Activity activity = ActivitySale.this;
             FragmentQte fragmentqte = new FragmentQte();
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
+
+            //Save clicked item position in list
+            //save permanently
+            prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+            prefs.edit().putInt("LAST_CLICKED_POSITION", position).apply();
 
     }
 

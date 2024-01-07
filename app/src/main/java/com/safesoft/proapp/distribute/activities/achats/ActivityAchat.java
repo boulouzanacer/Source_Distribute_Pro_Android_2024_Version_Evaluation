@@ -922,6 +922,10 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             FragmentQte fragmentqte = new FragmentQte();
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
 
+        //Save clicked item position in list
+        //save permanently
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs.edit().putInt("LAST_CLICKED_POSITION", position).apply();
     }
 
     @Subscribe
