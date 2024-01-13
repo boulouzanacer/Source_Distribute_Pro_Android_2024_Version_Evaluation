@@ -16,7 +16,7 @@ public class BaseApplication extends Application {
     private boolean isConnected = false;
 
     @BaseEnum.CmdType
-    private int currentCmdType = BaseEnum.CMD_CPCL;//默认为针打
+    private int currentCmdType = BaseEnum.CMD_ESC;//默认为针打
 
     @BaseEnum.ConnectType
     private int currentConnectType = BaseEnum.NONE;//默认未连接

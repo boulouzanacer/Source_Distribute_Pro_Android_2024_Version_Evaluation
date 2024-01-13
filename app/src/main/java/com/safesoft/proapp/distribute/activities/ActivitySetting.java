@@ -116,6 +116,8 @@ import com.safesoft.proapp.distribute.view.FlowRadioGroup;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
@@ -1252,7 +1254,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                 escCmd.append(escCmd.getTextCmd(textSetting,  "(this is juste a print test)"));
                 escCmd.append(escCmd.getLFCRCmd());
-                escCmd.append(escCmd.getTextCmd(textSetting, "Thank you"));
+                //byte[] bytes = "السلام عليكم".getBytes(StandardCharsets.UTF_8);
+                //escCmd.append(escCmd.getTextCmd(textSetting,  reverseText("السلام عليكم")));
+                escCmd.append(escCmd.getTextCmd(textSetting,  "مكيلع مالسلا"));
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
@@ -1263,12 +1267,28 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 escCmd.append(escCmd.getLFCRCmd());
 
                 rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
+
             }
         }else{
 
         }
 
     }
+
+    String reverseText(String _text){
+        char[] resultarray = _text.toCharArray();
+        char[] tem_text = new char[resultarray.length];
+        int x=0;
+        //iteration
+        for (int i = resultarray.length - 1; i >= 0; i--){
+            tem_text[x] = resultarray[i];
+            x++;
+        }
+
+
+        return tem_text.toString();
+    }
+
 
 
     private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
@@ -1396,18 +1416,15 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     public void onClickListener(View v) throws IOException {
 
         switch (v.getId()) {
-
-            case R.id.code_depot_lnr:
+            case R.id.code_depot_lnr -> {
                 final ScalingActivityAnimator mScalingActivityAnimator = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
                 View popView = mScalingActivityAnimator.start();
                 final EditText edited_code_depot = popView.findViewById(R.id.edited_prix);
                 edited_code_depot.setInputType(InputType.TYPE_CLASS_NUMBER);
                 Button mButtonSure = popView.findViewById(R.id.btn_sure);
                 Button mButtonBack = popView.findViewById(R.id.btn_cancel);
-
                 edited_code_depot.setText(code_depot.getText().toString());
                 mButtonBack.setOnClickListener(v1 -> mScalingActivityAnimator.resume());
-
                 mButtonSure.setOnClickListener(v12 -> {
                     code_depot.setText(edited_code_depot.getText().toString());
                     SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1415,19 +1432,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.apply();
                     mScalingActivityAnimator.resume();
                 });
-                break;
-
-            case R.id.nom_depot_lnr:
+            }
+            case R.id.nom_depot_lnr -> {
                 final ScalingActivityAnimator mScalingActivityAnimator2 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
                 View popView2 = mScalingActivityAnimator2.start();
                 final EditText edited_nom_depot = popView2.findViewById(R.id.edited_prix);
                 edited_nom_depot.setInputType(InputType.TYPE_CLASS_TEXT);
                 Button mButtonSure2 = popView2.findViewById(R.id.btn_sure);
                 Button mButtonBack2 = popView2.findViewById(R.id.btn_cancel);
-
                 edited_nom_depot.setText(nom_depot.getText().toString());
                 mButtonBack2.setOnClickListener(v1 -> mScalingActivityAnimator2.resume());
-
                 mButtonSure2.setOnClickListener(v12 -> {
                     nom_depot.setText(edited_nom_depot.getText().toString());
                     SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1435,19 +1449,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.apply();
                     mScalingActivityAnimator2.resume();
                 });
-                break;
-
-            case R.id.code_vendeur_lnr:
+            }
+            case R.id.code_vendeur_lnr -> {
                 final ScalingActivityAnimator mScalingActivityAnimator1 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
                 View popView1 = mScalingActivityAnimator1.start();
                 final EditText edited_code_vendeur = popView1.findViewById(R.id.edited_prix);
                 edited_code_vendeur.setInputType(InputType.TYPE_CLASS_NUMBER);
                 Button mButtonSure1 = popView1.findViewById(R.id.btn_sure);
                 Button mButtonBack1 = popView1.findViewById(R.id.btn_cancel);
-
                 edited_code_vendeur.setText(code_vendeur.getText().toString());
                 mButtonBack1.setOnClickListener(v13 -> mScalingActivityAnimator1.resume());
-
                 mButtonSure1.setOnClickListener(v14 -> {
                     code_vendeur.setText(edited_code_vendeur.getText().toString());
                     SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1455,18 +1466,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.apply();
                     mScalingActivityAnimator1.resume();
                 });
-                break;
-            case R.id.nom_vendeur_lnr:
+            }
+            case R.id.nom_vendeur_lnr -> {
                 final ScalingActivityAnimator mScalingActivityAnimator3 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
                 View popView3 = mScalingActivityAnimator3.start();
                 final EditText edited_nom_vendeur = popView3.findViewById(R.id.edited_prix);
                 edited_nom_vendeur.setInputType(InputType.TYPE_CLASS_TEXT);
                 Button mButtonSure3 = popView3.findViewById(R.id.btn_sure);
                 Button mButtonBack3 = popView3.findViewById(R.id.btn_cancel);
-
                 edited_nom_vendeur.setText(nom_vendeur.getText().toString());
                 mButtonBack3.setOnClickListener(v13 -> mScalingActivityAnimator3.resume());
-
                 mButtonSure3.setOnClickListener(v14 -> {
                     nom_vendeur.setText(edited_nom_vendeur.getText().toString());
                     SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1474,31 +1483,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.apply();
                     mScalingActivityAnimator3.resume();
                 });
-                break;
-
-            case R.id.reset_pda:
-
-                ResetDialog();
-                break;
-
-            case R.id.backup:
-
-                backup_db();
-
-                break;
-            case R.id.restore:
-
-                restore_db();
-
-                break;
-            case R.id.password_change:
+            }
+            case R.id.reset_pda -> ResetDialog();
+            case R.id.backup -> backup_db();
+            case R.id.restore -> restore_db();
+            case R.id.password_change -> {
                 // Start change pwd  activity
                 Intent intent = new Intent(getApplicationContext(), ActivityChangePwd.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 finish();
-
-                break;
+            }
         }
     }
 

@@ -14,12 +14,9 @@
         <!-- content header line -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:background="@color/blue"
-            android:paddingBottom="7dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingTop="7dp">
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/stock"
@@ -197,7 +194,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -248,7 +245,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -300,7 +297,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -353,7 +350,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -405,7 +402,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -458,7 +455,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -510,7 +507,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -563,7 +560,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 
@@ -613,7 +610,7 @@
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
                             android:textColor="@color/mainTextColor"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
 

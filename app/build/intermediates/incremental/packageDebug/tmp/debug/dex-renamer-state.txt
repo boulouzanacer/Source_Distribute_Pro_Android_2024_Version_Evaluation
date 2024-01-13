@@ -1,4 +1,4 @@
-#Sun Jan 07 11:15:38 WAT 2024
+#Sat Jan 13 16:17:44 WAT 2024
 base.0=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2023\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2023\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\11\\classes.dex
 base.10=D\:\\P-VENTE\\Source_Android_Studio_2021\\Source_Distribute_Pro_Android_2023\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\11\\classes.dex
