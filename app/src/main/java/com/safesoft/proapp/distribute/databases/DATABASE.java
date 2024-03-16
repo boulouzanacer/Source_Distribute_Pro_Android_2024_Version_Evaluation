@@ -46,7 +46,7 @@ import java.util.ArrayList;
  */
 public class DATABASE extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1; // Database version
+    private static final int DATABASE_VERSION = 3; // Database version
     private static final String DATABASE_NAME = "safe_distribute_pro"; //Database name
     private final Context mContext;
 
@@ -171,7 +171,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "QTE DOUBLE)");
 
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS CLIENT(CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_CLIENT VARCHAR, CLIENT VARCHAR , TEL VARCHAR, ADRESSE VARCHAR, MODE_TARIF VARCHAR, LATITUDE REAL DEFAULT 0.0, LONGITUDE REAL DEFAULT 0.0, ACHATS DOUBLE DEFAULT 0.0, VERSER DOUBLE DEFAULT 0.0, SOLDE DOUBLE DEFAULT 0.0, RC VARCHAR, IFISCAL VARCHAR, AI VARCHAR,  NIS VARCHAR, ISNEW INTEGER, CREDIT_LIMIT DOUBLE DEFAULT 0.0)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS CLIENT(CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_CLIENT VARCHAR, CLIENT VARCHAR , TEL VARCHAR, ADRESSE VARCHAR, MODE_TARIF VARCHAR, LATITUDE REAL DEFAULT 0.0, LONGITUDE REAL DEFAULT 0.0, ACHATS DOUBLE DEFAULT 0.0, VERSER DOUBLE DEFAULT 0.0, SOLDE DOUBLE DEFAULT 0.0, RC VARCHAR, IFISCAL VARCHAR, AI VARCHAR,  NIS VARCHAR, ISNEW INTEGER, CREDIT_LIMIT DOUBLE DEFAULT 0.0, SOLDE_INI DOUBLE DEFAULT 0.0)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS BON1_TEMP(" +
@@ -349,29 +349,18 @@ public class DATABASE extends SQLiteOpenHelper {
 
         Log.v("TRACKKK","================>  ON UPGRADE EXECUTED");
 
-            try
-            {
-              //  db.execSQL("ALTER TABLE Produit ADD COLUMN FAMILLE VARCHAR");
-            }
-            catch (SQLiteException e)
-            {
-             //   Log.v("TRACKKK", "Failed to create column [{0}]. Most likely it already exists, which is fine.");
-            }
-        /* String[] list_requet = new String[1];
+        String[] list_requet = new String[1];
 
-        // list_requet[0] = "ALTER TABLE Bon1 ADD COLUMN IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0";
+         list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0";
 
 
-        for(int i = 0; i< list_requet.length; i++){
-            try
-            {
-                db.execSQL(list_requet[i]);
+        for (String s : list_requet) {
+            try {
+                db.execSQL(s);
+            } catch (SQLiteException e) {
+                Log.v("TRACKKK", e.getMessage());
             }
-            catch (SQLiteException e)
-            {
-                Log.v("TRACKKK", "Failed to create column [{0}]. Most likely it already exists, which is fine.");
-            }
-        }*/
+        }
 
     }
 
@@ -590,6 +579,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("ACHATS", client.achat_montant);
                 values.put("VERSER", client.verser_montant);
                 values.put("SOLDE", client.solde_montant);
+                values.put("SOLDE_INI", client.solde_ini);
                 values.put("LATITUDE", client.latitude);
                 values.put("LONGITUDE", client.longitude);
                 values.put("CREDIT_LIMIT", client.credit_limit);
@@ -609,7 +599,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public boolean ExecuteTransactionInsertIntoRouting(ArrayList<PostData_Client> clients){
+    public void ExecuteTransactionInsertIntoRouting(ArrayList<PostData_Client> clients){
         boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -628,13 +618,13 @@ public class DATABASE extends SQLiteOpenHelper {
         }catch (SQLiteDatabaseLockedException sqlilock){
             Log.v("TRACKKK", Objects.requireNonNull(sqlilock.getMessage()));
         }
-        return executed;
     }
 
     public boolean insert_into_routing(PostData_Client client){
         long index = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
+
             db.beginTransaction();
             try {
 
@@ -656,6 +646,7 @@ public class DATABASE extends SQLiteOpenHelper {
         }catch (SQLiteDatabaseLockedException sqlilock){
             Log.v("TRACKKK", sqlilock.getMessage());
         }
+        db.close();
         return index != -1;
     }
 
@@ -1262,6 +1253,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 client.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
                 client.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
                 client.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
+                client.solde_ini = cursor.getDouble(cursor.getColumnIndex("SOLDE_INI"));
                 client.credit_limit = cursor.getDouble(cursor.getColumnIndex("CREDIT_LIMIT"));
                 client.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
 
@@ -1426,6 +1418,54 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
+    @SuppressLint("Range")
+    public double select_last_price_from_database(String table, String code_client, String codebarre){
+
+        double last_price = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query_bon1 = "SELECT" +
+                "    BON1.DATE_BON," +
+                "    BON2.RECORDID," +
+                "    BON2.NUM_BON," +
+                "    ' VENTE' AS OPERATION," +
+                "    coalesce(BON2.QTE,0) QTE, " +
+                "    coalesce(BON2.QTE_GRAT,0) QTE_GRAT," +
+                "    coalesce(BON2.PU,0) PU ," +
+                "    coalesce(BON2.TVA,0) TVA ," +
+                "    BON2.PU * (1+(coalesce(BON2.TVA,0)/100)) PU_TTC " +
+                //"    BON2.pa_ht * (1+(coalesce(BON2.TVA,0)/100)) PA_TTC " +
+                "FROM BON2 LEFT JOIN BON1 ON (BON1.NUM_BON = BON2.NUM_BON) " +
+                "WHERE BON1.CODE_CLIENT= '" + code_client + "' AND BON2.CODE_BARRE= '" + codebarre + "' order by 1 desc,2 desc,4 desc";
+
+
+        String query_bon1_temp = "SELECT" +
+                "    BON1_TEMP.DATE_BON," +
+                "    BON2_TEMP.RECORDID," +
+                "    BON2_TEMP.NUM_BON," +
+                "    ' VENTE' AS OPERATION," +
+                "    coalesce(BON2_TEMP.QTE,0) QTE, " +
+                "    coalesce(BON2_TEMP.QTE_GRAT,0) QTE_GRAT," +
+                "    coalesce(BON2_TEMP.PU,0) PU ," +
+                "    coalesce(BON2_TEMP.TVA,0) TVA ," +
+                "    BON2_TEMP.PU * (1+(coalesce(BON2_TEMP.TVA,0)/100)) PU_TTC " +
+                //"    BON2.pa_ht * (1+(coalesce(BON2.TVA,0)/100)) PA_TTC " +
+                "FROM BON2_TEMP LEFT JOIN BON1_TEMP ON (BON1_TEMP.NUM_BON = BON2_TEMP.NUM_BON) " +
+                "WHERE BON1_TEMP.CODE_CLIENT= '" + code_client + "' AND BON2_TEMP.CODE_BARRE= '" + codebarre + "' order by 1 desc,2 desc,4 desc";
+        Cursor cursor = null;
+        if(table.equals("BON1")){
+            cursor = db.rawQuery(query_bon1, null);
+        }else if(table.equals("BON1_TEMP")){
+            cursor = db.rawQuery(query_bon1_temp, null);
+        }
+        // looping through all rows and adding to list
+        assert cursor != null;
+        if (cursor.moveToFirst()) {
+            last_price = cursor.getDouble(cursor.getColumnIndex("PU_TTC"));
+        }
+        cursor.close();
+        return last_price;
+    }
+
     //============================== FUNCTION SELECT Clients FROM Client TABLE ===============================
     @SuppressLint("Range")
     public PostData_Client select_client_from_database(String code_client){
@@ -1447,6 +1487,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 client.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
                 client.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
                 client.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
+                client.solde_ini = cursor.getDouble(cursor.getColumnIndex("SOLDE_INI"));
                 client.credit_limit = cursor.getDouble(cursor.getColumnIndex("CREDIT_LIMIT"));
                 client.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
 

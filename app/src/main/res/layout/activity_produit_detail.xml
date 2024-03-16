@@ -178,7 +178,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
                             android:textColor="@color/black"
-                            android:text="@string/pa_ht" />
+                            android:text="@string/pa_ttc" />
 
 
                         <View
@@ -193,7 +193,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/tag_green_bg"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -244,7 +244,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/tag_green_bg"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -296,7 +296,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/blue"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -349,7 +349,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/blue"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -401,7 +401,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/blue"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -454,7 +454,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/blue"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -506,7 +506,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/blue"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -559,7 +559,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/blue"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />
@@ -609,7 +609,7 @@
                             android:layout_weight="1"
                             android:text="@string/pv1_prix"
                             android:visibility="visible"
-                            android:textColor="@color/mainTextColor"
+                            android:textColor="@color/red"
                             android:textSize="20sp"
                             android:gravity="end"
                             android:textStyle="bold" />

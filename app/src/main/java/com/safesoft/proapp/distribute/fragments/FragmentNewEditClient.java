@@ -30,6 +30,7 @@ import com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -38,9 +39,8 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class FragmentNewEditClient {
 
     MaterialFancyButton btn_valider, btn_cancel;
-    TextInputEditText  edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai;
+    TextInputEditText  edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
     ToggleButtonGroupTableLayout radioGroup_mode_tarif;
-    RadioButton selectedRadioButton;
     private Context mContext;
 
     EventBus bus = EventBus.getDefault();
@@ -105,6 +105,7 @@ public class FragmentNewEditClient {
         edt_client_nif = dialogview.findViewById(R.id.edt_client_nif);
         edt_client_nis = dialogview.findViewById(R.id.edt_client_nis);
         edt_client_ai = dialogview.findViewById(R.id.edt_client_ai);
+        edt_client_solde_init = dialogview.findViewById(R.id.edt_client_solde_init);
 
         radioGroup_mode_tarif = (ToggleButtonGroupTableLayout) dialogview.findViewById(R.id.rd_mode_tarif);
         radioGroup_mode_tarif.check(R.id.rb_0);
@@ -168,6 +169,8 @@ public class FragmentNewEditClient {
             edt_client_nif.setText(old_client.ifiscal);
             edt_client_nis.setText(old_client.nis);
             edt_client_ai.setText(old_client.ai);
+            edt_client_solde_init.setText(new DecimalFormat("####0.00").format(old_client.solde_ini));
+            edt_client_solde_init.setEnabled(false);
 
             radioGroup_mode_tarif.clearCheck();
             if(old_client.mode_tarif.equals("0")){
@@ -191,6 +194,8 @@ public class FragmentNewEditClient {
             if(old_client.mode_tarif.equals("6")){
                 radioGroup_mode_tarif.check(R.id.rb_6);
             }
+
+
         }
 
         btn_valider.setOnClickListener(v -> {
@@ -198,16 +203,21 @@ public class FragmentNewEditClient {
 
             if (edt_client_name.getText().length() <= 0) {
 
-                edt_client_name.setError("Nom obligatoire!!");
+                edt_client_name.setError("Nom client est obligatoire!!");
                 hasError = true;
             }
             if (edt_client_adress.getText().length() <= 0 ) {
-                edt_client_adress.setError("Adresse obligatoire!!");
+                edt_client_adress.setError("Adresse est obligatoire!!");
                 hasError = true;
             }
 
             if (edt_client_telephone.getText().length() <= 0 ) {
-                edt_client_telephone.setError("Telephone obligatoire!!");
+                edt_client_telephone.setError("Telephone est obligatoire!!");
+                hasError = true;
+            }
+
+            if (edt_client_solde_init.getText().length() <= 0 ) {
+                edt_client_solde_init.setError("Solde initial est obligatoire!!");
                 hasError = true;
             }
 
@@ -220,6 +230,7 @@ public class FragmentNewEditClient {
                 created_client.ifiscal = edt_client_nif.getText().toString();
                 created_client.nis = edt_client_nis.getText().toString();
                 created_client.ai = edt_client_ai.getText().toString();
+                created_client.solde_ini = Double.parseDouble(edt_client_solde_init.getText().toString());
 
                 created_client.mode_tarif ="0";
                 created_client.isNew = 1;
@@ -273,11 +284,13 @@ public class FragmentNewEditClient {
                     }
                 }else {
 
+                    created_client.solde_montant = created_client.solde_ini;
+
                     if(CODE_DEPOT.equals("000000")){
-                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_VENDEUR+"";
+                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_VENDEUR;
 
                     }else{
-                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_DEPOT+"";
+                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_DEPOT;
                     }
 
                     //update client into database,

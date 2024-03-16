@@ -9,8 +9,10 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -37,10 +40,12 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanier;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.RemiseEvent;
@@ -62,6 +67,10 @@ import com.safesoft.proapp.distribute.printing.Printing;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -278,7 +287,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             date_time_sub_title = bon1_temp.date_bon + " " + bon1_temp.heure;
 
             client_selected = controller.select_client_from_database(bon1_temp.code_client);
-            onClientSelected(client_selected);
+            onClientSelected(client_selected, false);
 
             // Create the adapter to convert the array to views
             PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
@@ -458,7 +467,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 4")) {
                         if(params.prix_5 == 1){
-                            bon1_temp.mode_tarif = "6";
+                            bon1_temp.mode_tarif = "5";
                             btn_mode_tarif.setText("Tarif 5");
                         }else {
                             bon1_temp.mode_tarif = "1";
@@ -466,7 +475,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 5")) {
                         if(params.prix_6 == 1){
-                            bon1_temp.mode_tarif = "1";
+                            bon1_temp.mode_tarif = "6";
                             btn_mode_tarif.setText("Tarif 6");
                         }else {
                             bon1_temp.mode_tarif = "1";
@@ -623,11 +632,21 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             .show();
                     return;
                 }
-                Activity bactivity;
-                bactivity = ActivityOrderClient.this;
 
-                Printing printer = new Printing();
-                printer.start_print_bon(bactivity, "ORDER", final_panier, bon1_temp, null);
+                if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                    Activity bactivity;
+                    bactivity = ActivityOrderClient.this;
+
+                    Printing printer = new Printing();
+                    printer.start_print_bon(bactivity, "ORDER", final_panier, bon1_temp, null);
+                }else{
+                    Intent html_intent = new Intent(this, ActivityHtmlView.class);
+                    html_intent.putExtra("TYPE_BON" , "COMMANDE");
+                    html_intent.putExtra("BON1" , bon1_temp);
+                    html_intent.putExtra("BON2" , final_panier);
+                    startActivity(html_intent);
+                }
+
 
                 break;
 
@@ -650,7 +669,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     @Subscribe
     public void onClientSelected(SelectedClientEvent clientEvent){
 
-        onClientSelected(clientEvent.getClient());
+        onClientSelected(clientEvent.getClient(), true);
 
     }
 
@@ -675,23 +694,21 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     }
 
 
-    protected void onClientSelected(PostData_Client client_s){
+    protected void onClientSelected(PostData_Client client_s, boolean isUpdate){
 
         client_selected = client_s;
-        bon1_temp.client = client_s.client;
         btn_select_client.setText(client_selected.client);
 
-        bon1_temp.code_client = client_selected.code_client;
-        bon1_temp.client = client_selected.client;
-        bon1_temp.adresse = client_selected.adresse;
-        bon1_temp.tel = client_selected.tel;
-        bon1_temp.rc = client_selected.rc;
-        bon1_temp.ifiscal = client_selected.ifiscal;
-        bon1_temp.ai = client_selected.ai;
-        bon1_temp.nis = client_selected.nis;
+        if(TYPE_ACTIVITY.equals("NEW_ORDER_CLIENT") || isUpdate){
 
-        if(TYPE_ACTIVITY.equals("NEW_ORDER_CLIENT")){
-
+            bon1_temp.code_client = client_selected.code_client;
+            bon1_temp.client = client_selected.client;
+            bon1_temp.adresse = client_selected.adresse;
+            bon1_temp.tel = client_selected.tel;
+            bon1_temp.rc = client_selected.rc;
+            bon1_temp.ifiscal = client_selected.ifiscal;
+            bon1_temp.ai = client_selected.ai;
+            bon1_temp.nis = client_selected.nis;
             bon1_temp.solde_ancien = client_selected.solde_montant;  // Modifier le 03/02/2023
 
             bon1_temp.mode_tarif = "1";
@@ -709,15 +726,15 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     }
                     case "4" -> {
                         btn_mode_tarif.setText("Tarif 4");
-                        bon1_temp.mode_tarif = "3";
+                        bon1_temp.mode_tarif = "4";
                     }
                     case "5" -> {
                         btn_mode_tarif.setText("Tarif 5");
-                        bon1_temp.mode_tarif = "3";
+                        bon1_temp.mode_tarif = "5";
                     }
                     case "6" -> {
                         btn_mode_tarif.setText("Tarif 6");
-                        bon1_temp.mode_tarif = "3";
+                        bon1_temp.mode_tarif = "6";
                     }
                     default -> {
                         btn_mode_tarif.setText("Tarif 1");
@@ -732,18 +749,32 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         }else {
 
             switch (bon1_temp.mode_tarif) {
-                case "2" ->
-                        btn_mode_tarif.setText("Tarif 2");
-                case "3" ->
-                        btn_mode_tarif.setText("Tarif 3");
-                case "4" ->
-                        btn_mode_tarif.setText("Tarif 4");
-                case "5" ->
-                        btn_mode_tarif.setText("Tarif 5");
-                case "6" ->
-                        btn_mode_tarif.setText("Tarif 6");
-                default ->
-                        btn_mode_tarif.setText("Tarif 1");
+                case "2" ->{
+                    btn_mode_tarif.setText("Tarif 2");
+                    bon1_temp.mode_tarif = "2";
+                }
+                case "3" ->{
+                    btn_mode_tarif.setText("Tarif 3");
+                    bon1_temp.mode_tarif = "3";
+                }
+
+                case "4" ->{
+                    btn_mode_tarif.setText("Tarif 4");
+                    bon1_temp.mode_tarif = "4";
+                }
+
+                case "5" ->{
+                    btn_mode_tarif.setText("Tarif 5");
+                    bon1_temp.mode_tarif = "5";
+                }
+                case "6" ->{
+                    btn_mode_tarif.setText("Tarif 6");
+                    bon1_temp.mode_tarif = "6";
+                }
+                default ->{
+                    btn_mode_tarif.setText("Tarif 1");
+                    bon1_temp.mode_tarif = "1";
+                }
             }
         }
 
@@ -855,9 +886,10 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 try{
                     SOURCE = "BON2_TEMP_EDIT";
                     Activity activity;
+                    double last_price = controller.select_last_price_from_database("BON1_TEMP",bon1_temp.code_client, final_panier.get(info.position).codebarre);
                     activity = ActivityOrderClient.this;
                     FragmentQte fragmentqte = new FragmentQte();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), last_price);
 
                 }catch (Exception e){
 
@@ -969,7 +1001,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sale_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_sale, menu);
         return true;
     }
 
@@ -1127,9 +1159,10 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         bon2_temp.num_bon = NUM_BON;
         bon2_temp.code_depot = CODE_DEPOT;
         SOURCE = "BON2_TEMP_INSERT";
+        double last_price = controller.select_last_price_from_database("BON1_TEMP",bon1_temp.code_client, bon2_temp.codebarre);
         Activity activity = ActivityOrderClient.this;
         FragmentQte fragmentqte = new FragmentQte();
-        fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp);
+        fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp, last_price);
 
         //Save clicked item position in list
         //save permanently
@@ -1248,13 +1281,63 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
             SOURCE = "BON2_TEMP_INSERT";
             Activity activity = ActivityOrderClient.this;
+            double last_price = controller.select_last_price_from_database("BON1_TEMP",bon1_temp.code_client, bon2_temp.codebarre);
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp);
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp, last_price);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivityOrderClient.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
         }else{
             Crouton.makeText(ActivityOrderClient.this, "Produit introuvable !", Style.ALERT).show();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 3000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Bundle extras = data.getExtras();
+                    assert extras != null;
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                    assert imageBitmap != null;
+                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100 /* Ignored for PNGs */, blob);
+                    byte[] inputData = blob.toByteArray();
+                    bus.post(new ByteDataEvent(inputData));
+                }
+            }
+        }else if(requestCode == 4000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Uri selectedImage = data.getData();
+                    InputStream iStream ;
+                    try {
+                        iStream  = getContentResolver().openInputStream(selectedImage);
+                        byte[] inputData = getBytes(iStream);
+                        bus.post(new ByteDataEvent(inputData));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "An error occured!", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 }

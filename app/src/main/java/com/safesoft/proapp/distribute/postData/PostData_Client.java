@@ -16,6 +16,7 @@ public class PostData_Client {
     public double achat_montant = 0.00;
     public double verser_montant = 0.00;
     public double solde_montant = 0.00;
+    public double solde_ini = 0.00;
     public String rc;
     public String ifiscal;
     public String nis;

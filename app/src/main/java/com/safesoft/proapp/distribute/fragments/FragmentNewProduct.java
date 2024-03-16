@@ -1,21 +1,25 @@
 package com.safesoft.proapp.distribute.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -26,21 +30,20 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
 import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
-import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
-import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -61,6 +64,7 @@ public class FragmentNewProduct {
     ImageButton generate_codebarre, scan_codebarre;
     ImageButton generate_reference, scan_reference;
     MaterialFancyButton btn_valider, btn_cancel;
+    Button btn_from_gallery, btn_from_camera;
     TextInputEditText  edt_designation, edt_codebarre,
             edt_reference, edt_colissage, edt_stock_ini,
             edt_prix_achat_ht, edt_tva, edt_prix_achat_ttc,
@@ -71,7 +75,6 @@ public class FragmentNewProduct {
             edt_prix5_ht, edt_prix5_ttc,
             edt_prix6_ht, edt_prix6_ttc;
     LinearLayout lnr_prix1,lnr_prix2,lnr_prix3,lnr_prix4,lnr_prix5,lnr_prix6;
-
     TextInputLayout txt_input_prix_ht,
             txt_input_tva, txt_input_prix_ttc,
             txt_input_prix1_ht, txt_input_prix1_ttc,
@@ -80,29 +83,28 @@ public class FragmentNewProduct {
             txt_input_prix4_ht, txt_input_prix4_ttc,
             txt_input_prix5_ht, txt_input_prix5_ttc,
             txt_input_prix6_ht, txt_input_prix6_ttc;
-
     LinearLayout ly_prix_achat;
 
     EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
+    ImageView img_product;
+    byte[] inputData = null;
 
     private final String PREFS = "ALL_PREFS";
 
     PostData_Produit created_produit;
     private DATABASE controller;
-    private PostData_Client old_client;
     NumberFormat nf,nq;
     private Barcode barcodeResult;
 
     private PostData_Params params;
     //PopupWindow display method
 
-    public void showDialogbox(Activity activity, String SOURCE_ACTIVITY, PostData_Client old_client) {
+    public void showDialogbox(Activity activity, String SOURCE_ACTIVITY) {
 
         this.activity = activity;
         this.controller = new DATABASE(activity);
-        this.old_client = old_client;
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
@@ -110,7 +112,6 @@ public class FragmentNewProduct {
 
         nq = NumberFormat.getInstance(Locale.US);
         ((DecimalFormat) nq).applyPattern("####0.##");
-
 
         SharedPreferences prefs = this.activity.getSharedPreferences(PREFS, MODE_PRIVATE);
         created_produit = new PostData_Produit();
@@ -147,11 +148,16 @@ public class FragmentNewProduct {
         btn_cancel.setIconPosition(POSITION_LEFT);
         btn_cancel.setFontIconSize(30);
 
+        img_product = (ImageView) dialogview.findViewById(R.id.img_product);
+
         generate_codebarre = (ImageButton) dialogview.findViewById(R.id.generate_codebarre);
         scan_codebarre = (ImageButton) dialogview.findViewById(R.id.scan_codebarre);
 
         generate_reference = (ImageButton) dialogview.findViewById(R.id.generate_reference);
         scan_reference = (ImageButton) dialogview.findViewById(R.id.scan_reference);
+
+        btn_from_gallery = (Button) dialogview.findViewById(R.id.btn_select_from_gallery);
+        btn_from_camera = (Button) dialogview.findViewById(R.id.btn_select_from_camera);
 
         ly_prix_achat = dialogview.findViewById(R.id.ly_prix_achat);
 
@@ -336,7 +342,7 @@ public class FragmentNewProduct {
         generate_codebarre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                edt_codebarre.setText(getRandomString(ALLOWED_CHARACTERS_CODEBARRE, 13));
+                edt_codebarre.setText(getRandomString(ALLOWED_CHARACTERS_CODEBARRE));
             }
         });
 
@@ -350,7 +356,7 @@ public class FragmentNewProduct {
         generate_reference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                edt_reference.setText(getRandomString(ALLOWED_CHARACTERS_REFERENCE, 13));
+                edt_reference.setText(getRandomString(ALLOWED_CHARACTERS_REFERENCE));
             }
         });
 
@@ -358,6 +364,20 @@ public class FragmentNewProduct {
             @Override
             public void onClick(View view) {
                 startScan(view);
+            }
+        });
+
+        btn_from_gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageChooserGallery();
+            }
+        });
+
+        btn_from_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageChooserCamera();
             }
         });
 
@@ -502,6 +522,8 @@ public class FragmentNewProduct {
                 created_produit.produit = edt_designation.getText().toString();
                 created_produit.code_barre =  edt_codebarre.getText().toString();
                 created_produit.ref_produit =  edt_reference.getText().toString();
+                created_produit.photo =  inputData;
+                created_produit.famille =  "";
 
                 created_produit.colissage =  val_colissage;
                 created_produit.stock =  val_stock_ini;
@@ -1014,10 +1036,12 @@ public class FragmentNewProduct {
 
 
         btn_cancel.setOnClickListener(v -> {
+            EventBus.getDefault().unregister(this);
             dialog.dismiss();
         });
 
 
+        EventBus.getDefault().register(this);
     }
 
     void onPrixAchatHTChange(){
@@ -1369,9 +1393,6 @@ public class FragmentNewProduct {
     }
 
     private void startScan(View view) {
-        /**
-         * Build a new MaterialBarcodeScanner
-         */
 
         final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
                 .withActivity(activity)
@@ -1394,13 +1415,35 @@ public class FragmentNewProduct {
         materialBarcodeScanner.startScan();
     }
 
-
-    private String getRandomString(String allowed_caracters, final int sizeOfRandomString)
+    private String getRandomString(String allowed_caracters)
     {
         final Random random=new Random();
-        final StringBuilder sb=new StringBuilder(sizeOfRandomString);
-        for(int i=0;i<sizeOfRandomString;++i)
+        final StringBuilder sb=new StringBuilder(13);
+        for(int i = 0; i< 13; ++i)
             sb.append(allowed_caracters.charAt(random.nextInt(allowed_caracters.length())));
         return sb.toString();
+    }
+
+    void imageChooserCamera() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        activity.startActivityForResult(takePicture, 3000);
+    }
+
+    void imageChooserGallery() {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        activity.startActivityForResult(pickPhoto, 4000);
+    }
+
+    public void setImageFromActivity(byte[] inputData){
+        this.inputData = inputData;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(inputData, 0, inputData.length);
+        img_product.setImageBitmap(bitmap);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onByteDataRecieved(ByteDataEvent byteDataEvent){
+        this.inputData = byteDataEvent.getByteData();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(inputData, 0, inputData.length);
+        img_product.setImageBitmap(bitmap);
     }
 }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterAchat1;
@@ -249,8 +250,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                                     .show();
                             return;
                         }
-                        Activity bactivity;
-                        bactivity = ActivityAchats.this;
+
                         final_panier = controller.select_all_achat2_from_database("" +
                                 "SELECT " +
                                 "ACHAT2.RECORDID, " +
@@ -269,12 +269,25 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                                 "FROM ACHAT2 " +
                                 "LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE ACHAT2.NUM_BON = '" + achat1s.get(position).num_bon + "'");
-                        Printing printer = new Printing();
-                        try {
-                            printer.start_print_bon(bactivity, "ACHAT", final_panier, null, achat1s.get(position));
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
+
+                        if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                            Activity bactivity;
+                            bactivity = ActivityAchats.this;
+
+                            Printing printer = new Printing();
+                            try {
+                                printer.start_print_bon(bactivity, "ACHAT", final_panier, null, achat1s.get(position));
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            Intent html_intent = new Intent(this, ActivityHtmlView.class);
+                            html_intent.putExtra("TYPE_BON" , "ACHAT");
+                            html_intent.putExtra("ACHAT1" , achat1s.get(position));
+                            html_intent.putExtra("BON2" , final_panier);
+                            startActivity(html_intent);
                         }
+
                     }
                 }
             });

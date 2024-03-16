@@ -1,9 +1,11 @@
 package com.safesoft.proapp.distribute.postData;
 
+import java.io.Serializable;
+
 /**
  * Created by UK2015 on 24/08/2016.
  */
-public class PostData_Achat1 {
+public class PostData_Achat1 implements Serializable {
     public int recordid;
     public String num_bon;
     public String date_bon;

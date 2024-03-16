@@ -36,7 +36,6 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanier;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
@@ -677,7 +676,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     Activity activity;
                     activity = ActivityOrderFournisseur.this;
                     FragmentQte fragmentqte = new FragmentQte();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), 0);
 
                 }catch (Exception e){
 
@@ -789,7 +788,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sale_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_sale, menu);
         return true;
     }
 
@@ -933,7 +932,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         SOURCE = "ACHAT2_TEMP_INSERT";
         Activity activity = ActivityOrderFournisseur.this;
         FragmentQte fragmentachat = new FragmentQte();
-        fragmentachat.showDialogbox(SOURCE, activity, getBaseContext(),  achat2_com );
+        fragmentachat.showDialogbox(SOURCE, activity, getBaseContext(),  achat2_com, 0);
 
     }
 
@@ -1037,7 +1036,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             SOURCE = "BON2_TEMP_INSERT";
             Activity activity = ActivityOrderFournisseur.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp);
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp, 0);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivityOrderFournisseur.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();

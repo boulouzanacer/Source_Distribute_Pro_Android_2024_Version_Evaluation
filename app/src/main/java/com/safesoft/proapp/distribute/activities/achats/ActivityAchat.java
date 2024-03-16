@@ -9,8 +9,10 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,12 +39,12 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanier;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.RemiseEvent;
@@ -64,6 +67,10 @@ import com.safesoft.proapp.distribute.printing.Printing;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -511,11 +518,19 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                     return;
                 }
 
-                Activity bactivity;
-                bactivity = ActivityAchat.this;
+                if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                    Activity bactivity;
+                    bactivity = ActivityAchat.this;
 
-                Printing printer = new Printing();
-                printer.start_print_bon(bactivity, "ACHAT", final_panier, null, achat1);
+                    Printing printer = new Printing();
+                    printer.start_print_bon(bactivity, "ACHAT", final_panier, null, achat1);
+                }else{
+                    Intent html_intent = new Intent(this, ActivityHtmlView.class);
+                    html_intent.putExtra("TYPE_BON" , "ACHAT");
+                    html_intent.putExtra("ACHAT1" , achat1);
+                    html_intent.putExtra("BON2" , final_panier);
+                    startActivity(html_intent);
+                }
 
                 break;
 
@@ -556,7 +571,6 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
     protected void onFournisseurSelected(PostData_Fournisseur fournisseur_s){
 
         fournisseur_selected = fournisseur_s;
-        achat1.fournis = fournisseur_s.fournis;
         btn_select_fournisseur.setText(fournisseur_selected.fournis);
 
         achat1.code_frs = fournisseur_selected.code_frs;
@@ -669,9 +683,10 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                     SOURCE = "ACHAT2_EDIT";
                     Activity activity;
                     activity = ActivityAchat.this;
+                    //double last_price = controller.select_last_price_from_database(achat1.code_frs, final_panier.get(info.position).codebarre);
                     FragmentQte fragmentqte = new FragmentQte();
                     assert info != null;
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), 0);
 
                 } catch (Exception e) {
 
@@ -771,7 +786,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sale_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_sale, menu);
         return true;
     }
 
@@ -919,8 +934,9 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             bon2.code_depot = CODE_DEPOT;
             SOURCE = "ACHAT2_INSERT";
             Activity activity = ActivityAchat.this;
+            //double last_price = controller.select_last_price_from_database(achat1.code_frs, final_panier.get(position).codebarre);
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2, 0);
 
         //Save clicked item position in list
         //save permanently
@@ -1034,7 +1050,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             SOURCE = "ACHAT2_INSERT";
             Activity activity = ActivityAchat.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2, 0);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivityAchat.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
@@ -1043,4 +1059,53 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 3000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Bundle extras = data.getExtras();
+                    assert extras != null;
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                    assert imageBitmap != null;
+                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100 /* Ignored for PNGs */, blob);
+                    byte[] inputData = blob.toByteArray();
+                    bus.post(new ByteDataEvent(inputData));
+                }
+            }
+        }else if(requestCode == 4000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Uri selectedImage = data.getData();
+                    InputStream iStream ;
+                    try {
+                        iStream  = getContentResolver().openInputStream(selectedImage);
+                        byte[] inputData = getBytes(iStream);
+                        bus.post(new ByteDataEvent(inputData));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "An error occured!", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
 }

@@ -656,6 +656,7 @@ public class Ftp_export {
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).carnet_versement +"');\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
+
             ///////////////////////////////////CAISSE //////////////////////////////////////////
             if (all_versement_client.get(i).carnet_versement !=0 ) {
                 F_SQL =  F_SQL + "INSERT INTO CAISSE2 (CODE_CAISSE,CODE_CAISSE1,SOURCE,NUM_SOURCE,ENTREE,";
@@ -914,6 +915,7 @@ public class Ftp_export {
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
             F_SQL =  F_SQL + " '" + all_versement_client.get(i).carnet_achats + "'," + all_versement_client.get(i).carnet_versement +");\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
+
             ///////////////////////////////////CAISSE //////////////////////////////////////////
             if (all_versement_client.get(i).carnet_versement !=0 ) {
                 F_SQL =  F_SQL + "INSERT INTO CAISSE2 (CODE_CAISSE,CODE_CAISSE1,SOURCE,NUM_SOURCE,ENTREE,";
@@ -1141,14 +1143,14 @@ public class Ftp_export {
                             });
 
                             s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/VENTE", mProgressDialog);
-                            try {
+                            /*try {
                                 if( map.getKey().toString().endsWith(".BLV")){
                                     String num_bon = map.getKey().toString().substring(6, 12);
                                     controller.update_ventes_commandes_as_exported(false, num_bon);
                                 }
                             }catch (Exception e){
 
-                            }
+                            }*/
                         }else {
                             return 1;
                         }
@@ -1275,6 +1277,17 @@ public class Ftp_export {
                                 });
                                 s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/SITUATION-CLIENT", mProgressDialog);
 
+                                try {
+                                    if( map.getKey().toString().endsWith(".STC")){
+                                        String str1 = map.getKey().toString().substring(10);
+                                        int index1_ = str1.indexOf("_");
+                                        String str2 = str1.substring(0,index1_);
+                                        String recordid = str2.substring(3);
+                                        controller.update_versement_exported(recordid);
+                                    }
+                                }catch (Exception e){
+                                    Log.v("TAG", e.getMessage());
+                                }
                             }else {
                                 return 1;
                             }
@@ -1358,7 +1371,7 @@ public class Ftp_export {
                             });
                             if(code_depot.equals("000000") || code_depot.equals("")){
                                 if(code_vendeur.equals("000000") || code_vendeur.equals("")){
-                                    // maydir walo
+                                    // nothing to do
                                 }else {
                                     s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_vendeur, "/COMMANDE", mProgressDialog);
                                     try {
@@ -1404,9 +1417,32 @@ public class Ftp_export {
                                     // maydir walo
                                 }else {
                                     s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_vendeur, "/SITUATION-CLIENT", mProgressDialog);
+
+                                    try {
+                                        if( map.getKey().toString().endsWith(".STC")){
+                                            String str1 = map.getKey().toString().substring(10);
+                                            int index1_ = str1.indexOf("_");
+                                            String str2 = str1.substring(0,index1_);
+                                            String recordid = str2.substring(3);
+                                            controller.update_versement_exported(recordid);
+                                        }
+                                    }catch (Exception e){
+                                        Log.v("TAG", e.getMessage());
+                                    }
                                 }
                             }else {
                                 s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/SITUATION-CLIENT", mProgressDialog);
+                                try {
+                                    if( map.getKey().toString().endsWith(".STC")){
+                                        String str1 = map.getKey().toString().substring(10);
+                                        int index1_ = str1.indexOf("_");
+                                        String str2 = str1.substring(0,index1_);
+                                        String recordid = str2.substring(3);
+                                        controller.update_versement_exported(recordid);
+                                    }
+                                }catch (Exception e){
+                                    Log.v("TAG", e.getMessage());
+                                }
                             }
 
 

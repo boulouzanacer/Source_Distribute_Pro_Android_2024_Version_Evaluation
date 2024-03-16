@@ -22,19 +22,21 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
 
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="false" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
@@ -49,9 +51,15 @@
         android:theme="@style/Theme.MyApplication"
         tools:node="merge"
         tools:replace="android:icon">
+
+        <activity
+            android:name=".activities.ActivityHtmlView"
+            android:exported="false" />
+
         <activity
             android:name=".activities.ActivityInfo"
             android:exported="false" />
+
         <activity
             android:name=".activities.ActivityRouting"
             android:exported="false" />
@@ -65,6 +73,7 @@
             android:exported="false"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_tspmaps" />
+
         <activity
             android:name=".activities.pdf.ActivityPDF"
             android:exported="false" />
@@ -94,10 +103,13 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
         <activity
             android:name=".activities.splashscreen.splashScreen"
-            android:theme="@style/AppTheme.NoActionBar" /> <!-- Activation classes -->
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- Activation classes -->
         <activity android:name=".activation.ActivityActivation" /> <!-- Client classes -->
         <activity android:name=".activities.client.ActivityClients" />
         <activity android:name=".activities.client.ActivityClientDetail" /> <!-- Produits classes -->
@@ -106,19 +118,28 @@
         <activity android:name=".activities.transfert.ActivityTransferts" />
         <activity android:name=".activities.transfert.ActivityTransfert" /> <!-- Autre classes -->
         <activity android:name=".activities.ActivityImportsExport" />
+
         <activity
             android:name=".activities.ActivitySetting"
-            android:exported="true"></activity>
-        <activity android:name=".activities.ActivityInventaireAchat" /> <!-- login parametres classes -->
+            android:exported="true" />
+
+        <activity android:name=".activities.ActivityInventaireAchat" />
+        <!-- login parametres classes -->
+
         <activity
             android:name=".activities.login.ActivityLogin"
             android:theme="@style/AppTheme.Dark" />
+
         <activity
             android:name=".activities.login.ActivityChangePwd"
-            android:theme="@style/AppTheme.Dark" /> <!-- Achat classes -->
+            android:theme="@style/AppTheme.Dark" />
+
+        <!-- Achat classes -->
         <activity android:name=".activities.commande_achat.ActivityOrdersFournisseur" />
         <activity android:name=".activities.commande_achat.ActivityOrderFournisseur" />
-        <activity android:name=".activities.fournisseur.ActivityFournisseurs" /> <!-- Inventaire classes -->
+        <activity android:name=".activities.fournisseur.ActivityFournisseurs" />
+
+        <!-- Inventaire classes -->
         <activity android:name=".activities.inventaire.ActivityInventaire" />
         <activity android:name=".activities.inventaire.ActivityInventaires" /> <!-- Scanner classes -->
         <activity

@@ -80,7 +80,7 @@ public class GeneratePDF {
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
 
         // checking our permissions.
-       // CheckAllPermission();
+        // CheckAllPermission();
 
         generatePDFVente();
     }
@@ -535,18 +535,18 @@ public class GeneratePDF {
             if(final_panier.get(i).nbr_colis != 0){
                 nc = new DecimalFormat( "####0.##").format(final_panier.get(i).nbr_colis);
                 colissage = new DecimalFormat( "####0.##").format(final_panier.get(i).colissage);
-             }
+            }
             if(final_panier.get(i).gratuit != 0){
                 gratuit = new DecimalFormat( "####0.##").format(final_panier.get(i).gratuit);
             }
 
             canvas.drawText(createLine(
-                    String.valueOf(i + 1),
-                    final_panier.get(i).produit ,
-                    nc,
-                    colissage,
-                    new DecimalFormat( "####0.##").format(final_panier.get(i).qte), gratuit,
-                    new DecimalFormat("####0.00").format(final_panier.get(i).p_u)),
+                            String.valueOf(i + 1),
+                            final_panier.get(i).produit ,
+                            nc,
+                            colissage,
+                            new DecimalFormat( "####0.##").format(final_panier.get(i).qte), gratuit,
+                            new DecimalFormat("####0.00").format(final_panier.get(i).p_u)),
                     mergeleft , facture_y , title);
 
             canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
@@ -575,7 +575,7 @@ public class GeneratePDF {
         canvas.drawText( "|" +  center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str  ) + "|", mergeleft, facture_y + 30, title);
         canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
-        
+
         if(SOURCE.equals("FROM_SALE")){
             ///////////////////////////// montant bon /////////////////////////////////////////////////
             canvas.drawText( "|" +  center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str)  + "|" , mergeleft, facture_y + 50, title);

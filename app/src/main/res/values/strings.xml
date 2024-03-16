@@ -406,11 +406,11 @@
     <string name="param_tres_filtre_recherche">Paramètres filtre recherche</string>
     <string name="sauvegarder_les_filtres_de_recherche">Sauvegarder les filtres de recherche</string>
     <string name="rechercher_client">Rechercher client</string>
-    <string name="pa_ht">Prix achat (HT)</string>
+    <string name="pa_ttc">Prix achat (TTC)</string>
     <string name="activer_l_affichage_pa">Activer l\'affichage PA</string>
     <string name="achats">Achats</string>
     <string name="ramp">RAMP</string>
-    <string name="pamp">PAMP (HT)</string>
+    <string name="pamp">PAMP (TTC)</string>
     <string name="taux_timbre">Taux timbre</string>
     <string name="montant_timbre">Montant timbre</string>
     <string name="d_signation">Désignation</string>
@@ -422,5 +422,6 @@
     <string name="param_tres_modification_de_bon">Paramètres modification de bon</string>
     <string name="autoriser_la_modification_de_bon">Autoriser la modification de bon</string>
     <string name="stock_ini">Stock ini</string>
+    <string name="model_ticket">Model Ticket</string>
 
 </resources>

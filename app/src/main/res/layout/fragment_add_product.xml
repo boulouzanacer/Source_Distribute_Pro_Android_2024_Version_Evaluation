@@ -40,9 +40,53 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:weightSum="11"
+                android:weightSum="13"
                 android:orientation="vertical"
                 android:layout_height="0dp">
+
+                <LinearLayout
+                    android:layout_weight="2"
+                    android:orientation="horizontal"
+                    android:weightSum="7"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <ImageView
+                        android:id="@+id/img_product"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:src="@mipmap/noimg"
+                        android:layout_gravity="center"
+                        android:layout_weight="4"
+                        android:layout_margin="5dp"/>
+
+                    <LinearLayout
+                        android:padding="10dp"
+                        android:layout_weight="3"
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btn_select_from_gallery"
+                            android:text="Gallery"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <Button
+                            android:id="@+id/btn_select_from_camera"
+                            android:layout_marginTop="20dp"
+                            android:layout_gravity="center"
+                            android:text="Camera"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_weight="1"
@@ -658,80 +702,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:padding="10dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-                    <TextView
-                        android:text="MODE DE TARIF"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <RadioGroup
-                            android:id="@+id/rd_mode_tarif"
-                            android:weightSum="4"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <RadioButton
-                                android:id="@+id/rb_1"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:checked="true"
-                                android:text="Libre"
-                                android:textStyle="bold"
-                                android:textAlignment="center" />
-
-                            <!--adding a radio button -->
-                            <RadioButton
-                                android:id="@+id/rb_2"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:checked="false"
-                                android:text="Tarif 1"
-                                android:textStyle="bold"
-                                android:textAlignment="center" />
-
-                            <RadioButton
-                                android:id="@+id/rb_3"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:checked="false"
-                                android:text="Tarif 2"
-                                android:textStyle="bold"
-                                android:textAlignment="center" />
-
-                            <RadioButton
-                                android:id="@+id/rb_4"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:checked="false"
-                                android:text="Tarif 3"
-                                android:textStyle="bold"
-                                android:textAlignment="center" />
-
-                        </RadioGroup>
-                    </LinearLayout>
-
-                </LinearLayout>
             </LinearLayout>
         </ScrollView>
 

@@ -167,10 +167,10 @@ public class FragmentNewEditFournisseur {
                 }else {
 
                     if(CODE_DEPOT.equals("000000")){
-                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_VENDEUR+"";
+                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_VENDEUR;
 
                     }else{
-                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_DEPOT+"";
+                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_DEPOT;
                     }
 
                     //insert client into database,

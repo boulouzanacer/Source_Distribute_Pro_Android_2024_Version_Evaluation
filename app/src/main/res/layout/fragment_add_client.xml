@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:weightSum="8"
+        android:weightSum="10"
         android:orientation="vertical"
         android:layout_margin="5dp"
         android:background="@color/white"
@@ -29,12 +29,12 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_weight="7"
+            android:layout_weight="9"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
             <LinearLayout
-                android:weightSum="8"
+                android:weightSum="9"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
@@ -241,9 +241,37 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                </LinearLayout>
 
 
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center"
+                        android:hint="Solde init"
+
+                        app:expandedHintEnabled="false"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_client_solde_init"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:inputType="numberSigned|numberDecimal"
+                            android:textStyle="bold"
+                            android:text="0.00"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 

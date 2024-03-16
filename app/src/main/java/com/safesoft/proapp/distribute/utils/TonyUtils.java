@@ -182,7 +182,7 @@ public class TonyUtils {
     }
 
 
-    private static String SetSize(String width, String length) {
+    public static String SetSize(String width, String length) {
         int mIndex = 0;
         String cmdName = "SIZE";
         StringBuffer sb = new StringBuffer();

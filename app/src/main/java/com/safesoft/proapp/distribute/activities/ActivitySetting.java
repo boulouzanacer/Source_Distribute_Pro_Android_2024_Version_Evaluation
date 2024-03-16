@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbDevice;
@@ -25,6 +26,7 @@ import android.os.Build;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
@@ -76,6 +78,7 @@ import com.rt.printerlibrary.cmd.EscFactory;
 import com.rt.printerlibrary.cmd.TscFactory;
 import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
+import com.rt.printerlibrary.enumerate.BmpPrintMode;
 import com.rt.printerlibrary.enumerate.CommonEnum;
 import com.rt.printerlibrary.enumerate.ConnectStateEnum;
 import com.rt.printerlibrary.enumerate.PrintDirection;
@@ -93,6 +96,7 @@ import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.setting.BarcodeSetting;
+import com.rt.printerlibrary.setting.BitmapSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
 import com.safesoft.proapp.distribute.MainActivity;
@@ -114,6 +118,7 @@ import com.safesoft.proapp.distribute.utils.TonyUtils;
 import com.safesoft.proapp.distribute.view.FlowRadioGroup;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -129,7 +134,10 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class ActivitySetting extends BaseActivity implements View.OnClickListener, PrinterObserver {
+
+    Bitmap bitmap;
     private static final int CAMERA_PERMISSION = 5;
 
     public Circle circle;
@@ -140,7 +148,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private EditText username_safe_event, password_safe_event;
     Spinner type_logiciel_dropdown;
 
-    private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur;
+    private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, model_ticket_tite;
     private TextInputEditText edt_objectif;
 
     private Button btntest;
@@ -165,6 +173,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private FlowRadioGroup rg_connect;
     private FlowRadioGroup rg_type;
+    private FlowRadioGroup rg_model_ticket;
     private Button btn_disConnect, btn_connect;
     private TextView tv_device_selected;
     private Button btn_connected_list;
@@ -182,7 +191,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private final String[] NEED_PERMISSION = {
             Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_MEDIA_IMAGES
     };
     private TextSetting textSetting;
 
@@ -192,6 +202,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     @BaseEnum.ConnectType
     private int checkedConType = BaseEnum.CON_WIFI;
     private int checkedImpType = BaseEnum.IMP_TYPE_TICKET;
+    private int checkedTicketModel = BaseEnum.TICKET_MODEL_LATIN;
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
 
@@ -520,6 +531,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         rg_connect = findViewById(R.id.rg_connect);
         rg_type = findViewById(R.id.rg_type);
+        rg_model_ticket = findViewById(R.id.rg_model_ticket);
         btn_connect = findViewById(R.id.btn_connect);
         btn_disConnect = findViewById(R.id.btn_disConnect);
         tv_device_selected = findViewById(R.id.tv_device_selected);
@@ -614,6 +626,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         code_vendeur = findViewById(R.id.code_vendeur);
         nom_vendeur = findViewById(R.id.nom_vendeur);
 
+        model_ticket_tite = findViewById(R.id.model_ticket_title);
+
         textView = findViewById(R.id.progress);
         circle = new Circle();
         circle.setBounds(0, 0, 60, 60);
@@ -684,7 +698,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         Switch switch_module_inventaire = findViewById(R.id.switch_module_inventaire);
 
 
-        //////////////////////////////// SWITCH GPS LOCALISATION ///////////////////////////////////
+        //////////////////////////////// SWITCH ///////////////////////////////////
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
@@ -856,6 +870,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             rg_type.check(R.id.rb_type_codebarre);
         }
 
+        if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+            rg_model_ticket.check(R.id.rb_model_latin);
+        }else if (Objects.equals(prefs.getString("MODEL_TICKET", "ARABE"), "ARABE")) {
+            rg_model_ticket.check(R.id.rb_model_arabe);
+        }
+
     }
 
     private void radioButtonCheckListener() {
@@ -883,11 +903,36 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 // doDisConnect();
                 switch (i) {
                     case R.id.rb_type_ticket ->//Ticket
-                            checkedImpType = BaseEnum.IMP_TYPE_TICKET;
+                    {
+                        model_ticket_tite.setVisibility(View.VISIBLE);
+                        rg_model_ticket.setVisibility(View.VISIBLE);
+                        checkedImpType = BaseEnum.IMP_TYPE_TICKET;
+                    }
                     case R.id.rb_type_codebarre ->//codebarre
-                            checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
+                    {
+                        model_ticket_tite.setVisibility(View.GONE);
+                        rg_model_ticket.setVisibility(View.GONE);
+                        checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
+                        checkedTicketModel = BaseEnum.TICKET_MODEL_LATIN;
+                        saveConfigTicketType(checkedTicketModel);
+                    }
                 }
                 saveConfigImpType(checkedImpType);
+
+            }
+        });
+
+        rg_model_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                // doDisConnect();
+                switch (i) {
+                    case R.id.rb_model_latin ->//Ticket latin
+                            checkedTicketModel = BaseEnum.TICKET_MODEL_LATIN;
+                    case R.id.rb_model_arabe ->//ticket arabe
+                            checkedTicketModel = BaseEnum.TICKET_MODEL_ARABE;
+                }
+                saveConfigTicketType(checkedTicketModel);
             }
         });
     }
@@ -989,6 +1034,19 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }
             case BaseEnum.IMP_TYPE_CODEBARRE -> {//codebarre
                 editor.putString("PRINTER_TYPE", "IMP_CODEBARRE");
+            }
+        }
+        editor.apply();
+    }
+
+    private void saveConfigTicketType(int ticketType){
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        switch (ticketType) {
+            case BaseEnum.TICKET_MODEL_LATIN -> {//ticket latine
+                editor.putString("MODEL_TICKET", "LATIN");
+            }
+            case BaseEnum.TICKET_MODEL_ARABE -> {//ticket arabe
+                editor.putString("MODEL_TICKET", "ARABE");
             }
         }
         editor.apply();
@@ -1238,6 +1296,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     }
 
     private void escPrint() throws UnsupportedEncodingException {
+        /*Intent html_intent = new Intent(ActivitySetting.this, ActivityHtmlView.class);
+        startActivity(html_intent);*/
 
         if(BaseApplication.getInstance().getIsConnected()){
             rtPrinter = BaseApplication.getInstance().getRtPrinter();
@@ -1254,9 +1314,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                 escCmd.append(escCmd.getTextCmd(textSetting,  "(this is juste a print test)"));
                 escCmd.append(escCmd.getLFCRCmd());
-                //byte[] bytes = "السلام عليكم".getBytes(StandardCharsets.UTF_8);
-                //escCmd.append(escCmd.getTextCmd(textSetting,  reverseText("السلام عليكم")));
-                escCmd.append(escCmd.getTextCmd(textSetting,  "مكيلع مالسلا"));
+                escCmd.append(escCmd.getTextCmd(textSetting,  "العربية"));
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
                 escCmd.append(escCmd.getLFCRCmd());
@@ -1272,21 +1330,51 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }else{
 
         }
+ /*
+        try {
+            String fileName = Environment.getExternalStorageDirectory().getPath()+"/webview_capture1.jpg";
+            bitmap = BitmapFactory.decodeFile(fileName);
 
-    }
-
-    String reverseText(String _text){
-        char[] resultarray = _text.toCharArray();
-        char[] tem_text = new char[resultarray.length];
-        int x=0;
-        //iteration
-        for (int i = resultarray.length - 1; i >= 0; i--){
-            tem_text[x] = resultarray[i];
-            x++;
+        } catch (Exception e) {
+            Log.e("eeeeee", e.getMessage());
         }
 
 
-        return tem_text.toString();
+      new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Loading...");
+
+                CmdFactory cmdFactory = new EscFactory();
+                Cmd cmd = cmdFactory.create();
+                cmd.append(cmd.getHeaderCmd());
+
+                CommonSetting commonSetting = new CommonSetting();
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                BitmapSetting bitmapSetting = new BitmapSetting();
+
+                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+//                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
+
+                //bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
+                try {
+                    cmd.append(cmd.getBitmapCmd(bitmapSetting, bitmap));
+                } catch (SdkException e) {
+                    e.printStackTrace();
+                }
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                if (rtPrinter != null) {
+                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                }
+
+                hideProgressDialog();
+            }
+        }).start();*/
+
     }
 
 

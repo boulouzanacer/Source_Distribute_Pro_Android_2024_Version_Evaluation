@@ -61,7 +61,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:textSize="9dp"
-        android:text="All Rights Reserved © 2023"
+        android:text="All Rights Reserved © 2024"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/otp_view"

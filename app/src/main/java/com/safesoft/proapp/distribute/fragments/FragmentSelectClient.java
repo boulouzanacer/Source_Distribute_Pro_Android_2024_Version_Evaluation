@@ -94,8 +94,6 @@ public class FragmentSelectClient {
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
 
-
-
     }
 
     private void initViews(View view) {

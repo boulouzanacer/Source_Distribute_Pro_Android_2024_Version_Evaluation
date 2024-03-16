@@ -77,7 +77,7 @@ public class PdfFragmentPrintDocumentAdapter extends PrintDocumentAdapter {
                 out.close();
             }
             catch (IOException e) {
-               // Logger.logError( e);
+                // Logger.logError( e);
             }
         }
     }}

@@ -15,6 +15,7 @@ public class BaseEnum {
     public static final int CMD_ESC = 1, CMD_TSC = 2, CMD_CPCL = 3, CMD_ZPL = 4, CMD_PIN = 5;
     public static final int CON_BLUETOOTH = 1, CON_BLUETOOTH_BLE = 2, CON_WIFI = 3, CON_USB = 4, CON_COM = 5;
     public static final int IMP_TYPE_TICKET = 1, IMP_TYPE_CODEBARRE = 2;
+    public static final int TICKET_MODEL_LATIN = 1, TICKET_MODEL_ARABE = 2;
     public static final int NO_DEVICE = -1, HAS_DEVICE = 1;
 
     @IntDef({CMD_ESC, CMD_TSC, CMD_CPCL, CMD_ZPL, CMD_PIN})

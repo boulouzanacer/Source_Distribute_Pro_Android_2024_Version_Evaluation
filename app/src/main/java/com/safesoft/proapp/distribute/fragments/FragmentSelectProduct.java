@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -54,28 +55,19 @@ public class FragmentSelectProduct {
     RecyclerAdapterCheckProducts adapter;
     ArrayList<PostData_Produit> produits;
     private static final int CAMERA_PERMISSION = 5;
-
     DATABASE controller;
     private String mode_tariff_client;
     final String PREFS = "ALL_PREFS";
     SharedPreferences prefs;
-
-    private MediaPlayer mp;
-
-    // private String NUM_BON;
-    //private String CODE_DEPOT;
     private boolean hide_stock_moins = true;
-
     private EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
     private NumberFormat nf;
     Context mcontext;
-
     private EditText editsearch;
     private AppCompatImageButton btn_scan;
     private AppCompatImageButton btn_cancel;
-
     AutoCompleteTextView famille_dropdown;
     private String selected_famile = "Toutes";
     String SOURCE;
@@ -108,6 +100,7 @@ public class FragmentSelectProduct {
         dialogBuilder.create();
         dialog = dialogBuilder.show();
 
+
         initViews(dialogview);
 
         prefs = context.getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -127,11 +120,6 @@ public class FragmentSelectProduct {
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
-
-        //Specify the length and width through constants
-        //DisplayMetrics displayMetrics = new DisplayMetrics();
-        //activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
 
 
     }
@@ -162,7 +150,11 @@ public class FragmentSelectProduct {
                 if(selected_famile.equals("<Aucune>")){
                     selected_famile = "";
                 }
-                setRecycle("", false);
+                if(prefs.getBoolean("FILTRE_SEARCH", false)){
+                    editsearch.setText(prefs.getString("FILTRE_SEARCH_VALUE", ""));
+                }else {
+                    setRecycle(prefs.getString("FILTRE_SEARCH_VALUE", ""), false);
+                }
             }
         });
 
@@ -214,18 +206,8 @@ public class FragmentSelectProduct {
         });
 
         add_product.setOnClickListener(v -> {
-            /*if(bon1.blocage.equals("F")){
-                new SweetAlertDialog(ActivityEditSale.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
-                return;
-            }
-            Intent intentAddClient = new Intent(ActivityEditSale.this, ActivityNewClient.class);
-            startActivityForResult(intentAddClient, REQUEST_ACTIVITY_NEW_CLIENT);*/
-
             FragmentNewProduct fragmentnewproduct = new FragmentNewProduct();
-            fragmentnewproduct.showDialogbox(this.activity, "NEW_PRODUCT", null);
+            fragmentnewproduct.showDialogbox(this.activity, "NEW_PRODUCT");
             dialog.dismiss();
         });
 
@@ -387,9 +369,6 @@ public class FragmentSelectProduct {
 
 
     private void selectProductFromScan() {
-        /**
-         * Build a new MaterialBarcodeScanner
-         */
 
         final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
                 .withActivity(activity)
@@ -408,4 +387,6 @@ public class FragmentSelectProduct {
 
         materialBarcodeScanner.startScan();
     }
+
+
 }

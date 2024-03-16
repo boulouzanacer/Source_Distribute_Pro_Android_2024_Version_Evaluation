@@ -2,21 +2,16 @@ package com.safesoft.proapp.distribute;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.rt.printerlibrary.connect.PrinterInterface;
@@ -27,11 +22,8 @@ import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.safesoft.proapp.distribute.activities.ActivityInfo;
-import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
 import com.safesoft.proapp.distribute.app.BaseApplication;
-import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.fragments.FragmentMain;
-import com.safesoft.proapp.distribute.fragments.FragmentNewProduct;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 
 import java.text.SimpleDateFormat;
@@ -51,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbardrawer);
-    toolbar.setSubtitle("Version : 13.12.23");
+    toolbar.setSubtitle("Version : 02.03.24");
     setSupportActionBar(toolbar);
 
     objFrgment = new FragmentMain();

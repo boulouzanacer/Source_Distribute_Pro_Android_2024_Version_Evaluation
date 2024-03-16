@@ -87,6 +87,7 @@ public class ActivityActivation extends AppCompatActivity {
 
         qrImage = findViewById(R.id.QR_CODE_IM);
         MultiFormatWriter writer = new MultiFormatWriter();
+
         try {
             BitMatrix matrix = writer.encode(deviceId2, BarcodeFormat.QR_CODE,350,350);
             BarcodeEncoder encoder = new BarcodeEncoder();
@@ -205,8 +206,6 @@ public class ActivityActivation extends AppCompatActivity {
             Crouton.makeText(ActivityActivation.this, "Code d'activation incorrect", Style.ALERT).show();
             ((EditText)findViewById(R.id.CODE_ACTIVATION)).setText("");
             btn_start.setVisibility(View.INVISIBLE);
-
-
         }
     }
 

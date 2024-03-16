@@ -7,15 +7,18 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +33,10 @@ import android.widget.CheckBox;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 
@@ -37,9 +44,10 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
-import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
-import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire;
+import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
+import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
+import com.safesoft.proapp.distribute.eventsClasses.PrintEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
@@ -67,6 +75,7 @@ import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -90,9 +99,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     ////////////////////////////////////////
     private static final int ACCES_FINE_LOCATION = 2;
     private static final int CAMERA_PERMISSION = 5;
-
     private Intent intent_location;
-
     private ListViewAdapterPanier PanierAdapter;
     private Button btn_select_client,btn_mode_tarif;
     private DATABASE controller;
@@ -105,25 +112,17 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     private double val_total_ttc = 0.00;
     private double val_remise = 0.00;
     private double val_total_ttc_remise = 0.00;
-
     private EventBus bus;
-
     private String NUM_BON;
     private String CODE_DEPOT;
     private PostData_Client client_selected;
     private PostData_Bon1 bon1;
     private String SOURCE;
-
-
     private ExpandableHeightListView expandableListView;
-
     private NumberFormat nf;
-
     public static final String BARCODE_KEY = "BARCODE";
-
     private Barcode barcodeResult;
     final String PREFS = "ALL_PREFS";
-
     String TYPE_ACTIVITY = "";
     String SOURCE_EXPORT = "";
     String PARAMS_PREFS_CODE_DEPOT = "CODE_DEPOT_PREFS";
@@ -277,7 +276,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             date_time_sub_title = bon1.date_bon + " " + bon1.heure;
 
             client_selected = controller.select_client_from_database(bon1.code_client);
-            onClientSelected(client_selected);
+            onClientSelected(client_selected, false);
 
             // Create the adapter to convert the array to views
             PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
@@ -304,7 +303,6 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             Crouton.makeText(ActivitySale.this, "Erreur séléction activity !", Style.ALERT).show();
             return;
         }
-
 
 
 
@@ -410,9 +408,9 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     @SuppressLint("NonConstantResourceId")
     public void onClickEvent(View v) throws UnsupportedEncodingException, ParseException {
-        switch (v.getId()){
-            case R.id.btn_select_client:
-                if(bon1.blocage.equals("F")){
+        switch (v.getId()) {
+            case R.id.btn_select_client -> {
+                if (bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -420,9 +418,75 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     return;
                 }
                 showListClient();
-                break;
-            case R.id.btn_mode_tarif:
-                if(bon1.blocage.equals("F")){
+            }
+            case R.id.btn_mode_tarif -> {
+                if (bon1.blocage.equals("F")) {
+                    new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon est déja validé")
+                            .show();
+                    return;
+                }
+                if (bon1.client.length() < 1) {
+
+                    Crouton.makeText(ActivitySale.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                    return;
+                }
+                if (client_selected.mode_tarif.equals("0")) {
+
+                    if (btn_mode_tarif.getText().toString().equals("Tarif 1")) {
+                        if (params.prix_2 == 1) {
+                            bon1.mode_tarif = "2";
+                            btn_mode_tarif.setText("Tarif 2");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 2")) {
+                        if (params.prix_3 == 1) {
+                            bon1.mode_tarif = "3";
+                            btn_mode_tarif.setText("Tarif 3");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 3")) {
+                        if (params.prix_4 == 1) {
+                            bon1.mode_tarif = "4";
+                            btn_mode_tarif.setText("Tarif 4");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 4")) {
+                        if (params.prix_5 == 1) {
+                            bon1.mode_tarif = "5";
+                            btn_mode_tarif.setText("Tarif 5");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 5")) {
+                        if (params.prix_6 == 1) {
+                            bon1.mode_tarif = "6";
+                            btn_mode_tarif.setText("Tarif 6");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 6")) {
+                        bon1.mode_tarif = "1";
+                        btn_mode_tarif.setText("Tarif 1");
+                    }
+
+                    sauvegarder();
+                } else {
+                    return;
+                }
+            }
+
+            case R.id.addProduct -> {
+                if (bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -430,74 +494,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     return;
                 }
 
-                if( bon1.client.length() <1){
-
-                    Crouton.makeText(ActivitySale.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
-                    return;
-                }
-
-                if(client_selected.mode_tarif.equals("0")){
-
-                    if(btn_mode_tarif.getText().toString().equals("Tarif 1")){
-                        if(params.prix_2 == 1){
-                            bon1.mode_tarif = "2";
-                            btn_mode_tarif.setText("Tarif 2");
-                        }else {
-                            bon1.mode_tarif = "1";
-                            btn_mode_tarif.setText("Tarif 1");
-                        }
-                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 2")){
-                        if(params.prix_3 == 1){
-                            bon1.mode_tarif = "3";
-                            btn_mode_tarif.setText("Tarif 3");
-                        }else {
-                            bon1.mode_tarif = "1";
-                            btn_mode_tarif.setText("Tarif 1");
-                        }
-                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 3")) {
-                        if(params.prix_4 == 1){
-                            bon1.mode_tarif = "4";
-                            btn_mode_tarif.setText("Tarif 4");
-                        }else {
-                            bon1.mode_tarif = "1";
-                            btn_mode_tarif.setText("Tarif 1");
-                        }
-                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 4")) {
-                        if(params.prix_5 == 1){
-                            bon1.mode_tarif = "6";
-                            btn_mode_tarif.setText("Tarif 5");
-                        }else {
-                            bon1.mode_tarif = "1";
-                            btn_mode_tarif.setText("Tarif 1");
-                        }
-                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 5")) {
-                        if(params.prix_6 == 1){
-                            bon1.mode_tarif = "1";
-                            btn_mode_tarif.setText("Tarif 6");
-                        }else {
-                            bon1.mode_tarif = "1";
-                            btn_mode_tarif.setText("Tarif 1");
-                        }
-                    }else if(btn_mode_tarif.getText().toString().equals("Tarif 6")) {
-                            bon1.mode_tarif = "1";
-                            btn_mode_tarif.setText("Tarif 1");
-                    }
-
-                    sauvegarder();
-                }else {
-                    return;
-                }
-
-                break;
-            case R.id.addProduct:
-                if(bon1.blocage.equals("F")){
-                new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
-                return;
-                }
-                if( bon1.client.length() <1){
+                if (bon1.client.length() < 1) {
 
                     Crouton.makeText(ActivitySale.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                     return;
@@ -507,38 +504,33 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 Activity activity;
                 // define activity of this class//
                 activity = ActivitySale.this;
-
                 FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
-                fragmentSelectProduct.showDialogbox(activity, getBaseContext(),  bon1.mode_tarif, "VENTE");
-
-                break;
-
-            case R.id.valide_facture:
-                if( bon1.client.length() <1){
+                fragmentSelectProduct.showDialogbox(activity, getBaseContext(), bon1.mode_tarif, "VENTE");
+            }
+            case R.id.valide_facture -> {
+                if (bon1.client.length() < 1) {
                     Crouton.makeText(ActivitySale.this, "Vous devez Séléctionner un client", Style.ALERT).show();
                     return;
                 }
-                if(final_panier.size() <1){
+                if (final_panier.size() < 1) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
                             .show();
                     return;
                 }
-                if(bon1.blocage.equals("F")){
+                if (bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
                             .show();
                     return;
                 }
-
                 FragmentValideBon fragmentvalider = new FragmentValideBon();
                 fragmentvalider.showDialogbox(ActivitySale.this, bon1.solde_ancien, bon1.montant_bon, bon1.verser);
-
-                break;
-            case R.id.txv_remise_btn:
-                if(bon1.blocage.equals("F")){
+            }
+            case R.id.txv_remise_btn -> {
+                if (bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -551,33 +543,31 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
                 // define activity of this class//
                 mactivity = ActivitySale.this;
-
                 FragmentRemise fragmentRemise = new FragmentRemise();
                 fragmentRemise.showDialogbox(mactivity, val_total_ttc, val_remise);
-                break;
-            case R.id.btn_scan_produit:
+            }
+            case R.id.btn_scan_produit -> {
                 if (ContextCompat.checkSelfPermission(ActivitySale.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(ActivitySale.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
 
-                }else{
-                    if(bon1.blocage.equals("F")){
+                } else {
+                    if (bon1.blocage.equals("F")) {
                         new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Information!")
                                 .setContentText("Ce bon est déja validé")
                                 .show();
                         return;
                     }
-                    if( bon1.client.length() <1){
+                    if (bon1.client.length() < 1) {
 
                         Crouton.makeText(ActivitySale.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                         return;
                     }
                     startScanProduct();
                 }
-                break;
-            case R.id.btn_mofifier_bon:
-
-                if(!bon1.blocage.equals("F")){
+            }
+            case R.id.btn_mofifier_bon -> {
+                if (!bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon n'est pas encore validé")
@@ -585,9 +575,8 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     return;
 
                 }
-
-                if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
-                    if(!SOURCE_EXPORT.equals("EXPORTED")){
+                if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
+                    if (!SOURCE_EXPORT.equals("EXPORTED")) {
 
                         new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Modification")
@@ -598,15 +587,15 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                                 .setCancelClickListener(Dialog::dismiss)
                                 .setConfirmClickListener(sDialog -> {
 
-                                    try{
+                                    try {
 
-                                        if (controller.modifier_bon1_sql("BON1",bon1.num_bon, bon1) ) {
+                                        if (controller.modifier_bon1_sql("BON1", bon1.num_bon, bon1)) {
                                             bon1.blocage = "M";
                                             validate_theme();
                                         }
 
 
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
 
                                         new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                                                 .setTitleText("Attention!")
@@ -615,36 +604,41 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                                     }
                                     sDialog.dismiss();
                                 }).show();
-                    }else {
+                    } else {
                         new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Information!")
                                 .setContentText("Ce bon est déja exporté")
                                 .show();
                     }
-                }else{
+                } else {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Attention!!")
                             .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
-                            .show();                     }
-
-            break;
-            case R.id.btn_imp_bon:
-                if(!bon1.blocage.equals("F")){
+                            .show();
+                }
+            }
+            case R.id.btn_imp_bon -> {
+                if (!bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon n'est pas encore validé")
                             .show();
                     return;
                 }
-                Activity bactivity;
-                bactivity = ActivitySale.this;
+                if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                    Activity bactivity;
+                    bactivity = ActivitySale.this;
 
-                Printing printer = new Printing();
-                printer.start_print_bon(bactivity, "VENTE", final_panier, bon1, null);
-
-                break;
-
-
+                    Printing printer = new Printing();
+                    printer.start_print_bon(bactivity, "VENTE", final_panier, bon1, null);
+                } else {
+                    Intent html_intent = new Intent(this, ActivityHtmlView.class);
+                    html_intent.putExtra("TYPE_BON", "VENTE");
+                    html_intent.putExtra("BON1", bon1);
+                    html_intent.putExtra("BON2", final_panier);
+                    startActivity(html_intent);
+                }
+            }
         }
     }
 
@@ -666,7 +660,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     @Subscribe
     public void onClientSelected(SelectedClientEvent clientEvent){
 
-        onClientSelected(clientEvent.getClient());
+        onClientSelected(clientEvent.getClient(), true);
 
     }
 
@@ -691,26 +685,22 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     }
 
 
-    protected void onClientSelected(PostData_Client client_s){
+    protected void onClientSelected(PostData_Client client_s, boolean isUpdate){
 
         client_selected = client_s;
-        bon1.client = client_s.client;
         btn_select_client.setText(client_selected.client);
 
-        bon1.code_client = client_selected.code_client;
-        bon1.client = client_selected.client;
-        bon1.adresse = client_selected.adresse;
-        bon1.tel = client_selected.tel;
-        bon1.rc = client_selected.rc;
-        bon1.ifiscal = client_selected.ifiscal;
-        bon1.ai = client_selected.ai;
-        bon1.nis = client_selected.nis;
-
-
-
-        if(TYPE_ACTIVITY.equals("NEW_SALE")){
+        if(TYPE_ACTIVITY.equals("NEW_SALE") || isUpdate){
 
             bon1.solde_ancien = client_selected.solde_montant;  // Modifier le 03/02/2023
+            bon1.code_client = client_selected.code_client;
+            bon1.client = client_selected.client;
+            bon1.adresse = client_selected.adresse;
+            bon1.tel = client_selected.tel;
+            bon1.rc = client_selected.rc;
+            bon1.ifiscal = client_selected.ifiscal;
+            bon1.ai = client_selected.ai;
+            bon1.nis = client_selected.nis;
 
             bon1.mode_tarif = "1";
             btn_mode_tarif.setText("Tarif 1");
@@ -727,15 +717,15 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     }
                     case "4" -> {
                         btn_mode_tarif.setText("Tarif 4");
-                        bon1.mode_tarif = "3";
+                        bon1.mode_tarif = "4";
                     }
                     case "5" -> {
                         btn_mode_tarif.setText("Tarif 5");
-                        bon1.mode_tarif = "3";
+                        bon1.mode_tarif = "5";
                     }
                     case "6" -> {
                         btn_mode_tarif.setText("Tarif 6");
-                        bon1.mode_tarif = "3";
+                        bon1.mode_tarif = "6";
                     }
                     default -> {
                         btn_mode_tarif.setText("Tarif 1");
@@ -748,20 +738,31 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 bon1.mode_tarif = "1";
             }
         }else {
-
             switch (bon1.mode_tarif) {
-                case "2" ->
-                        btn_mode_tarif.setText("Tarif 2");
-                case "3" ->
-                        btn_mode_tarif.setText("Tarif 3");
-                case "4" ->
-                        btn_mode_tarif.setText("Tarif 4");
-                case "5" ->
-                        btn_mode_tarif.setText("Tarif 5");
-                case "6" ->
-                        btn_mode_tarif.setText("Tarif 6");
-                default ->
-                        btn_mode_tarif.setText("Tarif 1");
+                case "2" ->{
+                    btn_mode_tarif.setText("Tarif 2");
+                    bon1.mode_tarif = "2";
+                }
+                case "3" ->{
+                    btn_mode_tarif.setText("Tarif 3");
+                    bon1.mode_tarif = "3";
+                }
+                case "4" ->{
+                    btn_mode_tarif.setText("Tarif 4");
+                    bon1.mode_tarif = "4";
+                }
+                case "5" ->{
+                    btn_mode_tarif.setText("Tarif 5");
+                    bon1.mode_tarif = "5";
+                }
+                case "6" ->{
+                    btn_mode_tarif.setText("Tarif 6");
+                    bon1.mode_tarif = "6";
+                }
+                default ->{
+                    btn_mode_tarif.setText("Tarif 1");
+                    bon1.mode_tarif = "1";
+                }
             }
         }
 
@@ -874,8 +875,9 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     SOURCE = "BON2_EDIT";
                     Activity activity;
                     activity = ActivitySale.this;
+                    double last_price = controller.select_last_price_from_database("BON1", bon1.code_client, final_panier.get(info.position).codebarre);
                     FragmentQte fragmentqte = new FragmentQte();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
+                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), last_price);
 
                 }catch (Exception e){
 
@@ -987,7 +989,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sale_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_sale, menu);
         return true;
     }
 
@@ -1023,7 +1025,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
         bon1.code_client = client_selected.code_client;
         bon1.client = client_selected.client;
         bon1.code_vendeur = "000000";
-       // bon1.mode_tarif = client_selected.mode_tarif;
+        //bon1.mode_tarif = client_selected.mode_tarif;
        // bon1.solde_ancien = client_selected.solde_montant;  // Modifier le 03/02/2023
         bon1.nbr_p = final_panier.size();
 
@@ -1142,9 +1144,10 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             bon2.num_bon = NUM_BON;
             bon2.code_depot = CODE_DEPOT;
             SOURCE = "BON2_INSERT";
+            double last_price = controller.select_last_price_from_database("BON1", bon1.code_client, bon2.codebarre);
             Activity activity = ActivitySale.this;
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2, last_price);
 
             //Save clicked item position in list
             //save permanently
@@ -1244,6 +1247,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             }
 
         if(produits.size() == 1){
+
             bon2.num_bon = NUM_BON;
             bon2.code_depot = CODE_DEPOT;
             bon2.produit = produits.get(0).produit;
@@ -1271,14 +1275,72 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
             SOURCE = "BON2_INSERT";
             Activity activity = ActivitySale.this;
+            double last_price = controller.select_last_price_from_database("BON1", bon1.code_client, bon2.codebarre);
             FragmentQte fragmentqte = new FragmentQte();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2);
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2, last_price);
 
         }else if(produits.size() > 1){
             Crouton.makeText(ActivitySale.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
         }else{
             Crouton.makeText(ActivitySale.this, "Produit introuvable !", Style.ALERT).show();
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(PrintEvent event) {
+        // Do something
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 3000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Bundle extras = data.getExtras();
+                    assert extras != null;
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                    assert imageBitmap != null;
+                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100 /* Ignored for PNGs */, blob);
+                    byte[] inputData = blob.toByteArray();
+                    bus.post(new ByteDataEvent(inputData));
+                }
+            }
+        }else if(requestCode == 4000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Uri selectedImage = data.getData();
+                    InputStream iStream ;
+                    try {
+                        iStream  = getContentResolver().openInputStream(selectedImage);
+                        byte[] inputData = getBytes(iStream);
+
+                        bus.post(new ByteDataEvent(inputData));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "An error occured!", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 
 }

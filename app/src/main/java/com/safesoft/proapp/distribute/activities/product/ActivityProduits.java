@@ -2,15 +2,21 @@ package com.safesoft.proapp.distribute.activities.product;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,12 +31,9 @@ import android.widget.Toast;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
-import com.safesoft.proapp.distribute.activities.client.ActivityClients;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterProduits;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
-import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import com.safesoft.proapp.distribute.fragments.FragmentNewProduct;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
@@ -38,6 +41,11 @@ import com.safesoft.proapp.distribute.R;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -58,6 +66,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     AutoCompleteTextView famille_dropdown;
     private String selected_famile = "Toutes";
     private EventBus bus;
+    FragmentNewProduct fragmentnewproduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -342,9 +351,10 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
             startScan();
         } else if (item.getItemId() == R.id.new_product) {
+            if(fragmentnewproduct == null)
+             fragmentnewproduct = new FragmentNewProduct();
 
-            FragmentNewProduct fragmentnewproduct = new FragmentNewProduct();
-            fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT", null);
+            fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -396,4 +406,52 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         super.onDestroy();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 3000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Bundle extras = data.getExtras();
+                    assert extras != null;
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                    assert imageBitmap != null;
+                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100 /* Ignored for PNGs */, blob);
+                    byte[] inputData = blob.toByteArray();
+                    fragmentnewproduct.setImageFromActivity(inputData);
+                }
+            }
+        }else if(requestCode == 4000){
+            if(resultCode == RESULT_OK){
+                if (data != null) {
+                    Uri selectedImage = data.getData();
+                    InputStream iStream ;
+                    try {
+                        iStream  = getContentResolver().openInputStream(selectedImage);
+                        byte[] inputData = getBytes(iStream);
+                        fragmentnewproduct.setImageFromActivity(inputData);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "An error occured!", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
 }

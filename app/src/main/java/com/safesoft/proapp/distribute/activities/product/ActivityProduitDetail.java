@@ -71,6 +71,12 @@ public class ActivityProduitDetail extends AppCompatActivity {
     produit.pv4_ht = getIntent().getDoubleExtra("PV4_HT",0);
     produit.pv5_ht = getIntent().getDoubleExtra("PV5_HT",0);
     produit.pv6_ht = getIntent().getDoubleExtra("PV6_HT",0);
+    produit.pv1_ttc = produit.pv1_ht * (1+produit.tva / 100);
+    produit.pv2_ttc = produit.pv2_ht * (1+produit.tva / 100);
+    produit.pv3_ttc = produit.pv3_ht * (1+produit.tva / 100);
+    produit.pv4_ttc = produit.pv4_ht * (1+produit.tva / 100);
+    produit.pv5_ttc = produit.pv5_ht * (1+produit.tva / 100);
+    produit.pv6_ttc = produit.pv6_ht * (1+produit.tva / 100);
     produit.stock = getIntent().getDoubleExtra("STOCK",0);
     produit.colissage = getIntent().getDoubleExtra("COLISSAGE", 0);
     produit.photo = getIntent().getByteArrayExtra("PHOTO");
@@ -164,12 +170,12 @@ public class ActivityProduitDetail extends AppCompatActivity {
       TvProduit.setText(produit.produit);
 
 
-    TvPv1_title.setText(params.pv1_titre + " (HT)");
-    TvPv2_title.setText(params.pv2_titre + " (HT)");
-    TvPv3_title.setText(params.pv3_titre + " (HT)");
-    TvPv4_title.setText(params.pv4_titre + " (HT)");
-    TvPv5_title.setText(params.pv5_titre + " (HT)");
-    TvPv6_title.setText(params.pv6_titre + " (HT)");
+    TvPv1_title.setText(params.pv1_titre + " (TTC)");
+    TvPv2_title.setText(params.pv2_titre + " (TTC)");
+    TvPv3_title.setText(params.pv3_titre + " (TTC)");
+    TvPv4_title.setText(params.pv4_titre + " (TTC)");
+    TvPv5_title.setText(params.pv5_titre + " (TTC)");
+    TvPv6_title.setText(params.pv6_titre + " (TTC)");
 
 
     if(prefs.getBoolean("AFFICHAGE_PA_HT", false)){
@@ -180,97 +186,15 @@ public class ActivityProduitDetail extends AppCompatActivity {
       TvPamp.setVisibility(View.GONE);
     }
 
-    final BadgeDrawable drawable_pa_ht = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff5CD85A)
-            .text1(nf.format(produit.pa_ht))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pa_ht = new SpannableString(TextUtils.concat(drawable_pa_ht.toSpannable()));
-    TvPa_ht.setText(spannableString_pa_ht);
-
-    final BadgeDrawable drawable_pamp = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff5CD85A)
-            .text1(nf.format(produit.pamp))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pamp = new SpannableString(TextUtils.concat(drawable_pamp.toSpannable()));
-    TvPamp.setText(spannableString_pamp);
-
-    final BadgeDrawable drawable_pv1 = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff303F9F)
-            .text1(nf.format(produit.pv1_ht))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pv1 = new SpannableString(TextUtils.concat(drawable_pv1.toSpannable()));
-    TvPv1.setText(spannableString_pv1);
-
-    final BadgeDrawable drawable_pv2 = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff303F9F)
-            .text1(nf.format(produit.pv2_ht))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pv2 = new SpannableString(TextUtils.concat(drawable_pv2.toSpannable()));
-    TvPv2.setText(spannableString_pv2);
-
-    final BadgeDrawable drawable_pv3 = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff303F9F)
-            .text1(nf.format(produit.pv3_ht))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pv3 = new SpannableString(TextUtils.concat(drawable_pv3.toSpannable()));
-    TvPv3.setText(spannableString_pv3);
-
-    final BadgeDrawable drawable_pv4 = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff303F9F)
-            .text1(nf.format(produit.pv4_ht))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pv4 = new SpannableString(TextUtils.concat(drawable_pv4.toSpannable()));
-    TvPv4.setText(spannableString_pv4);
-
-    final BadgeDrawable drawable_pv5 = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff303F9F)
-            .text1(nf.format(produit.pv5_ht))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pv5 = new SpannableString(TextUtils.concat(drawable_pv5.toSpannable()));
-    TvPv5.setText(spannableString_pv5);
-
-    final BadgeDrawable drawable_pv6 = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xff303F9F)
-            .text1(nf.format(produit.pv6_ht))
-            .textSize(40f)
-            .text2(" DA ")
-            .build();
-    SpannableString spannableString_pv6 = new SpannableString(TextUtils.concat(drawable_pv6.toSpannable()));
-    TvPv6.setText(spannableString_pv6);
-
-
-
-    final BadgeDrawable drawable_tva = new BadgeDrawable.Builder()
-            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-            .badgeColor(0xffE74C3C)
-            .text1(nf.format(produit.tva))
-            .textSize(40f)
-            .text2(" % ")
-            .build();
-    SpannableString spannableString_tva = new SpannableString(TextUtils.concat(drawable_tva.toSpannable()));
-    TvTva.setText(spannableString_tva);
+    TvPa_ht.setText(nf.format(produit.pa_ht * (1+produit.tva / 100)) + " DA");
+    TvPamp.setText(nf.format(produit.pamp * (1+produit.tva / 100)) + " DA");
+    TvPv1.setText(nf.format(produit.pv1_ttc) + " DA");
+    TvPv2.setText(nf.format(produit.pv2_ttc) + " DA");
+    TvPv3.setText(nf.format(produit.pv3_ttc) + " DA");
+    TvPv4.setText(nf.format(produit.pv4_ttc)+ " DA");
+    TvPv5.setText(nf.format(produit.pv5_ttc)+ " DA");
+    TvPv6.setText(nf.format(produit.pv6_ttc)+ " DA");
+    TvTva.setText(nf.format(produit.tva) + " % ");
 
     TvStock.setText( new DecimalFormat("##,##0.##").format(Double.valueOf(produit.stock)));
     Colissage.setText("Colissage : " + new DecimalFormat("##,##0.##").format(produit.colissage));

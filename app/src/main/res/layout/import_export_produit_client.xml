@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:visibility="gone"
         android:onClick="onRelativeClick"
         android:background="@drawable/import_export_selector"
         android:paddingLeft="15dp"
@@ -21,7 +22,7 @@
             android:text="Importation bons transfers"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/descrip_import_bon"
@@ -29,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
             android:layout_below="@+id/importt_bon_txt"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
@@ -46,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:visibility="gone"
         android:onClick="onRelativeClick"
         android:background="@drawable/import_export_selector"
         android:paddingLeft="15dp"
@@ -59,7 +61,7 @@
             android:text="Importation bons de retour"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/descrip_import_bon_retour"
@@ -67,7 +69,7 @@
             android:layout_height="wrap_content"
             android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
             android:layout_below="@+id/importt_bon_txt_retour"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
@@ -97,14 +99,14 @@
             android:text="Synchronisation fournisseurs"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ça vous permet d'importer la liste des fournisseur depuis le serveur distant"
             android:layout_below="@+id/importt_fournisseur_txt"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
@@ -129,14 +131,14 @@
             android:text="Synchronisation clients"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ça vous permet d'importer la liste des clients depuis le serveur distant"
             android:layout_below="@+id/importt_client_txt"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
@@ -161,14 +163,14 @@
             android:text="Synchronisation des produits"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ça vous permet d'importer la liste des produits depuis le serveur distant ( Local)"
             android:layout_below="@+id/importt_produit_txt"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
@@ -181,6 +183,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:visibility="gone"
         android:onClick="onRelativeClick"
         android:background="@drawable/import_export_selector"
         android:paddingLeft="15dp"
@@ -194,14 +197,14 @@
             android:text="Synchronisation des produits depuis serveur (FTP)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ça vous permet d'importer la liste des produits depuis le serveur distant (FTP)"
             android:layout_below="@+id/importt_produit_txt_ftp"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 
@@ -226,14 +229,14 @@
             android:text="@string/synchronisation_des_param_tres"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/desciption_sync_des_parametres"
             android:layout_below="@+id/import_parametre_txt"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
 

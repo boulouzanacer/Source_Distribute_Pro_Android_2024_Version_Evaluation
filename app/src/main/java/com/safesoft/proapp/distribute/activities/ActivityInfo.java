@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.R;
@@ -21,11 +22,28 @@ public class ActivityInfo extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Info mise à jour");
         TextView txtv_update = findViewById(R.id.txtv_update);
+        ImageView logo_revendeur = findViewById(R.id.imageView2);
+
         String content = "<h3>Historique des versions</h3><br>" +
                 "<pre>" +
-                "    <h6>version v7.1.24 (07-01-2024)<br></h6>" +
+                "    <h6>version v07.2.24 (04-02-2024)<br></h6>" +
+                "    <p style=color:teal;>[MAJ] Rubrique vente</p>" +
+                "        &ensp;1- Ajouter le dernier prix d'un produit vendu pour un client <br>" +
+                "    <p style=color:green;>[MAJ] Rubrique client</p>" +
+                "        &ensp;1- [MAJ] Nouveau client - Ajouter solde initial<br>" +
                 "    <p style=color:red;>[MAJ] Rubrique produit</p>" +
-                "        &ensp;1- [Ajouter] Filtre la recherche par famille <br>" +
+                "        &ensp;1- [MAJ] Modifier détails produit <br>" +
+                "    <br>" +
+                "    <h6>version v21.1.24 (21-01-2024)<br></h6>" +
+                "    <p style=color:olive;>[MAJ] Rubrique Paramètres</p>" +
+                "        &ensp;4- [MAJ][Paramètres imprimantes]<br>" +
+                "            &emsp;- [AJOUTER] model ticket (latine / arabe) <br>" +
+                "    <br>" +
+                "    <h6>version v7.1.24 (07-01-2024)<br></h6>" +
+                "    <p style=color:green;>[MAJ] Rubrique client</p>" +
+                "        &ensp;1- [AJOUTER] Imprimer versement client<br>" +
+                "    <p style=color:red;>[MAJ] Rubrique produit</p>" +
+                "        &ensp;1- [Ajouter] Filtrer la recherche par famille <br>" +
                 "        &ensp;1- [Ajouter] Suppression produit <br>" +
                 "    <p style=color:teal;>[MAJ] Rubrique vente</p>" +
                 "        &ensp;1- Dans la séléction de produit, garder la dernière position séléctionnée <br>" +

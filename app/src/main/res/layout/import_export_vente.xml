@@ -23,7 +23,7 @@
             android:text="Exportation ventes (Réseaux IP)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,9 +31,9 @@
             android:layout_below="@+id/exportt_vente"
             android:layout_alignParentStart="true"
             android:clickable="false"
-            android:text="Vous permet d'exporter les bons de ventes vers le serveur distant"
+            android:text="Vous permet d'exporter les bons de ventes et les versements clients vers le serveur distant"
             android:textColor="@color/gray"
-            android:textSize="12dp" />
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
@@ -59,14 +59,14 @@
             android:text="Exportation ventes (Serveur FTP)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vous permet d'exporter les bons de ventes vers le serveur FTP"
+            android:text="Vous permet d'exporter les bons de ventes et les versements clients vers le serveur FTP"
             android:layout_below="@+id/exportt_vente_ftp"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:clickable="false"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
@@ -93,7 +93,7 @@
             android:text="Bons de vente exportés"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -103,7 +103,7 @@
             android:clickable="false"
             android:text="ça vous permet d'afficher les bons de livraison exportés avec la possibilité de suppression"
             android:textColor="@color/gray"
-            android:textSize="12dp" />
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
@@ -128,7 +128,7 @@
             android:text="Etat de vente"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -138,7 +138,7 @@
             android:clickable="false"
             android:text="ça vous permet de consulter la quantité des produits vendu ansi que le montant total, remise total...entre deux date donné."
             android:textColor="@color/gray"
-            android:textSize="12dp" />
+            android:textSize="12sp" />
 
     </RelativeLayout>
 </LinearLayout>

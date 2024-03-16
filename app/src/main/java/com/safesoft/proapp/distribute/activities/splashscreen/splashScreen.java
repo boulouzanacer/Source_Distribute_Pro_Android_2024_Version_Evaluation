@@ -274,7 +274,7 @@ public class splashScreen extends AppCompatActivity {
         }
         //17
         if (revendeur.equals("EXPERT INFO")) {
-             logo_revendeur.setImageResource(R.drawable.logo_expert_info_500_100);
+            logo_revendeur.setImageResource(R.drawable.logo_expert_info_500_100);
             inforevenedeur1.setText(R.string.INFO_EXPERTINFO1);
             inforevenedeur2.setText(R.string.INFO_EXPERTINFO2);
             inforevenedeur3.setText(R.string.INFO_EXPERTINFO3);

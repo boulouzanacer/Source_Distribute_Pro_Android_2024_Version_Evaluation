@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.ActivityRouting;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
@@ -249,8 +250,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                     .show();
                             return;
                         }
-                        Activity bactivity;
-                        bactivity = ActivityOrdersClient.this;
+
                         final_panier = controller.select_bon2_from_database("" +
                                 "SELECT " +
                                 "BON2_TEMP.RECORDID, " +
@@ -274,13 +274,26 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
-                        Printing printer = new Printing();
 
-                        try {
-                            printer.start_print_bon(bactivity, "ORDER", final_panier, bon1s_temp.get(position), null);
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
+                        if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                            Activity bactivity;
+                            bactivity = ActivityOrdersClient.this;
+
+                            Printing printer = new Printing();
+
+                            try {
+                                printer.start_print_bon(bactivity, "ORDER", final_panier, bon1s_temp.get(position), null);
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }else {
+                            Intent html_intent = new Intent(this, ActivityHtmlView.class);
+                            html_intent.putExtra("TYPE_BON" , "COMMANDE");
+                            html_intent.putExtra("BON1" , bon1s_temp.get(position));
+                            html_intent.putExtra("BON2" , final_panier);
+                            startActivity(html_intent);
                         }
+
                     }
                 }
             });

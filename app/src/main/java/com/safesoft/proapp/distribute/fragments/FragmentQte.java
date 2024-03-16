@@ -44,36 +44,33 @@ public class FragmentQte {
 
     private DATABASE controller;
     MaterialFancyButton btn_valider, btn_cancel;
-    TextView txv_produit, txv_message, txv_promotion;
+    TextView txv_produit, txv_message, txv_promotion, txv_last_price;
     TextInputLayout stockavantLayout_colis, stockapresLayout_colis, prixhtLayout, tvaLayout, ugLayout;
     LinearLayout ly_prix_ttc, part_3_qtevente_Layout;
     TextInputEditText  edt_colissage, edt_nbr_colis, edt_qte, edt_gratuit, edt_prix_ht, edt_tva, edt_prix_ttc, edt_stock_avant, edt_stock_avant_colis, edt_stock_apres, edt_stock_apres_colis;
     double val_nbr_colis, val_colissage, val_qte, val_gratuit, val_prix_ht, val_tva, val_prix_ttc, val_stock_avant, val_stock_avant_colis, val_stock_apres, val_stock_apres_colis, val_qte_old, val_gratuit_old;
     private Context mContext;
-
     EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
     NumberFormat nf,nq;
-
     PostData_Bon2 arrived_bon2;
     boolean if_bon2_exist = false;
-    private final boolean edit_price = true;
-
     private final String PREFS = "ALL_PREFS";
     private String SOURCE_LOCAL;
-
     SharedPreferences prefs;
     String TYPE_LOGICIEL;
+    double last_price  = 0;
 
     //PopupWindow display method
 
-    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Bon2 bon2) throws ParseException {
+    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Bon2 bon2, double last_price) throws ParseException {
 
         mContext = context;
         this.activity = activity;
         arrived_bon2 = bon2;
         this.SOURCE_LOCAL = SOURCE;
+        this.last_price = last_price;
         this.controller = new DATABASE(mContext);
 
         // Declare US print format
@@ -128,6 +125,8 @@ public class FragmentQte {
         txv_produit = dialogview.findViewById(R.id.produit_title);
         txv_message = dialogview.findViewById(R.id.message_title);
         txv_promotion = dialogview.findViewById(R.id.promotion_title);
+        txv_last_price = dialogview.findViewById(R.id.txv_last_price);
+
         edt_stock_avant = dialogview.findViewById(R.id.stockavant);
         edt_stock_avant_colis = dialogview.findViewById(R.id.stockavant_colis);
         edt_nbr_colis = dialogview.findViewById(R.id.nbrColis);
@@ -164,6 +163,9 @@ public class FragmentQte {
             edt_tva.setEnabled(true);
         }
 
+        if(last_price != 0){
+            txv_last_price.setText("Dernier prix vendu pour ce client : " + nf.format(last_price));
+        }
 
         if(prefs.getBoolean("VENTE_WITH_QTE_GRAT", false)){
             TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
@@ -178,7 +180,6 @@ public class FragmentQte {
             ugLayout.setVisibility(View.GONE);
             part_3_qtevente_Layout.setWeightSum(3);
         }
-
 
         //********************************************************************
         if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT") || SOURCE_LOCAL.equals("ACHAT2_INSERT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")){
@@ -260,7 +261,7 @@ public class FragmentQte {
             }
 
             if(checked_bon2 != null){
-                txv_message.setText("Produit déja inseré avec une quantité : " + checked_bon2.qte);
+                txv_message.setText("Produit déja inseré avec quantité: " + nq.format(checked_bon2.qte));
                 if_bon2_exist = true;
                 arrived_bon2 = checked_bon2;
             }

@@ -1,24 +1,25 @@
 -- Merging decision tree log ---
 provider#androidx.core.content.FileProvider
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:72:9-80:20
+INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:81:9-89:20
 	android:grantUriPermissions
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:76:13-47
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:85:13-47
 	android:authorities
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:74:13-60
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:83:13-60
 	android:exported
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:75:13-37
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:84:13-37
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:73:13-62
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:82:13-62
 manifest
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
+INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
+INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
+INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
 MERGED from [androidx.databinding:viewbinding:8.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\7251f8c7719d6e0c0ee460dd6b4798d4\transformed\jetified-viewbinding-8.0.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e3d903d1f417e3ef70ef399c7612d6a0\transformed\jetified-easyform-1.1.0\AndroidManifest.xml:2:1-18:12
 MERGED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-28:12
-MERGED from [com.google.android.material:material:1.10.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8f349e0c80d6e03106ebc0e0ab5f78f6\transformed\material-1.10.0\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.material:material:1.11.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\3881b440eee05aeddcb0b1ed6c0731bd\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\f566572989e4dcd35d52b1e6093ca835\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\4887249d891d248ad472284c1de0b362\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\93e9ae46b46dba20f8749db06e703e16\transformed\jetified-checkbox-1.0.1\AndroidManifest.xml:2:1-17:12
 MERGED from [eu.inloop:simplerecycleradapter:0.3.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\81436a9974f872220181ff480b11f73a\transformed\jetified-simplerecycleradapter-0.3.1\AndroidManifest.xml:2:1-11:12
@@ -41,15 +42,14 @@ MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC3\.gradle\caches
 MERGED from [com.github.barteksc:android-pdf-viewer:2.8.2] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\513d1025b4e010b39e5cc554e7252b3d\transformed\jetified-android-pdf-viewer-2.8.2\AndroidManifest.xml:2:1-11:12
 MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\d491ecb8ba1817bb0c0f31d795889edb\transformed\jetified-pdfium-android-1.7.1\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\078e1fbb3f71e8dd58e7fc4862fb00b3\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\78234f8a755a9b211a327be5059fa6cc\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-vision:20.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\721a6e47a5feec8643e8d08ad3ce2825\transformed\jetified-play-services-vision-20.1.3\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-vision-common:19.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e40b56f1fe9caa3d759fc2d1d1acea6e\transformed\jetified-play-services-vision-common-19.1.3\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-clearcut:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\30d18bb13c86a471f55c70519b31929c\transformed\jetified-play-services-clearcut-17.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.gms:play-services-flags:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\7132b8701342e17dbb4cd803a5a382a0\transformed\jetified-play-services-flags-17.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.gms:play-services-phenotype:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\45c095a17db8c6579181046d0e797f70\transformed\jetified-play-services-phenotype-17.0.0\AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:16:1-24:12
-MERGED from [com.google.android.gms:play-services-tasks:18.0.2] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\13bbab95fe91d0380eaf2e6ceeef68d9\transformed\jetified-play-services-tasks-18.0.2\AndroidManifest.xml:2:1-6:12
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\910959e8380e58194a3db6f93c30af6e\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:16:1-26:12
+MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\bf42edcae522a87c157d974faf366709\transformed\jetified-play-services-tasks-18.1.0\AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2d84d9f5e3e8e1daffd6a3f7ab1833e5\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:16:1-26:12
 MERGED from [com.github.bumptech.glide:glide:4.9.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2205c839ee9d17bdebdb75c309f2055e\transformed\jetified-glide-4.9.0\AndroidManifest.xml:2:1-12:12
 MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\b0efe488913bdd40d86869c33683da5a\transformed\fragment-1.3.6\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.activity:activity:1.8.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\7edababfb674a12082f10bd7f905d75f\transformed\jetified-activity-1.8.0\AndroidManifest.xml:17:1-22:12
@@ -114,22 +114,22 @@ MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\User
 MERGED from [androidx.print:print:1.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\acbc436c37721bf022705faa9fb0a237\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\00734e5f88778daa65ff3690c599779c\transformed\jetified-annotation-experimental-1.3.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.pnikosis:materialish-progress:1.7] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8402d2ef11b27e1194ebdecc00d69abc\transformed\jetified-materialish-progress-1.7\AndroidManifest.xml:2:1-13:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
+INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
+INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
+INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
 	package
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
 	xmlns:tools
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:3:5-51
 	android:versionCode
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-145:12
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:1-166:12
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:2:11-69
@@ -204,17 +204,21 @@ ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2
 	android:name
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:24:22-78
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:25:5-27:38
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:26:5-27:38
 	android:maxSdkVersion
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:27:9-35
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:26:9-65
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:26:22-78
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:28:5-30:38
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:28:5-29:38
 	android:maxSdkVersion
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:30:9-35
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:29:9-35
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:29:9-64
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:28:22-77
+uses-permission#android.permission.READ_MEDIA_IMAGES
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:30:5-75
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:30:22-73
 uses-feature#android.hardware.usb.host
 ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:32:5-34:36
 	android:required
@@ -222,30 +226,32 @@ ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2
 	android:name
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:33:9-49
 uses-feature#android.hardware.camera
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:35:5-37:36
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:36:5-38:36
 MERGED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-60
 MERGED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-60
 MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\54499aa7349308b4183e9493a97f7d53\transformed\jetified-zxing-android-embedded-4.3.0\AndroidManifest.xml:25:5-27:36
 MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\54499aa7349308b4183e9493a97f7d53\transformed\jetified-zxing-android-embedded-4.3.0\AndroidManifest.xml:25:5-27:36
 	android:required
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:37:9-33
-		MERGED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:37:9-33
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:38:9-33
+		MERGED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:38:9-33
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:36:9-47
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:37:9-47
 uses-feature#android.hardware.telephony
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:38:5-40:36
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:40:5-42:36
 	android:required
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:40:9-33
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:42:9-33
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:39:9-50
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:41:9-50
 application
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:42:5-143:19
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:44:5-164:19
 MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e3d903d1f417e3ef70ef399c7612d6a0\transformed\jetified-easyform-1.1.0\AndroidManifest.xml:11:5-16:19
 MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e3d903d1f417e3ef70ef399c7612d6a0\transformed\jetified-easyform-1.1.0\AndroidManifest.xml:11:5-16:19
 MERGED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:11:5-26:19
 MERGED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:11:5-26:19
-MERGED from [com.google.android.material:material:1.10.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8f349e0c80d6e03106ebc0e0ab5f78f6\transformed\material-1.10.0\AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.material:material:1.10.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8f349e0c80d6e03106ebc0e0ab5f78f6\transformed\material-1.10.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.11.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\3881b440eee05aeddcb0b1ed6c0731bd\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.11.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\3881b440eee05aeddcb0b1ed6c0731bd\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\f566572989e4dcd35d52b1e6093ca835\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\f566572989e4dcd35d52b1e6093ca835\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:7:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\4887249d891d248ad472284c1de0b362\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\4887249d891d248ad472284c1de0b362\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
 MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\93e9ae46b46dba20f8749db06e703e16\transformed\jetified-checkbox-1.0.1\AndroidManifest.xml:11:5-15:19
@@ -266,8 +272,6 @@ MERGED from [me.dm7.barcodescanner:zbar:1.9.8] C:\Users\SEBTI-PC3\.gradle\caches
 MERGED from [me.dm7.barcodescanner:zbar:1.9.8] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\6c21ce59b443f2f5bc594cb3eaa65aeb\transformed\jetified-zbar-1.9.8\AndroidManifest.xml:11:5-20
 MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\ac9b0cf002528ffb3b5d6f32df4f7d1e\transformed\jetified-core-1.9.8\AndroidManifest.xml:11:5-20
 MERGED from [me.dm7.barcodescanner:core:1.9.8] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\ac9b0cf002528ffb3b5d6f32df4f7d1e\transformed\jetified-core-1.9.8\AndroidManifest.xml:11:5-20
-MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\78234f8a755a9b211a327be5059fa6cc\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\78234f8a755a9b211a327be5059fa6cc\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-vision:20.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\721a6e47a5feec8643e8d08ad3ce2825\transformed\jetified-play-services-vision-20.1.3\AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-vision:20.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\721a6e47a5feec8643e8d08ad3ce2825\transformed\jetified-play-services-vision-20.1.3\AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-vision-common:19.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e40b56f1fe9caa3d759fc2d1d1acea6e\transformed\jetified-play-services-vision-common-19.1.3\AndroidManifest.xml:7:5-20
@@ -276,12 +280,12 @@ MERGED from [com.google.android.gms:play-services-clearcut:17.0.0] C:\Users\SEBT
 MERGED from [com.google.android.gms:play-services-clearcut:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\30d18bb13c86a471f55c70519b31929c\transformed\jetified-play-services-clearcut-17.0.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.gms:play-services-phenotype:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\45c095a17db8c6579181046d0e797f70\transformed\jetified-play-services-phenotype-17.0.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.gms:play-services-phenotype:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\45c095a17db8c6579181046d0e797f70\transformed\jetified-play-services-phenotype-17.0.0\AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:19:5-23:19
-MERGED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:19:5-23:19
-MERGED from [com.google.android.gms:play-services-tasks:18.0.2] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\13bbab95fe91d0380eaf2e6ceeef68d9\transformed\jetified-play-services-tasks-18.0.2\AndroidManifest.xml:5:5-20
-MERGED from [com.google.android.gms:play-services-tasks:18.0.2] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\13bbab95fe91d0380eaf2e6ceeef68d9\transformed\jetified-play-services-tasks-18.0.2\AndroidManifest.xml:5:5-20
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\910959e8380e58194a3db6f93c30af6e\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:20:5-24:19
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\910959e8380e58194a3db6f93c30af6e\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\bf42edcae522a87c157d974faf366709\transformed\jetified-play-services-tasks-18.1.0\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\bf42edcae522a87c157d974faf366709\transformed\jetified-play-services-tasks-18.1.0\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2d84d9f5e3e8e1daffd6a3f7ab1833e5\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2d84d9f5e3e8e1daffd6a3f7ab1833e5\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:20:5-24:19
 MERGED from [com.github.bumptech.glide:glide:4.9.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2205c839ee9d17bdebdb75c309f2055e\transformed\jetified-glide-4.9.0\AndroidManifest.xml:10:5-20
 MERGED from [com.github.bumptech.glide:glide:4.9.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2205c839ee9d17bdebdb75c309f2055e\transformed\jetified-glide-4.9.0\AndroidManifest.xml:10:5-20
 MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\1ffbbf8c7d2225ca625e88782df81b29\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:23:5-33:19
@@ -315,226 +319,232 @@ MERGED from [com.github.bumptech.glide:gifdecoder:4.9.0] C:\Users\SEBTI-PC3\.gra
 MERGED from [com.pnikosis:materialish-progress:1.7] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8402d2ef11b27e1194ebdecc00d69abc\transformed\jetified-materialish-progress-1.7\AndroidManifest.xml:11:5-20
 MERGED from [com.pnikosis:materialish-progress:1.7] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8402d2ef11b27e1194ebdecc00d69abc\transformed\jetified-materialish-progress-1.7\AndroidManifest.xml:11:5-20
 	tools:node
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:50:9-27
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:52:9-27
 	android:requestLegacyExternalStorage
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:47:9-52
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:49:9-52
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.9.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\9653340cbca5d7ff806ba2428c1418b2\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:48:9-35
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:50:9-35
 	android:label
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:46:9-41
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:48:9-41
 	android:icon
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:45:9-47
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:47:9-47
 		REJECTED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e3d903d1f417e3ef70ef399c7612d6a0\transformed\jetified-easyform-1.1.0\AndroidManifest.xml:13:9-43
 	android:allowBackup
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:44:9-35
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:46:9-35
 	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:49:9-51
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:51:9-51
 	tools:replace
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:51:9-37
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:53:9-37
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:43:9-44
-activity#com.safesoft.proapp.distribute.activities.ActivityInfo
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:52:9-54:40
-	android:exported
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:54:13-37
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:53:13-52
-activity#com.safesoft.proapp.distribute.activities.ActivityRouting
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:45:9-44
+activity#com.safesoft.proapp.distribute.activities.ActivityHtmlView
 ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:55:9-57:40
 	android:exported
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:57:13-37
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:56:13-55
-meta-data#com.google.android.geo.API_KEY
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:59:9-61:71
-	android:value
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:61:13-68
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:56:13-56
+activity#com.safesoft.proapp.distribute.activities.ActivityInfo
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:59:9-61:40
+	android:exported
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:61:13-37
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:60:13-58
-activity#com.safesoft.proapp.distribute.activities.client.TSPActivityMaps
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:63:9-67:62
-	android:label
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:67:13-59
-	android:hardwareAccelerated
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:66:13-47
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:60:13-52
+activity#com.safesoft.proapp.distribute.activities.ActivityRouting
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:63:9-65:40
 	android:exported
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:65:13-37
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:64:13-62
-activity#com.safesoft.proapp.distribute.activities.pdf.ActivityPDF
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:68:9-70:40
-	android:exported
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:70:13-37
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:64:13-55
+meta-data#com.google.android.geo.API_KEY
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:67:9-69:71
+	android:value
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:69:13-68
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:69:13-55
-activity#com.safesoft.proapp.distribute.activation.ActivityCodeRevendeur
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:82:9-91:20
-	android:exported
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:84:13-36
-	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:85:13-56
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:83:13-61
-intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:86:13-90:29
-action#android.intent.action.MAIN
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:87:17-69
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:87:25-66
-category#android.intent.category.LAUNCHER
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:89:17-77
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:89:27-74
-activity#com.safesoft.proapp.distribute.MainActivity
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:94:9-97:84
-	android:exported
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:96:13-36
-	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:97:13-72
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:95:13-41
-activity#com.safesoft.proapp.distribute.activities.splashscreen.splashScreen
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:98:9-100:59
-	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:100:13-56
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:99:13-65
-activity#com.safesoft.proapp.distribute.activation.ActivityActivation
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:101:9-67
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:101:19-64
-activity#com.safesoft.proapp.distribute.activities.client.ActivityClients
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:102:9-71
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:102:19-68
-activity#com.safesoft.proapp.distribute.activities.client.ActivityClientDetail
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:103:9-76
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:103:19-73
-activity#com.safesoft.proapp.distribute.activities.product.ActivityProduits
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:104:9-73
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:104:19-70
-activity#com.safesoft.proapp.distribute.activities.product.ActivityProduitDetail
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:105:9-78
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:105:19-75
-activity#com.safesoft.proapp.distribute.activities.transfert.ActivityTransferts
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:106:9-77
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:106:19-74
-activity#com.safesoft.proapp.distribute.activities.transfert.ActivityTransfert
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:107:9-76
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:107:19-73
-activity#com.safesoft.proapp.distribute.activities.ActivityImportsExport
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:108:9-70
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:108:19-67
-activity#com.safesoft.proapp.distribute.activities.ActivitySetting
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:109:9-111:48
-	android:exported
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:111:13-36
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:110:13-55
-activity#com.safesoft.proapp.distribute.activities.ActivityInventaireAchat
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:112:9-72
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:112:19-69
-activity#com.safesoft.proapp.distribute.activities.login.ActivityLogin
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:113:9-115:52
-	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:115:13-49
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:114:13-59
-activity#com.safesoft.proapp.distribute.activities.login.ActivityChangePwd
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:116:9-118:52
-	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:118:13-49
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:117:13-63
-activity#com.safesoft.proapp.distribute.activities.commande_achat.ActivityOrdersFournisseur
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:119:9-89
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:119:19-86
-activity#com.safesoft.proapp.distribute.activities.commande_achat.ActivityOrderFournisseur
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:120:9-88
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:120:19-85
-activity#com.safesoft.proapp.distribute.activities.fournisseur.ActivityFournisseurs
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:121:9-81
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:121:19-78
-activity#com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:122:9-78
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:122:19-75
-activity#com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:123:9-79
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:123:19-76
-activity#com.safesoft.proapp.distribute.scanner.FullScannerActivity
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:124:9-126:59
-	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:126:13-56
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:125:13-56
-activity#com.safesoft.proapp.distribute.scanner.BaseScannerActivity
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:127:9-65
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:127:19-62
-activity#com.safesoft.proapp.distribute.activities.achats.ActivityAchats
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:128:9-70
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:128:19-67
-activity#com.safesoft.proapp.distribute.activities.achats.ActivityAchat
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:129:9-69
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:129:19-66
-activity#com.safesoft.proapp.distribute.activities.vente.ActivitySale
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:130:9-67
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:130:19-64
-activity#com.safesoft.proapp.distribute.activities.vente.ActivitySales
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:131:9-68
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:131:19-65
-activity#com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:132:9-83
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:132:19-80
-activity#com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrdersClient
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:133:9-84
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:133:19-81
-activity#com.safesoft.proapp.distribute.activities.map.ActivityItenerary
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:134:9-70
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:134:19-67
-service#com.safesoft.proapp.distribute.gps.ServiceLocation
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:135:9-56
-	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:135:18-53
-activity#com.safesoft.proapp.distribute.activities.map.ActivityMaps
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:136:9-140:59
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:68:13-58
+activity#com.safesoft.proapp.distribute.activities.client.TSPActivityMaps
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:71:9-75:62
 	android:label
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:139:13-56
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:75:13-59
 	android:hardwareAccelerated
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:138:13-47
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:74:13-47
+	android:exported
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:73:13-37
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:72:13-62
+activity#com.safesoft.proapp.distribute.activities.pdf.ActivityPDF
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:77:9-79:40
+	android:exported
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:79:13-37
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:78:13-55
+activity#com.safesoft.proapp.distribute.activation.ActivityCodeRevendeur
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:91:9-100:20
+	android:exported
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:93:13-36
 	android:theme
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:140:13-56
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:94:13-56
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:137:13-56
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:92:13-61
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:95:13-99:29
+action#android.intent.action.MAIN
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:96:17-69
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:96:25-66
+category#android.intent.category.LAUNCHER
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:98:17-77
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:98:27-74
+activity#com.safesoft.proapp.distribute.MainActivity
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:103:9-106:75
+	android:exported
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:105:13-36
+	android:theme
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:106:13-72
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:104:13-41
+activity#com.safesoft.proapp.distribute.activities.splashscreen.splashScreen
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:108:9-110:59
+	android:theme
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:110:13-56
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:109:13-65
+activity#com.safesoft.proapp.distribute.activation.ActivityActivation
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:113:9-67
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:113:19-64
+activity#com.safesoft.proapp.distribute.activities.client.ActivityClients
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:114:9-71
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:114:19-68
+activity#com.safesoft.proapp.distribute.activities.client.ActivityClientDetail
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:115:9-76
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:115:19-73
+activity#com.safesoft.proapp.distribute.activities.product.ActivityProduits
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:116:9-73
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:116:19-70
+activity#com.safesoft.proapp.distribute.activities.product.ActivityProduitDetail
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:117:9-78
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:117:19-75
+activity#com.safesoft.proapp.distribute.activities.transfert.ActivityTransferts
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:118:9-77
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:118:19-74
+activity#com.safesoft.proapp.distribute.activities.transfert.ActivityTransfert
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:119:9-76
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:119:19-73
+activity#com.safesoft.proapp.distribute.activities.ActivityImportsExport
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:120:9-70
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:120:19-67
+activity#com.safesoft.proapp.distribute.activities.ActivitySetting
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:122:9-124:39
+	android:exported
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:124:13-36
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:123:13-55
+activity#com.safesoft.proapp.distribute.activities.ActivityInventaireAchat
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:126:9-72
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:126:19-69
+activity#com.safesoft.proapp.distribute.activities.login.ActivityLogin
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:129:9-131:52
+	android:theme
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:131:13-49
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:130:13-59
+activity#com.safesoft.proapp.distribute.activities.login.ActivityChangePwd
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:133:9-135:52
+	android:theme
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:135:13-49
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:134:13-63
+activity#com.safesoft.proapp.distribute.activities.commande_achat.ActivityOrdersFournisseur
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:138:9-89
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:138:19-86
+activity#com.safesoft.proapp.distribute.activities.commande_achat.ActivityOrderFournisseur
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:139:9-88
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:139:19-85
+activity#com.safesoft.proapp.distribute.activities.fournisseur.ActivityFournisseurs
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:140:9-81
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:140:19-78
+activity#com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:143:9-78
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:143:19-75
+activity#com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:144:9-79
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:144:19-76
+activity#com.safesoft.proapp.distribute.scanner.FullScannerActivity
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:145:9-147:59
+	android:theme
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:147:13-56
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:146:13-56
+activity#com.safesoft.proapp.distribute.scanner.BaseScannerActivity
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:148:9-65
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:148:19-62
+activity#com.safesoft.proapp.distribute.activities.achats.ActivityAchats
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:149:9-70
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:149:19-67
+activity#com.safesoft.proapp.distribute.activities.achats.ActivityAchat
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:150:9-69
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:150:19-66
+activity#com.safesoft.proapp.distribute.activities.vente.ActivitySale
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:151:9-67
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:151:19-64
+activity#com.safesoft.proapp.distribute.activities.vente.ActivitySales
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:152:9-68
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:152:19-65
+activity#com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:153:9-83
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:153:19-80
+activity#com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrdersClient
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:154:9-84
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:154:19-81
+activity#com.safesoft.proapp.distribute.activities.map.ActivityItenerary
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:155:9-70
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:155:19-67
+service#com.safesoft.proapp.distribute.gps.ServiceLocation
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:156:9-56
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:156:18-53
+activity#com.safesoft.proapp.distribute.activities.map.ActivityMaps
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:157:9-161:59
+	android:label
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:160:13-56
+	android:hardwareAccelerated
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:159:13-47
+	android:theme
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:161:13-56
+	android:name
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:158:13-56
 activity#com.safesoft.proapp.distribute.activities.vente.ActivityEtatV
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:141:9-68
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:162:9-68
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:141:19-65
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:162:19-65
 activity#com.safesoft.proapp.distribute.activities.commande_vente.ActivityEtatC
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:142:9-77
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:163:9-77
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:142:19-74
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:163:19-74
 uses-sdk
 INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
@@ -545,8 +555,10 @@ MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC3\.gradle\caches\tr
 MERGED from [com.emmasuzuki:easyform:1.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e3d903d1f417e3ef70ef399c7612d6a0\transformed\jetified-easyform-1.1.0\AndroidManifest.xml:7:5-9:41
 MERGED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.material:material:1.10.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8f349e0c80d6e03106ebc0e0ab5f78f6\transformed\material-1.10.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.material:material:1.10.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8f349e0c80d6e03106ebc0e0ab5f78f6\transformed\material-1.10.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.11.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\3881b440eee05aeddcb0b1ed6c0731bd\transformed\material-1.11.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.11.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\3881b440eee05aeddcb0b1ed6c0731bd\transformed\material-1.11.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\f566572989e4dcd35d52b1e6093ca835\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\f566572989e4dcd35d52b1e6093ca835\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\4887249d891d248ad472284c1de0b362\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\4887249d891d248ad472284c1de0b362\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
 MERGED from [com.uniquestudio:checkbox:1.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\93e9ae46b46dba20f8749db06e703e16\transformed\jetified-checkbox-1.0.1\AndroidManifest.xml:7:5-9:41
@@ -591,8 +603,6 @@ MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\SEBTI-PC3\.gradl
 MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\d491ecb8ba1817bb0c0f31d795889edb\transformed\jetified-pdfium-android-1.7.1\AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\078e1fbb3f71e8dd58e7fc4862fb00b3\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\078e1fbb3f71e8dd58e7fc4862fb00b3\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\78234f8a755a9b211a327be5059fa6cc\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\78234f8a755a9b211a327be5059fa6cc\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-vision:20.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\721a6e47a5feec8643e8d08ad3ce2825\transformed\jetified-play-services-vision-20.1.3\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-vision:20.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\721a6e47a5feec8643e8d08ad3ce2825\transformed\jetified-play-services-vision-20.1.3\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-vision-common:19.1.3] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\e40b56f1fe9caa3d759fc2d1d1acea6e\transformed\jetified-play-services-vision-common-19.1.3\AndroidManifest.xml:5:5-44
@@ -603,12 +613,12 @@ MERGED from [com.google.android.gms:play-services-flags:17.0.0] C:\Users\SEBTI-P
 MERGED from [com.google.android.gms:play-services-flags:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\7132b8701342e17dbb4cd803a5a382a0\transformed\jetified-play-services-flags-17.0.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-phenotype:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\45c095a17db8c6579181046d0e797f70\transformed\jetified-play-services-phenotype-17.0.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-phenotype:17.0.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\45c095a17db8c6579181046d0e797f70\transformed\jetified-play-services-phenotype-17.0.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:18:5-43
-MERGED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:18:5-43
-MERGED from [com.google.android.gms:play-services-tasks:18.0.2] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\13bbab95fe91d0380eaf2e6ceeef68d9\transformed\jetified-play-services-tasks-18.0.2\AndroidManifest.xml:4:5-43
-MERGED from [com.google.android.gms:play-services-tasks:18.0.2] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\13bbab95fe91d0380eaf2e6ceeef68d9\transformed\jetified-play-services-tasks-18.0.2\AndroidManifest.xml:4:5-43
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\910959e8380e58194a3db6f93c30af6e\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:18:5-43
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\910959e8380e58194a3db6f93c30af6e\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\bf42edcae522a87c157d974faf366709\transformed\jetified-play-services-tasks-18.1.0\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\bf42edcae522a87c157d974faf366709\transformed\jetified-play-services-tasks-18.1.0\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2d84d9f5e3e8e1daffd6a3f7ab1833e5\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2d84d9f5e3e8e1daffd6a3f7ab1833e5\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:18:5-43
 MERGED from [com.github.bumptech.glide:glide:4.9.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2205c839ee9d17bdebdb75c309f2055e\transformed\jetified-glide-4.9.0\AndroidManifest.xml:6:5-8:41
 MERGED from [com.github.bumptech.glide:glide:4.9.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2205c839ee9d17bdebdb75c309f2055e\transformed\jetified-glide-4.9.0\AndroidManifest.xml:6:5-8:41
 MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\b0efe488913bdd40d86869c33683da5a\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
@@ -748,15 +758,15 @@ INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Androi
 		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
 		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:77:13-79:58
+ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:86:13-88:58
 	android:resource
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:79:17-55
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:88:17-55
 	android:name
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:78:17-67
+		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\app\src\main\AndroidManifest.xml:87:17-67
 meta-data#com.google.android.gms.version
 ADDED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:14:9-16:69
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\910959e8380e58194a3db6f93c30af6e\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\910959e8380e58194a3db6f93c30af6e\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2d84d9f5e3e8e1daffd6a3f7ab1833e5\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\2d84d9f5e3e8e1daffd6a3f7ab1833e5\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:21:9-23:69
 	android:value
 		ADDED from [:materialbarcodescanner] D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\materialbarcodescanner\build\intermediates\merged_manifest\debug\AndroidManifest.xml:16:13-66
 	android:name
@@ -794,13 +804,13 @@ ADDED from [com.google.android.gms:play-services-maps:18.2.0] C:\Users\SEBTI-PC3
 	android:name
 		ADDED from [com.google.android.gms:play-services-maps:18.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8069589f7955c01ba28be501dc7da960\transformed\jetified-play-services-maps-18.2.0\AndroidManifest.xml:40:13-50
 activity#com.google.android.gms.common.api.GoogleApiActivity
-ADDED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:9-22:45
+ADDED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:20:9-22:45
 	android:exported
-		ADDED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:22:19-43
+		ADDED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:22:19-43
 	android:theme
-		ADDED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:21:19-78
+		ADDED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:21:19-78
 	android:name
-		ADDED from [com.google.android.gms:play-services-base:18.1.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\8204a9ff154612e6f974deefa1c3f64a\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:19-85
+		ADDED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\da734bbf662928864b10ee690941d02e\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:20:19-85
 provider#androidx.startup.InitializationProvider
 ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\1ffbbf8c7d2225ca625e88782df81b29\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\SEBTI-PC3\.gradle\caches\transforms-3\401e48ebffcd05740967ffef5589d3e7\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:24:9-32:20

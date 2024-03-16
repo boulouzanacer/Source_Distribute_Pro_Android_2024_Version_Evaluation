@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -72,6 +73,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class Printing {
+    Bitmap bitmap;
     private ProgressDialog progressDialog;
     private final String PREFS = "ALL_PREFS";
     private Activity mActivity;
@@ -148,10 +150,6 @@ public class Printing {
 
         }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
-
-           // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
-            //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
-           // assert WIFI_VALUE_PORT != null;
             configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
@@ -214,10 +212,6 @@ public class Printing {
 
         }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
 
-
-            // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
-            //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
-            // assert WIFI_VALUE_PORT != null;
             configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
@@ -441,6 +435,7 @@ public class Printing {
                         case "ETIQUETTE" -> print_etiquette();
                         case "ETIQUETTE_CODEBARRE" -> print_etiquette_code_barre(produit.code_barre, produit.produit, produit.pv1_ht * (1+(produit.tva/100)));
                         case "VERSEMENT_CLIENT" -> print_versement_client();
+                        case "ARABIC" -> print_arabic();
                     }
 
                 } catch (UnsupportedEncodingException e) {
@@ -486,22 +481,6 @@ public class Printing {
                         cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
                         cmd.append(cmd.getLFCRCmd());
                     }
-
-
-                    /*if (bmpPrintWidth > 72) {
-                        bmpPrintWidth = 72;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                et_pic_width.setText(bmpPrintWidth + "");
-                            }
-                        });
-                    }
-*/
-                    // bitmapSetting.setBimtapLimitWidth(40 * 8);
-
-
-
 
                     cmd.append(cmd.getCommonSettingCmd(commonSetting));
 
@@ -552,9 +531,9 @@ public class Printing {
                     textSetting.setBold(SettingEnum.Enable);
                     //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
                     if(type_print.equals("ACHAT")){
-                        cmd.append(cmd.getTextCmd(textSetting, "BA N :" + achat1.num_bon));
+                        cmd.append(cmd.getTextCmd(textSetting, "ACHAT N :" + achat1.num_bon));
                     }else if(type_print.equals("ACHAT_ORDER")){
-                        cmd.append(cmd.getTextCmd(textSetting, "COMMANDE N :" + achat1.num_bon));
+                        cmd.append(cmd.getTextCmd(textSetting, "COMMANDE.A N :" + achat1.num_bon));
                     }
 
                     cmd.append(cmd.getLFCRCmd()); // one line space
@@ -680,10 +659,12 @@ public class Printing {
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :" ,timbre_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                     }else if(tva_bon != 0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        if(prefs.getBoolean("AFFICHAGE_HT", false)){
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                            cmd.append(cmd.getLFCRCmd()); // one line space
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
+                            cmd.append(cmd.getLFCRCmd()); // one line space
+                        }
                     }else if(timbre_bon != 0){
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
@@ -983,6 +964,8 @@ public class Printing {
                     String format2 = "%1$13s%2$-9s%3$13s%4$13s";
                     textSetting.setBold(SettingEnum.Enable);
 
+
+
                     if(tva_bon !=0 && timbre_bon !=0){
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
@@ -991,10 +974,12 @@ public class Printing {
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :" ,timbre_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                     }else if(tva_bon != 0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        if(prefs.getBoolean("AFFICHAGE_HT", false)){
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                            cmd.append(cmd.getLFCRCmd()); // one line space
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
+                            cmd.append(cmd.getLFCRCmd()); // one line space
+                        }
                     }else if(timbre_bon != 0){
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
@@ -1180,24 +1165,21 @@ public class Printing {
 
                 BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
                 try {
-                    int labelWidth = 80;
-                    int labelHeight = 40;
+
 
                     CmdFactory tscFac = new TscFactory();
                     Cmd tscCmd = tscFac.create();
 
                     tscCmd.append(tscCmd.getHeaderCmd());
-                    CommonSetting commonSetting = new CommonSetting();
-                    commonSetting.setLableSizeBean(new LableSizeBean(labelWidth, labelHeight));
-                    commonSetting.setLabelGap(3);
-                    commonSetting.setPrintDirection(PrintDirection.NORMAL);
-                    tscCmd.append(tscCmd.getCommonSettingCmd(commonSetting));
 
-
+                    rtPrinter.writeMsg(TonyUtils.InitPrinter());
+                    TonyUtils.Tsc_InitLabelPrint(rtPrinter);
+                    ///rtPrinter.writeMsg(TonyUtils.SetSize("80", "40").getBytes());
                     String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
                     rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
-                    String prix_vente_str   =  new DecimalFormat("####0.00").format(prix_vente_ttc);
-                    String strPrintTxtPrix = TonyUtils.printText("20", "60", "TSS24.BF2", "0", "1", "1", prix_vente_str + ";");
+
+                    String prix_vente_str   =  new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
+                    String strPrintTxtPrix = TonyUtils.printText("80", "80", "TSS24.BF2", "0", "2", "2", prix_vente_str + ";");
                     rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
                     // String strPrint = TonyUtils.setPRINT("1", "1");
                     // rtPrinter.writeMsg(strPrint.getBytes());
@@ -1211,7 +1193,7 @@ public class Printing {
                     barcodeSetting.setHeightInDot(48);//bar height setting
                     barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
                     barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
-                    int x = 20, y = 100;
+                    int x = 80, y = 130;
                     barcodeSetting.setPosition(new Position(x, y));
 
 
@@ -1430,6 +1412,60 @@ public class Printing {
                     rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
                 }
                 hideProgressDialog();
+            }
+        }).start();
+
+    }
+
+
+    private void print_arabic() throws UnsupportedEncodingException {
+
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                        String fileName = Objects.requireNonNull(mActivity.getExternalCacheDir()).getPath()+"/webview_capture1.jpg";
+                        bitmap = BitmapFactory.decodeFile(fileName);
+
+                    } catch (Exception e) {
+                        Log.e("eeeeee", e.getMessage());
+                    }
+
+                try {
+                    Thread.sleep(1000);
+                    showProgressDialog("Impression...");
+
+                    CmdFactory cmdFactory = new EscFactory();
+                    Cmd cmd = cmdFactory.create();
+                    cmd.append(cmd.getHeaderCmd());
+
+                    CommonSetting commonSetting = new CommonSetting();
+                    commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                    cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                    BitmapSetting bitmapSetting = new BitmapSetting();
+
+                    bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+                    //bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
+                    cmd.append(cmd.getBitmapCmd(bitmapSetting, bitmap));
+
+                    cmd.append(cmd.getLFCRCmd());
+                    cmd.append(cmd.getLFCRCmd());
+                    if (rtPrinter != null) {
+                        rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                    }
+
+                    hideProgressDialog();
+
+                } catch (SdkException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         }).start();
 

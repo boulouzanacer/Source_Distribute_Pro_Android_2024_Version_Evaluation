@@ -23,14 +23,14 @@
             android:text="Exportation inventaire (Réseaux IP)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ça vous permet d'exporter tous les inventaires vers le serveur distant"
             android:layout_below="@+id/exportt_inventaire"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:clickable="false"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
@@ -43,7 +43,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:visibility="visible"
+        android:visibility="gone"
         android:onClick="onRelativeClick"
         android:background="@drawable/import_export_selector"
         android:paddingLeft="15dp"
@@ -58,14 +58,14 @@
             android:text="Exportation inventaire (Serveur FTP)"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vous permet d'exporter les bons d'inventaire' vers le serveur FTP"
             android:layout_below="@+id/exportt_inventaire_ftp"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:clickable="false"
             android:textColor="@color/gray"
             android:layout_alignParentStart="true" />
@@ -93,7 +93,7 @@
             android:text="Bons d'inventaire exportés"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black_overlay"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
 
         <TextView
@@ -104,7 +104,7 @@
             android:clickable="false"
             android:text="ça vous permet d'afficher les bons d'inventaires exportés avec la possibilité de suppression"
             android:textColor="@color/gray"
-            android:textSize="12dp" />
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
