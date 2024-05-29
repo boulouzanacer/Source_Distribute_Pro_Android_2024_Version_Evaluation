@@ -36,23 +36,27 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanier;
+import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierAchat;
+import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierVente;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventAchat2;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.RemiseEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedFournisseurEvent;
 import com.safesoft.proapp.distribute.eventsClasses.ValidateFactureEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentQte;
+import com.safesoft.proapp.distribute.fragments.FragmentQteAchat;
 import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectFournisseur;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
+import com.safesoft.proapp.distribute.utils.Env;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -81,10 +85,10 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
     private Intent intent_location;
 
-    private ListViewAdapterPanier PanierAdapter;
+    private ListViewAdapterPanierAchat PanierAdapter;
     private Button btn_select_fournisseur, btn_mode_tarif;
     private DATABASE controller;
-    private  ArrayList<PostData_Bon2> final_panier;
+    private  ArrayList<PostData_Achat2> final_panier;
     private TextView total_ht, tva, txv_timbre, txv_remise, total_ttc, total_ttc_remise;
     private double val_total_ht = 0.00;
     private double val_tva = 0.00;
@@ -229,10 +233,11 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     "ACHAT2_TEMP.COLISSAGE, " +
                     "ACHAT2_TEMP.QTE, " +
                     "ACHAT2_TEMP.QTE_GRAT, " +
-                    "ACHAT2_TEMP.PU, " +
+                    "ACHAT2_TEMP.PA_HT, " +
                     "ACHAT2_TEMP.TVA, " +
                     "ACHAT2_TEMP.CODE_DEPOT, " +
                     "ACHAT2_TEMP.QTE_GRAT, " +
+                    "PRODUIT.PAMP, " +
                     "PRODUIT.STOCK " +
                     "FROM ACHAT2_TEMP " +
                     "LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -246,7 +251,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             onFournisseurSelected(fournisseur_selected);
 
             // Create the adapter to convert the array to views
-            PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+            PanierAdapter = new ListViewAdapterPanierAchat(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
             expandableListView = findViewById(R.id.expandable_listview);
 
@@ -353,7 +358,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     return;
                 }
 
-                if( achat1_com.fournis.length() <1){
+                if(achat1_com.fournis.isEmpty()){
                     Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
                     return;
                 }
@@ -367,12 +372,20 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                         .show();
                 return;
                 }
-                if( achat1_com.fournis.length() <1){
+                if(achat1_com.fournis.isEmpty()){
 
                     Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
                     return;
                 }
 
+                if(!prefs.getBoolean("APP_ACTIVATED",false) && final_panier.size() >= 2){
+                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Important !")
+                            .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                            .show();
+
+                    return;
+                }
                 // Initialize activity
                 Activity activity;
                 activity = ActivityOrderFournisseur.this;
@@ -383,12 +396,12 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
             case R.id.valide_facture:
 
-                if( achat1_com.fournis.length() <1){
+                if(achat1_com.fournis.isEmpty()){
 
                     Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur", Style.ALERT).show();
                     return;
                 }
-                if(final_panier.size() <1){
+                if(final_panier.isEmpty()){
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -453,7 +466,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                         return;
                     }
 
-                    if( achat1_com.fournis.length() < 1){
+                    if(achat1_com.fournis.isEmpty()){
 
                         Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                         return;
@@ -588,16 +601,17 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 "ACHAT2_TEMP.COLISSAGE, " +
                 "ACHAT2_TEMP.QTE, " +
                 "ACHAT2_TEMP.QTE_GRAT, " +
-                "ACHAT2_TEMP.PU, " +
+                "ACHAT2_TEMP.PA_HT, " +
                 "ACHAT2_TEMP.TVA, " +
                 "ACHAT2_TEMP.CODE_DEPOT, " +
+                "PRODUIT.PAMP, " +
                 "PRODUIT.STOCK " +
                 "FROM ACHAT2_TEMP " +
                 "LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                 "WHERE ACHAT2_TEMP.NUM_BON = '" + achat1_com.num_bon + "'" );
 
         // Create the adapter to convert the array to views
-        PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+        PanierAdapter = new ListViewAdapterPanierAchat(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
         expandableListView = findViewById(R.id.expandable_listview);
 
@@ -648,7 +662,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                                 controller.delete_from_achat2("ACHAT2_TEMP", final_panier.get(info.position).recordid ,final_panier.get(info.position));
                                 initData();
                                 //PanierAdapter.RefrechPanier(final_panier);
-                                PanierAdapter = new ListViewAdapterPanier(ActivityOrderFournisseur.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+                                PanierAdapter = new ListViewAdapterPanierAchat(ActivityOrderFournisseur.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
                                 expandableListView.setAdapter(PanierAdapter);
 
                             }catch (Exception e){
@@ -675,7 +689,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     SOURCE = "BON2_TEMP_EDIT";
                     Activity activity;
                     activity = ActivityOrderFournisseur.this;
-                    FragmentQte fragmentqte = new FragmentQte();
+                    FragmentQteAchat fragmentqte = new FragmentQteAchat();
                     fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), 0);
 
                 }catch (Exception e){
@@ -703,7 +717,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
         for(int k = 0; k< final_panier.size(); k++){
 
-            double total_montant_produit = final_panier.get(k).p_u * final_panier.get(k).qte;
+            double total_montant_produit = final_panier.get(k).pa_ht * final_panier.get(k).qte;
             double montant_tva_produit = total_montant_produit  * ((final_panier.get(k).tva) / 100);
             val_total_ht = val_total_ht + total_montant_produit;
             val_tva = val_tva + montant_tva_produit;
@@ -919,10 +933,11 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     public void onClick(View v, int position, PostData_Produit item) throws ParseException {
 
 
-        PostData_Bon2 achat2_com = new PostData_Bon2();
+        PostData_Achat2 achat2_com = new PostData_Achat2();
         achat2_com.produit = item.produit;
         achat2_com.codebarre = item.code_barre;
-        achat2_com.p_u = item.pa_ht;
+        achat2_com.pa_ht = item.pa_ht;
+        achat2_com.pa_ht_produit = item.pa_ht;
         achat2_com.tva = item.tva;
         achat2_com.colissage = item.colissage;
         achat2_com.num_bon = NUM_BON;
@@ -931,13 +946,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
         SOURCE = "ACHAT2_TEMP_INSERT";
         Activity activity = ActivityOrderFournisseur.this;
-        FragmentQte fragmentachat = new FragmentQte();
+        FragmentQteAchat fragmentachat = new FragmentQteAchat();
         fragmentachat.showDialogbox(SOURCE, activity, getBaseContext(),  achat2_com, 0);
 
     }
 
     @Subscribe
-    public void onItemPanierReceive(CheckedPanierEventBon2 item_panier){
+    public void onItemPanierReceive(CheckedPanierEventAchat2 item_panier){
 
            try {
                if(SOURCE.equals("BON2_TEMP_INSERT")){
@@ -995,7 +1010,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     private void selectProductFromScan(String resultscan) throws ParseException {
 
         ArrayList<PostData_Produit> produits;
-        PostData_Bon2 bon2_temp = new PostData_Bon2();
+        PostData_Achat2 bon2_temp = new PostData_Achat2();
 
             String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
@@ -1003,7 +1018,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
             produits = controller.select_produits_from_database(querry);
 
-            if(produits.size() == 0){
+
+            if(produits.isEmpty()){
                 String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+resultscan+"'";
                 String code_barre = controller.select_codebarre_from_database(querry1);
 
@@ -1021,21 +1037,14 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             bon2_temp.produit = produits.get(0).produit;
             bon2_temp.codebarre = produits.get(0).code_barre;
             bon2_temp.stock_produit = produits.get(0).stock;
-            bon2_temp.destock_type = produits.get(0).destock_type;
-            bon2_temp.destock_code_barre = produits.get(0).destock_code_barre;
-            bon2_temp.destock_qte = produits.get(0).destock_qte;
-            bon2_temp.p_u = produits.get(0).pa_ht;
+            bon2_temp.pa_ht = produits.get(0).pa_ht;
+            bon2_temp.pa_ht_produit = produits.get(0).pa_ht;
             bon2_temp.tva = produits.get(0).tva;
             bon2_temp.colissage = produits.get(0).colissage;
-            bon2_temp.promo = produits.get(0).promo;
-            bon2_temp.d1 = produits.get(0).d1;
-            bon2_temp.d2 = produits.get(0).d2;
-            bon2_temp.pp1_ht = produits.get(0).pp1_ht;
-
 
             SOURCE = "BON2_TEMP_INSERT";
             Activity activity = ActivityOrderFournisseur.this;
-            FragmentQte fragmentqte = new FragmentQte();
+            FragmentQteAchat fragmentqte = new FragmentQteAchat();
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp, 0);
 
         }else if(produits.size() > 1){

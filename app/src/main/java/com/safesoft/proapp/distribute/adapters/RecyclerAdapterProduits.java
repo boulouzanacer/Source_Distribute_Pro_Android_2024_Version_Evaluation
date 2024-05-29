@@ -113,12 +113,12 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     }else {
 
       holder.colissage_title.setText(R.string.colis);
-      holder.colissage.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.colissage)));
+      holder.colissage.setText(" "+ new DecimalFormat("##,##0.##").format(item.colissage));
 
-      holder.stock_colis.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock_colis)));
+      holder.stock_colis.setText(" "+ new DecimalFormat("##,##0.##").format(item.stock_colis));
       holder.colis_title.setText(R.string.Stock_colis);
 
-      holder.stock_vrac.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock_vrac)));
+      holder.stock_vrac.setText(" "+ new DecimalFormat("##,##0.##").format(item.stock_vrac));
       holder.vrac_title.setText(R.string.Stock_vrac);
 
         }
@@ -126,10 +126,10 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
           holder.stock_vrac.setText("");
 
         }else{
-          holder.stock_vrac.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock_vrac)));
+          holder.stock_vrac.setText(" "+ new DecimalFormat("##,##0.##").format(item.stock_vrac));
         }
-    holder.stock.setText(" "+ new DecimalFormat("##,##0.##").format(Double.valueOf(item.stock)));
-    holder.prix_unit.setText(" "+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.pv1_ht)));
+    holder.stock.setText(" "+ new DecimalFormat("##,##0.##").format(item.stock));
+    holder.prix_unit.setText(" "+ new DecimalFormat("##,##0.00").format(item.pv1_ht));
 
 
     holder.cardView.setOnClickListener(new View.OnClickListener() {

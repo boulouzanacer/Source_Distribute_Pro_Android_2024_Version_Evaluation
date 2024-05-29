@@ -26,6 +26,10 @@ public class ActivityInfo extends AppCompatActivity {
 
         String content = "<h3>Historique des versions</h3><br>" +
                 "<pre>" +
+                "    <h6>version v30.3.24 (30-03-2024)<br></h6>" +
+                "    <p style=color:black;>[AJOUTER] Mode évaluation ( pour les test )</p>" +
+                "    <p style=color:red;>[MAJ] Rubrique produit</p>" +
+                "        &ensp;1- [MAJ] Nouveau produit avec 3 mode de tarif par defaut <br>" +
                 "    <h6>version v07.2.24 (04-02-2024)<br></h6>" +
                 "    <p style=color:teal;>[MAJ] Rubrique vente</p>" +
                 "        &ensp;1- Ajouter le dernier prix d'un produit vendu pour un client <br>" +

@@ -192,7 +192,7 @@ public class FragmentSelectClient {
             // querry = "SELECT * FROM Events";
             listClient = controller.select_clients_from_database(querry);
         }else{
-            if(querry_search.length() >0){
+            if(!querry_search.isEmpty()){
 
                 String querry = "SELECT * FROM Client WHERE ( CLIENT LIKE '%"+querry_search+"%' OR CODE_CLIENT LIKE '%"+querry_search+"%' ) ORDER BY CLIENT ";
                 // querry = "SELECT * FROM Events";

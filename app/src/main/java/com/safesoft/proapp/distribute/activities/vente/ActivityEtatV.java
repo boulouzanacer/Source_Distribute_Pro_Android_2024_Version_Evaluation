@@ -46,8 +46,6 @@ import eu.inloop.simplerecycleradapter.SimpleRecyclerAdapter;
 
 public class ActivityEtatV extends AppCompatActivity implements ItemClickListener<WrappedMyDataObject>, ItemLongClickListener<WrappedMyDataObject> {
 
-  private final String PREFS = "ALL_PREFS";
-
   private RecyclerView mRecyclerView;
   private SimpleRecyclerAdapter<WrappedMyDataObject> mRecyclerAdapter;
   private RelativeLayout relative_error;
@@ -56,30 +54,28 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
   private EtatZSelection_Event event_selection;
   private BookLoading bookloading;
   private RelativeLayout empty_data;
-  private TextView debut, fin,user;
-  private ViewGroup mainView;
-
-  DATABASE controller;
+  private TextView txtv_debut, txtv_fin,txtv_user, txtv_wilaya, txtv_commune;
+  private DATABASE controller;
   private MediaPlayer mp;
   Boolean printer_mode_integrate = true;
-
   private Thread thread;
   private Handler handler;
-
   private ArrayList<PostData_Etatv> result_etatzg;
   private final EventBus bus = EventBus.getDefault();
-
-  private String client;
   private String c_client;
-
   private String from_d;
   private String to_d;
+  private String wilaya;
+  private String commune;
+  private final String PREFS = "ALL_PREFS";
+  private SharedPreferences prefs;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_etat_v);
 
+    prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
     // Register as a subscriber
     bus.register(this);
 
@@ -128,14 +124,18 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     //recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     bookloading = (BookLoading) findViewById(R.id.bookloading);
     relative_error = (RelativeLayout) findViewById(R.id.relative_error);
-    mainView = (ViewGroup) findViewById(R.id.lempty_data);
+    ViewGroup mainView = findViewById(R.id.lempty_data);
     empty_data = (RelativeLayout) findViewById(R.id.lempty_data);
     tite_session = (LinearLayout) findViewById(R.id.tite_session);
 
     //TextView
-    debut = (TextView) findViewById(R.id.debut);
-    fin = (TextView) findViewById(R.id.fin);
-    user = (TextView) findViewById(R.id.user);
+    txtv_debut = (TextView) findViewById(R.id.debut);
+    txtv_fin = (TextView) findViewById(R.id.fin);
+    txtv_user = (TextView) findViewById(R.id.user);
+
+    txtv_wilaya = (TextView) findViewById(R.id.txtv_wilaya);
+    txtv_commune = (TextView) findViewById(R.id.txtv_commune);
+
   }
 
   public void show_select_etatz(){
@@ -148,19 +148,24 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
   public void getEventSelection(EtatZSelection_Event event){
 
     event_selection = event;
-    debut.setText("De "+ event_selection.getDate_f());
-    fin.setText("Vers "+ event_selection.getDate_t());
-    if(event.getUser().equals("%")){
-      user.setText("Tous");
-    }else{
-      user.setText(" "+ event_selection.getUser());
-    }
-    client = event_selection.getUser();
-    c_client = event_selection.getCode_user();
+    txtv_debut.setText("De "+ event_selection.getDate_f());
+    txtv_fin.setText("Vers "+ event_selection.getDate_t());
+    txtv_wilaya.setText("W : "+ event_selection.getWilaya());
+    txtv_commune.setText("Com : "+ event_selection.getCommune());
 
+    if(event.getUser().equals("%")){
+      txtv_user.setText("Tous");
+    }else{
+      txtv_user.setText(" "+ event_selection.getUser());
+    }
+
+    String client = event_selection.getUser();
+    c_client = event_selection.getCode_user();
 
     from_d = event_selection.getDate_f();
     to_d = event_selection.getDate_t();
+    wilaya = event_selection.getWilaya();
+    commune = event_selection.getCommune();
 
     get_etatzg();
   }
@@ -183,18 +188,17 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
       @NonNull
       @Override
       protected SettableViewHolder<WrappedMyDataObject> onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-          case WrappedMyDataObject.ITEM_TYPE_NORMAL:
-            return new AdvancedDataViewHolder(ActivityEtatV.this, R.layout.item_mydata, parent);
-          case WrappedMyDataObject.ITEM_TYPE_HEADER:
-            return new HeaderViewHolder(ActivityEtatV.this, R.layout.item_header, parent);
-          case WrappedMyDataObject.ITEM_TYPE_HEADER_TOTAL:
-            return new HeaderViewHolderTotal(ActivityEtatV.this, R.layout.item_header_total, parent);
-          case WrappedMyDataObject.ITEM_TYPE_OBJECTIF:
-            return new AdvancedDataViewHolderObjectif(ActivityEtatV.this, R.layout.item_mydata_objectif, parent);
-          default:
-            throw new AssertionError("Wrong view type");
-        }
+          return switch (viewType) {
+              case WrappedMyDataObject.ITEM_TYPE_NORMAL ->
+                      new AdvancedDataViewHolder(ActivityEtatV.this, R.layout.item_mydata, parent);
+              case WrappedMyDataObject.ITEM_TYPE_HEADER ->
+                      new HeaderViewHolder(ActivityEtatV.this, R.layout.item_header, parent);
+              case WrappedMyDataObject.ITEM_TYPE_HEADER_TOTAL ->
+                      new HeaderViewHolderTotal(ActivityEtatV.this, R.layout.item_header_total, parent);
+              case WrappedMyDataObject.ITEM_TYPE_OBJECTIF ->
+                      new AdvancedDataViewHolderObjectif(ActivityEtatV.this, R.layout.item_mydata_objectif, parent);
+              default -> throw new AssertionError("Wrong view type");
+          };
       }
 
       @Override
@@ -212,21 +216,24 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     mRecyclerAdapter.clear();
     mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItem("Produit", "QTE", "TOT"));
 
-    //  mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItem(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant));
+    //mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItem(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant));
 
     for (int i = 0; i < result_etat_z.size(); i++) {
-      if (result_etat_z.get(i).code_parent.equals("1")) {
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant)));
-      } else if (result_etat_z.get(i).code_parent.equals("-6")) {
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Conclusion Total : "));
-        for (int k = i; k < result_etat_z.size() - 1; k++) {
-          mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant)));
-          i = k;
+        switch (result_etat_z.get(i).code_parent) {
+            case "1" ->
+                    mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant, result_etat_z.get(i).code_parent)));
+            case "-6" -> {
+                mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Conclusion Total : "));
+                for (int k = i; k < result_etat_z.size() - 1; k++) {
+                    mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                    i = k;
+                }
+            }
+            case "-8" -> {
+                mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Objectif : "));
+                mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItemObjectif(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant, result_etat_z.get(i).code_parent)));
+            }
         }
-      } else if (result_etat_z.get(i).code_parent.equals("-8")) {
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Objectif : "));
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItemObjectif(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant)));
-      }
     }
     mRecyclerAdapter.notifyDataSetChanged();
   }
@@ -315,7 +322,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
         break;
       case R.id.print:
-        if(result_etatzg.size() > 0){
+        if(!result_etatzg.isEmpty()){
           if(printer_mode_integrate){
 
           }
@@ -368,48 +375,46 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
   public void comunication(){
 
-    thread = new Thread(){
-      public void run() {
-        try {
-          handler.sendEmptyMessage(0);
-          int flag;
+    thread = new Thread(() -> {
+      try {
+        handler.sendEmptyMessage(0);
+        int flag;
 
-          //success
-          if(result_etatzg != null ) {
-            result_etatzg.clear();
-          }
-          if(c_client == null)
-          {
-            flag = getEtatGlobal(from_d,  to_d);
-          }else
-          {
-            flag = getEtatzgs(c_client,from_d,  to_d);
-          }
-          if (flag == 0) {
-            //failed
-            handler.sendEmptyMessage(3);
-          } else if (flag == 1) {
-            handler.sendEmptyMessage(1);
-          } else if (flag == 2) {
-            //problem
-            handler.sendEmptyMessage(2);
-          }
-
-        } catch (Exception e) {
-          e.printStackTrace();
-          handler.sendEmptyMessage(3);
+        //success
+        if(result_etatzg != null ) {
+          result_etatzg.clear();
         }
+
+
+
+        flag = getEtatzgs(c_client, from_d,  to_d);
+
+
+
+        if (flag == 0) {
+          //failed
+          handler.sendEmptyMessage(3);
+        } else if (flag == 1) {
+          handler.sendEmptyMessage(1);
+        } else if (flag == 2) {
+          //problem
+          handler.sendEmptyMessage(2);
+        }
+
+      } catch (Exception e) {
+        e.printStackTrace();
+        handler.sendEmptyMessage(3);
       }
-    };
+    });
 
     thread.start();
   }
 
-  public int getEtatzgs(String c_client,String from_d, String to_d){
+  public int getEtatzgs(String c_client, String from_d, String to_d){
     int flag = 0;
     try {
 
-      result_etatzg =  controller.select_etatv_from_database("BON1", "BON2", c_client,from_d,  to_d);
+      result_etatzg =  controller.select_etatv_from_database( wilaya, commune, c_client, from_d,  to_d, prefs.getBoolean("AFFICHAGE_BENIFICE", false));
       flag = 1;
     }catch (Exception sqle){
       Log.v("TRACKKK", sqle.getMessage());
@@ -421,7 +426,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
   public int getEtatGlobal(String from_d, String to_d){
     int flag = 0;
     try {
-      result_etatzg =  controller.select_etat_global_from_database("BON1","BON2", from_d,  to_d);
+      result_etatzg =  controller.select_etat_global_from_database(from_d,  to_d, prefs.getBoolean("AFFICHAGE_BENIFICE", false));
       flag = 1;
     }catch (Exception sqle){
       Log.v("TRACKKK", sqle.getMessage());

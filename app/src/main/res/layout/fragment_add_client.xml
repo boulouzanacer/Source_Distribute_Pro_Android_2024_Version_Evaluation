@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:weightSum="10"
+        android:weightSum="12"
         android:orientation="vertical"
         android:layout_margin="5dp"
         android:background="@color/white"
@@ -29,12 +29,12 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_weight="9"
+            android:layout_weight="11"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
             <LinearLayout
-                android:weightSum="9"
+                android:weightSum="11"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
@@ -71,6 +71,43 @@
 
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="0dp">
+
+                    <Spinner
+                        android:id="@+id/wilaya_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@android:drawable/btn_dropdown"
+                        android:textStyle="bold"
+                        android:layout_margin="5dp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="0dp">
+
+                    <Spinner
+                        android:id="@+id/commune_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:drawable/btn_dropdown"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:layout_margin="5dp" />
+
+                </LinearLayout>
+
+
                 <LinearLayout
                     android:layout_weight="1"
                     android:layout_width="match_parent"
@@ -91,13 +128,13 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edt_client_adress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:gravity="center"
                             android:inputType="text"
-                            android:textStyle="bold"
                             android:textColor="@color/black"
-                            android:layout_gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:textStyle="bold" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 

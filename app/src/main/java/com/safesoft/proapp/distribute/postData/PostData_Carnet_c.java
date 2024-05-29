@@ -9,7 +9,7 @@ public class PostData_Carnet_c  {
     public String carnet_date;
     public String carnet_heure;
     public Double carnet_achats = 0.00;
-    public Double carnet_versement;
+    public Double carnet_versement = 0.0;
     public String carnet_source = "SITUATION-CLIENT";
     public String carnet_num_bon = null;
     public String carnet_mode_rg = "ESPECE";
@@ -19,6 +19,8 @@ public class PostData_Carnet_c  {
 
     public String client;
     public String adresse;
+    public String wilaya;
+    public String commune;
     public String tel;
     public String rc;
     public String ifiscal;
@@ -28,6 +30,8 @@ public class PostData_Carnet_c  {
 
     public String longitude;
     public String latitude;
+
+    public int is_exported;
 
 
 }

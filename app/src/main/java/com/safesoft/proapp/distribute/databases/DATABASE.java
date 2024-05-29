@@ -11,17 +11,23 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Famille;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
@@ -38,6 +44,8 @@ import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.postData.PostData_Transfer2;
+import com.safesoft.proapp.distribute.postData.PostData_commune;
+import com.safesoft.proapp.distribute.postData.PostData_wilaya;
 
 import java.util.ArrayList;
 
@@ -46,7 +54,7 @@ import java.util.ArrayList;
  */
 public class DATABASE extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 3; // Database version
+    private static final int DATABASE_VERSION = 4; // Database version
     private static final String DATABASE_NAME = "safe_distribute_pro"; //Database name
     private final Context mContext;
 
@@ -145,7 +153,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 "COLISSAGE DOUBLE, " +
                 "QTE_GRAT DOUBLE , " +
                 "QTE DOUBLE , " +
-                "PU DOUBLE, " +
+                "PV_HT DOUBLE, " +
+                "PA_HT DOUBLE, " +
                 "DESTOCK_TYPE VARCHAR, " +
                 "DESTOCK_CODE_BARRE VARCHAR, " +
                 "DESTOCK_QTE DOUBLE, " +
@@ -171,7 +180,27 @@ public class DATABASE extends SQLiteOpenHelper {
                 "QTE DOUBLE)");
 
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS CLIENT(CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_CLIENT VARCHAR, CLIENT VARCHAR , TEL VARCHAR, ADRESSE VARCHAR, MODE_TARIF VARCHAR, LATITUDE REAL DEFAULT 0.0, LONGITUDE REAL DEFAULT 0.0, ACHATS DOUBLE DEFAULT 0.0, VERSER DOUBLE DEFAULT 0.0, SOLDE DOUBLE DEFAULT 0.0, RC VARCHAR, IFISCAL VARCHAR, AI VARCHAR,  NIS VARCHAR, ISNEW INTEGER, CREDIT_LIMIT DOUBLE DEFAULT 0.0, SOLDE_INI DOUBLE DEFAULT 0.0)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS CLIENT(" +
+                "CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "CODE_CLIENT VARCHAR, " +
+                "CLIENT VARCHAR , " +
+                "TEL VARCHAR, " +
+                "ADRESSE VARCHAR, " +
+                "WILAYA VARCHAR, " +
+                "COMMUNE VARCHAR, " +
+                "MODE_TARIF VARCHAR, " +
+                "LATITUDE REAL DEFAULT 0.0, " +
+                "LONGITUDE REAL DEFAULT 0.0, " +
+                "ACHATS DOUBLE DEFAULT 0.0, " +
+                "VERSER DOUBLE DEFAULT 0.0, " +
+                "SOLDE DOUBLE DEFAULT 0.0, " +
+                "RC VARCHAR, " +
+                "IFISCAL VARCHAR, " +
+                "AI VARCHAR,  " +
+                "NIS VARCHAR, " +
+                "ISNEW INTEGER, " +
+                "CREDIT_LIMIT DOUBLE DEFAULT 0.0, " +
+                "SOLDE_INI DOUBLE DEFAULT 0.0)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS BON1_TEMP(" +
@@ -211,7 +240,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 "COLISSAGE DOUBLE, " +
                 "QTE_GRAT DOUBLE , " +
                 "QTE DOUBLE , " +
-                "PU DOUBLE, " +
+                "PV_HT DOUBLE, " +
+                "PA_HT DOUBLE, " +
                 "DESTOCK_TYPE VARCHAR, " +
                 "DESTOCK_CODE_BARRE VARCHAR, " +
                 "DESTOCK_QTE DOUBLE, " +
@@ -279,7 +309,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "COLISSAGE DOUBLE, " +
                 "QTE DOUBLE, " +
                 "QTE_GRAT DOUBLE, " +
-                "PU DOUBLE, " +
+                "PA_HT DOUBLE, " +
                 "TVA DOUBLE, " +
                 "CODE_DEPOT VARCHAR)");
 
@@ -315,7 +345,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "COLISSAGE DOUBLE, " +
                 "QTE DOUBLE, " +
                 "QTE_GRAT DOUBLE, " +
-                "PU DOUBLE, " +
+                "PA_HT DOUBLE, " +
                 "TVA DOUBLE, " +
                 "CODE_DEPOT VARCHAR)");
 
@@ -341,6 +371,11 @@ public class DATABASE extends SQLiteOpenHelper {
                 "FTP_PASS VARCHAR , " +
                 "FTP_IMP VARCHAR , " +
                 "FTP_EXP VARCHAR)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS WILAYAS (ID integer not null primary key, NAME varchar not null, LATITUDE numeric not null, LONGITUDE numeric not null )");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS COMMUNES  (ID integer not null primary key, NAME varchar not null, POST_CODE varchar not null, WILAYA_ID integer not null, LATITUDE numeric not null, LONGITUDE numeric not null, foreign key(WILAYA_ID) references WILAYAS(ID) on delete cascade)");
+        insert_wilaya_commune_into_database(db);
     }
 
     @Override
@@ -349,9 +384,11 @@ public class DATABASE extends SQLiteOpenHelper {
 
         Log.v("TRACKKK","================>  ON UPGRADE EXECUTED");
 
-        String[] list_requet = new String[1];
+        String[] list_requet = new String[3];
 
          list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0";
+         list_requet[1] = "ALTER TABLE CLIENT ADD COLUMN WILAYA VARCHAR";
+         list_requet[2] = "ALTER TABLE CLIENT ADD COLUMN COMMUNE VARCHAR";
 
 
         for (String s : list_requet) {
@@ -569,6 +606,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put("CODE_CLIENT", client.code_client);
                 values.put("CLIENT", client.client);
+                values.put("WILAYA", client.wilaya);
+                values.put("COMMUNE", client.commune);
                 values.put("TEL", client.tel);
                 values.put("ADRESSE", client.adresse);
                 values.put("RC", client.rc);
@@ -702,6 +741,57 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
+    public boolean update_into_produit(PostData_Produit produit){
+
+        boolean executed = false;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            try {
+
+                ContentValues values = new ContentValues();
+                values.put("CODE_BARRE", produit.code_barre);
+                values.put("REF_PRODUIT", produit.ref_produit);
+                values.put("PRODUIT", produit.produit);
+                values.put("PA_HT", produit.pa_ht);
+                values.put("TVA", produit.tva);
+                values.put("PAMP", produit.pamp);
+                values.put("PV1_HT", produit.pv1_ht);
+                values.put("PV2_HT", produit.pv2_ht);
+                values.put("PV3_HT", produit.pv3_ht);
+                values.put("PV4_HT", produit.pv4_ht);
+                values.put("PV5_HT", produit.pv5_ht);
+                values.put("PV6_HT", produit.pv6_ht);
+                values.put("STOCK", produit.stock);
+                values.put("COLISSAGE", produit.colissage);
+                values.put("PHOTO", produit.photo);
+                values.put("DETAILLE", produit.description);
+                values.put("FAMILLE", produit.famille);
+                values.put("DESTOCK_TYPE", produit.destock_type);
+                values.put("DESTOCK_CODE_BARRE", produit.destock_code_barre);
+                values.put("DESTOCK_QTE", produit.destock_qte);
+
+                values.put("PROMO", produit.promo);
+                values.put("D1", produit.d1);
+                values.put("D2", produit.d2);
+                values.put("PP1_HT", produit.pp1_ht);
+
+                values.put("ISNEW", produit.isNew);
+
+                String selection = "CODE_BARRE=?";
+                String[] selectionArgs = {produit.code_barre};
+                db.update("PRODUIT",values,  selection, selectionArgs);
+
+                db.setTransactionSuccessful();
+                executed =  true;
+            } finally {
+                db.endTransaction();
+            }
+        }catch (SQLiteDatabaseLockedException sqlilock){
+            Log.v("TRACKKK", Objects.requireNonNull(sqlilock.getMessage()));
+        }
+        return executed;
+    }
     //============================== FUNCTION table famille =================================
 
     public void ExecuteTransactionFamille(ArrayList<PostData_Famille> familles){
@@ -830,6 +920,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("MODE_RG", carnet_c.carnet_mode_rg);
                 values.put("REMARQUES", carnet_c.carnet_remarque);
                 values.put("UTILISATEUR", carnet_c.carnet_utilisateur);
+                values.put("IS_EXPORTED", 0);
                 values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"");
 
 
@@ -986,7 +1077,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args.put("REMARQUES", carnet_c.carnet_remarque);
                 String selection = "RECORDID=?";
                 String[] selectionArgs = {carnet_c.recordid};
-                db.update("Carnet_c", args, selection, selectionArgs);
+                db.update("CARNET_C", args, selection, selectionArgs);
 
 
                 //update_client
@@ -1246,6 +1337,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 client.code_client = cursor.getString(cursor.getColumnIndex("CODE_CLIENT"));
                 client.client = cursor.getString(cursor.getColumnIndex("CLIENT"));
                 client.tel = cursor.getString(cursor.getColumnIndex("TEL"));
+                client.wilaya = cursor.getString(cursor.getColumnIndex("WILAYA"));
+                client.commune = cursor.getString(cursor.getColumnIndex("COMMUNE"));
                 client.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
                 client.mode_tarif = cursor.getString(cursor.getColumnIndex("MODE_TARIF"));
                 client.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
@@ -1270,6 +1363,69 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
+    @SuppressLint("Range")
+    public ArrayList<PostData_wilaya> select_wilayas_from_database(String querry){
+        ArrayList<PostData_wilaya> wilayas = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(querry, null);
+        // looping through all rows and adding to list
+
+        PostData_wilaya wilaya_aucune = new PostData_wilaya();
+        wilaya_aucune.id = 0;
+        wilaya_aucune.wilaya = "<Aucune>";
+        wilaya_aucune.latitude = 0;
+        wilaya_aucune.longitude = 0;
+        wilayas.add(wilaya_aucune);
+
+        if (cursor.moveToFirst()) {
+            do {
+                PostData_wilaya wilaya = new PostData_wilaya();
+
+                wilaya.id = cursor.getInt(cursor.getColumnIndex("ID"));
+                wilaya.wilaya = cursor.getString(cursor.getColumnIndex("NAME"));
+                wilaya.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
+                wilaya.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
+
+                wilayas.add(wilaya);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return wilayas;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<PostData_commune> select_communes_from_database(String querry){
+        ArrayList<PostData_commune> communes = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(querry, null);
+        // looping through all rows and adding to list
+
+        PostData_commune commune_aucune = new PostData_commune();
+        commune_aucune.id = 0;
+        commune_aucune.commune = "<Aucune>";
+        commune_aucune.post_code = 0;
+        commune_aucune.wilaya_id = 0;
+        commune_aucune.latitude = 0;
+        commune_aucune.longitude = 0;
+        communes.add(commune_aucune);
+
+        if (cursor.moveToFirst()) {
+            do {
+                PostData_commune commune = new PostData_commune();
+
+                commune.id = cursor.getInt(cursor.getColumnIndex("ID"));
+                commune.commune = cursor.getString(cursor.getColumnIndex("NAME"));
+                commune.post_code = cursor.getInt(cursor.getColumnIndex("POST_CODE"));
+                commune.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
+                commune.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
+                commune.wilaya_id = cursor.getInt(cursor.getColumnIndex("WILAYA_ID"));
+
+                communes.add(commune);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return communes;
+    }
     @SuppressLint("Range")
     public ArrayList<PostData_Client> select_routing_from_database(String querry){
         ArrayList<PostData_Client> clients = new ArrayList<PostData_Client>();
@@ -1319,9 +1475,12 @@ public class DATABASE extends SQLiteOpenHelper {
                 carnet_c.carnet_remarque = cursor.getString(cursor.getColumnIndex("REMARQUES"));
                 carnet_c.carnet_utilisateur = cursor.getString(cursor.getColumnIndex("UTILISATEUR"));
                 carnet_c.exportation = cursor.getString(cursor.getColumnIndex("EXPORTATION"));
+                carnet_c.is_exported = cursor.getInt(cursor.getColumnIndex("IS_EXPORTED"));
 
                 carnet_c.client = cursor.getString(cursor.getColumnIndex("CLIENT"));
                 carnet_c.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
+                carnet_c.wilaya = cursor.getString(cursor.getColumnIndex("WILAYA"));
+                carnet_c.commune = cursor.getString(cursor.getColumnIndex("COMMUNE"));
                 carnet_c.tel = cursor.getString(cursor.getColumnIndex("TEL"));
 
                 carnet_c.rc = cursor.getString(cursor.getColumnIndex("RC"));
@@ -1430,9 +1589,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 "    ' VENTE' AS OPERATION," +
                 "    coalesce(BON2.QTE,0) QTE, " +
                 "    coalesce(BON2.QTE_GRAT,0) QTE_GRAT," +
-                "    coalesce(BON2.PU,0) PU ," +
+                "    coalesce(BON2.PV_HT,0) PV_HT ," +
                 "    coalesce(BON2.TVA,0) TVA ," +
-                "    BON2.PU * (1+(coalesce(BON2.TVA,0)/100)) PU_TTC " +
+                "    BON2.PV_HT * (1+(coalesce(BON2.TVA,0)/100)) PU_TTC " +
                 //"    BON2.pa_ht * (1+(coalesce(BON2.TVA,0)/100)) PA_TTC " +
                 "FROM BON2 LEFT JOIN BON1 ON (BON1.NUM_BON = BON2.NUM_BON) " +
                 "WHERE BON1.CODE_CLIENT= '" + code_client + "' AND BON2.CODE_BARRE= '" + codebarre + "' order by 1 desc,2 desc,4 desc";
@@ -1445,9 +1604,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 "    ' VENTE' AS OPERATION," +
                 "    coalesce(BON2_TEMP.QTE,0) QTE, " +
                 "    coalesce(BON2_TEMP.QTE_GRAT,0) QTE_GRAT," +
-                "    coalesce(BON2_TEMP.PU,0) PU ," +
+                "    coalesce(BON2_TEMP.PV_HT,0) PV_HT ," +
                 "    coalesce(BON2_TEMP.TVA,0) TVA ," +
-                "    BON2_TEMP.PU * (1+(coalesce(BON2_TEMP.TVA,0)/100)) PU_TTC " +
+                "    BON2_TEMP.PV_HT * (1+(coalesce(BON2_TEMP.TVA,0)/100)) PU_TTC " +
                 //"    BON2.pa_ht * (1+(coalesce(BON2.TVA,0)/100)) PA_TTC " +
                 "FROM BON2_TEMP LEFT JOIN BON1_TEMP ON (BON1_TEMP.NUM_BON = BON2_TEMP.NUM_BON) " +
                 "WHERE BON1_TEMP.CODE_CLIENT= '" + code_client + "' AND BON2_TEMP.CODE_BARRE= '" + codebarre + "' order by 1 desc,2 desc,4 desc";
@@ -1481,6 +1640,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 client.client = cursor.getString(cursor.getColumnIndex("CLIENT"));
                 client.tel = cursor.getString(cursor.getColumnIndex("TEL"));
                 client.mode_tarif = cursor.getString(cursor.getColumnIndex("MODE_TARIF"));
+                client.wilaya = cursor.getString(cursor.getColumnIndex("WILAYA"));
+                client.commune = cursor.getString(cursor.getColumnIndex("COMMUNE"));
                 client.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
                 client.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
                 client.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
@@ -1555,10 +1716,11 @@ public class DATABASE extends SQLiteOpenHelper {
                 produit.produit_id = cursor.getString(cursor.getColumnIndex("PRODUIT_ID"));
                 produit.code_barre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
                 produit.ref_produit = cursor.getString(cursor.getColumnIndex("REF_PRODUIT"));
+
                 produit.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
                 produit.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
-                produit.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
                 produit.pamp = cursor.getDouble(cursor.getColumnIndex("PAMP"));
+                produit.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
                 produit.pv1_ht = cursor.getDouble(cursor.getColumnIndex("PV1_HT"));
                 produit.pv2_ht = cursor.getDouble(cursor.getColumnIndex("PV2_HT"));
                 produit.pv3_ht = cursor.getDouble(cursor.getColumnIndex("PV3_HT"));
@@ -1569,6 +1731,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 produit.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
                 produit.stock_colis = cursor.getInt(cursor.getColumnIndex("STOCK_COLIS"));
                 produit.stock_vrac = cursor.getInt(cursor.getColumnIndex("STOCK_VRAC"));
+
                 produit.photo = cursor.getBlob(cursor.getColumnIndex("PHOTO"));
                 produit.description = cursor.getString(cursor.getColumnIndex("DETAILLE"));
                 produit.famille = cursor.getString(cursor.getColumnIndex("FAMILLE"));
@@ -1734,6 +1897,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.tot_ttc = cursor.getDouble(cursor.getColumnIndex("TOT_TTC"));
                 bon1.remise = cursor.getDouble(cursor.getColumnIndex("REMISE"));
                 bon1.montant_bon = cursor.getDouble(cursor.getColumnIndex("MONTANT_BON"));
+                bon1.benifice_par_bon = cursor.getDouble(cursor.getColumnIndex("BENIFICE_BON"));
                 //////////
                 bon1.solde_ancien = cursor.getDouble(cursor.getColumnIndex("ANCIEN_SOLDE"));
                 bon1.verser = cursor.getDouble(cursor.getColumnIndex("VERSER"));
@@ -1745,6 +1909,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.code_client = cursor.getString(cursor.getColumnIndex("CODE_CLIENT"));
                 bon1.client = cursor.getString(cursor.getColumnIndex("CLIENT"));
                 bon1.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
+                bon1.wilaya = cursor.getString(cursor.getColumnIndex("WILAYA"));
+                bon1.commune = cursor.getString(cursor.getColumnIndex("COMMUNE"));
                 bon1.tel = cursor.getString(cursor.getColumnIndex("TEL"));
                 bon1.rc = cursor.getString(cursor.getColumnIndex("RC"));
                 bon1.ifiscal = cursor.getString(cursor.getColumnIndex("IFISCAL"));
@@ -1806,6 +1972,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.tot_ttc = cursor.getDouble(cursor.getColumnIndex("TOT_TTC"));
                 bon1.remise = cursor.getDouble(cursor.getColumnIndex("REMISE"));
                 bon1.montant_bon = cursor.getDouble(cursor.getColumnIndex("MONTANT_BON"));
+
                 //////////
                 bon1.solde_ancien = cursor.getDouble(cursor.getColumnIndex("ANCIEN_SOLDE"));
                 bon1.verser = cursor.getDouble(cursor.getColumnIndex("VERSER"));
@@ -2013,14 +2180,15 @@ public class DATABASE extends SQLiteOpenHelper {
                     values2.put("PRODUIT", bon2s.get(i).produit);
                     values2.put("QTE", bon2s.get(i).qte);
                     values2.put("QTE_GRAT", bon2s.get(i).gratuit);
-                    values2.put("PU", bon2s.get(i).p_u);
+                    values2.put("PV_HT", bon2s.get(i).pv_ht);
+                    values2.put("PA_HT", bon2s.get(i).pa_ht);
                     values2.put("TVA", bon2s.get(i).tva);
                     values2.put("CODE_DEPOT", bon1.code_depot);
-                    values2.put("PU", bon2s.get(i).p_u);
+                    values2.put("PA_HT", bon2s.get(i).pa_ht);
 
                     db.insert(_table2, null, values2);
 
-                    update_Stock_Produit("BON2_INSERT",bon2s.get(i) , 0.0,0.0);
+                    update_Stock_Produit_vente("BON2_INSERT",bon2s.get(i) , 0.0,0.0);
                 }
 
 
@@ -2060,10 +2228,10 @@ public class DATABASE extends SQLiteOpenHelper {
                     values2.put("COLISSAGE", list_bon2.colissage);
                     values2.put("QTE", list_bon2.qte);
                     values2.put("QTE_GRAT", list_bon2.gratuit);
-                    values2.put("PU", list_bon2.p_u);
                     values2.put("TVA", list_bon2.tva);
                     values2.put("CODE_DEPOT", code_depot);
-                    values2.put("PU", list_bon2.p_u);
+                    values2.put("PA_HT", list_bon2.pa_ht);
+                    values2.put("PV_HT", list_bon2.pv_ht);
                     values2.put("DESTOCK_TYPE", list_bon2.destock_type);
                     values2.put("DESTOCK_CODE_BARRE", list_bon2.destock_code_barre);
                     values2.put("DESTOCK_QTE", list_bon2.destock_qte);
@@ -2071,7 +2239,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     db.insert(_table, null, values2);
 
                     if(_table.equals("BON2")){
-                        update_Stock_Produit("BON2_INSERT", list_bon2, 0.0, 0.0);
+                        update_Stock_Produit_vente("BON2_INSERT", list_bon2, 0.0, 0.0);
                     }
 
                 db.setTransactionSuccessful();
@@ -2103,7 +2271,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args1.put("COLISSAGE", list_bon2.colissage);
                 args1.put("QTE", list_bon2.qte);
                 args1.put("QTE_GRAT", list_bon2.gratuit);
-                args1.put("PU", list_bon2.p_u);
+                args1.put("PV_HT", list_bon2.pv_ht);
                 args1.put("TVA", list_bon2.tva);
 
                 String selection1 = "RECORDID=? AND NUM_BON=?";
@@ -2111,7 +2279,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 db.update(_table, args1, selection1, selectionArgs1);
 
                 if(_table.equals("BON2")){
-                    update_Stock_Produit("BON2_EDIT", list_bon2, qte_old, gratuit_old);
+                    update_Stock_Produit_vente("BON2_EDIT", list_bon2, qte_old, gratuit_old);
                 }
 
                 db.setTransactionSuccessful();
@@ -2128,7 +2296,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
     //=============================== FUNCTION TO UPDATE ACHAT2   ===============================
 
-    public boolean update_into_achat2( String _table, String num_bon, PostData_Bon2 list_bon2, Double qte_old, Double gratuit_old){
+    public boolean update_into_achat2( String _table, String num_bon, PostData_Achat2 list_achat2, Double qte_old, Double gratuit_old){
         boolean executed = false;
         try {
 
@@ -2137,19 +2305,19 @@ public class DATABASE extends SQLiteOpenHelper {
 
             try {
                 ContentValues args1 = new ContentValues();
-                args1.put("NBRE_COLIS", list_bon2.nbr_colis);
-                args1.put("COLISSAGE", list_bon2.colissage);
-                args1.put("QTE", list_bon2.qte);
-                args1.put("QTE_GRAT", list_bon2.gratuit);
-                args1.put("PU", list_bon2.p_u);
-                args1.put("TVA", list_bon2.tva);
+                args1.put("NBRE_COLIS", list_achat2.nbr_colis);
+                args1.put("COLISSAGE", list_achat2.colissage);
+                args1.put("QTE", list_achat2.qte);
+                args1.put("QTE_GRAT", list_achat2.gratuit);
+                args1.put("PA_HT", list_achat2.pa_ht);
+                args1.put("TVA", list_achat2.tva);
 
                 String selection1 = "RECORDID=? AND NUM_BON=?";
-                String[] selectionArgs1 = {String.valueOf(list_bon2.recordid), num_bon};
+                String[] selectionArgs1 = {String.valueOf(list_achat2.recordid), num_bon};
                 db.update(_table, args1, selection1, selectionArgs1);
 
                 if(_table.equals("ACHAT2")){
-                    update_Stock_Produit("ACHAT2_EDIT", list_bon2, qte_old, gratuit_old);
+                    update_Stock_Produit_achat("ACHAT2_EDIT", list_achat2, qte_old, gratuit_old);
                 }
 
                 db.setTransactionSuccessful();
@@ -2207,7 +2375,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 db.delete(_table, selection, selectionArgs);
 
                 if(_table.equals("BON2")){
-                    update_Stock_Produit("BON2_DELETE", bon2 , 0.0,0.0);
+                    update_Stock_Produit_vente("BON2_DELETE", bon2 , 0.0,0.0);
                 }
 
                 db.setTransactionSuccessful();
@@ -2224,8 +2392,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
     @SuppressLint("Range")
-    public boolean delete_from_achat2(String _table, Integer recordid, PostData_Bon2 bon2){
-        boolean executed = false;
+    public void delete_from_achat2(String _table, Integer recordid, PostData_Achat2 achat2){
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
@@ -2236,19 +2403,16 @@ public class DATABASE extends SQLiteOpenHelper {
                 db.delete(_table, selection, selectionArgs);
 
                 if(_table.equals("ACHAT2")){
-                    update_Stock_Produit("ACHAT2_DELETE", bon2 , 0.0,0.0);
+                    update_Stock_Produit_achat("ACHAT2_DELETE", achat2 , 0.0,0.0);
                 }
 
                 db.setTransactionSuccessful();
-                executed =  true;
             } finally {
                 db.endTransaction();
             }
         }catch (SQLiteDatabaseLockedException sqlilock){
             Log.v("TRACKKK", sqlilock.getMessage());
-            executed =  false;
         }
-        return executed;
     }
 
     @SuppressLint("Range")
@@ -2557,16 +2721,46 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon2.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
                 bon2.qte = cursor.getDouble(cursor.getColumnIndex("QTE"));
                 bon2.gratuit = cursor.getDouble(cursor.getColumnIndex("QTE_GRAT"));
-                bon2.p_u = cursor.getDouble(cursor.getColumnIndex("PU"));
+                bon2.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
                 bon2.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
                 bon2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
-                bon2.p_u = cursor.getDouble(cursor.getColumnIndex("PU"));
+                bon2.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
                 bon2.stock_produit = cursor.getDouble(cursor.getColumnIndex("STOCK"));
 
             } while (cursor.moveToNext());
         }
         cursor.close();
         return  bon2;
+    }
+
+    @SuppressLint("Range")
+    public PostData_Achat2 check_if_achat2_exist(String querry){
+        //check if bon2 exist
+        PostData_Achat2 achat2 = null;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery( querry , null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+                achat2 = new PostData_Achat2();
+                achat2.recordid = cursor.getInt(cursor.getColumnIndex("RECORDID"));
+                achat2.codebarre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
+                achat2.num_bon = cursor.getString(cursor.getColumnIndex("NUM_BON"));
+                achat2.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
+                achat2.nbr_colis = cursor.getDouble(cursor.getColumnIndex("NBRE_COLIS"));
+                achat2.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
+                achat2.qte = cursor.getDouble(cursor.getColumnIndex("QTE"));
+                achat2.gratuit = cursor.getDouble(cursor.getColumnIndex("QTE_GRAT"));
+                achat2.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
+                achat2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
+                achat2.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
+                achat2.stock_produit = cursor.getDouble(cursor.getColumnIndex("STOCK"));
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return  achat2;
     }
 
     public boolean check_if_has_bon(String querry){
@@ -2634,12 +2828,10 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon2.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
                 bon2.qte = cursor.getDouble(cursor.getColumnIndex("QTE"));
                 bon2.gratuit = cursor.getDouble(cursor.getColumnIndex("QTE_GRAT"));
+                bon2.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
                 bon2.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
-                bon2.pamp = cursor.getDouble(cursor.getColumnIndex("PAMP"));
-                bon2.p_u = cursor.getDouble(cursor.getColumnIndex("PU"));
                 bon2.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
                 bon2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
-                bon2.p_u = cursor.getDouble(cursor.getColumnIndex("PU"));
                 bon2.stock_produit = cursor.getDouble(cursor.getColumnIndex("STOCK"));
                 bon2.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
                 bon2.destock_type = cursor.getString(cursor.getColumnIndex("DESTOCK_TYPE"));
@@ -2654,7 +2846,7 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public boolean update_Stock_Produit( String source, PostData_Bon2 panier,Double qte_old,Double gratuit_old ){
+    public boolean update_Stock_Produit_vente( String source, PostData_Bon2 panier,Double qte_old,Double gratuit_old ){
         boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -2666,11 +2858,8 @@ public class DATABASE extends SQLiteOpenHelper {
                             args.put("STOCK", panier.stock_produit - panier.qte - panier.gratuit + qte_old + gratuit_old);
                     case "BON2_DELETE" ->
                             args.put("STOCK", panier.stock_produit + panier.qte + panier.gratuit);
-                    case "ACHAT2_INSERT", "ACHAT2_EDIT" ->
-                            args.put("STOCK", panier.stock_produit + panier.qte + panier.gratuit - qte_old - gratuit_old);
-                    case "ACHAT2_DELETE" ->
-                            args.put("STOCK", panier.stock_produit - panier.qte - panier.gratuit);
                 }
+
                 String selection = "CODE_BARRE=?";
                 String[] selectionArgs = {panier.codebarre};
                 db.update("PRODUIT", args, selection, selectionArgs);
@@ -2683,6 +2872,86 @@ public class DATABASE extends SQLiteOpenHelper {
             Log.v("TRACKKK", sqlilock.getMessage());
         }
         return executed;
+    }
+
+
+    public boolean update_Stock_Produit_achat( String source, PostData_Achat2 panier,Double qte_old,Double gratuit_old ){
+        boolean executed = false;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            try {
+                ContentValues args = new ContentValues();
+                switch (source) {
+                    case "ACHAT2_INSERT", "ACHAT2_EDIT" ->
+                            args.put("STOCK", panier.stock_produit + panier.qte + panier.gratuit - qte_old - gratuit_old);
+                    case "ACHAT2_DELETE" ->
+                            args.put("STOCK", panier.stock_produit - panier.qte - panier.gratuit);
+                }
+
+                String selection = "CODE_BARRE=?";
+                String[] selectionArgs = {panier.codebarre};
+                db.update("PRODUIT", args, selection, selectionArgs);
+                db.setTransactionSuccessful();
+                executed =  true;
+            } finally {
+                db.endTransaction();
+            }
+        }catch (SQLiteDatabaseLockedException sqlilock){
+            Log.v("TRACKKK", sqlilock.getMessage());
+        }
+        return executed;
+    }
+
+
+    public void  update_pamp_on_insert_update_produit(String codebarre, double stock, double pa_ht_old, double qte, double pa_ht_new, double pamp_old){
+        SQLiteDatabase db = this.getWritableDatabase();
+        double pamp_new = 0;
+        if(stock + qte ==0){
+            if(stock <0){
+                pamp_new = pa_ht_new;
+            }else if(stock >0){
+                pamp_new = (pamp_old + pa_ht_new) / 2;
+            }
+        }else if(stock + qte != 0){
+            if(stock <=0){
+                pamp_new = pa_ht_new;
+            }else if(stock >0){
+                pamp_new = ((stock * pa_ht_old) + (qte * pa_ht_new)) / (stock + qte);
+            }
+        }
+
+        try {
+            ContentValues args = new ContentValues();
+            args.put("PAMP", pamp_new);
+            args.put("PA_HT", pa_ht_new);
+            String selection = "CODE_BARRE=?";
+            String[] selectionArgs = {codebarre};
+            db.update("PRODUIT", args, selection, selectionArgs);
+        }catch (SQLiteDatabaseLockedException sqlilock){
+            Log.v("TRACKKK", sqlilock.getMessage());
+        }
+    }
+
+    public void  update_pamp_on_delete_produit(String codebarre, double stock, double pa_ht_old, double qte, double pa_ht_new, double pamp_old){
+        SQLiteDatabase db = this.getWritableDatabase();
+        double pamp_new = 0;
+        if (stock - qte > 0) {
+            pamp_new = ((pamp_old * stock) - (pa_ht_new * qte)) / (stock - qte);
+        }else{
+            pamp_new = pamp_old;
+        }
+
+        try {
+            ContentValues args = new ContentValues();
+            args.put("PAMP", pamp_new);
+            args.put("PA_HT", pa_ht_new);
+            String selection = "CODE_BARRE=?";
+            String[] selectionArgs = {codebarre};
+            db.update("PRODUIT", args, selection, selectionArgs);
+        }catch (SQLiteDatabaseLockedException sqlilock){
+            Log.v("TRACKKK", sqlilock.getMessage());
+        }
     }
     //================================== UPDATE TABLE (Inventaires1) =======================================
 
@@ -2728,6 +2997,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 ContentValues args = new ContentValues();
                 args.put("LATITUDE", latitude);
                 args.put("LONGITUDE", longitude);
+                args.put("ISNEW", 1);
                 String selection = "CODE_CLIENT=?";
                 String[] selectionArgs = {code_client};
                 db.update("CLIENT", args, selection, selectionArgs);
@@ -2753,6 +3023,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 ContentValues args = new ContentValues();
                 args.put("CLIENT", client.client);
                 args.put("TEL", client.tel);
+                args.put("WILAYA", client.wilaya);
+                args.put("COMMUNE", client.commune);
                 args.put("ADRESSE", client.adresse);
                 args.put("MODE_TARIF", client.mode_tarif);
                 args.put("ISNEW", client.isNew);
@@ -2792,6 +3064,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args.put("MODE_TARIF", bon1.mode_tarif);
                 args.put("TOT_HT", bon1.tot_ht);
                 args.put("TOT_TVA", bon1.tot_tva);
+                args.put("MONTANT_ACHAT", bon1.montant_achat);
                 args.put("REMISE", bon1.remise);
                 args.put("TIMBRE", bon1.timbre);
                 args.put("MODE_RG", bon1.mode_rg);
@@ -2896,27 +3169,26 @@ public class DATABASE extends SQLiteOpenHelper {
                     bon2_delete = new ArrayList<>();
                     bon2_delete = select_bon2_from_database("" +
                             "SELECT " +
-                            "Bon2.RECORDID, " +
-                            "Bon2.CODE_BARRE, " +
-                            "Bon2.NUM_BON, " +
-                            "Bon2.PRODUIT, " +
-                            "Bon2.NBRE_COLIS, " +
-                            "Bon2.COLISSAGE, " +
-                            "Bon2.QTE, " +
-                            "Bon2.QTE_GRAT, " +
-                            "Bon2.PU, " +
-                            "Bon2.TVA, " +
-                            "Bon2.CODE_DEPOT, " +
-                            "Bon2.DESTOCK_TYPE, " +
-                            "Bon2.DESTOCK_CODE_BARRE, " +
-                            "Bon2.DESTOCK_QTE, " +
-                            "PRODUIT.PA_HT, " +
-                            "PRODUIT.PAMP, " +
+                            "BON2.RECORDID, " +
+                            "BON2.CODE_BARRE, " +
+                            "BON2.NUM_BON, " +
+                            "BON2.PRODUIT, " +
+                            "BON2.NBRE_COLIS, " +
+                            "BON2.COLISSAGE, " +
+                            "BON2.QTE, " +
+                            "BON2.QTE_GRAT, " +
+                            "BON2.PV_HT, " +
+                            "BON2.PA_HT, " +
+                            "BON2.TVA, " +
+                            "BON2.CODE_DEPOT, " +
+                            "BON2.DESTOCK_TYPE, " +
+                            "BON2.DESTOCK_CODE_BARRE, " +
+                            "BON2.DESTOCK_QTE, " +
                             "PRODUIT.ISNEW, " +
                             "PRODUIT.STOCK " +
                             "FROM Bon2 " +
-                            "LEFT JOIN PRODUIT ON (Bon2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                            "WHERE Bon2.NUM_BON = '" + bon1.num_bon + "'" );
+                            "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                            "WHERE BON2.NUM_BON = '" + bon1.num_bon + "'" );
 
                     for(int k=0; k< bon2_delete.size();k++) {
 
@@ -2987,27 +3259,26 @@ public class DATABASE extends SQLiteOpenHelper {
                     ArrayList<PostData_Bon2> bon2_delete = new ArrayList<>();
                     bon2_delete = select_bon2_from_database("" +
                             "SELECT " +
-                            "Bon2.RECORDID, " +
-                            "Bon2.CODE_BARRE, " +
-                            "Bon2.NUM_BON, " +
-                            "Bon2.PRODUIT, " +
-                            "Bon2.NBRE_COLIS, " +
-                            "Bon2.COLISSAGE, " +
-                            "Bon2.QTE, " +
-                            "Bon2.QTE_GRAT, " +
-                            "Bon2.PU, " +
-                            "Bon2.TVA, " +
-                            "Bon2.CODE_DEPOT, " +
-                            "Bon2.DESTOCK_TYPE, " +
-                            "Bon2.DESTOCK_CODE_BARRE, " +
-                            "Bon2.DESTOCK_QTE, " +
-                            "PRODUIT.PA_HT, " +
-                            "PRODUIT.PAMP, " +
+                            "BON2.RECORDID, " +
+                            "BON2.CODE_BARRE, " +
+                            "BON2.NUM_BON, " +
+                            "BON2.PRODUIT, " +
+                            "BON2.NBRE_COLIS, " +
+                            "BON2.COLISSAGE, " +
+                            "BON2.QTE, " +
+                            "BON2.QTE_GRAT, " +
+                            "BON2.PV_HT, " +
+                            "BON2.PA_HT, " +
+                            "BON2.TVA, " +
+                            "BON2.CODE_DEPOT, " +
+                            "BON2.DESTOCK_TYPE, " +
+                            "BON2.DESTOCK_CODE_BARRE, " +
+                            "BON2.DESTOCK_QTE, " +
                             "PRODUIT.ISNEW, " +
                             "PRODUIT.STOCK " +
-                            "FROM Bon2 " +
-                            "LEFT JOIN  PRODUIT ON (Bon2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                            "WHERE Bon2.NUM_BON = '" + num_bon + "'" );
+                            "FROM BON2 " +
+                            "LEFT JOIN  PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                            "WHERE BON2.NUM_BON = '" + num_bon + "'" );
 
                     for(int k=0; k< bon2_delete.size();k++) {
 
@@ -3046,7 +3317,7 @@ public class DATABASE extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             db.beginTransaction();
             try {
-                ArrayList<PostData_Bon2> bon2_delete;
+                ArrayList<PostData_Achat2> achat2_delete;
                 String selection;
 
                 if(isTemp){
@@ -3056,8 +3327,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     db.delete("ACHAT2_TEMP", selection, selectionArgs);
                 }else{
 
-                    bon2_delete = new ArrayList<>();
-                    bon2_delete = select_all_achat2_from_database("" +
+                    achat2_delete = select_all_achat2_from_database("" +
                             "SELECT " +
                             "ACHAT2.RECORDID, " +
                             "ACHAT2.CODE_BARRE, " +
@@ -3067,23 +3337,35 @@ public class DATABASE extends SQLiteOpenHelper {
                             "ACHAT2.COLISSAGE, " +
                             "ACHAT2.QTE, " +
                             "ACHAT2.QTE_GRAT, " +
-                            "ACHAT2.PU, " +
+                            "ACHAT2.PA_HT, " +
                             "ACHAT2.TVA, " +
                             "ACHAT2.CODE_DEPOT, " +
                             "ACHAT2.QTE_GRAT, " +
+                            "PRODUIT.PAMP, " +
                             "PRODUIT.STOCK " +
                             "FROM ACHAT2 " +
                             "LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                             "WHERE ACHAT2.NUM_BON = '" + achat1.num_bon + "'" );
 
-                    for(int k=0; k< bon2_delete.size();k++) {
+                    for(int k=0; k< achat2_delete.size();k++) {
 
-                        ContentValues args = new ContentValues();
+
+                        update_Stock_Produit_achat("ACHAT2_DELETE", achat2_delete.get(k), achat2_delete.get(k).qte, achat2_delete.get(k).gratuit);
+
+                        update_pamp_on_delete_produit(
+                                achat2_delete.get(k).codebarre,
+                                achat2_delete.get(k).stock_produit,
+                                achat2_delete.get(k).pa_ht_produit,
+                                achat2_delete.get(k).qte,
+                                achat2_delete.get(k).pa_ht,
+                                achat2_delete.get(k).pa_ht);
+
+                        /*ContentValues args = new ContentValues();
                         args.put("STOCK", bon2_delete.get(k).stock_produit - bon2_delete.get(k).qte - bon2_delete.get(k).gratuit);
 
                         selection = "CODE_BARRE=?";
                         String[] selectionArgsss = {bon2_delete.get(k).codebarre};
-                        db.update("PRODUIT", args, selection, selectionArgsss);
+                        db.update("PRODUIT", args, selection, selectionArgsss);*/
                     }
 
 
@@ -3240,29 +3522,67 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<PostData_Etatv> select_etatv_from_database(String _table1, String _table2, String c_client , String from_d, String to_d){
+    public ArrayList<PostData_Etatv> select_etatv_from_database(String wilaya , String commune ,String c_client , String from_d, String to_d, boolean show_benifice){
 
         ArrayList<PostData_Etatv> all_etatv = new ArrayList<PostData_Etatv>();
 
-        Double tot_qte = 0.00;
-        Double tot_montant_par_qte = 0.00;
-        Double tot_montant_total = 0.00;
-        Double total_verser = 0.00;
-
-        Double tot_remise = 0.00;
-        Double tot_credit = 0.00;
+        double tot_qte = 0.00;
+        double tot_montant_par_qte = 0.00;
+        double tot_montant_total = 0.00;
+        double total_verser = 0.00;
+        double tot_remise = 0.00;
+        double tot_credit = 0.00;
+        double total_benifice = 0.00;
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String querry = "SELECT " + _table2 +
-                ".PRODUIT, " +
-                "SUM("+_table2 +".QTE) TOT_QTE, " +
-                _table2 + ".PU, " +
-                "(SUM("+ _table2 + ".QTE) * " + _table2 + ".PU) TOTAL_MONTANT_PRODUIT " +
-                "FROM "+ _table2 + " LEFT JOIN " + _table1 + " ON " + _table2 + ".NUM_BON = " + _table1 + ".NUM_BON " +
-                "WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') AND " + _table1 + ".CODE_CLIENT = '"+ c_client +"' AND " + _table1 + ".BLOCAGE = 'F'" +
-                "GROUP BY "+ _table2 + ".PRODUIT, "+ _table2 + ".PU " +
-                "ORDER BY TOT_QTE DESC";
+        String querry = "SELECT " +
+                "BON2.PRODUIT, " +
+                "SUM(BON2.QTE) AS TOT_QTE, " +
+                "BON2.PV_HT, " +
+                "SUM(BON2.QTE) * (BON2.PV_HT + (BON2.PV_HT * BON2.TVA / 100)) AS TOTAL_MONTANT_PRODUIT, " +
+                "CLIENT.WILAYA AS WILAYA, " +
+                "CLIENT.COMMUNE AS COMMUNE " +
+                "FROM BON1 " +
+                "LEFT JOIN BON2 ON BON2.NUM_BON = BON1.NUM_BON " +
+                "LEFT JOIN CLIENT ON CLIENT.CODE_CLIENT = BON1.CODE_CLIENT " +
+                "WHERE (BON1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') ";
+        if(c_client != null){
+            querry = querry + " AND BON1.CODE_CLIENT = '"+ c_client +"' " ;
+        }
+        if(!Objects.equals(wilaya, "<Aucune>")){
+            querry = querry + " AND CLIENT.WILAYA = '"+ wilaya +"' " ;
+        }
+        if(!Objects.equals(commune, "<Aucune>")){
+            querry = querry + " AND CLIENT.COMMUNE = '"+ commune +"' " ;
+        }
+        querry = querry + " AND BON1.BLOCAGE = 'F' ";
+
+        querry = querry + "GROUP BY BON2.PRODUIT, BON2.PV_HT, BON2.QTE_GRAT "  +
+                          "UNION ALL "  +
+                          "SELECT " +
+                          "BON2.PRODUIT, " +
+                          "SUM(BON2.QTE_GRAT) AS TOT_QTE, "  +
+                          "0.0 AS PV_HT," +
+                          "0.0 AS TOTAL_MONTANT_PRODUIT, " +
+                          "CLIENT.WILAYA AS WILAYA, " +
+                          "CLIENT.COMMUNE AS COMMUNE " +
+                          "FROM BON1 " +
+                          "LEFT JOIN BON2 ON BON2.NUM_BON = BON1.NUM_BON "  +
+                          "LEFT JOIN CLIENT ON CLIENT.CODE_CLIENT = BON1.CODE_CLIENT " +
+                          "WHERE (BON1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') ";
+
+        if(c_client != null){
+            querry = querry + " AND BON1.CODE_CLIENT = '"+ c_client +"' " ;
+        }
+        if(!Objects.equals(wilaya, "<Aucune>")){
+            querry = querry + " AND CLIENT.WILAYA = '"+ wilaya +"' " ;
+        }
+        if(!Objects.equals(commune, "<Aucune>")){
+            querry = querry + " AND CLIENT.COMMUNE = '"+ commune +"' " ;
+        }
+        querry = querry + " AND BON1.BLOCAGE = 'F' AND BON2.QTE_GRAT <> 0 GROUP BY BON2.PRODUIT, BON2.PV_HT, BON2.QTE_GRAT  ORDER BY PRODUIT, TOT_QTE DESC";
+
 
 
         Cursor cursor = db.rawQuery(querry, null);
@@ -3273,41 +3593,58 @@ public class DATABASE extends SQLiteOpenHelper {
                 PostData_Etatv etatv = new PostData_Etatv();
 
                 etatv.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                etatv.quantite = cursor.getString(cursor.getColumnIndex("TOT_QTE"));
-                etatv.montant = cursor.getString(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
-                etatv.pv_ht = cursor.getString(cursor.getColumnIndex("PU"));
+                etatv.quantite = cursor.getDouble(cursor.getColumnIndex("TOT_QTE"));
+                etatv.montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
+                etatv.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
                 etatv.code_parent = "1";
                 // etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
 
-                tot_qte = tot_qte + Double.valueOf(etatv.quantite);
-                tot_montant_par_qte = tot_montant_par_qte + Double.valueOf(etatv.montant);
+                tot_qte = tot_qte + etatv.quantite;
+                tot_montant_par_qte = tot_montant_par_qte + etatv.montant;
 
                 all_etatv.add(etatv);
             } while (cursor.moveToNext());
         }
 
+
         PostData_Etatv etatv = new PostData_Etatv();
         etatv.produit = "TOTAL QTE :";
-        etatv.quantite = tot_qte.toString();
+        etatv.quantite = tot_qte;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "TOTAL MONTANT :";
-        etatv.montant = tot_montant_par_qte.toString();
+        etatv.montant = tot_montant_par_qte;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
 
         String querry1 = "SELECT " +
-                _table1 + ".REMISE, " +
-                _table1 + ".TOT_HT," +
-                _table1 + ".TOT_TVA," +
-                _table1 + ".TIMBRE - Bon1.REMISE AS MONTANT_BON, " +
+                "BON1.REMISE, " +
+                "BON1.TOT_HT, " +
+                "BON1.TOT_TVA, " +
+                "BON1.TOT_HT - BON1.REMISE AS MONTANT_BON_HT, " +
                 "CARNET_C.VERSEMENTS as VERSEMENTS, " +
-                _table1 + ".VERSER " +
-                "FROM " + _table1 + " LEFT JOIN CARNET_C ON " + _table1 + ".CODE_CLIENT = CARNET_C.CODE_CLIENT " +
-                " WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') AND "+_table1+".CODE_CLIENT = '"+ c_client +"' AND " + _table1 + ".BLOCAGE = 'F'";
+                "BON1.VERSER, " +
+                "(BON1.TOT_HT - BON1.REMISE) -  BON1.MONTANT_ACHAT AS BENIFICE, " +
+                "CLIENT.WILAYA AS WILAYA, " +
+                "CLIENT.COMMUNE AS COMMUNE " +
+                "FROM BON1 " +
+                "LEFT JOIN CARNET_C ON BON1.CODE_CLIENT = CARNET_C.CODE_CLIENT " +
+                "LEFT JOIN CLIENT ON CLIENT.CODE_CLIENT = BON1.CODE_CLIENT " +
+                " WHERE (BON1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') ";
+        if(c_client != null){
+            querry1 = querry1 + " AND BON1.CODE_CLIENT = '"+ c_client +"' " ;
+        }
+        if(!Objects.equals(wilaya, "<Aucune>")){
+            querry1 = querry1 + " AND CLIENT.WILAYA = '"+ wilaya +"' " ;
+        }
+        if(!Objects.equals(commune, "<Aucune>")){
+            querry1 = querry1 + " AND CLIENT.COMMUNE = '"+ commune +"' " ;
+        }
+        querry1 = querry1 + "  AND BON1.BLOCAGE = 'F'";
+
 
         Cursor cursor1 = db.rawQuery(querry1, null);
         // looping through all rows and adding to list
@@ -3316,27 +3653,30 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 PostData_Etatv etatv2 = new PostData_Etatv();
 
-                etatv2.total_remise = cursor1.getString(cursor1.getColumnIndex("REMISE"));
-                etatv2.total_par_bon = cursor1.getString(cursor1.getColumnIndex("MONTANT_BON"));
-                etatv2.total_versement = cursor1.getString(cursor1.getColumnIndex("VERSER"));
+                etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
+                etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_HT"));
+                etatv2.total_versement = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";
                 // etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
-                etatv2.vers_client = cursor1.getString(cursor1.getColumnIndex("VERSEMENTS"));
+                etatv2.vers_client = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENTS"));
 
-                tot_montant_total = tot_montant_total + Double.valueOf(etatv2.total_par_bon);
-                if(etatv2.vers_client == null)
+                tot_montant_total = tot_montant_total + etatv2.total_par_bon_ht;
+                total_benifice = total_benifice + etatv2.benifice;
+
+                if(etatv2.vers_client == 0)
                 {
-                    total_verser = total_verser + Double.valueOf(etatv2.total_versement) ;
+                    total_verser = total_verser + etatv2.total_versement;
                 }else
                 {
-                    total_verser = total_verser + (Double.valueOf(etatv2.total_versement) + Double.valueOf(etatv2.vers_client)) ;
+                    total_verser = total_verser + (etatv2.total_versement + etatv2.vers_client) ;
 
                 }
 
 
 
 
-                tot_remise = tot_remise + Double.valueOf(etatv2.total_remise);
+                tot_remise = tot_remise + etatv2.total_remise;
 
             } while (cursor1.moveToNext());
         }
@@ -3345,80 +3685,100 @@ public class DATABASE extends SQLiteOpenHelper {
         tot_credit = tot_montant_total - total_verser;
         etatv = new PostData_Etatv();
         etatv.produit = "TOTAL REMISE:";
-        etatv.montant = tot_remise.toString();
+        etatv.montant = tot_remise;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "CHIFFRE D'AFFAIRE :";
-        etatv.montant = tot_montant_total.toString();
+        etatv.montant = tot_montant_total;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "TOTAL VERSER :";
-        etatv.montant = total_verser.toString();
+        etatv.montant = total_verser;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "CREDIT TOTAL :";
-        etatv.montant = tot_credit.toString();
+        etatv.montant = tot_credit;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
-        String objectif;
+        if(show_benifice){
+            etatv = new PostData_Etatv();
+            etatv.produit = "BENIFICE TOTAL :";
+            etatv.montant = total_benifice;
+            etatv.code_parent = "-6";
+            all_etatv.add(etatv);
+        }
+
+
+        double objectif;
         SharedPreferences prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        objectif = prefs.getString("OBJECTIF_MONTANT", "0.00");
+        objectif = prefs.getLong("OBJECTIF_MONTANT", 0);
         if(tot_montant_total < (Double.valueOf(objectif) / 2) ){
             etatv = new PostData_Etatv();
             etatv.produit = "N1";
             etatv.quantite = objectif;
-            etatv.montant = tot_montant_total.toString();
+            etatv.montant = tot_montant_total;
             etatv.code_parent = "-8";
             all_etatv.add(etatv);
         }else if(Double.valueOf(objectif) > tot_montant_total){
             etatv = new PostData_Etatv();
             etatv.produit = "N2";
             etatv.quantite = objectif;
-            etatv.montant = tot_montant_total.toString();
+            etatv.montant = tot_montant_total;
             etatv.code_parent = "-8";
             all_etatv.add(etatv);
         }else{
             etatv = new PostData_Etatv();
             etatv.produit = "N3";
             etatv.quantite = objectif;
-            etatv.montant = tot_montant_total.toString();
+            etatv.montant = tot_montant_total;
             etatv.code_parent = "-8";
             all_etatv.add(etatv);
         }
 
         return all_etatv;
     }
+
     @SuppressLint("Range")
-    public ArrayList<PostData_Etatv> select_etat_global_from_database(String _table1, String _table2, String from_d, String to_d){
+    public ArrayList<PostData_Etatv> select_etat_global_from_database(String from_d, String to_d, boolean show_benifice){
 
-        ArrayList<PostData_Etatv> all_etatv = new ArrayList<PostData_Etatv>();
+        ArrayList<PostData_Etatv> all_etatv = new ArrayList<>();
 
-        Double tot_qte = 0.00;
-        Double tot_montant_par_qte = 0.00;
-        Double tot_montant_total = 0.00;
-        Double total_verser = 0.00;
-        Double tot_remise = 0.00;
-        Double tot_credit = 0.00;
-        Double total_verser_c = 0.00;
+        double tot_qte = 0.00;
+        double tot_montant_par_qte = 0.00;
+        double tot_montant_total = 0.00;
+        double total_verser = 0.00;
+        double tot_remise = 0.00;
+        double tot_credit = 0.00;
+        double total_verser_c = 0.00;
+        double total_benifice = 0.00;
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String querry = "SELECT " + _table2 +
-                ".PRODUIT, " +
-                "SUM("+_table2 +".QTE) TOT_QTE, " +
-                _table2 + ".PU, " +
-                "(SUM("+ _table2 + ".QTE) * " + _table2 + ".PU) TOTAL_MONTANT_PRODUIT " +
-                "FROM "+ _table2 + " LEFT JOIN " + _table1 + " ON " + _table2 + ".NUM_BON = " + _table1 + ".NUM_BON " +
-                "WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') " +
-                "GROUP BY "+ _table2 + ".PRODUIT, "+ _table2 + ".PU " +
-                "ORDER BY TOT_QTE DESC";
+        String querry = "SELECT " +
+                "BON2.PRODUIT, " +
+                "SUM(BON2.QTE) AS TOT_QTE, " +
+                "BON2.PV_HT, " +
+                "SUM(BON2.QTE) * (BON2.PV_HT + (BON2.PV_HT * BON2.TVA / 100)) AS TOTAL_MONTANT_PRODUIT " +
+                "FROM BON2 LEFT JOIN BON1 ON BON2.NUM_BON = BON1.NUM_BON " +
+                "WHERE (BON1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "')  " +
+                "GROUP BY BON2.PRODUIT, BON2.PV_HT, BON2.QTE_GRAT " +
+                "UNION ALL " +
+                "SELECT " +
+                "BON2.PRODUIT, " +
+                "SUM(BON2.QTE_GRAT) AS TOT_QTE, " +
+                "0.0 AS PV_HT," +
+                "0.0 AS TOTAL_MONTANT_PRODUIT " +
+                "FROM BON2 LEFT JOIN BON1 ON BON2.NUM_BON = BON1.NUM_BON " +
+                "WHERE (BON1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') AND BON2.QTE_GRAT <> 0 " +
+                "GROUP BY BON2.PRODUIT, BON2.PV_HT, BON2.QTE_GRAT " +
+                "ORDER BY PRODUIT, TOT_QTE DESC";
 
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
@@ -3428,9 +3788,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 PostData_Etatv etatv = new PostData_Etatv();
 
                 etatv.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                etatv.quantite = cursor.getString(cursor.getColumnIndex("TOT_QTE"));
-                etatv.montant = cursor.getString(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
-                etatv.pv_ht = cursor.getString(cursor.getColumnIndex("PU"));
+                etatv.quantite = cursor.getDouble(cursor.getColumnIndex("TOT_QTE"));
+                etatv.montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
+                etatv.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
                 etatv.code_parent = "1";
                 // etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
 
@@ -3443,25 +3803,25 @@ public class DATABASE extends SQLiteOpenHelper {
 
         PostData_Etatv etatv = new PostData_Etatv();
         etatv.produit = "TOTAL QTE :";
-        etatv.quantite = tot_qte.toString();
+        etatv.quantite = tot_qte;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "TOTAL MONTANT :";
-        etatv.montant = tot_montant_par_qte.toString();
+        etatv.montant = tot_montant_par_qte;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         String querry1 = "SELECT " +
-                _table1 + ".REMISE, " +
-                _table1 + ".TOT_HT + " +
-                _table1 + ".TOT_TVA + " +
-                _table1 + ".TIMBRE - " +
-                _table1 + ".REMISE AS MONTANT_BON, " +
-                _table1 + ".VERSER " +
-                "FROM " + _table1 +
-                " WHERE (" + _table1 + ".DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "') ";
+                "bon1.NUM_BON, " +
+                "BON1.REMISE, " +
+                "BON1.TOT_HT - BON1.REMISE AS MONTANT_BON_HT, " +
+                "BON1.VERSER, " +
+                "BON1.MONTANT_ACHAT AS TOT_ACHAT, " +
+                "(BON1.TOT_HT - BON1.REMISE) -  BON1.MONTANT_ACHAT AS BENIFICE " +
+                "FROM BON1 WHERE (BON1.DATE_BON BETWEEN '"+ from_d +"' AND '" + to_d + "')";
+
 
         Cursor cursor1 = db.rawQuery(querry1, null);
         // looping through all rows and adding to list
@@ -3470,25 +3830,23 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 PostData_Etatv etatv2 = new PostData_Etatv();
 
-                etatv2.total_remise = cursor1.getString(cursor1.getColumnIndex("REMISE"));
-                etatv2.total_par_bon = cursor1.getString(cursor1.getColumnIndex("MONTANT_BON"));
-                etatv2.total_versement = cursor1.getString(cursor1.getColumnIndex("VERSER"));
+                etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
+                etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_HT"));
+                etatv2.total_versement = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";
                 // etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
                // etatv2.vers_client = cursor1.getString(cursor1.getColumnIndex("VERSEMENTS"));
 
-                tot_montant_total = tot_montant_total + Double.valueOf(etatv2.total_par_bon);
-
-                    total_verser = total_verser + (Double.valueOf(etatv2.total_versement)) ;
-
-
-                tot_remise = tot_remise + Double.valueOf(etatv2.total_remise);
+                tot_montant_total = tot_montant_total + etatv2.total_par_bon_ht;
+                total_verser = total_verser + etatv2.total_versement ;
+                tot_remise = tot_remise + etatv2.total_remise;
+                total_benifice = total_benifice + etatv2.benifice;
 
             } while (cursor1.moveToNext());
         }
+
         String querry2 = "SELECT CARNET_C.VERSEMENTS FROM CARNET_C WHERE (CARNET_C.DATE_CARNET BETWEEN '"+ from_d +"' AND '" + to_d + "')";
-
-
 
         Cursor cursor2 = db.rawQuery(querry2, null);
         // looping through all rows and adding to list
@@ -3499,7 +3857,6 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 etatv2.carnet_versement = cursor2.getDouble(cursor2.getColumnIndex("VERSEMENTS"));
 
-
                 total_verser_c = total_verser_c + etatv2.carnet_versement;
 
 
@@ -3508,52 +3865,62 @@ public class DATABASE extends SQLiteOpenHelper {
         tot_credit = tot_montant_total - (total_verser + total_verser_c);
         etatv = new PostData_Etatv();
         etatv.produit = "TOTAL REMISE:";
-        etatv.montant = tot_remise.toString();
+        etatv.montant = tot_remise;
 
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "CHIFFRE D'AFFAIRE :";
-        etatv.montant = tot_montant_total.toString();
+        etatv.montant = tot_montant_total;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "TOTAL VERSER :";
-        etatv.montant = String.valueOf(total_verser+total_verser_c);
+        etatv.montant = total_verser+total_verser_c;
 
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
         etatv.produit = "CREDIT TOTAL :";
-        etatv.montant = tot_credit.toString();
+        etatv.montant = tot_credit;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
-        String objectif;
+
+        if(show_benifice){
+            etatv = new PostData_Etatv();
+            etatv.produit = "BENIFICE TOTAL :";
+            etatv.montant = total_benifice;
+            etatv.code_parent = "-6";
+            all_etatv.add(etatv);
+        }
+
+
+        double objectif;
         SharedPreferences prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        objectif = prefs.getString("OBJECTIF_MONTANT", "0.00");
-        if(tot_montant_total < (Double.parseDouble(objectif) / 2) ){
+        objectif = prefs.getLong("OBJECTIF_MONTANT", 0);
+        if(tot_montant_total < (objectif / 2) ){
             etatv = new PostData_Etatv();
             etatv.produit = "N1";
             etatv.quantite = objectif;
-            etatv.montant = tot_montant_total.toString();
+            etatv.montant = tot_montant_total;
             etatv.code_parent = "-8";
             all_etatv.add(etatv);
-        }else if(Double.parseDouble(objectif) > tot_montant_total){
+        }else if(objectif > tot_montant_total){
             etatv = new PostData_Etatv();
             etatv.produit = "N2";
             etatv.quantite = objectif;
-            etatv.montant = tot_montant_total.toString();
+            etatv.montant = tot_montant_total;
             etatv.code_parent = "-8";
             all_etatv.add(etatv);
         }else{
             etatv = new PostData_Etatv();
             etatv.produit = "N3";
             etatv.quantite = objectif;
-            etatv.montant = tot_montant_total.toString();
+            etatv.montant = tot_montant_total;
             etatv.code_parent = "-8";
             all_etatv.add(etatv);
         }
@@ -3826,7 +4193,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
     }
     //=============================== FUNCTION TO INSERT INTO Achats2 TABLE ===============================
-    public boolean insert_into_achat2(String table, PostData_Bon2 achat2){
+    public boolean insert_into_achat2(String table, PostData_Achat2 achat2){
         boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -3842,14 +4209,14 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("COLISSAGE", achat2.colissage);
                 values.put("QTE", achat2.qte);
                 values.put("QTE_GRAT", achat2.gratuit);
-                values.put("PU", achat2.p_u);
+                values.put("PA_HT", achat2.pa_ht);
                 values.put("TVA", achat2.tva);
                 values.put("CODE_DEPOT", achat2.code_depot);
 
                 db.insert(table, null, values);
 
                 if(table.equals("ACHAT2")){
-                    update_Stock_Produit("ACHAT2_INSERT", achat2, 0.0, 0.0);
+                    update_Stock_Produit_achat("ACHAT2_INSERT", achat2, 0.0, 0.0);
                 }
                 db.setTransactionSuccessful();
                 executed =  true;
@@ -3866,14 +4233,14 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //============================== FUNCTION SELECT FROM Inventaire2 TABLE ===============================
     @SuppressLint("Range")
-    public ArrayList<PostData_Bon2> select_all_achat2_from_database(String querry){
-        ArrayList<PostData_Bon2> all_achat2 = new ArrayList<PostData_Bon2>();
+    public ArrayList<PostData_Achat2> select_all_achat2_from_database(String querry){
+        ArrayList<PostData_Achat2> all_achat2 = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         if (cursor.moveToFirst()) {
             do {
 
-                PostData_Bon2 achat2 = new PostData_Bon2();
+                PostData_Achat2 achat2 = new PostData_Achat2();
                 achat2.recordid = cursor.getInt(cursor.getColumnIndex("RECORDID"));
                 achat2.codebarre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
                 achat2.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
@@ -3881,7 +4248,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 achat2.nbr_colis = cursor.getDouble(cursor.getColumnIndex("NBRE_COLIS"));
                 achat2.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
                 achat2.qte = cursor.getDouble(cursor.getColumnIndex("QTE"));
-                achat2.p_u = cursor.getDouble(cursor.getColumnIndex("PU"));
+                achat2.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
+                achat2.pamp_produit = cursor.getDouble(cursor.getColumnIndex("PAMP"));
                 achat2.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
                 achat2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
                 achat2.gratuit = cursor.getDouble(cursor.getColumnIndex("QTE_GRAT"));
@@ -4343,6 +4711,22 @@ public class DATABASE extends SQLiteOpenHelper {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    
+    private boolean insert_wilaya_commune_into_database( SQLiteDatabase db){
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(mContext.getAssets().open("sql_script/script_communes_wilaya.txt"), StandardCharsets.UTF_8))) {
+            // do reading, usually loop until end of file reading
+            String mLine;
+            while ((mLine = reader.readLine()) != null) {
+                //process line
+                db.execSQL(mLine);
+            }
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+        //log the exception
     }
 
 }

@@ -35,8 +35,10 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierInventaire;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventInventaire2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
@@ -47,6 +49,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.printing.PrinterInventaire;
+import com.safesoft.proapp.distribute.utils.Env;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -101,6 +104,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
     private Barcode barcodeResult;
     final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
     String TYPE_ACTIVITY = "";
     String SOURCE_EXPORT = "";
 
@@ -131,7 +135,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         String formattedDate = null;
 
 
-        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
 
         initViews();
@@ -301,6 +305,15 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 }
                 if(btn_nom_inv_state_isactive){
                     Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                    return;
+                }
+
+                if(!prefs.getBoolean("APP_ACTIVATED",false) && final_panier.size() >= 2){
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Important !")
+                            .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                            .show();
+
                     return;
                 }
 

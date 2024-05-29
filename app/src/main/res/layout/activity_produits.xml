@@ -12,7 +12,7 @@
         android:id="@+id/recycler_view_produit"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="17.5"
+        android:layout_weight="16.5"
         android:scrollbars="vertical" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -32,15 +32,39 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/list_produit_nbr_produit"
-        android:layout_weight="1"
-        android:text="Nombre de prduit : "
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
         android:gravity="center"
         android:background="@color/blue"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:weightSum="2"
+        android:layout_weight="2">
+
+        <TextView
+            android:id="@+id/list_produit_nbr_produit"
+            android:layout_weight="1"
+            android:text="Nombre de prduit : "
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
+        <TextView
+            android:id="@+id/list_produit_total"
+            android:layout_weight="1"
+            android:text="Total : "
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

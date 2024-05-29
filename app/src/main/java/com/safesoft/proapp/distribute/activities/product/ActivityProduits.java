@@ -1,9 +1,9 @@
 package com.safesoft.proapp.distribute.activities.product;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 
-import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,7 +32,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterProduits;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentNewProduct;
+import com.safesoft.proapp.distribute.fragments.FragmentNewEditProduct;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 
@@ -42,10 +40,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -57,16 +55,14 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     RecyclerAdapterProduits adapter;
     ArrayList<PostData_Produit> produits;
     DATABASE controller;
-    private Barcode barcodeResult;
     private MediaPlayer mp;
     public static final String BARCODE_KEY = "BARCODE";
     private SearchView searchView;
-    private TextView nbr_produit;
-    private final String PREFS = "ALL_PREFS";
+    private TextView nbr_produit, total_prix;
     AutoCompleteTextView famille_dropdown;
     private String selected_famile = "Toutes";
     private EventBus bus;
-    FragmentNewProduct fragmentnewproduct;
+    FragmentNewEditProduct fragmentnewproduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +74,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             if (restoredBarcode != null) {
                 //  result.setText(restoredBarcode.rawValue);
                 Toast.makeText(ActivityProduits.this, "" + restoredBarcode.rawValue, Toast.LENGTH_SHORT).show();
-                barcodeResult = restoredBarcode;
             }
         }
+
         //toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         // setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -101,6 +97,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
         recyclerView = findViewById(R.id.recycler_view_produit);
         nbr_produit = findViewById(R.id.list_produit_nbr_produit);
+        total_prix = findViewById(R.id.list_produit_total);
         famille_dropdown = findViewById(R.id.famille_dropdown);
 
         ArrayList<String> familles = new ArrayList<>();
@@ -135,7 +132,18 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan));
         recyclerView.setAdapter(adapter);
+        total_prix.setText("Total achats : " + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
         nbr_produit.setText("Nombre de produit : " + produits.size());
+    }
+
+    private double calcule_total(){
+        double total = 0;
+        for(int i=0; i<produits.size(); i++){
+            if(produits.get(i).stock > 0){
+                total = total + (produits.get(i).stock * produits.get(i).pamp);
+            }
+        }
+        return total;
     }
 
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {
@@ -147,7 +155,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "'";
 
-                if(produits.size() == 0){
+                if(produits.isEmpty()){
                     String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
                     String code_barre = controller.select_codebarre_from_database(querry1);
 
@@ -157,7 +165,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                             "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
                 }
             }else{
-                if(querry_search.length() >0){
+                if(!querry_search.isEmpty()){
                     querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE,DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
@@ -177,7 +185,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '"+ selected_famile +"'";
 
-                if(produits.size() == 0){
+                if(produits.isEmpty()){
                     String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
                     String code_barre = controller.select_codebarre_from_database(querry1);
 
@@ -187,7 +195,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                             "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '"+ selected_famile +"'";
                 }
             }else{
-                if(querry_search.length() >0){
+                if(!querry_search.isEmpty()){
                 querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
@@ -249,42 +257,74 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
     @Override
     public void onLongClick(View v, int position) {
+        final CharSequence[] items = {"Modifier", "Supprimer"};
 
-        if(produits.get(position).isNew == 1){
-            ///// delete product
-            String querry_has_bon2 = "SELECT BON2.CODE_BARRE FROM BON2 LEFT JOIN BON1 ON BON1.NUM_BON == BON2.NUM_BON WHERE BON1.IS_EXPORTED = 0 AND BON2.CODE_BARRE = '" + produits.get(position).code_barre + "'";
-            String querry_has_bon2_temp = "SELECT BON2_TEMP.CODE_BARRE FROM BON2_TEMP LEFT JOIN BON1_TEMP ON BON1_TEMP.NUM_BON == BON2_TEMP.NUM_BON WHERE BON1_TEMP.IS_EXPORTED = 0 AND BON2_TEMP.CODE_BARRE = '" + produits.get(position).code_barre + "'";
-            String querry_has_achat2 = "SELECT ACHAT2.CODE_BARRE FROM ACHAT2 LEFT JOIN ACHAT1 ON ACHAT1.NUM_BON == ACHAT2.NUM_BON WHERE ACHAT1.IS_EXPORTED = 0 AND ACHAT2.CODE_BARRE = '" + produits.get(position).code_barre + "'";
-            if(controller.check_if_has_bon(querry_has_bon2) || controller.check_if_has_bon(querry_has_bon2_temp) || controller.check_if_has_bon(querry_has_achat2)){
-                // you can't delete this client
-                new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Il exist des bons créer avec ce produit, Suppression impossible")
-                        .show();
-            }else {
-                new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Suppression")
-                        .setContentText("Voulez-vous vraiment supprimer le produit :  " + produits.get(position).produit+ " ?!")
-                        .setCancelText("Anuuler")
-                        .setConfirmText("Supprimer")
-                        .showCancelButton(true)
-                        .setCancelClickListener(Dialog::dismiss)
-                        .setConfirmClickListener(sDialog -> {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.blue_circle_24);
+        builder.setTitle("Choisissez une action");
+        builder.setItems(items, (dialog, item) -> {
+            switch (item) {
+                case 0 ->{
 
-                            controller.delete_produit(produits.get(position).code_barre);
+                    new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
+                            .setTitleText("Modification")
+                            .setContentText("Voulez-vous vraiment modifier le produit :  " + produits.get(position).produit+ " ?!")
+                            .setCancelText("Anuuler")
+                            .setConfirmText("Modifier")
+                            .showCancelButton(true)
+                            .setCancelClickListener(Dialog::dismiss)
+                            .setConfirmClickListener(sDialog -> {
 
-                            setRecycle("", false);
-                            sDialog.dismiss();
+                                FragmentNewEditProduct fragmentnewproduct = new FragmentNewEditProduct();
+                                fragmentnewproduct.showDialogbox(ActivityProduits.this, "EDIT_PRODUCT", produits.get(position));
+                                sDialog.dismiss();
 
-                        }).show();
+                            }).show();
+                }
+                case 1 -> {
+                    if(produits.get(position).isNew == 1){
+                        ///// delete product
+                        String querry_has_bon2 = "SELECT BON2.CODE_BARRE FROM BON2 LEFT JOIN BON1 ON BON1.NUM_BON == BON2.NUM_BON WHERE BON1.IS_EXPORTED = 0 AND BON2.CODE_BARRE = '" + produits.get(position).code_barre + "'";
+                        String querry_has_bon2_temp = "SELECT BON2_TEMP.CODE_BARRE FROM BON2_TEMP LEFT JOIN BON1_TEMP ON BON1_TEMP.NUM_BON == BON2_TEMP.NUM_BON WHERE BON1_TEMP.IS_EXPORTED = 0 AND BON2_TEMP.CODE_BARRE = '" + produits.get(position).code_barre + "'";
+                        String querry_has_achat2 = "SELECT ACHAT2.CODE_BARRE FROM ACHAT2 LEFT JOIN ACHAT1 ON ACHAT1.NUM_BON == ACHAT2.NUM_BON WHERE ACHAT1.IS_EXPORTED = 0 AND ACHAT2.CODE_BARRE = '" + produits.get(position).code_barre + "'";
 
+                        if(controller.check_if_has_bon(querry_has_bon2) || controller.check_if_has_bon(querry_has_bon2_temp) || controller.check_if_has_bon(querry_has_achat2)){
+                            // you can't delete this client
+                            new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention. !")
+                                    .setContentText("Il exist des bons créer avec ce produit, Suppression impossible")
+                                    .show();
+                        }else {
+                            new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
+                                    .setTitleText("Suppression")
+                                    .setContentText("Voulez-vous vraiment supprimer le produit :  " + produits.get(position).produit+ " ?!")
+                                    .setCancelText("Anuuler")
+                                    .setConfirmText("Supprimer")
+                                    .showCancelButton(true)
+                                    .setCancelClickListener(Dialog::dismiss)
+                                    .setConfirmClickListener(sDialog -> {
+
+                                        controller.delete_produit(produits.get(position).code_barre);
+
+                                        setRecycle("", false);
+                                        sDialog.dismiss();
+
+                                    }).show();
+
+                        }
+                    }else {
+                        new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention. !")
+                                .setContentText("Produit exist sur le serveur, Suppression impossible")
+                                .show();
+                    }
+
+                }
             }
-        }else {
-            new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Attention. !")
-                    .setContentText("Produit exist sur le serveur, Suppression impossible")
-                    .show();
-        }
+        });
+        builder.show();
+
+
     }
 
     @Override
@@ -352,9 +392,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             startScan();
         } else if (item.getItemId() == R.id.new_product) {
             if(fragmentnewproduct == null)
-             fragmentnewproduct = new FragmentNewProduct();
+             fragmentnewproduct = new FragmentNewEditProduct();
 
-            fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT");
+            fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT", null);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -376,7 +416,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                     @Override
                     public void onResult(Barcode barcode) {
                         Sound(R.raw.bleep);
-                        barcodeResult = barcode;
                         // result.setText(barcode.rawValue);
                         // Toast.makeText(ActivityProduits.this, ""+barcode.rawValue, Toast.LENGTH_SHORT).show();
                         // Do search after barcode scanned

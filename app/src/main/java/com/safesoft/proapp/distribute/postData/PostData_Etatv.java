@@ -9,13 +9,14 @@ public class PostData_Etatv implements Serializable {
   public String parent;
   public String code_parent;
   public String produit;
-  public String quantite;
-  public String montant;
+  public double quantite;
+  public double montant;
 
-  public String total_remise;
-  public String total_par_bon;
-  public String total_versement;
-  public String vers_client;
+  public double total_remise;
+  public double total_par_bon_ht;
+  public double total_versement;
+  public double benifice;
+  public double vers_client;
 
-  public String pv_ht;
+  public double pv_ht;
 }

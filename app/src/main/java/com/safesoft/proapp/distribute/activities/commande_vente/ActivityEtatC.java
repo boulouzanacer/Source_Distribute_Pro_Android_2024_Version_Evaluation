@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
+import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -201,6 +202,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     mRecyclerView.setAdapter(mRecyclerAdapter);
   }
 
+  @SuppressLint("NotifyDataSetChanged")
   public void initData(ArrayList<PostData_Etatv> result_etat_z) {
 
     //here we reset the parents and the children
@@ -210,18 +212,21 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     //  mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItem(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant));
 
     for (int i = 0; i < result_etat_z.size(); i++) {
-      if (result_etat_z.get(i).code_parent.equals("1")) {
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant)));
-      } else if (result_etat_z.get(i).code_parent.equals("-6")) {
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Conclusion Total : "));
-        for (int k = i; k < result_etat_z.size() - 1; k++) {
-          mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant)));
-          i = k;
+        switch (result_etat_z.get(i).code_parent) {
+            case "1" ->
+                    mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant, result_etat_z.get(i).code_parent)));
+            case "-6" -> {
+                mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Conclusion Total : "));
+                for (int k = i; k < result_etat_z.size() - 1; k++) {
+                    mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                    i = k;
+                }
+            }
+            case "-8" -> {
+                mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Objectif : "));
+                mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItemObjectif(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant, result_etat_z.get(i).code_parent)));
+            }
         }
-      } else if (result_etat_z.get(i).code_parent.equals("-8")) {
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Objectif : "));
-        mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItemObjectif(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant)));
-      }
     }
     mRecyclerAdapter.notifyDataSetChanged();
   }
@@ -402,7 +407,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     int flag = 0;
     try {
 
-      result_etatzg =  controller.select_etatv_from_database("BON1_TEMP", "BON2_TEMP", c_client,from_d,  to_d);
+//      result_etatzg =  controller.select_etatv_from_database( c_client,from_d,  to_d,false);
       flag = 1;
     }catch (Exception sqle){
       Log.v("TRACKKK", sqle.getMessage());
@@ -413,7 +418,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
   public int getEtatGlobal(String from_d, String to_d){
     int flag = 0;
     try {
-      result_etatzg =  controller.select_etat_global_from_database("BON1_TEMP","BON2_TEMP", from_d,  to_d);
+      result_etatzg =  controller.select_etat_global_from_database(from_d,  to_d, false);
       flag = 1;
     }catch (Exception sqle){
       Log.v("TRACKKK", sqle.getMessage());

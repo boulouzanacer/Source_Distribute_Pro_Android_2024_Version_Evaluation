@@ -2,6 +2,7 @@ package com.safesoft.proapp.distribute.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,9 @@ public class ListViewAdapterListClient extends BaseAdapter {
   private final EventBus bus = EventBus.getDefault();
   SelectedClientEvent event = null;
   AlertDialog dialog;
-
   String SOURCE;
+  private final String PREFS = "ALL_PREFS";
+  private SharedPreferences prefs;
 
   public interface ProduitSelectedEventListener {
     void ProduitSelectedEvent(String s, PostData_Client client);
@@ -54,6 +56,7 @@ public class ListViewAdapterListClient extends BaseAdapter {
     this.dialog = dialog;
     inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     this.SOURCE = SOURCE;
+    prefs = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
   }
 
   @Override
@@ -102,7 +105,15 @@ public class ListViewAdapterListClient extends BaseAdapter {
 
     holder.client.setText(list_clients.get(position).client);
     holder.code_client.setText(list_clients.get(position).code_client);
-    holder.solde_client.setText(new DecimalFormat("##,##0.00").format(list_clients.get(position).solde_montant));
+
+    if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
+      holder.solde_client.setText(new DecimalFormat("##,##0.00").format(list_clients.get(position).solde_montant));
+    }else {
+      holder.solde_client.setText("********");
+    }
+
+
+
     if(list_clients.get(position).latitude != 0.0){
       holder.img_client_location.setImageDrawable(mContext.getDrawable(R.drawable.ic_baseline_location_on_24));
     }else {

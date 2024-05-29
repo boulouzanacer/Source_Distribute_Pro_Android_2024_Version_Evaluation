@@ -7,14 +7,17 @@ import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEF
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -22,15 +25,21 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.rt.printerlibrary.driver.usb.rw.Pos;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.adapters.AdapterCommune;
+import com.safesoft.proapp.distribute.adapters.AdapterWilaya;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
+import com.safesoft.proapp.distribute.postData.PostData_commune;
+import com.safesoft.proapp.distribute.postData.PostData_wilaya;
 import com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -40,6 +49,7 @@ public class FragmentNewEditClient {
 
     MaterialFancyButton btn_valider, btn_cancel;
     TextInputEditText  edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
+    Spinner wilayaSpinner, communeSpinner;
     ToggleButtonGroupTableLayout radioGroup_mode_tarif;
     private Context mContext;
 
@@ -48,12 +58,20 @@ public class FragmentNewEditClient {
     AlertDialog dialog;
 
     private final String PREFS = "ALL_PREFS";
-
+    SharedPreferences prefs;
     private String CODE_DEPOT, CODE_VENDEUR;
 
     PostData_Client created_client;
     private DATABASE controller;
     private PostData_Client old_client;
+    AdapterWilaya adapterwilaya;
+    AdapterCommune adaptercommune;
+
+    Resources res;
+    private ArrayList<PostData_wilaya> wilayas =   new ArrayList<>();
+    private ArrayList<PostData_wilaya> wilayas_temp =   new ArrayList<>();
+    private ArrayList<PostData_commune> communes = new ArrayList<>();
+    boolean shouldWork = true;
 
     //PopupWindow display method
 
@@ -65,6 +83,8 @@ public class FragmentNewEditClient {
         this.old_client = old_client;
 
         created_client = new PostData_Client();
+
+        prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -90,7 +110,7 @@ public class FragmentNewEditClient {
         btn_valider.setIconPosition(POSITION_LEFT);
         btn_valider.setFontIconSize(30);
 
-        btn_cancel = (MaterialFancyButton) dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
@@ -99,6 +119,9 @@ public class FragmentNewEditClient {
 
 
         edt_client_name = dialogview.findViewById(R.id.edt_client_name);
+        wilayaSpinner = (Spinner) dialogview.findViewById(R.id.wilaya_spinner);
+        communeSpinner = (Spinner) dialogview.findViewById(R.id.commune_spinner);
+
         edt_client_adress = dialogview.findViewById(R.id.edt_client_adress);
         edt_client_telephone = dialogview.findViewById(R.id.edt_client_telephone);
         edt_client_registre = dialogview.findViewById(R.id.edt_client_registre);
@@ -118,10 +141,44 @@ public class FragmentNewEditClient {
         RadioButton rb5 =  dialogview.findViewById(R.id.rb_5);
         RadioButton rb6 =  dialogview.findViewById(R.id.rb_6);
 
+
+        res = dialogview.getResources();
+        wilayas = controller.select_wilayas_from_database("SELECT * FROM WILAYAS ORDER BY ID");
+        adapterwilaya = new AdapterWilaya(mContext, R.layout.dropdown_wilaya_commune_item, wilayas, res);
+        wilayaSpinner.setAdapter(adapterwilaya);
+
+        wilayaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (shouldWork) {
+                    created_client.wilaya = wilayas.get(position).wilaya;
+                    setRecyleCommune(res, wilayas.get(position).id);
+                }
+                else
+                    shouldWork = true;
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        communeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                created_client.commune = communes.get(position).commune;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         PostData_Params params = new PostData_Params();
         params = controller.select_params_from_database("SELECT * FROM PARAMS");
-
-        SharedPreferences prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
 
         rb1.setText(params.pv1_titre);
         rb2.setText(params.pv2_titre);
@@ -130,13 +187,13 @@ public class FragmentNewEditClient {
         rb5.setText(params.pv5_titre);
         rb6.setText(params.pv6_titre);
 
-        if(params.prix_2 == 1){
+        if(params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
             rb2.setVisibility(View.VISIBLE);
         }else{
             rb2.setVisibility(View.GONE);
         }
 
-        if(params.prix_3 == 1){
+        if(params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
             rb3.setVisibility(View.VISIBLE);
         }else{
             rb3.setVisibility(View.GONE);
@@ -164,6 +221,26 @@ public class FragmentNewEditClient {
 
             edt_client_name.setText(old_client.client);
             edt_client_adress.setText(old_client.adresse);
+            created_client.wilaya = old_client.wilaya;
+            created_client.commune = old_client.commune;
+
+            wilayas_temp = controller.select_wilayas_from_database("SELECT * FROM WILAYAS WHERE NAME = '" + old_client.wilaya + "' ORDER BY ID");
+            if(wilayas_temp.size() >1){
+                shouldWork = false;
+                wilayaSpinner.setSelection(wilayas_temp.get(1).id);
+                setRecyleCommune(res , wilayas_temp.get(1).id);
+                //communes_temp = controller.select_communes_from_database("SELECT * FROM COMMUNES WHERE NAME = '" + old_client.commune + "' ORDER BY ID");
+                int position = 0;
+                for (int i = 0; i < communes.size(); i++) {
+                    if(Objects.equals(communes.get(i).commune, old_client.commune)){
+                        position = i;
+                        break;
+                    }
+                }
+                communeSpinner.setSelection(position);
+            }
+
+
             edt_client_telephone.setText(old_client.tel);
             edt_client_registre.setText(old_client.rc);
             edt_client_nif.setText(old_client.ifiscal);
@@ -316,5 +393,12 @@ public class FragmentNewEditClient {
         btn_cancel.setOnClickListener(v -> {
             dialog.dismiss();
         });
+    }
+
+    public void setRecyleCommune(Resources res, int wilaya_id){
+        communes.clear();
+        communes = controller.select_communes_from_database("SELECT * FROM COMMUNES WHERE WILAYA_ID = " + wilaya_id + " ORDER BY NAME");
+        adaptercommune = new AdapterCommune(mContext, R.layout.dropdown_wilaya_commune_item, communes , res);
+        communeSpinner.setAdapter(adaptercommune);
     }
 }

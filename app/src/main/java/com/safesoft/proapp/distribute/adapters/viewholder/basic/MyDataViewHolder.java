@@ -39,7 +39,7 @@ public class MyDataViewHolder extends SettableViewHolder<MyDataObject> {
   @Override
   public void setData(@NonNull MyDataObject data) {
     mTitle.setText(data.getTitle());
-    mQuantite.setText(data.getQuantite());
-    mMontant.setText(data.getMontant());
+    mQuantite.setText(String.valueOf(data.getQuantite()));
+    mMontant.setText(String.valueOf(data.getMontant()));
   }
 }

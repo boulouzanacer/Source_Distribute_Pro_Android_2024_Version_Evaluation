@@ -268,7 +268,7 @@ public class ActivityHtmlView extends AppCompatActivity {
             data.append("</div>");
             // price value
             data.append("<div class='prix_u_value'>");
-            data.append(new DecimalFormat("####0.00").format(final_panier.get(i).p_u));
+            data.append(new DecimalFormat("####0.00").format(final_panier.get(i).pa_ht));
             data.append("</div>");
             data.append("</div>");
 
@@ -574,7 +574,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append("</div>");
                 // price value
                 data.append("<div class='prix_u_value'>");
-                data.append(new DecimalFormat("####0.00").format(final_panier.get(i).p_u));
+                data.append(new DecimalFormat("####0.00").format(final_panier.get(i).pv_ht));
                 data.append("</div>");
             data.append("</div>");
 
@@ -757,7 +757,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 bactivity = ActivityHtmlView.this;
                 Printing printer = new Printing();
                 try {
-                    printer.start_print_bon(bactivity, "ARABIC", null, null, null);
+                    printer.start_print_bon_vente(bactivity, "ARABIC", null, null);
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }

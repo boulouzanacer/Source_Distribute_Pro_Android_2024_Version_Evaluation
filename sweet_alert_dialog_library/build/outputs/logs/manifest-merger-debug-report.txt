@@ -1,31 +1,22 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:1-8:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:1-8:12
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:1-8:12
+ADDED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:1-8:12
+INJECTED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:1-8:12
 	package
-		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:1-8:12
-		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:3:1-26
+		ADDED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml:3:1-26
 	xmlns:android
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:11-69
+		ADDED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml:1:11-69
 	android:versionCode
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:2:5-28
+		ADDED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml:2:5-28
 application
-ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml:6:1-16
+ADDED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml:6:1-16
 uses-sdk
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
+INJECTED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml
+INJECTED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-		ADDED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
-		INJECTED from D:\P-VENTE\Source_Android_Studio_2021\Source_Distribute_Pro_Android_2023\sweet_alert_dialog_library\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation\sweet_alert_dialog_library\src\main\AndroidManifest.xml

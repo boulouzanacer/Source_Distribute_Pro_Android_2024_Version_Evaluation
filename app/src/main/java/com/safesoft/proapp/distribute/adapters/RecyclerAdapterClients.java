@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,8 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
       private ItemLongClick itemLongClick;
       private ColorGeneratorModified generator;
       private final Context mContext;
+      private final String PREFS = "ALL_PREFS";
+      private SharedPreferences prefs;
 
 
       class MyViewHolder extends RecyclerView.ViewHolder {
@@ -60,6 +63,7 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
         if (color == 0)
           generator = ColorGeneratorModified.MATERIAL;
         mContext = context;
+        prefs = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
       }
 
       @Override
@@ -86,13 +90,20 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
         holder.Sld_clientN.setTypeface(null, Typeface.BOLD);
         holder.Sld_clientN.setText("Solde : "+item.solde_montant);
 
-        holder.Sld_clientN.setText("Solde :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+        if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
+            holder.Sld_clientN.setText("Solde :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+        }else {
+            holder.Sld_clientN.setText("********");
+        }
+
+
 
         if(item.latitude == 0.0){
            holder.img_pos_client.setImageResource(R.drawable.ic_baseline_wrong_location_24);
         }else {
           holder.img_pos_client.setImageResource(R.drawable.ic_baseline_location_on_24);
         }
+
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
           @Override
@@ -110,11 +121,12 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
           }
         });
 
+
         String firstChar = "NO";
         if(item.client != null){
           if(item.client.length() == 1){
             firstChar = String.valueOf(item.client.charAt(0));
-          }else if(item.client.length() > 0){
+          }else if(!item.client.isEmpty()){
             firstChar = String.valueOf(item.client.charAt(0))+ item.client.charAt(1);
           }else{
             firstChar = "NO";

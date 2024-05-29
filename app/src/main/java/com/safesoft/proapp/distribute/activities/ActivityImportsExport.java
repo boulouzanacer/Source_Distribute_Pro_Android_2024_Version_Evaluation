@@ -1,6 +1,5 @@
 package com.safesoft.proapp.distribute.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
@@ -13,12 +12,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.exifinterface.media.ExifInterface;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +41,7 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedBonTransfert;
 import com.safesoft.proapp.distribute.ftp.Ftp_export;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
@@ -63,15 +63,12 @@ import org.greenrobot.eventbus.Subscribe;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -106,12 +103,12 @@ public class ActivityImportsExport extends AppCompatActivity {
     private String code_depot, code_vendeur;
     String currentDateTimeString = null;
     private Context mContext;
-    SharedPreferences.Editor editor;
 
     SharedPreferences prefs;
     private MediaPlayer mp;
     private final EventBus bus = EventBus.getDefault();
     private NumberFormat nf;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,11 +130,13 @@ public class ActivityImportsExport extends AppCompatActivity {
         Username = prefs.getString("username", "SYSDBA");
         Password = prefs.getString("password", "masterkey");
 
+
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         code_depot = prefs.getString("CODE_DEPOT", "000000");
         code_vendeur = prefs.getString("CODE_VENDEUR", "000000");
 
-        if(code_depot.equals("000000") || code_depot.equals("")){
+
+        if(code_depot.equals("000000") || code_depot.isEmpty()){
             Export_vente.setVisibility(View.GONE);
             Export_vente_ftp.setVisibility(View.GONE);
             Exported_Vente.setVisibility(View.GONE);
@@ -145,7 +144,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         }
 
 
-        if((code_depot.equals("000000") || code_depot.equals("")) && (code_vendeur.equals("000000") || code_vendeur.equals(""))){
+        if((code_depot.equals("000000") || code_depot.isEmpty()) && (code_vendeur.equals("000000") || code_vendeur.isEmpty())){
             Export_vente.setVisibility(View.GONE);
             Export_vente_ftp.setVisibility(View.GONE);
             Exported_Vente.setVisibility(View.GONE);
@@ -199,22 +198,22 @@ public class ActivityImportsExport extends AppCompatActivity {
         Btn4 = findViewById(R.id.bt4);
         Btn5 = findViewById(R.id.bt5);
         //Import_bon = (RelativeLayout) findViewById(R.id.rlt_import_bon);
-        Import_client = (RelativeLayout) findViewById(R.id.rlt_import_client);
-        Export_achat = (RelativeLayout) findViewById(R.id.rlt_export_achats);
-        Export_achat_ftp = (RelativeLayout) findViewById(R.id.rlt_export_achats_ftp);
-        Export_vente = (RelativeLayout) findViewById(R.id.rlt_export_ventes);
-        Export_vente_ftp = (RelativeLayout) findViewById(R.id.rlt_export_ventes_ftp);
-        Export_commande = (RelativeLayout) findViewById(R.id.rlt_export_commandes);
-        Export_inventaire = (RelativeLayout) findViewById(R.id.rlt_export_inventaires);
-        Export_commande_ftp = (RelativeLayout) findViewById(R.id.rlt_export_commandes_ftp);
-        Export_inventaire_ftp = (RelativeLayout) findViewById(R.id.rlt_export_inventaires_ftp);
+        Import_client = findViewById(R.id.rlt_import_client);
+        Export_achat = findViewById(R.id.rlt_export_achats);
+        Export_achat_ftp = findViewById(R.id.rlt_export_achats_ftp);
+        Export_vente = findViewById(R.id.rlt_export_ventes);
+        Export_vente_ftp = findViewById(R.id.rlt_export_ventes_ftp);
+        Export_commande = findViewById(R.id.rlt_export_commandes);
+        Export_inventaire = findViewById(R.id.rlt_export_inventaires);
+        Export_commande_ftp = findViewById(R.id.rlt_export_commandes_ftp);
+        Export_inventaire_ftp = findViewById(R.id.rlt_export_inventaires_ftp);
         //Export_inventaire = (RelativeLayout) findViewById(R.id.rlt_export_inventaires);
-        Exported_Achat = (RelativeLayout) findViewById(R.id.rlt_exported_achats);
-        Exported_Vente = (RelativeLayout) findViewById(R.id.rlt_exported_ventes);
-        Exported_Commande = (RelativeLayout) findViewById(R.id.rlt_exported_commandes);
-        Exported_Inventaire = (RelativeLayout) findViewById(R.id.rlt_exported_inventaires);
-        EtatV = (RelativeLayout) findViewById(R.id.rlt_etatv);
-        EtatC = (RelativeLayout) findViewById(R.id.rlt_etatc);
+        Exported_Achat = findViewById(R.id.rlt_exported_achats);
+        Exported_Vente = findViewById(R.id.rlt_exported_ventes);
+        Exported_Commande = findViewById(R.id.rlt_exported_commandes);
+        Exported_Inventaire = findViewById(R.id.rlt_exported_inventaires);
+        EtatV = findViewById(R.id.rlt_etatv);
+        EtatC = findViewById(R.id.rlt_etatc);
 
         mContext = this;
     }
@@ -239,12 +238,13 @@ public class ActivityImportsExport extends AppCompatActivity {
                 // 2 get all transfer bon for this deport
                 // 3 propose those not exist in local database
 
-                Check_connection_bon_server_task check_connection = new Check_connection_bon_server_task();
-                check_connection.execute();
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_BON_TRANSFER");
+                check_connection_export_data_achat.execute();
             }
             case R.id.rlt_import_bon_retour -> {
-                Check_connection_bon_retour_server_task checkk_connection = new Check_connection_bon_retour_server_task();
-                checkk_connection.execute();
+
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_BON_RETOUR");
+                check_connection_export_data_achat.execute();
             }
             case R.id.rlt_import_fournisseur -> {
 
@@ -258,9 +258,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                     return;
                 }
 
-                Check_connection_fournisseur_server_for_sychronisation_fournisseur checkk_connection_fournisseur = new Check_connection_fournisseur_server_for_sychronisation_fournisseur();
-                checkk_connection_fournisseur.execute();
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_FOURNISSEURS");
+                check_connection_export_data_achat.execute();
            }
+
             case R.id.rlt_import_client -> {
                 String querry1 = "SELECT RECORDID FROM BON1 WHERE IS_EXPORTED = 0";
                 String querry2 = "SELECT RECORDID FROM CARNET_C WHERE IS_EXPORTED = 0";
@@ -288,9 +289,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             .show();
                     return;
                 }
-
-                Check_connection_client_server_for_sychronisation_client checkkk_connection = new Check_connection_client_server_for_sychronisation_client();
-                checkkk_connection.execute();
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_CLIENTS");
+                check_connection_export_data_achat.execute();
             }
 
             case R.id.rlt_import_produit -> {
@@ -320,9 +320,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             .show();
                     return;
                 }
-
-                Check_connection_produit_server_for_sychronisation_produit check_connection_produit = new Check_connection_produit_server_for_sychronisation_produit();
-                check_connection_produit.execute();
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_PRODUITS");
+                check_connection_export_data_achat.execute();
             }
             case R.id.rlt_import_produit_ftp ->
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
@@ -337,11 +336,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                 import_produit_ftp.start(pactivity, "TRANSFERT_LIST", "");*/
 
             case R.id.rlt_import_parametre -> {
-                Check_connection_parametres_server_for_sychronisation_parametres check_connection_parametres = new Check_connection_parametres_server_for_sychronisation_parametres();
-                check_connection_parametres.execute();
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_PARAMETRES");
+                check_connection_export_data_achat.execute();
             }
             case R.id.rlt_export_achats -> {
-                Check_connection_export_server check_connection_export_data_vente = new Check_connection_export_server("ACHAT");
+                Check_connection_export_server check_connection_export_data_vente = new Check_connection_export_server("EXPORT_ACHAT");
                 check_connection_export_data_vente.execute();
             }
             case R.id.rlt_export_achats_ftp ->
@@ -357,7 +356,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 export_achat_ftp.start(aactivity, "ACHAT", "");*/
 
             case R.id.rlt_export_ventes -> {
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("VENTE");
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("EXPORT_VENTE");
                 check_connection_export_data_achat.execute();
             }
             case R.id.rlt_export_ventes_ftp -> {
@@ -367,7 +366,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 export_vente_ftp.start(vactivity, "SALE", "");
             }
             case R.id.rlt_export_commandes -> {
-                Check_connection_export_server check_connection_export_data_commande = new Check_connection_export_server("COMMANDE");
+                Check_connection_export_server check_connection_export_data_commande = new Check_connection_export_server("EXPORT_COMMANDE");
                 check_connection_export_data_commande.execute();
             }
             case R.id.rlt_export_commandes_ftp -> {
@@ -377,7 +376,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 export_commande_ftp.start(cactivity, "ORDER", "");
             }
             case R.id.rlt_export_inventaires -> {
-                Check_connection_export_server check_connection_export_data_inventaire = new Check_connection_export_server("INVENTAIRE");
+                Check_connection_export_server check_connection_export_data_inventaire = new Check_connection_export_server("EXPORT_INVENTAIRE");
                 check_connection_export_data_inventaire.execute();
             }
             case R.id.rlt_export_inventaires_ftp -> {
@@ -489,144 +488,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Erreur...")
                         .setContentText("Probleme de connexion : " + messageError)
-                        .show();
-            }
-            super.onPostExecute(integer);
-        }
-    }
-
-
-    //==================== AsyncTask TO Load produits from server and store them in the local database (sqlite)
-    public class Check_connection_bon_server_task extends AsyncTask<Void, Integer, Integer> {
-
-        Connection con;
-        int flag = 0;
-
-        String messageError ="";
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog_Free = new ProgressDialog(ActivityImportsExport.this);
-            mProgressDialog_Free.setMessage("Vérificaion de la connexion ...");
-            mProgressDialog_Free.setCancelable(true);
-            mProgressDialog_Free.show();
-        }
-
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-
-            try {
-
-                System.setProperty("FBAdbLog", "true");
-                DriverManager.setLoginTimeout(5);
-                Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
-                con = DriverManager.getConnection(sCon, Username, Password);
-                flag = 1;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
-                if (e.getMessage().contains("Unable to complete network request to host")) {
-                    flag = 2;
-                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
-
-                } else {
-                    //not executed with problem in the sql statement
-                    flag = 3;
-                }
-
-                messageError = e.getMessage();
-            }
-
-            return flag;
-        }
-
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            if (integer == 1) {
-                // get all transfert bon of this depot
-                Import_BonTransfert2_server_task bon_transfert2_task = new Import_BonTransfert2_server_task();
-                bon_transfert2_task.execute();
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
-                        .show();
-            } else {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
-                        .show();
-            }
-            super.onPostExecute(integer);
-        }
-    }
-
-    //===========================================================================================
-    public class Check_connection_bon_retour_server_task extends AsyncTask<Void, Integer, Integer> {
-
-        Connection con;
-        int flag = 0;
-        String messageError = "";
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog_Free = new ProgressDialog(ActivityImportsExport.this);
-            mProgressDialog_Free.setMessage("Vérificaion de la connexion ...");
-            mProgressDialog_Free.setCancelable(true);
-            mProgressDialog_Free.show();
-        }
-
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-
-                System.setProperty("FBAdbLog", "true");
-                DriverManager.setLoginTimeout(5);
-                Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
-                con = DriverManager.getConnection(sCon, Username, Password);
-                flag = 1;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
-                if (e.getMessage().contains("Unable to complete network request to host")) {
-                    flag = 2;
-                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
-
-                } else {
-                    //not executed with problem in the sql statement
-                    flag = 3;
-                }
-                messageError = e.getMessage();
-            }
-
-            return flag;
-        }
-
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            if (integer == 1) {
-                // get all transfert bon of this depot
-                Import_BonTransfert2_retour_server_task bon_transfert2_task = new Import_BonTransfert2_retour_server_task();
-                bon_transfert2_task.execute();
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
-                        .show();
-            } else {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
                         .show();
             }
             super.onPostExecute(integer);
@@ -1304,21 +1165,49 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onPostExecute(Integer integer) {
             mProgressDialog_Free.dismiss();
             if (integer == 1) {
-                // export data vente, commande to the server
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putBoolean("APP_AUTONOME", false);
+                editor.apply();
+
+                // /import/export data vente, commande to the server
                 switch (typeBon) {
-                    case "VENTE" -> {
+                    case "IMPORT_BON_TRANSFER" -> {
+                        Import_BonTransfert2_server_task bon_transfert2_task = new Import_BonTransfert2_server_task();
+                        bon_transfert2_task.execute();
+                    }
+                    case "IMPORT_BON_RETOUR" -> {
+                        Import_BonTransfert2_retour_server_task bon_transfert2_task = new Import_BonTransfert2_retour_server_task();
+                        bon_transfert2_task.execute();
+                    }
+                    case "IMPORT_FOURNISSEURS" -> {
+                        Import_fournisseur_from_server_task fournisseur_task = new Import_fournisseur_from_server_task();
+                        fournisseur_task.execute();
+                    }
+                    case "IMPORT_CLIENTS" -> {
+                        Import_client_from_server_task bon_client_task = new Import_client_from_server_task();
+                        bon_client_task.execute();
+                    }
+                    case "IMPORT_PRODUITS" -> {
+                        Import_produit_from_server_task produit_task = new Import_produit_from_server_task();
+                        produit_task.execute();
+                    }
+                    case "IMPORT_PARAMETRES" -> {
+                        Import_parametre_from_server_task parametres_task = new Import_parametre_from_server_task();
+                        parametres_task.execute();
+                    }
+                    case "EXPORT_VENTE" -> {
                         Exporter_ventes_to_server_task export_ventesx_to_server = new Exporter_ventes_to_server_task();
                         export_ventesx_to_server.execute();
                     }
-                    case "ACHAT" -> {
+                    case "EXPORT_ACHAT" -> {
                         Exporter_achats_to_server_task export_achats_to_server = new Exporter_achats_to_server_task();
                         export_achats_to_server.execute();
                     }
-                    case "COMMANDE" -> {
+                    case "EXPORT_COMMANDE" -> {
                         Exporter_commandes_to_server_task export_commandes_to_server = new Exporter_commandes_to_server_task();
                         export_commandes_to_server.execute();
                     }
-                    case "INVENTAIRE" -> {
+                    case "EXPORT_INVENTAIRE" -> {
                         Export_inventaire_to_server_task export_inventaire_to_server = new Export_inventaire_to_server_task(true, null);
                         export_inventaire_to_server.execute();
                     }
@@ -1353,6 +1242,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         List<String> list_recordid_versement_not_exported;
 
         List<String> list_produit_not_exported;
+        List<String> list_fournisseur_not_exported;
         String messageError = "";
 
         @Override
@@ -1368,9 +1258,10 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             try {
                 ArrayList<PostData_Achat1> achat1s;
-                ArrayList<PostData_Bon2> achat2s;
+                ArrayList<PostData_Achat2> achat2s;
                 PostData_Fournisseur fournisseur;
                 list_produit_not_exported = new ArrayList<>();
+                list_fournisseur_not_exported = new ArrayList<>();
                 list_num_bon_not_exported = new ArrayList<>();
                 list_recordid_versement_not_exported = new ArrayList<>();
 
@@ -1425,19 +1316,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                 achat1s = controller.select_all_achat1_from_database(querry);
 
                 list_produit_not_exported = update_produit_into_server(con, stmt);
+                list_fournisseur_not_exported = update_fournisseur_into_server(con, stmt);
 
                 prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
                 String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
-
-                // Get CODE_CAISSE
-
-                /*String CODE_CAISSE = "000000";
-
-                String requette_vendeur_caisse = "SELECT coalesce(CODE_VENDEUR, '000000') AS CODE_VENDEUR, coalesce(CODE_CAISSE, '000000') AS CODE_CAISSE FROM DEPOT1 WHERE CODE_DEPOT = '" + code_depot + "' ";
-                ResultSet rs111 = stmt.executeQuery(requette_vendeur_caisse);
-                while (rs111.next()) {
-                    CODE_CAISSE = rs111.getString("CODE_CAISSE");
-                }*/
 
                 for (int i = 0; i < achat1s.size(); i++) {
 
@@ -1446,32 +1328,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                         stmt.clearBatch();
                         Date dt = format.parse(achat1s.get(i).date_bon);
                         assert dt != null;
-                        /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
-                        boolean fournis_exist = false;
-                        // check client if exist
-                        String fournis_requete = "SELECT CODE_FRS FROM FOURNIS WHERE CODE_FRS = '" + achat1s.get(i).code_frs + "'";
-                        ResultSet rs0 = stmt.executeQuery(fournis_requete);
-                        while (rs0.next()) {
-                            fournis_exist = true;
-                        }
-
-                        // insert client if not exist
-                        if (!fournis_exist) {
-                            fournisseur = new PostData_Fournisseur();
-
-                            String insert_fournisseur;
-
-                            // insert fournisseur
-                            insert_fournisseur = "INSERT INTO FOURNIS (CODE_FRS, FOURNIS, ADRESSE, TEL) VALUES ('"
-                                    + achat1s.get(i).code_frs.replace("'", "''") + "' ," +
-                                    "'" + achat1s.get(i).fournis.replace("'", "''") + "', " +
-                                    "'" + achat1s.get(i).adresse.replace("'", "''") + "', " +
-                                    "'" + achat1s.get(i).tel.replace("'", "''") + "')";
-
-
-                            stmt.executeUpdate(insert_fournisseur);
-                            con.commit();
-                        }
 
                         String file_name = "";
                         file_name = "ACHAT_"+ achat1s.get(i).num_bon+"_"+achat1s.get(i).exportation + "_" + achat1s.get(i).date_bon + ".BDL";
@@ -1487,8 +1343,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         }
 
                         if (!check_achat1_exist) {
-                            String querry_select = "" +
-                                    "SELECT " +
+                            String querry_select = "SELECT " +
                                     "ACHAT2.RECORDID, " +
                                     "ACHAT2.CODE_BARRE, " +
                                     "ACHAT2.NUM_BON, " +
@@ -1497,10 +1352,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "ACHAT2.COLISSAGE, " +
                                     "ACHAT2.QTE, " +
                                     "ACHAT2.QTE_GRAT, " +
-                                    "ACHAT2.PU, " +
+                                    "ACHAT2.PA_HT, " +
                                     "ACHAT2.TVA, " +
                                     "ACHAT2.CODE_DEPOT, " +
                                     "ACHAT2.QTE_GRAT, " +
+                                    "PRODUIT.PAMP, " +
                                     "PRODUIT.STOCK " +
                                     "FROM ACHAT2 " +
                                     "LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -1553,7 +1409,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 buffer[j] = buffer[j]+ ") VALUES ('" + NUM_BON + "' ," +
                                         " '" + achat2s.get(j).codebarre.replace("'", "''") + "' ," +
                                         " '" + achat2s.get(j).qte + "'," +
-                                        " '" + achat2s.get(j).p_u + "' ," +
+                                        " '" + achat2s.get(j).pa_ht + "' ," +
                                         " '" + achat2s.get(j).tva + "' ," +
                                         " '" + achat2s.get(j).nbr_colis + "'," +
                                         " '" + achat2s.get(j).colissage + "'," +
@@ -1777,7 +1633,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                     nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
                 }
-                if(list_num_bon_not_exported.size() > 0){
+                if(!list_num_bon_not_exported.isEmpty()){
                     nums_bon_error = "\nProblem exportation dans les bons : " + nums_bon_error;
                 }
                 for(int i = 0; i < list_recordid_versement_not_exported.size() ; i++){
@@ -1788,7 +1644,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     versement_error = versement_error + list_recordid_versement_not_exported.get(i);
 
                 }
-                if(list_recordid_versement_not_exported.size() > 0){
+                if(!list_recordid_versement_not_exported.isEmpty()){
                     versement_error = "\nProblem exportation dans les versements nums : \n" + versement_error;
                 }
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
@@ -1823,6 +1679,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int total_versement = 0;
 
         List<String> list_produit_not_exported;
+        List<String> list_client_not_exported;
         List<String> list_num_bon_not_exported;
         List<String> list_recordid_versement_not_exported;
 
@@ -1841,10 +1698,12 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected Integer doInBackground(Void... params) {
 
             try {
+
                 ArrayList<PostData_Bon1> bon1s;
                 ArrayList<PostData_Bon2> bon2s;
                 PostData_Client client;
                 list_produit_not_exported = new ArrayList<>();
+                list_client_not_exported = new ArrayList<>();
                 list_num_bon_not_exported = new ArrayList<>();
                 list_recordid_versement_not_exported = new ArrayList<>();
 
@@ -1879,6 +1738,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE AS TOT_TTC, " +
                         "BON1.REMISE, " +
                         "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE AS MONTANT_BON, " +
+                        "BON1.TOT_HT - BON1.REMISE - BON1.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                         "BON1.ANCIEN_SOLDE, " +
                         "BON1.VERSER, " +
@@ -1887,6 +1747,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "BON1.CODE_CLIENT, " +
                         "Client.CLIENT, " +
                         "Client.ADRESSE, " +
+                        "Client.WILAYA, " +
+                        "Client.COMMUNE, " +
                         "Client.TEL, " +
                         "Client.RC, " +
                         "Client.IFISCAL, " +
@@ -1917,6 +1779,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 bon1s = controller.select_all_bon1_from_database(querry);
 
                 list_produit_not_exported = update_produit_into_server(con, stmt);
+                list_client_not_exported = update_client_into_server(con, stmt);
 
                 prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
                 String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
@@ -1936,51 +1799,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         stmt.clearBatch();
                         Date dt = format.parse(bon1s.get(i).date_bon);
                         assert dt != null;
-                        /////////////////////////////   CHECK IF CLIENT EXIST THEN INSERT IT INTO FIREBIRD DATABASES /////////////////////////////////////////
-                        boolean client_exist = false;
-                        // check client if exist
-                        String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + bon1s.get(i).code_client + "'";
-                        ResultSet rs0 = stmt.executeQuery(client_requete);
-                        while (rs0.next()) {
-                            client_exist = true;
-                        }
 
-                        // insert client if not exist
-                        if (!client_exist) {
-                            client = new PostData_Client();
-
-                             //Select client from data base to insert it
-                             client = controller.select_client_from_database(bon1s.get(i).code_client);
-
-                            String insert_client;
-
-                            // insert client
-                            String deport_or_vendeur = "null";
-                            if(code_depot.equals("000000")){
-                                deport_or_vendeur  = code_vendeur;
-                            }else {
-                                deport_or_vendeur = code_depot;
-                            }
-
-                            insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
-                                    + client.code_client + "' , " +
-                                    "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
-                                    "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
-                                    "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
-                                    "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
-                                    "iif('"+ client.ifiscal +"' = '',0,'"+ client.ifiscal + "') , " +
-                                    "iif('"+ client.ai +"' = '',0,'"+ client.ai + "'),  " +
-                                    "iif('" + client.nis +"' = '',0,'" + client.nis +"'), " +
-                                    "'" + client.mode_tarif + "' , " +
-                                    "'" + client.latitude+"', " +
-                                    "'" + client.longitude + "'," +
-                                    "iif('" + code_depot +"' = '000000',null,'" + code_depot +"')," +
-                                    "iif('" + code_vendeur +"' = '000000',null,'" + code_vendeur +"'))";
-
-                            stmt.executeUpdate(insert_client);
-                            con.commit();
-
-                        }
 
                         String file_name = "";
                         file_name = "VENTE_"+ bon1s.get(i).num_bon+"_"+bon1s.get(i).exportation + "_" + bon1s.get(i).date_bon + ".BLV";
@@ -2006,14 +1825,13 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "BON2.COLISSAGE, " +
                                     "BON2.QTE, " +
                                     "BON2.QTE_GRAT, " +
-                                    "BON2.PU, " +
+                                    "BON2.PV_HT, " +
+                                    "BON2.PA_HT, " +
                                     "BON2.TVA, " +
                                     "BON2.CODE_DEPOT, " +
                                     "BON2.DESTOCK_TYPE, " +
                                     "BON2.DESTOCK_CODE_BARRE, " +
                                     "BON2.DESTOCK_QTE, " +
-                                    "PRODUIT.PA_HT, " +
-                                    "PRODUIT.PAMP, " +
                                     "PRODUIT.ISNEW, " +
                                     "PRODUIT.STOCK " +
                                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -2076,9 +1894,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                                         " '" + NUM_BON + "' ," +
                                         " '" + bon2s.get(j).codebarre.replace("'", "''") + "' ," +
                                         " '" + bon2s.get(j).qte + "'," +
-                                        " '" + bon2s.get(j).pamp + "' ," +
-                                        " '" + bon2s.get(j).p_u + "' ," +
-                                        " '" + bon2s.get(j).p_u + "' ," +
+                                        " '" + bon2s.get(j).pa_ht + "' ," +
+                                        " '" + bon2s.get(j).pv_ht + "' ," +
+                                        " '" + bon2s.get(j).pv_ht + "' ," +
                                         " '" + bon2s.get(j).tva + "' ," +
                                         " '" + bon2s.get(j).nbr_colis + "'," +
                                         " '" + bon2s.get(j).colissage + "'," +
@@ -2166,6 +1984,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "CLIENT.TEL, " +
                         "CLIENT.CLIENT, " +
                         "CLIENT.ADRESSE, " +
+                        "CLIENT.WILAYA, " +
+                        "CLIENT.COMMUNE, " +
                         "CLIENT.RC, " +
                         "CLIENT.IFISCAL, " +
                         "CLIENT.AI, " +
@@ -2180,7 +2000,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "CARNET_C.MODE_RG, " +
                         "CARNET_C.REMARQUES, " +
                         "CARNET_C.UTILISATEUR, " +
-                        "CARNET_C.EXPORTATION " +
+                        "CARNET_C.EXPORTATION, " +
+                        "CARNET_C.IS_EXPORTED " +
 
 
                         "FROM CARNET_C " +
@@ -2450,6 +2271,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE AS TOT_TTC, " +
                         "BON1_TEMP.REMISE, " +
                         "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE AS MONTANT_BON, " +
+                        "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE - BON1_TEMP.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                         "BON1_TEMP.ANCIEN_SOLDE, " +
                         "BON1_TEMP.VERSER, " +
@@ -2458,6 +2280,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "BON1_TEMP.CODE_CLIENT, " +
                         "CLIENT.CLIENT, " +
                         "CLIENT.ADRESSE, " +
+                        "CLIENT.WILAYA, " +
+                        "CLIENT.COMMUNE, " +
                         "CLIENT.TEL, " +
                         "CLIENT.RC, " +
                         "CLIENT.IFISCAL, " +
@@ -2575,14 +2399,13 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     "BON2_TEMP.COLISSAGE, " +
                                     "BON2_TEMP.QTE, " +
                                     "BON2_TEMP.QTE_GRAT, " +
-                                    "BON2_TEMP.PU, " +
+                                    "BON2_TEMP.PV_HT, " +
+                                    "BON2_TEMP.PA_HT, " +
                                     "BON2_TEMP.TVA, " +
                                     "BON2_TEMP.CODE_DEPOT, " +
                                     "BON2_TEMP.DESTOCK_TYPE, " +
                                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                     "BON2_TEMP.DESTOCK_QTE, " +
-                                    "PRODUIT.PA_HT, " +
-                                    "PRODUIT.PAMP, " +
                                     "PRODUIT.ISNEW, " +
                                     "PRODUIT.STOCK " +
                                     "FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -2643,8 +2466,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 buffer[j] = buffer[j] + ") VALUES ( '" + NUM_BON + "' ," +
                                         " '" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "' ," +
                                         " '" + bon2s_Temp.get(j).qte + "'," +
-                                        " '" + bon2s_Temp.get(j).pamp + "' ," +
-                                        " '" + bon2s_Temp.get(j).p_u + "' ," +
+                                        " '" + bon2s_Temp.get(j).pa_ht + "' ," +
+                                        " '" + bon2s_Temp.get(j).pv_ht + "' ," +
                                         " '" + bon2s_Temp.get(j).tva + "' ," +
                                         " '" + bon2s_Temp.get(j).nbr_colis + "'," +
                                         " '" + bon2s_Temp.get(j).colissage + "'," +
@@ -2694,6 +2517,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "CLIENT.TEL, " +
                         "CLIENT.CLIENT, " +
                         "CLIENT.ADRESSE, " +
+                        "CLIENT.WILAYA, " +
+                        "CLIENT.COMMUNE, " +
                         "CLIENT.RC, " +
                         "CLIENT.IFISCAL, " +
                         "CLIENT.AI, " +
@@ -2708,7 +2533,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "CARNET_C.MODE_RG, " +
                         "CARNET_C.REMARQUES, " +
                         "CARNET_C.UTILISATEUR, " +
-                        "CARNET_C.EXPORTATION " +
+                        "CARNET_C.EXPORTATION, " +
+                        "CARNET_C.IS_EXPORTED " +
 
 
                         "FROM CARNET_C " +
@@ -2904,289 +2730,6 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             super.onPostExecute(integer);
         }
-    }
-
-    // Importation liste fournisseur
-    //==================== AsyncTask TO Load FOURNISSEUR from server and store them in the local database (sqlite)
-    public class Check_connection_fournisseur_server_for_sychronisation_fournisseur extends AsyncTask<Void, Integer, Integer> {
-
-        Connection con;
-        int flag = 0;
-
-        String messageError = "";
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog_Free = new ProgressDialog(ActivityImportsExport.this);
-            mProgressDialog_Free.setMessage("Vérificaion de la connexion ...");
-            mProgressDialog_Free.setCancelable(true);
-            mProgressDialog_Free.show();
-        }
-
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-
-                System.setProperty("FBAdbLog", "true");
-                DriverManager.setLoginTimeout(5);
-                Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
-                con = DriverManager.getConnection(sCon, Username, Password);
-                flag = 1;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
-                if (e.getMessage().contains("Unable to complete network request to host")) {
-                    flag = 2;
-                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
-
-                } else {
-                    //not executed with problem in the sql statement
-                    flag = 3;
-                }
-                messageError= e.getMessage();
-            }
-
-            return flag;
-        }
-
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
-            if (integer == 1) {
-                Import_fournisseur_from_server_task fournisseur_task = new Import_fournisseur_from_server_task();
-                fournisseur_task.execute();
-
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
-                        .show();
-            } else {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
-                        .show();
-            }
-            super.onPostExecute(integer);
-        }
-
-    }
-
-
-
-    // Importation liste client
-    //==================== AsyncTask TO Load CLIENTS from server and store them in the local database (sqlite)
-    public class Check_connection_client_server_for_sychronisation_client extends AsyncTask<Void, Integer, Integer> {
-
-        Connection con;
-        int flag = 0;
-
-        String messageError = "";
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog_Free = new ProgressDialog(ActivityImportsExport.this);
-            mProgressDialog_Free.setMessage("Vérificaion de la connexion ...");
-            mProgressDialog_Free.setCancelable(true);
-            mProgressDialog_Free.show();
-        }
-
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-
-                System.setProperty("FBAdbLog", "true");
-                DriverManager.setLoginTimeout(5);
-                Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
-                con = DriverManager.getConnection(sCon, Username, Password);
-                flag = 1;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
-                if (e.getMessage().contains("Unable to complete network request to host")) {
-                    flag = 2;
-                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
-
-                } else {
-                    //not executed with problem in the sql statement
-                    flag = 3;
-                }
-                messageError= e.getMessage();
-            }
-
-            return flag;
-        }
-
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
-            if (integer == 1) {
-                Import_client_from_server_task bon_client_task = new Import_client_from_server_task();
-                bon_client_task.execute();
-
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
-                        .show();
-            } else {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
-                        .show();
-            }
-            super.onPostExecute(integer);
-        }
-
-    }
-
-
-    // Importation liste produit
-    //==================== AsyncTask TO Load produits from server and store them in the local database (sqlite)
-    public class Check_connection_produit_server_for_sychronisation_produit extends AsyncTask<Void, Integer, Integer> {
-
-        Connection con;
-        int flag = 0;
-
-        String messageError = "";
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog_Free = new ProgressDialog(ActivityImportsExport.this);
-            mProgressDialog_Free.setMessage("Vérification de la connexion ...");
-            mProgressDialog_Free.setCancelable(true);
-            mProgressDialog_Free.show();
-        }
-
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-
-                System.setProperty("FBAdbLog", "true");
-                DriverManager.setLoginTimeout(5);
-                Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
-                con = DriverManager.getConnection(sCon, Username, Password);
-                flag = 1;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
-                if (e.getMessage().contains("Unable to complete network request to host")) {
-                    flag = 2;
-                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
-
-                } else {
-                    //not executed with problem in the sql statement
-                    flag = 3;
-                }
-                messageError = e.getMessage();
-            }
-
-            return flag;
-        }
-
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
-            if (integer == 1) {
-                Import_produit_from_server_task produit_task = new Import_produit_from_server_task();
-                produit_task.execute();
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
-                        .show();
-            } else {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
-                        .show();
-            }
-            super.onPostExecute(integer);
-        }
-
-    }
-
-
-    //==================== AsyncTask TO Load parametres from server and store them in the local database (sqlite)
-    public class Check_connection_parametres_server_for_sychronisation_parametres extends AsyncTask<Void, Integer, Integer> {
-
-        Connection con;
-        int flag = 0;
-        String messageError = "";
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog_Free = new ProgressDialog(ActivityImportsExport.this);
-            mProgressDialog_Free.setMessage("Vérification de la connexion ...");
-            mProgressDialog_Free.setCancelable(true);
-            mProgressDialog_Free.show();
-        }
-
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-
-                System.setProperty("FBAdbLog", "true");
-                DriverManager.setLoginTimeout(5);
-                Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
-                con = DriverManager.getConnection(sCon, Username, Password);
-                flag = 1;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
-                if (e.getMessage().contains("Unable to complete network request to host")) {
-                    flag = 2;
-                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
-
-                } else {
-                    //not executed with problem in the sql statement
-                    flag = 3;
-                }
-                messageError = e.getMessage();
-            }
-
-            return flag;
-        }
-
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            if (integer == 1) {
-                // get all transfert bon of this depot
-                Import_parametre_from_server_task parametres_task = new Import_parametre_from_server_task();
-                parametres_task.execute();
-            } else if (integer == 2) {
-                mProgressDialog_Free.dismiss();
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
-                        .show();
-            } else {
-                mProgressDialog_Free.dismiss();
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
-                        .show();
-            }
-            super.onPostExecute(integer);
-        }
-
     }
 
     //==================== AsyncTask TO Load clients from server and store them in the local database (sqlite)
@@ -3417,6 +2960,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int compt = 0;
         int allrows = 0;
         int total_fournisseur = 0;
+        List<String> list_fournisseur_not_exported;
 
         String erreurMessage = "";
 
@@ -3429,6 +2973,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected Integer doInBackground(Void... params) {
             try {
                 ArrayList<PostData_Fournisseur> fournisseurs = new ArrayList<>();
+                list_fournisseur_not_exported = new ArrayList<>();
                 //postData_Client client;
 
                 System.setProperty("FBAdbLog", "true");
@@ -3440,8 +2985,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                 Statement stmt = con.createStatement();
                 //-----------------------------------------
 
-                fournisseurs = controller.select_fournisseurs_from_database("SELECT * FROM FOURNIS");
-                total_fournisseur = fournisseurs.size();
+                con.setAutoCommit(false);
+                list_fournisseur_not_exported = update_fournisseur_into_server(con, stmt);
+
+                con.setAutoCommit(true);
 
                 String sql12 = "SELECT  COUNT(*) FROM FOURNIS";
                 String sql0 = "SELECT  FOURNIS.CODE_FRS, " +
@@ -3464,9 +3011,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                 }
                 publishProgress(1);
                 //============================ GET Clients ===========================================
-                fournisseurs.clear();
                 ResultSet rs0 = stmt.executeQuery(sql0);
                 PostData_Fournisseur fournisseur;
+
 
                 while (rs0.next()) {
                     fournisseur = new PostData_Fournisseur();
@@ -3551,6 +3098,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int total_client = 0;
 
         String erreurMessage = "";
+        List<String> list_client_not_exported;
 
         @Override
         protected void onPreExecute() {
@@ -3562,8 +3110,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected Integer doInBackground(Void... params) {
             try {
                 ArrayList<PostData_Client> clients = new ArrayList<>();
-                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
-                //postData_Client client;
+                list_client_not_exported = new ArrayList<>();
 
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
@@ -3576,54 +3123,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
                 con.setAutoCommit(false);
-                clients = controller.select_clients_from_database("SELECT * FROM CLIENT");
-                total_client = clients.size();
-                con.setAutoCommit(false);
-                for (int i = 0; i < clients.size(); i++) {
-
-                    //========= CHECK IF CLIENT EXIST IN FIREBIRD PME PRO
-                    boolean client_exist = false;
-                    String client_requete = "SELECT CODE_CLIENT FROM CLIENTS WHERE CODE_CLIENT = '" + clients.get(i).code_client + "' ";
-                    ResultSet rs0 = stmt.executeQuery(client_requete);
-                    while (rs0.next()) {
-                        client_exist = true;
-                    }
-                    //========= insert client if not exist
-                    if(!client_exist){
-                        PostData_Client client;
-                        // ========Select client from data base to insert it
-                        client = controller.select_client_from_database(clients.get(i).code_client);
-                        String insert_client;
-                        // ====insert client
-                        String deport_or_vendeur = "null";
-                        if(code_depot.equals("000000")){
-                            deport_or_vendeur  = code_vendeur;
-                        }else {
-                            deport_or_vendeur = code_depot;
-                        }
-
-                        insert_client = "INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR) VALUES ('"
-                                + client.code_client + "' , " +
-                                "iif('"+ client.code_client + "' = null,'Client inconnu','" + client.client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
-                                "iif('" + client.adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + client.adresse.replace("'", "''") +"'),  " +
-                                "iif('"+ client.tel +"' = '',0,'"+client.tel +"') , " +
-                                "iif('"+ client.rc +"' = '',0,'"+ client.rc +"') , " +
-                                "iif('"+ client.ifiscal +"' = '',0,'"+ client.ifiscal + "') , " +
-                                "iif('"+ client.ai +"' = '',0,'"+ client.ai + "'),  " +
-                                "iif('" + client.nis +"' = '',0,'" + client.nis +"'), " +
-                                "'" + client.mode_tarif + "' , " +
-                                "'" + client.latitude+"', " +
-                                "'" + client.longitude + "'," +
-                                "iif('" + code_depot +"' = '000000',null,'" + code_depot +"')," +
-                                "iif('" + code_vendeur +"' = '000000',null,'" + code_vendeur +"'))";
-
-                        if(stmt.executeUpdate(insert_client) > 0){
-                            //commit insert clienttest
-                            con.commit();
-                        }
-                    }
-                }
-
+                list_client_not_exported = update_client_into_server(con, stmt);
                 con.setAutoCommit(true);
 
 
@@ -3631,6 +3131,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                 String sql0 = "SELECT CLIENTS.CODE_CLIENT, " +
                         "CLIENTS.CLIENT, " +
                         "coalesce(CLIENTS.TEL , '/') AS TEL, " +
+                        "coalesce(CLIENTS.WILAYA , '<Aucune>') AS WILAYA, " +
+                        "coalesce(CLIENTS.COMMUNE , '<Aucune>') AS COMMUNE, " +
                         "coalesce(CLIENTS.ADRESSE , '/') AS ADRESSE, " +
                         "coalesce(CLIENTS.NUM_RC , '/') AS NUM_RC, " +
                         "coalesce(CLIENTS.NUM_IF , '/') AS NUM_IF , " +
@@ -3646,17 +3148,21 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT " +
                         " FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0";
 
-                if(code_depot.equals("000000")){
-                    if(code_vendeur.equals("000000")){
+                if(!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)){
 
+                    if(code_depot.equals("000000")){
+                        if(code_vendeur.equals("000000")){
+
+                        }else {
+                            sql12 = sql12 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
+                            sql0 = sql0 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
+                        }
                     }else {
-                        sql12 = sql12 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
-                        sql0 = sql0 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
+                        sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
+                        sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
                     }
-                }else {
-                    sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
-                    sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
                 }
+
 
                 ResultSet rs12 = stmt.executeQuery(sql12);
 
@@ -3666,7 +3172,6 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 publishProgress(1);
                 //============================ GET Clients ===========================================
-                clients.clear();
                 ResultSet rs0 = stmt.executeQuery(sql0);
                 PostData_Client client;
                 while (rs0.next()) {
@@ -3675,6 +3180,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                     client.client = rs0.getString("CLIENT");
                     client.tel = rs0.getString("TEL");
                     client.adresse = rs0.getString("ADRESSE");
+                    client.wilaya = rs0.getString("WILAYA");
+                    client.commune = rs0.getString("COMMUNE");
                     client.rc = rs0.getString("NUM_RC");
                     client.ifiscal = rs0.getString("NUM_IF");
                     client.nis = rs0.getString("NUM_IS");
@@ -3732,15 +3239,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Attention. !")
                         .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .showSendButton(true)
-                        .setSendText("Envoyer")
                         .show();
             }else if(result == 3){
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Attention. !")
                         .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
-                        .showSendButton(true)
-                        .setSendText("Envoyer")
                         .show();
             }
             super.onPostExecute(result);
@@ -3885,9 +3388,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv4_ht = rs3.getDouble("PV4_HT");
                             produit_update.pv5_ht = rs3.getDouble("PV5_HT");
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
-                            //compressImage(rs3.getBytes("PHOTO"));
+
                             produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
-                           // produit_update.photo = rs3.getBytes("PHOTO");
                         }
                         produit_update.description = rs3.getString("DETAILLE");
                         produit_update.famille = rs3.getString("FAMILLE").trim();
@@ -4010,7 +3512,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv5_ht = rs3.getDouble("PV5_HT");
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
                             produit_update.photo = rs3.getBytes("PHOTO");
-                            //produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
+
+                            produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
+
                         }
 
                         produit_update.description = rs3.getString("DETAILLE");
@@ -4078,7 +3582,6 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
 
             mProgressDialog.setMax(allrows);
-
             mProgressDialog.setProgress(values[0]);
         }
 
@@ -4098,6 +3601,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         .setTitleText("Information. !")
                         .setContentText("Importation la liste des produits bien terminé")
                         .show();
+
             }else if(result == 2){
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Attention. !")
@@ -4117,7 +3621,6 @@ public class ActivityImportsExport extends AppCompatActivity {
             if(b!= null){
                 //String filePath = getRealPathFromURI(imageUri);
                 Bitmap scaledBitmap = null;
-
                 BitmapFactory.Options options = new BitmapFactory.Options();
 
 //      by setting this field as true, the actual bitmap pixels are not loaded in the memory. Just the bounds are loaded. If
@@ -4184,9 +3687,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                 Matrix scaleMatrix = new Matrix();
                 scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
 
+                assert scaledBitmap != null;
                 Canvas canvas = new Canvas(scaledBitmap);
                 canvas.setMatrix(scaleMatrix);
-                canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+                canvas.drawBitmap(bmp, middleX - (float) bmp.getWidth() / 2, middleY - (float) bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
 
                 // check the rotation of the image and display it properly
                 ExifInterface exif;
@@ -4560,7 +4064,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
     private List<String>  update_produit_into_server(Connection con, Statement stmt) throws SQLException {
         List<String> list_produit_not_exported = new ArrayList<>();
-        ArrayList<PostData_Produit> postData_produits = new ArrayList<>();
+        ArrayList<PostData_Produit> postData_produits;
 
         //Get product and  Insert it into produit tables
         String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
@@ -4630,6 +4134,98 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         }
         return list_produit_not_exported;
+    }
+
+    private List<String>  update_fournisseur_into_server(Connection con, Statement stmt) throws SQLException {
+        List<String> list_fournisseur_not_exported = new ArrayList<>();
+        ArrayList<PostData_Fournisseur> postData_fournisseurs;
+
+        postData_fournisseurs = controller.select_fournisseurs_from_database("SELECT * FROM FOURNIS WHERE ISNEW = 1");
+        for (int i = 0; i < postData_fournisseurs.size(); i++) {
+
+            //========= CHECK IF FOURNIS EXIST IN FIREBIRD PME PRO
+            try {
+                String insert_into_fournis;
+                insert_into_fournis =  "UPDATE OR INSERT INTO FOURNIS (CODE_FRS, FOURNIS, ADRESSE, TEL, ACHATS, VERSER, NUM_RC, NUM_IF, NUM_ART, NUM_IS ";
+                insert_into_fournis = insert_into_fournis + ") VALUES (" +
+                        " '" + postData_fournisseurs.get(i).code_frs + "' , " +
+                        " '" + postData_fournisseurs.get(i).fournis.replace("'", " ") + "' ," +
+                        " '" + postData_fournisseurs.get(i).adresse.replace("'", " ") + "', "+
+                        " '" + postData_fournisseurs.get(i).tel + "' ," +
+                        " " + postData_fournisseurs.get(i).achat_montant + "," +
+                        " " + postData_fournisseurs.get(i).verser_montant + ","+
+                        " '" + postData_fournisseurs.get(i).rc.replace("'", " ") + "'," +
+                        " '" + postData_fournisseurs.get(i).ifiscal.replace("'", " ") + "'," +
+                        " '" + postData_fournisseurs.get(i).ai.replace("'", " ") + "'," +
+                        " '" + postData_fournisseurs.get(i).nis.replace("'", " ") + "' ";
+
+
+                insert_into_fournis = insert_into_fournis + ") MATCHING (CODE_FRS)";
+
+                stmt.addBatch(insert_into_fournis);
+
+
+
+                stmt.executeBatch();
+                con.commit();
+
+            }catch (Exception e){
+                con.rollback();
+                list_fournisseur_not_exported.add(postData_fournisseurs.get(i).fournis);
+            }
+        }
+        return list_fournisseur_not_exported;
+    }
+
+
+    private List<String>  update_client_into_server(Connection con, Statement stmt) throws SQLException {
+        List<String> list_client_not_exported = new ArrayList<>();
+        ArrayList<PostData_Client> postData_client;
+
+        postData_client = controller.select_clients_from_database("SELECT * FROM CLIENT WHERE ISNEW = 1");
+        for (int i = 0; i < postData_client.size(); i++) {
+
+            String deport_or_vendeur = "null";
+            if(code_depot.equals("000000")){
+                deport_or_vendeur  = code_vendeur;
+            }else {
+                deport_or_vendeur = code_depot;
+            }
+            //========= CHECK IF FOURNIS EXIST IN FIREBIRD PME PRO
+            try {
+                String insert_into_fournis;
+                insert_into_fournis =  "UPDATE OR INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR ";
+                insert_into_fournis = insert_into_fournis + ") VALUES (" +
+                        " '" + postData_client.get(i).code_client + "' , " +
+                        "iif('"+ postData_client.get(i).client + "' = null,'Client inconnu','" + postData_client.get(i).client.replace("'", "''") + " (" + deport_or_vendeur + ")" +"') , " +
+                        "iif('" + postData_client.get(i).adresse.replace("'", "''") +"' = null,'Adresse inconnu', " + "'" + postData_client.get(i).adresse.replace("'", "''") +"'),  " +
+                        "iif('"+ postData_client.get(i).wilaya +"' = '',0,'"+postData_client.get(i).wilaya +"') , " +
+                        "iif('"+ postData_client.get(i).commune +"' = '', '<Aucune>' ,'"+postData_client.get(i).commune +"') , " +
+                        "iif('"+ postData_client.get(i).tel +"' = '', '<Aucune>' ,'"+postData_client.get(i).tel +"') , " +
+                        "iif('"+ postData_client.get(i).rc +"' = '',0,'"+ postData_client.get(i).rc +"') , " +
+                        "iif('"+ postData_client.get(i).ifiscal +"' = '',0,'"+ postData_client.get(i).ifiscal + "') , " +
+                        "iif('"+ postData_client.get(i).ai +"' = '',0,'"+ postData_client.get(i).ai + "'),  " +
+                        "iif('" + postData_client.get(i).nis +"' = '',0,'" + postData_client.get(i).nis +"'), " +
+                        "'" + postData_client.get(i).mode_tarif + "' , " +
+                        "'" + postData_client.get(i).latitude+"', " +
+                        "'" + postData_client.get(i).longitude + "'," +
+                        "iif('" + code_depot +"' = '000000',null,'" + code_depot +"')," +
+                        "iif('" + code_vendeur +"' = '000000',null,'" + code_vendeur +"'))";
+
+
+                insert_into_fournis = insert_into_fournis + " MATCHING (CODE_CLIENT)";
+
+                stmt.addBatch(insert_into_fournis);
+
+                stmt.executeBatch();
+                con.commit();
+
+            }catch (Exception e){
+                con.rollback();
+                list_client_not_exported.add(postData_client.get(i).client);
+            }
+        }
+        return list_client_not_exported;
     }
 
     @Override

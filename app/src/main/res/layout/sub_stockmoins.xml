@@ -49,34 +49,8 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>
 
-
         <LinearLayout
-            android:id="@+id/achats_show_lnr"
             android:layout_below="@+id/stock_moins_lnr"
-            android:padding="5dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClickListener"
-            android:background="@drawable/import_export_selector"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="UsingOnClickInXml">
-
-
-            <CheckBox
-                android:id="@+id/chkbx_achats_show"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/afficher_les_achats_client"
-                android:textSize="15sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black_overlay"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_below="@+id/achats_show_lnr"
             android:padding="5dp"
             android:clickable="true"
             android:focusable="true"

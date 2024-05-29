@@ -116,7 +116,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         holder.Produit.setText(item.produit);
 
         if(SOURCE.equals("ACHAT")){
-            holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pa_ht));
+            holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pamp));
         }else if(SOURCE.equals("VENTE")){
 
             switch (mode_tarif) {

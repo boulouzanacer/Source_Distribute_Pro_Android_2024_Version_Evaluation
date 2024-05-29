@@ -48,7 +48,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ActivityClients extends AppCompatActivity implements RecyclerAdapterClients.ItemClick, RecyclerAdapterClients.ItemLongClick{
 
-    private static final int REQUEST_ACTIVITY_NEW_CLIENT = 4000;
     RecyclerView recyclerView;
     RecyclerAdapterClients adapter;
     ArrayList<PostData_Client> clients;
@@ -69,7 +68,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                 NO_PERMISSION.add(s);
             }
         }
-        if (NO_PERMISSION.size() == 0) {
+        if (NO_PERMISSION.isEmpty()) {
 
         } else {
             requestPermissions(NO_PERMISSION.toArray(new String[0]), 3232);

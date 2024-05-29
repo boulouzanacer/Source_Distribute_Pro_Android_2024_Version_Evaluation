@@ -187,9 +187,20 @@ public class Ftp_export {
             ///////////////////////////////////// JOURNEE //////////////////////////////////////
             F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
             ///////////////////////////////////// CLIENT ///////////////////////////////////////
-            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE, CODE_VENDEUR ";
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT, CODE_CLIENT, CLIENT, ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE, CODE_VENDEUR ";
 
-            F_SQL =  F_SQL + ")\n VALUES ( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , '"+ bon1s.get(i).code_client.replace("'", "''") + "','"+ bon1s.get(i).client.replace("'", "''") + "','"+ bon1s.get(i).adresse.replace("'", "''") + "','"+ bon1s.get(i).tel.replace("'", "''") + "','" + bon1s.get(i).rc.replace("'", "''") + "','" + bon1s.get(i).ifiscal.replace("'", "''") + "','" +  bon1s.get(i).nis.replace("'", "''") + "','" +  bon1s.get(i).ai.replace("'", "''") + "', "+bon1s.get(i).latitude_client+", "+bon1s.get(i).longitude_client+"";
+            F_SQL =  F_SQL + ")\n VALUES ( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') ," +
+                    " '"+ bon1s.get(i).code_client.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).client.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).adresse.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).wilaya.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).commune.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).tel.replace("'", "''") + "'," +
+                    " '" + bon1s.get(i).rc.replace("'", "''") + "'," +
+                    " '" + bon1s.get(i).ifiscal.replace("'", "''") + "'," +
+                    " '" +  bon1s.get(i).nis.replace("'", "''") + "'," +
+                    " '" +  bon1s.get(i).ai.replace("'", "''") + "'," +
+                    "  "+bon1s.get(i).latitude_client+", "+bon1s.get(i).longitude_client;
 
             F_SQL =  F_SQL + ", iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')";
 
@@ -218,14 +229,13 @@ public class Ftp_export {
                     "BON2.COLISSAGE, " +
                     "BON2.QTE, " +
                     "BON2.QTE_GRAT, " +
-                    "BON2.PU, " +
+                    "BON2.PV_HT, " +
+                    "BON2.PA_HT, " +
                     "BON2.TVA, " +
                     "BON2.CODE_DEPOT, " +
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
-                    "PRODUIT.PA_HT, " +
-                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -269,7 +279,7 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BON2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
                 F_SQL =  F_SQL + "'" + bon2s.get(j).codebarre.replace("'", "''") + "','" + bon2s.get(j).produit.replace("'", "''") + "', iif('" + bon2s.get(j).destock_type + "' = 'null', null,'" + bon2s.get(j).destock_type + "') , iif('" + bon2s.get(j).destock_code_barre + "' = 'null', null,'" + bon2s.get(j).destock_code_barre + "') ,'" + bon2s.get(j).destock_qte + "',";
                 F_SQL =  F_SQL + "" +  bon2s.get(j).nbr_colis + ","   + bon2s.get(j).colissage +","  + bon2s.get(j).qte + "," + bon2s.get(j).gratuit + ",";
-                F_SQL =  F_SQL + "" +  bon2s.get(j).tva + ","   + bon2s.get(j).p_u +","  + bon2s.get(j).p_u + "," + bon2s.get(j).p_u + ");\n";
+                F_SQL =  F_SQL + "" +  bon2s.get(j).tva + ","   + bon2s.get(j).pv_ht +","  + bon2s.get(j).pv_ht + "," + bon2s.get(j).pa_ht + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
             }
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
@@ -279,7 +289,7 @@ public class Ftp_export {
             F_SQL =  F_SQL + "VALUES \n";
             F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
             F_SQL =  F_SQL + "'" + bon1s.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + bon1s.get(i).heure + "','BL-VENTE','TERMINAL_MOBIL','" + bon1s.get(i).mode_rg + "',";
-            F_SQL =  F_SQL + "" +  bon1s.get(i).montant_bon + "," + bon1s.get(i).verser +");\n";
+            F_SQL =  F_SQL +  bon1s.get(i).montant_bon + "," + bon1s.get(i).verser +");\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             ///////////////////////////////////CAISSE //////////////////////////////////////////
             if (bon1s.get(i).verser !=0 ) {
@@ -311,6 +321,8 @@ public class Ftp_export {
                 "CLIENT.TEL, " +
                 "CLIENT.CLIENT, " +
                 "CLIENT.ADRESSE, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
                 "CLIENT.RC, " +
                 "CLIENT.IFISCAL, " +
                 "CLIENT.AI, " +
@@ -325,7 +337,8 @@ public class Ftp_export {
                 "CARNET_C.MODE_RG, " +
                 "CARNET_C.REMARQUES, " +
                 "CARNET_C.UTILISATEUR, " +
-                "CARNET_C.EXPORTATION " +
+                "CARNET_C.EXPORTATION, " +
+                "CARNET_C.IS_EXPORTED " +
 
 
                 "FROM CARNET_C " +
@@ -341,7 +354,7 @@ public class Ftp_export {
             ///////////////////////////////////// JOURNEE //////////////////////////////////////
             F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
             ///////////////////////////////////// CLIENT ///////////////////////////////////////
-            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE , CODE_VENDEUR ";
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE , CODE_VENDEUR ";
 
             try {
                 F_SQL =  F_SQL + ")\n VALUES ( " +
@@ -349,6 +362,8 @@ public class Ftp_export {
                         " '"+ all_versement_client.get(i).code_client + "'," +
                         " iif('"+ all_versement_client.get(i).client + "' = null , null, '"+ all_versement_client.get(i).client.replace("'", "''") + "') , " +
                         " iif('"+ all_versement_client.get(i).adresse + "' = null , null, '"+ all_versement_client.get(i).adresse.replace("'", "''") + "') , " +
+                        " iif('"+ all_versement_client.get(i).wilaya + "' = null, null , '"+ all_versement_client.get(i).wilaya.replace("'", "''") + "') , " +
+                        " iif('"+ all_versement_client.get(i).commune + "' = null, null , '"+ all_versement_client.get(i).commune.replace("'", "''") + "') , " +
                         " iif('"+ all_versement_client.get(i).tel + "' = null, null , '"+ all_versement_client.get(i).tel.replace("'", "''") + "') , " +
                         " iif('"+ all_versement_client.get(i).rc + "' = 'null', null , '"+ all_versement_client.get(i).rc + "') , " +
                         " iif('"+ all_versement_client.get(i).ifiscal + "' = null , null, '"+ all_versement_client.get(i).ifiscal + "') , " +
@@ -370,11 +385,11 @@ public class Ftp_export {
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             F_SQL =  F_SQL + "INSERT INTO CARNET_C (CODE_VENDEUR, RECORDID,NUM_BON,EXPORTATION,CODE_CAISSE,";
             F_SQL =  F_SQL + "CODE_CLIENT,DATE_CARNET,HEURE,SOURCE,UTILISATEUR,MODE_RG,";
-            F_SQL =  F_SQL + "ACHATS,VERSEMENTS)\n";
+            F_SQL =  F_SQL + " VERSEMENTS)\n";
             F_SQL =  F_SQL + "VALUES \n";
             F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
-            F_SQL =  F_SQL + " '" + all_versement_client.get(i).carnet_achats + "'," + all_versement_client.get(i).carnet_versement +");\n";
+            F_SQL =  F_SQL + " " + all_versement_client.get(i).carnet_versement +");\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             ///////////////////////////////////CAISSE //////////////////////////////////////////
             if (all_versement_client.get(i).carnet_versement !=0 ) {
@@ -420,6 +435,7 @@ public class Ftp_export {
                 "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE AS TOT_TTC, " +
                 "BON1.REMISE, " +
                 "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE AS MONTANT_BON, " +
+                "BON1.TOT_HT - BON1.REMISE - BON1.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                 "BON1.ANCIEN_SOLDE, " +
                 "BON1.VERSER, " +
@@ -428,6 +444,8 @@ public class Ftp_export {
                 "BON1.CODE_CLIENT, " +
                 "CLIENT.CLIENT, " +
                 "CLIENT.ADRESSE, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
                 "CLIENT.TEL, " +
                 "coalesce(CLIENT.RC, '') RC, " +
                 "coalesce(CLIENT.IFISCAL, '') IFISCAL, " +
@@ -466,9 +484,20 @@ public class Ftp_export {
             ///////////////////////////////////// JOURNEE //////////////////////////////////////
             F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
             ///////////////////////////////////// CLIENT ///////////////////////////////////////
-            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE, CODE_VENDEUR ";
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE, CODE_VENDEUR ";
 
-            F_SQL =  F_SQL + ")\n VALUES ( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , '"+ bon1s.get(i).code_client.replace("'", "''") + "','"+ bon1s.get(i).client.replace("'", "''") + "','"+ bon1s.get(i).adresse.replace("'", "''") + "','"+ bon1s.get(i).tel.replace("'", "''") + "','" + bon1s.get(i).rc.replace("'", "''") + "','" + bon1s.get(i).ifiscal.replace("'", "''") + "','" +  bon1s.get(i).nis.replace("'", "''") + "','" +  bon1s.get(i).ai.replace("'", "''") + "', "+bon1s.get(i).latitude_client+", "+bon1s.get(i).longitude_client+"";
+            F_SQL =  F_SQL + ")\n VALUES ( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') ," +
+                    " '"+ bon1s.get(i).code_client.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).client.replace("'", "''") + "', " +
+                    " '"+ bon1s.get(i).adresse.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).wilaya.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).commune.replace("'", "''") + "'," +
+                    " '"+ bon1s.get(i).tel.replace("'", "''") + "'," +
+                    " '" + bon1s.get(i).rc.replace("'", "''") + "'," +
+                    " '" + bon1s.get(i).ifiscal.replace("'", "''") + "'," +
+                    " '" +  bon1s.get(i).nis.replace("'", "''") + "'," +
+                    " '" +  bon1s.get(i).ai.replace("'", "''") + "'," +
+                    "  "+bon1s.get(i).latitude_client+", "+bon1s.get(i).longitude_client;
 
             F_SQL =  F_SQL + ", iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')";
 
@@ -484,11 +513,10 @@ public class Ftp_export {
 
             F_SQL =  F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BON1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,:CODE_CAISSE:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
             F_SQL =  F_SQL + "'" + bon1s.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) +"','" + bon1s.get(i).heure +"','" + bon1s.get(i).mode_rg +"','" + bon1s.get(i).blocage + "','" + bon1s.get(i).mode_tarif+ "',";
-            F_SQL =  F_SQL + "" + bon1s.get(i).verser + "," + bon1s.get(i).timbre +"," + bon1s.get(i).remise + "," + bon1s.get(i).solde_ancien + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE');\n" ;
+            F_SQL =  F_SQL + bon1s.get(i).verser + "," + bon1s.get(i).timbre +"," + bon1s.get(i).remise + "," + bon1s.get(i).solde_ancien + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE');\n" ;
 
 
-            String querry_select = "" +
-                    "SELECT " +
+            String querry_select = "SELECT " +
                     "BON2.RECORDID, " +
                     "BON2.CODE_BARRE, " +
                     "BON2.NUM_BON, " +
@@ -497,14 +525,13 @@ public class Ftp_export {
                     "BON2.COLISSAGE, " +
                     "BON2.QTE, " +
                     "BON2.QTE_GRAT, " +
-                    "BON2.PU, " +
+                    "BON2.PV_HT, " +
+                    "BON2.PA_HT, " +
                     "BON2.TVA, " +
                     "BON2.CODE_DEPOT, " +
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
-                    "PRODUIT.PA_HT, " +
-                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -548,8 +575,8 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "VALUES\n";
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BON2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
                 F_SQL =  F_SQL + "'" + bon2s.get(j).codebarre.replace("'", "''") + "','" + bon2s.get(j).produit.replace("'", "''") + "', iif('" + bon2s.get(j).destock_type + "' = 'null', null,'" + bon2s.get(j).destock_type + "') , iif('" + bon2s.get(j).destock_code_barre + "' = 'null', null,'" + bon2s.get(j).destock_code_barre + "') , iif('" + bon2s.get(j).destock_qte + "' = '0.0', null,'" + bon2s.get(j).destock_qte + "'),";
-                F_SQL =  F_SQL + "" +  bon2s.get(j).nbr_colis + ","   + bon2s.get(j).colissage +","  + bon2s.get(j).qte + "," + bon2s.get(j).gratuit + ",";
-                F_SQL =  F_SQL + "" +  bon2s.get(j).tva + ","   + bon2s.get(j).p_u +","  + bon2s.get(j).p_u + "," + bon2s.get(j).pamp + ");\n";
+                F_SQL =  F_SQL +  bon2s.get(j).nbr_colis + ","   + bon2s.get(j).colissage +","  + bon2s.get(j).qte + "," + bon2s.get(j).gratuit + ",";
+                F_SQL =  F_SQL +  bon2s.get(j).tva + ","   + bon2s.get(j).pv_ht +","  + bon2s.get(j).pv_ht + "," + bon2s.get(j).pa_ht + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
             }
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
@@ -559,10 +586,10 @@ public class Ftp_export {
             F_SQL =  F_SQL + "VALUES \n";
             F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
             F_SQL =  F_SQL + "'" + bon1s.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + bon1s.get(i).heure + "','BL-VENTE','TERMINAL_MOBIL','" + bon1s.get(i).mode_rg + "',";
-            F_SQL =  F_SQL + "" +  bon1s.get(i).montant_bon + "," + bon1s.get(i).verser +");\n";
+            F_SQL =  F_SQL +  bon1s.get(i).montant_bon + "," + bon1s.get(i).verser +");\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             ///////////////////////////////////CAISSE //////////////////////////////////////////
-            if (bon1s.get(i).verser !=0 ) {
+            if (bon1s.get(i).verser != 0 ) {
                 F_SQL =  F_SQL + "INSERT INTO CAISSE2 (CODE_CAISSE,CODE_CAISSE1,SOURCE,NUM_SOURCE,ENTREE,";
                 F_SQL =  F_SQL + "DATE_CAISSE,UTILISATEUR,MODE_RG)\n";
                 F_SQL =  F_SQL + "VALUES \n";
@@ -591,6 +618,8 @@ public class Ftp_export {
                 "CLIENT.TEL, " +
                 "CLIENT.CLIENT, " +
                 "CLIENT.ADRESSE, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
                 "CLIENT.RC, " +
                 "CLIENT.IFISCAL, " +
                 "CLIENT.AI, " +
@@ -605,7 +634,8 @@ public class Ftp_export {
                 "CARNET_C.MODE_RG, " +
                 "CARNET_C.REMARQUES, " +
                 "CARNET_C.UTILISATEUR, " +
-                "CARNET_C.EXPORTATION " +
+                "CARNET_C.EXPORTATION, " +
+                "CARNET_C.IS_EXPORTED " +
 
 
                 "FROM CARNET_C " +
@@ -621,7 +651,7 @@ public class Ftp_export {
             ///////////////////////////////////// JOURNEE //////////////////////////////////////
             F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
             ///////////////////////////////////// CLIENT ///////////////////////////////////////
-            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE , CODE_VENDEUR ";
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE , CODE_VENDEUR ";
 
             try {
                 F_SQL =  F_SQL + ")\n VALUES ( " +
@@ -629,6 +659,8 @@ public class Ftp_export {
                         " '"+ all_versement_client.get(i).code_client + "'," +
                         " iif('"+ all_versement_client.get(i).client + "' = null , null, '"+ all_versement_client.get(i).client.replace("'", "''") + "') , " +
                         " iif('"+ all_versement_client.get(i).adresse + "' = null , null, '"+ all_versement_client.get(i).adresse.replace("'", "''") + "') , " +
+                        " iif('"+ all_versement_client.get(i).wilaya + "' = null , null, '"+ all_versement_client.get(i).wilaya.replace("'", "''") + "') , " +
+                        " iif('"+ all_versement_client.get(i).commune + "' = null , null, '"+ all_versement_client.get(i).commune.replace("'", "''") + "') , " +
                         " iif('"+ all_versement_client.get(i).tel + "' = null, null , '"+ all_versement_client.get(i).tel.replace("'", "''") + "') , " +
                         " iif('"+ all_versement_client.get(i).rc + "' = 'null', null , '"+ all_versement_client.get(i).rc + "') , " +
                         " iif('"+ all_versement_client.get(i).ifiscal + "' = null , null, '"+ all_versement_client.get(i).ifiscal + "') , " +
@@ -650,7 +682,7 @@ public class Ftp_export {
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             F_SQL =  F_SQL + "INSERT INTO CARNET_C (CODE_VENDEUR, RECORDID,NUM_BON,EXPORTATION,CODE_CAISSE,";
             F_SQL =  F_SQL + "CODE_CLIENT,DATE_CARNET,HEURE,SOURCE,UTILISATEUR,MODE_RG,";
-            F_SQL =  F_SQL + "VERSEMENTS)\n";
+            F_SQL =  F_SQL + " VERSEMENTS)\n";
             F_SQL =  F_SQL + "VALUES \n";
             F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
@@ -658,7 +690,7 @@ public class Ftp_export {
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
 
             ///////////////////////////////////CAISSE //////////////////////////////////////////
-            if (all_versement_client.get(i).carnet_versement !=0 ) {
+            if (all_versement_client.get(i).carnet_versement != 0 ) {
                 F_SQL =  F_SQL + "INSERT INTO CAISSE2 (CODE_CAISSE,CODE_CAISSE1,SOURCE,NUM_SOURCE,ENTREE,";
                 F_SQL =  F_SQL + "DATE_CAISSE,UTILISATEUR,MODE_RG)\n";
                 F_SQL =  F_SQL + "VALUES \n";
@@ -702,6 +734,7 @@ public class Ftp_export {
                 "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE AS TOT_TTC, " +
                 "BON1_TEMP.REMISE, " +
                 "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE AS MONTANT_BON, " +
+                "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE - BON1_TEMP.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                 "BON1_TEMP.ANCIEN_SOLDE, " +
                 "BON1_TEMP.VERSER, " +
@@ -710,6 +743,8 @@ public class Ftp_export {
                 "BON1_TEMP.CODE_CLIENT, " +
                 "CLIENT.CLIENT, " +
                 "CLIENT.ADRESSE, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
                 "CLIENT.TEL, " +
                 "coalesce(CLIENT.RC, '') RC, " +
                 "coalesce(CLIENT.IFISCAL, '') IFISCAL, " +
@@ -747,9 +782,20 @@ public class Ftp_export {
             ///////////////////////////////////// JOURNEE //////////////////////////////////////
             F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
             ///////////////////////////////////// CLIENT ///////////////////////////////////////
-            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE, CODE_VENDEUR ";
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE, CODE_VENDEUR ";
 
-            F_SQL =  F_SQL + ")\n VALUES ( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , '"+ bon1s_Temp.get(i).code_client.replace("'", "''") + "','"+ bon1s_Temp.get(i).client.replace("'", "''") + "','"+ bon1s_Temp.get(i).adresse.replace("'", "''") + "','"+ bon1s_Temp.get(i).tel.replace("'", "''") + "','" + bon1s_Temp.get(i).rc.replace("'", "''") + "','" + bon1s_Temp.get(i).ifiscal.replace("'", "''") + "','" +  bon1s_Temp.get(i).nis.replace("'", "''") + "','" +  bon1s_Temp.get(i).ai.replace("'", "''") + "', "+bon1s_Temp.get(i).latitude_client+", "+bon1s_Temp.get(i).longitude_client+"";
+            F_SQL =  F_SQL + ")\n VALUES ( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') ," +
+                    " '"+ bon1s_Temp.get(i).code_client.replace("'", "''") + "'," +
+                    " '"+ bon1s_Temp.get(i).client.replace("'", "''") + "'," +
+                    " '"+ bon1s_Temp.get(i).adresse.replace("'", "''") + "'," +
+                    " '"+ bon1s_Temp.get(i).wilaya.replace("'", "''") + "'," +
+                    " '"+ bon1s_Temp.get(i).commune.replace("'", "''") + "'," +
+                    " '"+ bon1s_Temp.get(i).tel.replace("'", "''") + "'," +
+                    " '" + bon1s_Temp.get(i).rc.replace("'", "''") + "'," +
+                    " '" + bon1s_Temp.get(i).ifiscal.replace("'", "''") + "'," +
+                    " '" +  bon1s_Temp.get(i).nis.replace("'", "''") + "'," +
+                    " '" +  bon1s_Temp.get(i).ai.replace("'", "''") + "', " +
+                    " "+bon1s_Temp.get(i).latitude_client+", "+bon1s_Temp.get(i).longitude_client;
 
             F_SQL =  F_SQL + ", iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "')";
 
@@ -765,11 +811,10 @@ public class Ftp_export {
 
             F_SQL =  F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BCC1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
             F_SQL =  F_SQL + "'" + bon1s_Temp.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) +"','" + bon1s_Temp.get(i).heure +"','" + bon1s_Temp.get(i).mode_rg +"','" + bon1s_Temp.get(i).blocage + "','" + bon1s_Temp.get(i).mode_tarif+ "',";
-            F_SQL =  F_SQL + "" + bon1s_Temp.get(i).verser + "," + bon1s_Temp.get(i).timbre +"," + bon1s_Temp.get(i).remise + "," + bon1s_Temp.get(i).solde_ancien + "," + bon1s_Temp.get(i).latitude + "," + bon1s_Temp.get(i).longitude + ", 'TERMINAL_MOBILE');\n" ;
+            F_SQL =  F_SQL + bon1s_Temp.get(i).verser + "," + bon1s_Temp.get(i).timbre +"," + bon1s_Temp.get(i).remise + "," + bon1s_Temp.get(i).solde_ancien + "," + bon1s_Temp.get(i).latitude + "," + bon1s_Temp.get(i).longitude + ", 'TERMINAL_MOBILE');\n" ;
 
 
-            String querry_select = "" +
-                    "SELECT " +
+            String querry_select = "SELECT " +
                     "BON2_TEMP.RECORDID, " +
                     "BON2_TEMP.CODE_BARRE, " +
                     "BON2_TEMP.NUM_BON, " +
@@ -778,14 +823,13 @@ public class Ftp_export {
                     "BON2_TEMP.COLISSAGE, " +
                     "BON2_TEMP.QTE, " +
                     "BON2_TEMP.QTE_GRAT, " +
-                    "BON2_TEMP.PU, " +
+                    "BON2_TEMP.PV_HT, " +
+                    "BON2_TEMP.PA_HT, " +
                     "BON2_TEMP.TVA, " +
                     "BON2_TEMP.CODE_DEPOT, " +
                     "BON2_TEMP.DESTOCK_TYPE, " +
                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                     "BON2_TEMP.DESTOCK_QTE, " +
-                    "PRODUIT.PA_HT, " +
-                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -829,8 +873,8 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "VALUES\n";
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_BCC2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
                 F_SQL =  F_SQL + "'" + bon2s_Temp.get(j).codebarre.replace("'", "''") + "','" + bon2s_Temp.get(j).produit.replace("'", "''") + "', iif('" + bon2s_Temp.get(j).destock_type + "' = 'null', null,'" + bon2s_Temp.get(j).destock_type + "') , iif('" + bon2s_Temp.get(j).destock_code_barre + "' = 'null', null,'" + bon2s_Temp.get(j).destock_code_barre + "') ,'" + bon2s_Temp.get(j).destock_qte + "',";
-                F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).nbr_colis + ","   + bon2s_Temp.get(j).colissage +","  + bon2s_Temp.get(j).qte + "," + bon2s_Temp.get(j).gratuit + ",";
-                F_SQL =  F_SQL + "" +  bon2s_Temp.get(j).tva + ","   + bon2s_Temp.get(j).p_u +","  + bon2s_Temp.get(j).p_u + "," + bon2s_Temp.get(j).pamp + ");\n";
+                F_SQL =  F_SQL +  bon2s_Temp.get(j).nbr_colis + ","   + bon2s_Temp.get(j).colissage +","  + bon2s_Temp.get(j).qte + "," + bon2s_Temp.get(j).gratuit + ",";
+                F_SQL =  F_SQL +  bon2s_Temp.get(j).tva + ","   + bon2s_Temp.get(j).pv_ht +","  + bon2s_Temp.get(j).pv_ht + "," + bon2s_Temp.get(j).pa_ht + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
             }
 
@@ -856,6 +900,8 @@ public class Ftp_export {
                 "CLIENT.TEL, " +
                 "CLIENT.CLIENT, " +
                 "CLIENT.ADRESSE, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
                 "CLIENT.RC, " +
                 "CLIENT.IFISCAL, " +
                 "CLIENT.AI, " +
@@ -870,7 +916,8 @@ public class Ftp_export {
                 "CARNET_C.MODE_RG, " +
                 "CARNET_C.REMARQUES, " +
                 "CARNET_C.UTILISATEUR, " +
-                "CARNET_C.EXPORTATION " +
+                "CARNET_C.EXPORTATION, " +
+                "CARNET_C.IS_EXPORTED " +
 
 
                 "FROM CARNET_C " +
@@ -886,13 +933,15 @@ public class Ftp_export {
             ///////////////////////////////////// JOURNEE //////////////////////////////////////
             F_SQL =  F_SQL + "UPDATE OR INSERT INTO JOURNEE (DATE_JOURNEE) VALUES ('"+ format2.format(dt) + "') MATCHING (DATE_JOURNEE);\n";
             ///////////////////////////////////// CLIENT ///////////////////////////////////////
-            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE,TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE , CODE_VENDEUR ";
+            F_SQL =  F_SQL + "UPDATE OR INSERT INTO CLIENTS (CODE_DEPOT,CODE_CLIENT,CLIENT,ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF,NUM_IS, NUM_ART, LATITUDE, LONGITUDE , CODE_VENDEUR ";
 
             F_SQL =  F_SQL + ")\n VALUES ( " +
                     " iif('" + code_depot + "' = '000000', null, '" + code_depot + "') , " +
                     " '"+ all_versement_client.get(i).code_client + "'," +
                     " iif('"+ all_versement_client.get(i).client + "' = null , null, '"+ all_versement_client.get(i).client.replace("'", "''") + "') , " +
                     " iif('"+ all_versement_client.get(i).adresse + "' = null , null, '"+ all_versement_client.get(i).adresse.replace("'", "''") + "') , " +
+                    " iif('"+ all_versement_client.get(i).wilaya + "' = null , null, '"+ all_versement_client.get(i).wilaya.replace("'", "''") + "') , " +
+                    " iif('"+ all_versement_client.get(i).commune + "' = null , null, '"+ all_versement_client.get(i).commune.replace("'", "''") + "') , " +
                     " iif('"+ all_versement_client.get(i).tel + "' = null, null , '"+ all_versement_client.get(i).tel.replace("'", "''") + "') , " +
                     " iif('"+ all_versement_client.get(i).rc + "' = 'null', null , '"+ all_versement_client.get(i).rc + "') , " +
                     " iif('"+ all_versement_client.get(i).ifiscal + "' = null , null, '"+ all_versement_client.get(i).ifiscal + "') , " +
@@ -909,15 +958,15 @@ public class Ftp_export {
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
             F_SQL =  F_SQL + "INSERT INTO CARNET_C (CODE_VENDEUR, RECORDID,NUM_BON,EXPORTATION,CODE_CAISSE,";
             F_SQL =  F_SQL + "CODE_CLIENT,DATE_CARNET,HEURE,SOURCE,UTILISATEUR,MODE_RG,";
-            F_SQL =  F_SQL + "ACHATS,VERSEMENTS)\n";
+            F_SQL =  F_SQL + " VERSEMENTS)\n";
             F_SQL =  F_SQL + "VALUES \n";
             F_SQL =  F_SQL + "( iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'),  (SELECT GEN_ID(GEN_CARNET_C_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0) FROM RDB$DATABASE) ,6,'000000'),:EXPORTATION:,:CODE_CAISSE:,";
             F_SQL =  F_SQL + "'" + all_versement_client.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + all_versement_client.get(i).carnet_heure + "','SITUATION-CLIENT','TERMINAL_MOBIL','" + all_versement_client.get(i).carnet_mode_rg + "',";
-            F_SQL =  F_SQL + " '" + all_versement_client.get(i).carnet_achats + "'," + all_versement_client.get(i).carnet_versement +");\n";
+            F_SQL =  F_SQL + " " + all_versement_client.get(i).carnet_versement +");\n";
             ///////////////////////////////////CARNET CLIENT////////////////////////////////////
 
             ///////////////////////////////////CAISSE //////////////////////////////////////////
-            if (all_versement_client.get(i).carnet_versement !=0 ) {
+            if (all_versement_client.get(i).carnet_versement != 0 ) {
                 F_SQL =  F_SQL + "INSERT INTO CAISSE2 (CODE_CAISSE,CODE_CAISSE1,SOURCE,NUM_SOURCE,ENTREE,";
                 F_SQL =  F_SQL + "DATE_CAISSE,UTILISATEUR,MODE_RG)\n";
                 F_SQL =  F_SQL + "VALUES \n";
@@ -984,8 +1033,7 @@ public class Ftp_export {
             F_SQL =  F_SQL + "'TERMINAL_MOBILE');\n" ;
 
 
-            String querry_select = "" +
-                    "SELECT " +
+            String querry_select = "SELECT " +
                     "INV2.RECORDID, " +
                     "INV2.CODE_BARRE, " +
                     "INV2.NUM_INV, " +
@@ -1039,8 +1087,8 @@ public class Ftp_export {
                 F_SQL =  F_SQL + "VALUES\n";
                 F_SQL =  F_SQL + "( iif('" + code_depot + "' = '000000', null,'" + code_depot + "') , (SELECT GEN_ID(GEN_INV2_ID,1) FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_INV1_ID,0)    FROM RDB$DATABASE) ,6,'000000'),";
                 F_SQL =  F_SQL + "'" + Inv2s.get(j).codebarre.replace("'", "''") + "',";
-                F_SQL =  F_SQL + ""  + Inv2s.get(j).pa_ht + "," + Inv2s.get(j).qte_theorique + ",";
-                F_SQL =  F_SQL + ""   + Inv2s.get(j).qte_physique +","  + Inv2s.get(j).tva + ");\n";
+                F_SQL =  F_SQL + Inv2s.get(j).pa_ht + "," + Inv2s.get(j).qte_theorique + ",";
+                F_SQL =  F_SQL + Inv2s.get(j).qte_physique +","  + Inv2s.get(j).tva + ");\n";
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
             }
 
@@ -1138,11 +1186,11 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation des BL ..." + finalCount_vente + "/" + F_SQL_LIST_VENTE.size());
+                                    mProgressDialog.setMessage("Exportation des BA ..." + finalCount_vente + "/" + F_SQL_LIST_VENTE.size());
                                 }
                             });
 
-                            s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/VENTE", mProgressDialog);
+                            s =  new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/ACHAT", mProgressDialog);
                             /*try {
                                 if( map.getKey().toString().endsWith(".BLV")){
                                     String num_bon = map.getKey().toString().substring(6, 12);
@@ -1730,8 +1778,8 @@ public class Ftp_export {
                 @Override
                 public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize) {
 
-                    int percent = (int) (bytesTransferred * 100 / file.length());
-                    pDialog.setProgress(percent);
+                    long percent =  bytesTransferred * 100 / file.length();
+                    pDialog.setProgress((int) percent);
 
                     if (totalBytesTransferred == file.length()) {
                         removeCopyStreamListener(streamListener);

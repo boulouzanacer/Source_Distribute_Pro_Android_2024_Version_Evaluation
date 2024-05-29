@@ -1,14 +1,20 @@
 package com.safesoft.proapp.distribute;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,13 +29,25 @@ import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.safesoft.proapp.distribute.activities.ActivityInfo;
 import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.appUpdate.CheckVerRequestTask;
+import com.safesoft.proapp.distribute.appUpdate.UpdateApp;
+import com.safesoft.proapp.distribute.eventsClasses.CheckVersionEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentMain;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
+import com.safesoft.proapp.distribute.utils.Env;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class MainActivity extends AppCompatActivity implements PrinterObserver {
   Fragment objFrgment;
@@ -37,13 +55,21 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
   private RTPrinter rtPrinter = null;
   private PrinterFactory printerFactory;
   final String PREFS = "ALL_PREFS";
+  SharedPreferences pref;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbardrawer);
-    toolbar.setSubtitle("Version : 02.03.24");
+    Toolbar toolbar = findViewById(R.id.toolbardrawer);
+
+    pref = getSharedPreferences(PREFS, 0);
+    if(pref.getBoolean("APP_ACTIVATED", false)){
+      toolbar.setSubtitle(Env.APP_VERION_LABEL);
+    }else{
+      toolbar.setSubtitle(Env.APP_VERION_LABEL + " (Version évaluation)");
+    }
+
     setSupportActionBar(toolbar);
 
     objFrgment = new FragmentMain();
@@ -53,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
       fragmentManager.beginTransaction().replace(R.id.drawer_layoutt,objFrgment).commit();
     }
 
-    SharedPreferences pref = getSharedPreferences(PREFS, 0);
+
     if(pref.getString("date_time", null) == null){
       SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
       Date currentDateTime = Calendar.getInstance().getTime();
@@ -76,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
     //add observer listen for connexion(bluetooth, wifi, usb)
     PrinterObserverManager.getInstance().add(this);
+
+    EventBus.getDefault().register(this);
 
   }
 
@@ -132,7 +160,133 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
       Intent info_intent = new Intent(this, ActivityInfo.class);
       startActivity(info_intent);
       overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }else if(item.getItemId() == R.id.update){
+
+
+      String current_version = "0";
+      String versionCode = "0";
+      String android_unique_id= "0";
+      String seriel_number = "0";
+      int activation_code = 0;
+      String revendeur = "";
+
+      try {
+        PackageManager pm = getPackageManager();
+        String packageName = getPackageName();
+        PackageInfo packageInfo = pm.getPackageInfo(packageName, 0);
+
+        current_version = String.valueOf(packageInfo.versionName);
+        versionCode = String.valueOf(packageInfo.versionCode);
+        android_unique_id = getAndroidID(MainActivity.this);
+        seriel_number = pref.getString("NUM_SERIE","0");
+        activation_code = pref.getInt("CODE_ACTIVATION",0);
+        revendeur = pref.getString("REVENDEUR","0");
+
+      } catch (PackageManager.NameNotFoundException e) {
+        e.printStackTrace();
+      }
+
+      int dowloaded_version = getLocalVersion(getExternalCacheDir().getPath());
+      if(dowloaded_version > Integer.parseInt(current_version)){
+
+        new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Mise a jour disponible")
+                .setContentText("Voulez-vous vraiment Installer la mise à jour "+ dowloaded_version + " ?")
+                .setCancelText("Non")
+                .setConfirmText("Installer")
+                .showCancelButton(true)
+                .setCancelClickListener(Dialog::dismiss)
+                .setConfirmClickListener(sDialog -> {
+
+                  Intent intent = new Intent(Intent.ACTION_VIEW);
+                  intent.setDataAndType(FileProvider.getUriForFile(MainActivity.this, getApplicationContext().getPackageName() + ".provider", new File(getExternalCacheDir() +"/update"+ dowloaded_version +".apk")), "application/vnd.android.package-archive");
+                  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
+                  intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                  startActivity(intent);
+
+                  sDialog.dismiss();
+
+                }).show();
+
+      }else if(dowloaded_version == Integer.parseInt(current_version)){
+        Crouton.makeText(MainActivity.this, "Vous avez déjà la dernière version !", Style.CONFIRM).show();
+      }
+      else{
+        new CheckVerRequestTask().execute(Env.URL_CHECK_VERSION, current_version, versionCode, android_unique_id, seriel_number, String.valueOf(activation_code), revendeur);
+      }
     }
     return super.onOptionsItemSelected(item);
   }
+
+  public int getLocalVersion(String path){
+    String dowloaded_version = "0";
+    // Create a File object
+    File directory = new File(path);
+    // Get all the files in the directory
+    File[] files = directory.listFiles();
+
+    if (files != null) {
+      for (File file : files) {
+        // Check if it is a file or directory
+        if (file.isFile() && file.getName().endsWith(".apk")) {
+
+          dowloaded_version = file.getName().substring(6);
+          dowloaded_version = dowloaded_version.replace(".apk", "");
+
+          break;
+        }
+      }
+    }
+    return Integer.parseInt(dowloaded_version);
+  }
+
+  public static String getAndroidID(Context context) {
+    return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+  }
+
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onGetCheckVerReplayEvent(CheckVersionEvent event)  {
+
+    if(event.getCode() == 200){
+
+      new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
+              .setTitleText("Mise a jour disponible")
+              .setContentText("Voulez-vous vraiment Télécharger la mise à jour "+ event.getVersion() + " ?")
+              .setCancelText("Non")
+              .setConfirmText("Télécharger")
+              .showCancelButton(true)
+              .setCancelClickListener(Dialog::dismiss)
+              .setConfirmClickListener(sDialog -> {
+
+              UpdateApp atualizaApp = new UpdateApp(this, event.getVersion());
+              atualizaApp.setContext(getApplicationContext());
+              atualizaApp.execute("http://144.91.122.24/apk/distribute/app-debug"+event.getVersion()+".apk");
+
+              sDialog.dismiss();
+
+              }).show();
+
+
+    }else if(event.getCode() == 201){
+      Crouton.makeText(MainActivity.this, event.getMessage(), Style.CONFIRM).show();
+    }else if(event.getCode() == 202){
+      Crouton.makeText(MainActivity.this, event.getMessage(), Style.CONFIRM).show();
+    }else if(event.getCode() == 203){
+      Crouton.makeText(MainActivity.this, event.getMessage(), Style.ALERT).show();
+    }else if(event.getCode() == 204){
+      Crouton.makeText(MainActivity.this, event.getMessage(), Style.ALERT).show();
+    }else {
+      Crouton.makeText(MainActivity.this, event.getMessage(), Style.ALERT).show();
+    }
+
+   }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    EventBus.getDefault().unregister(this);
+  }
+
 }
+

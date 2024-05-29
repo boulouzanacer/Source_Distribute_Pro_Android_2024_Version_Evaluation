@@ -7,6 +7,8 @@ public class PostData_Client {
 
     public String code_client;
     public String client;
+    public String wilaya;
+    public String commune;
     public String tel;
     public String adresse;
     public double latitude = 0.0;

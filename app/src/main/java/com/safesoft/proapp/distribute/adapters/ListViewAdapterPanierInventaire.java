@@ -81,6 +81,7 @@ public class ListViewAdapterPanierInventaire extends ArrayAdapter<PostData_Inv2>
     // Populate the data from the data object via the viewHolder object
     // into the template view.
 
+    assert inv2 != null;
     viewHolder.produit.setText(inv2.produit);
     viewHolder.qte_theorique.setText(nq.format(inv2.qte_theorique));
     viewHolder.qte_physique.setText(nq.format(inv2.qte_physique));

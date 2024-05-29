@@ -14,6 +14,7 @@ public class BaseApplication extends Application {
     public static BaseApplication instance = null;
     private RTPrinter rtPrinter;
     private boolean isConnected = false;
+    private boolean isAppActivated = false;
 
     @BaseEnum.CmdType
     private int currentCmdType = BaseEnum.CMD_ESC;//默认为针打
@@ -69,4 +70,5 @@ public class BaseApplication extends Application {
     public void setIsConnected(boolean isConnected){
         this.isConnected = isConnected;
     }
+
 }

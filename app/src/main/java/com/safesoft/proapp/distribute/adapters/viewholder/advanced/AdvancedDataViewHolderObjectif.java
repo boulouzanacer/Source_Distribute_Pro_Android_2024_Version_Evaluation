@@ -50,7 +50,7 @@ public class AdvancedDataViewHolderObjectif extends SettableViewHolder<WrappedMy
 
     mTitle.setText("Objectif : ");
 
-    if(dataObject.getQuantite() != null){
+    if(dataObject.getQuantite() != 0){
       final BadgeDrawable drawable4 =
               new BadgeDrawable.Builder()
                       .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
@@ -63,7 +63,7 @@ public class AdvancedDataViewHolderObjectif extends SettableViewHolder<WrappedMy
     }else
       mQuantite.setText("-");
 
-    if(dataObject.getMontant() != null){
+    if(dataObject.getMontant() != 0){
       if(dataObject.getTitle().equals("N1")){
         final BadgeDrawable drawable4 =
                 new BadgeDrawable.Builder()

@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activities.splashscreen;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,17 +13,23 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.activation.ActivityActivation;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class splashScreen extends AppCompatActivity {
 
     private final String PREFS = "ALL_PREFS";
+    //public static final String NUM_SERIE = "INFO_ACTIVATION";
     public static final String NUM_SERIE = "INFO_ACTIVATION";
 
     public static String revendeur = "SAFE SOFT";
@@ -90,19 +97,46 @@ public class splashScreen extends AppCompatActivity {
             public void run() {
                 SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
                 code_activation = prefs.getInt("CODE_ACTIVATION",0);
+
+
                 if (codeactivation == code_activation ) {
+
+                    saveActivationData(true);
                     startActivity(new Intent(splashScreen.this, MainActivity.class));
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    finish();
 
                 } else {
-                    ////// GO TO REVENDEUR SCREEN ////////////////
-                    Intent intent = new Intent(splashScreen.this, ActivityActivation.class);
-                    intent.putExtra(NUM_SERIE,deviceId2);
-                    intent.putExtra(revendeur,revendeur);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+                    runOnUiThread(() -> new SweetAlertDialog(splashScreen.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Activation")
+                            .setContentText("L'application DISTRIBUTE PRO n'est pas encore activé, Voulez-vous l'activer ? ")
+                            .setCancelText("Demo")
+                            .setConfirmText("Activer")
+                            .showCancelButton(true)
+
+                            .setCancelClickListener(sDialog -> {
+                                startActivity(new Intent(splashScreen.this, MainActivity.class));
+                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                finish();
+                            })
+
+                            .setConfirmClickListener(sDialog -> {
+                            ////// GO TO REVENDEUR SCREEN ////////////////
+                            Intent intent = new Intent(splashScreen.this, ActivityActivation.class);
+                            intent.putExtra(NUM_SERIE,deviceId2);
+                            intent.putExtra(revendeur,revendeur);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                            finish();
+                            }).show());
+
+
+
+                    saveActivationData(false);
                 }
-                finish();
+
+
             }
         },2000);
 
@@ -129,7 +163,16 @@ public class splashScreen extends AppCompatActivity {
 //            }
 //        };
 //        logoTimer.start();
+
     }
+
+    public void saveActivationData(boolean is_activated) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("APP_ACTIVATED", is_activated);
+        editor.apply();
+    }
+
     public void info_revendeur1() {
         inforevenedeur1 = findViewById(R.id.InfoRevendeur1);
         inforevenedeur2 = findViewById(R.id.InfoRevendeur2);

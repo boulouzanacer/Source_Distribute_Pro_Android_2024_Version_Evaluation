@@ -15,9 +15,8 @@ public class PostData_Bon2 implements Serializable{
   public double qte;
   public double gratuit;
   public double pa_ht;
-  public double pamp;
   public double tva;
-  public double p_u;
+  public double pv_ht;
   public String code_depot;
   public double stock_produit;
   public int isNew = 0;

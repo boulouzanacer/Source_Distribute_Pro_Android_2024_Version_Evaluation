@@ -162,7 +162,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
           new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                   .setTitleText("Important !")
-                  .setContentText(" Veuillez régler les paramètres de VAN ( code, nom vendeur ) !")
+                  .setContentText(" Veuillez régler les paramètres de VENDEUR ( code, nom vendeur ) !")
                   .show();
         } else {
           BtnCommandeClient.startAnimation(fadeIn);

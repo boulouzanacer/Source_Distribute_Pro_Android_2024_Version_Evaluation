@@ -1,23 +1,30 @@
 package com.safesoft.proapp.distribute.fragments;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.fragment.app.DialogFragment;
 
 import com.jzxiang.pickerview.TimePickerDialog;
 import com.jzxiang.pickerview.data.Type;
 import com.jzxiang.pickerview.listener.OnDateSetListener;
+import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.adapters.AdapterCommune;
+import com.safesoft.proapp.distribute.adapters.AdapterWilaya;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.EtatZSelection_Event;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
-import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.postData.PostData_commune;
+import com.safesoft.proapp.distribute.postData.PostData_wilaya;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,19 +47,30 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
   private String selected_user;
   private PostData_Client code_user;
   private String code_client;
+  private MaterialBetterSpinner clientSpinner;
+  Spinner wilayaSpinner, communeSpinner;
 
 
   private String Date_From;
   private String Date_To;
+  private String wilaya;
+  private String commune;
 
   private TextView beginsession_date;
   private TextView endsession_date;
-
 
   private Context mContext;
 
   private TimePickerDialog mDialogAll_first;
   private TimePickerDialog mDialogAll_end;
+
+  ArrayAdapter<String> clientAdapter;
+  AdapterWilaya adapterwilaya;
+  AdapterCommune adaptercommune;
+  Resources res;
+  private ArrayList<PostData_wilaya> wilayas =   new ArrayList<>();
+  private ArrayList<PostData_wilaya> wilayas_temp =   new ArrayList<>();
+  private ArrayList<PostData_commune> communes = new ArrayList<>();
 
 
   public FragmentSelectUser() {
@@ -69,49 +87,83 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
     getDialog().setTitle("Sélectionner");
     valid = (Button) rootView.findViewById(R.id.valid);
     valid.setBackgroundColor(getResources().getColor(R.color.emerald));
+
     controller = new DATABASE(getActivity());
+
     clients = controller.select_clients_from_database("SELECT * FROM Client ORDER BY CLIENT");
     SPINNERLIST = new String[clients.size()];
     for (int i = 0; i < clients.size(); i++) {
       SPINNERLIST[i] = clients.get(i).client;
     }
-    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, SPINNERLIST);
-    final MaterialBetterSpinner materialDesignSpinner = (MaterialBetterSpinner) rootView.findViewById(R.id.android_material_design_spinner);
-    materialDesignSpinner.setAdapter(arrayAdapter);
-    materialDesignSpinner.setText("Tous");
 
-    materialDesignSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    clientSpinner = rootView.findViewById(R.id.client_spinner);
+    wilayaSpinner = rootView.findViewById(R.id.wilaya_spinner);
+    communeSpinner = rootView.findViewById(R.id.commune_spinner);
+
+    clientAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, SPINNERLIST);
+    clientSpinner.setAdapter(clientAdapter);
+    clientSpinner.setText("Tous");
+
+    clientSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         selected_user = parent.getItemAtPosition(position).toString();
       }
     });
 
+    res = rootView.getResources();
+    wilayas = controller.select_wilayas_from_database("SELECT * FROM WILAYAS ORDER BY ID");
+    adapterwilaya = new AdapterWilaya(mContext, R.layout.dropdown_wilaya_commune_item, wilayas, res);
+    wilayaSpinner.setAdapter(adapterwilaya);
+
+    wilayaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+          wilaya = wilayas.get(position).wilaya;
+          setRecyleCommune(res, wilayas.get(position).id);
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+
+      }
+
+    });
+
+    communeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        commune = communes.get(position).commune;
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+
+      }
+    });
+
     getDialog().setCanceledOnTouchOutside(true);
 
-    valid.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        // do some work
-        valid.setBackgroundColor(getResources().getColor(R.color.nephritis));
-        if(materialDesignSpinner.getText().toString().equals("Tous")){
-          selected_user = "%";
-          code_client= null;
-        }else{
-          selected_user = materialDesignSpinner.getText().toString();
-          code_user = controller.select_client_etat_from_database(selected_user);
-          code_client = code_user.code_client;
-
-
-        }
-        EventBus.getDefault().post(new EtatZSelection_Event(selected_user, Date_From, Date_To, code_client));
-        getDialog().dismiss();
+    valid.setOnClickListener(v -> {
+      // do some work
+      valid.setBackgroundColor(getResources().getColor(R.color.nephritis));
+      if(clientSpinner.getText().toString().equals("Tous")){
+        selected_user = "%";
+        code_client = null;
+      }else{
+        selected_user = clientSpinner.getText().toString();
+        code_user = controller.select_client_etat_from_database(selected_user);
+        code_client = code_user.code_client;
       }
+
+      EventBus.getDefault().post(new EtatZSelection_Event(selected_user, Date_From, Date_To, code_client, this.wilaya, this.commune));
+      getDialog().dismiss();
+
     });
 
     Calendar c = Calendar.getInstance();
     SimpleDateFormat df_affiche = new SimpleDateFormat("dd/MM/yyyy");
-//
+
 
     c.add(Calendar.DAY_OF_YEAR, -1);
     Date newDate = c.getTime();
@@ -224,5 +276,13 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
       endsession_date.setText(df_affiche.format(selected_date));
       Date_To = df_affiche.format(selected_date);
     }
+  }
+
+
+  public void setRecyleCommune(Resources res, int wilaya_id){
+    communes.clear();
+    communes = controller.select_communes_from_database("SELECT * FROM COMMUNES WHERE WILAYA_ID = " + wilaya_id + " ORDER BY NAME");
+    adaptercommune = new AdapterCommune(mContext, R.layout.dropdown_wilaya_commune_item, communes , res);
+    communeSpinner.setAdapter(adaptercommune);
   }
 }

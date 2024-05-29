@@ -24,11 +24,13 @@ import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterInv1;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
+import com.safesoft.proapp.distribute.utils.Env;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -62,6 +64,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
   private ArrayList<PostData_Bon2> bon2_print;
 
   private final String PREFS = "ALL_PREFS";
+  SharedPreferences prefs;
   private String CODE_DEPOT;
   private String SOURCE_EXPORT = "";
 
@@ -87,7 +90,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
     initViews();
 
-    SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+    prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
     Server = prefs.getString("ip", "192.168.1.94");
     Path = prefs.getString("path", "C:/PMEPRO1122");
     Username = prefs.getString("username", "SYSDBA");
@@ -103,8 +106,8 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     recyclerView = (RecyclerView) findViewById(R.id.recycler_view_inv);
 
     ///////////////////
-    SharedPreferences prefs2 = getSharedPreferences(PREFS, MODE_PRIVATE);
-    CODE_DEPOT = prefs2.getString("CODE_DEPOT", "000000");
+    prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+    CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
   }
 
   @Override
@@ -275,11 +278,19 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     if(item.getItemId() == android.R.id.home){
       onBackPressed();
     }else if(item.getItemId() == R.id.new_inventaire){
+      if(!prefs.getBoolean("APP_ACTIVATED",false) && !inv1s.isEmpty()){
+        new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Important !")
+                .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                .show();
+      }else{
         Intent editIntent = new Intent(ActivityInventaires.this, ActivityInventaire.class);
         editIntent.putExtra("TYPE_ACTIVITY", "NEW_INV");
         editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
         startActivity(editIntent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+      }
+
     }
     return super.onOptionsItemSelected(item);
   }

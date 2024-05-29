@@ -2,6 +2,7 @@ package com.safesoft.proapp.distribute.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
@@ -45,6 +46,8 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
     private final String SOURCE;
 
     private Context mContext;
+    private final String PREFS = "ALL_PREFS";
+    private SharedPreferences prefs;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -56,6 +59,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         TextView Heure_bon;
         TextView Diff_time;
         TextView Versement;
+        TextView Benifice;
         CardView cardView;
         SlantedTextView blocage;
         LinearLayout lnr_versement;
@@ -72,7 +76,9 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
             Heure_bon = view.findViewById(R.id.heure_bon);
             Diff_time = view.findViewById(R.id.diff_time);
             Versement = view.findViewById(R.id.versement_bon);
+            Benifice = view.findViewById(R.id.txt_benifice);
             blocage = view.findViewById(R.id.blocage);
+            lnr_versement = view.findViewById(R.id.lnr_versement);
             lnr_versement = view.findViewById(R.id.lnr_versement);
         }
     }
@@ -82,8 +88,11 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         this.bon1List = itemList;
         this.SOURCE =SOURCE;
         this.mContext = context;
+        prefs = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
+
+
     }
 
     @NonNull
@@ -111,8 +120,16 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         if(SOURCE.equals("SALE")){
             holder.lnr_versement.setVisibility(View.VISIBLE);
             holder.Versement.setText(""+ new DecimalFormat("##,##0.00").format(item.verser) + " DA");
+
+            if(prefs.getBoolean("AFFICHAGE_BENIFICE", false)){
+                holder.Benifice.setVisibility(View.VISIBLE);
+                holder.Benifice.setText("Bénéfice : "+ new DecimalFormat("##,##0.00").format(item.benifice_par_bon) + " DA");
+            }else{
+                holder.Benifice.setVisibility(View.GONE);
+            }
         }else if(SOURCE.equals("ORDER")){
             holder.lnr_versement.setVisibility(View.GONE);
+            holder.Benifice.setVisibility(View.GONE);
         }
 
         holder.Montant.setText(""+ new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
@@ -124,7 +141,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         final BadgeDrawable drawable1 = new BadgeDrawable.Builder()
                 .type(BadgeDrawable.TYPE_NUMBER)
                 .badgeColor(0xff303F9F)
-                .textSize(35)
+                .textSize(50)
                 .number(item.nbr_p)
                 .build();
 
@@ -145,25 +162,27 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         });
 
 
-        if (item.montant_bon < 0) {
-            holder.blocage.setText("Retour")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.MAGENTA)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+        if(item.blocage.equals("F")){
+            if (item.montant_bon < 0) {
+                holder.blocage.setText("Retour")
+                        .setTextColor(Color.WHITE)
+                        .setSlantedBackgroundColor(Color.MAGENTA)
+                        .setTextSize(21)
+                        .setSlantedLength(80)
+                        .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
 
-            holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
-        }else if(item.blocage.equals("F")){
-            holder.blocage.setText("Validé")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.GREEN)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+                holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
+            }else {
+                holder.blocage.setText("Validé")
+                        .setTextColor(Color.WHITE)
+                        .setSlantedBackgroundColor(Color.GREEN)
+                        .setTextSize(21)
+                        .setSlantedLength(80)
+                        .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
 
-            holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
+                holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
 
+            }
         } else {
             holder.blocage.setText("En attente")
                     .setTextColor(Color.WHITE)

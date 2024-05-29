@@ -27,6 +27,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 
@@ -69,13 +70,14 @@ public class GeneratePDF {
 
     PostData_Bon1 Bon1;
     PostData_Achat1 achat1;
-    ArrayList<PostData_Bon2> final_panier;
+    ArrayList<PostData_Bon2> final_panier_vente;
+    ArrayList<PostData_Achat2> final_panier_achat;
     String SOURCE;
 
     public void startPDFVente(Activity mActivity, PostData_Bon1 bon1, ArrayList<PostData_Bon2> final_panier, String SOURCE){
         this.mActivity = mActivity;
         this.Bon1 = bon1;
-        this.final_panier = final_panier;
+        this.final_panier_vente = final_panier;
         this.SOURCE = SOURCE;
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
 
@@ -86,10 +88,10 @@ public class GeneratePDF {
     }
 
 
-    public void startPDFAchat(Activity mActivity, PostData_Achat1 achat1, ArrayList<PostData_Bon2> final_panier, String SOURCE){
+    public void startPDFAchat(Activity mActivity, PostData_Achat1 achat1, ArrayList<PostData_Achat2> final_panier, String SOURCE){
         this.mActivity = mActivity;
         this.achat1 = achat1;
-        this.final_panier = final_panier;
+        this.final_panier_achat = final_panier;
         this.SOURCE = SOURCE;
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
 
@@ -290,27 +292,27 @@ public class GeneratePDF {
         double tot_qte = 0.0;
         int facture_y = 330;
 
-        for(int i = 0; i < final_panier.size() ; i++){
-            tot_qte = tot_qte + final_panier.get(i).qte;
+        for(int i = 0; i < final_panier_achat.size() ; i++){
+            tot_qte = tot_qte + final_panier_achat.get(i).qte;
             facture_y = 330 + (i * 20);
 
             String nc = "", colissage = "", gratuit = "";
             ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
-            if(final_panier.get(i).nbr_colis != 0){
-                nc = new DecimalFormat( "####0.##").format(final_panier.get(i).nbr_colis);
-                colissage = new DecimalFormat( "####0.##").format(final_panier.get(i).colissage);
+            if(final_panier_achat.get(i).nbr_colis != 0){
+                nc = new DecimalFormat( "####0.##").format(final_panier_achat.get(i).nbr_colis);
+                colissage = new DecimalFormat( "####0.##").format(final_panier_achat.get(i).colissage);
             }
-            if(final_panier.get(i).gratuit != 0){
-                gratuit = new DecimalFormat( "####0.##").format(final_panier.get(i).gratuit);
+            if(final_panier_achat.get(i).gratuit != 0){
+                gratuit = new DecimalFormat( "####0.##").format(final_panier_achat.get(i).gratuit);
             }
 
             canvas.drawText(createLine(
                             String.valueOf(i + 1),
-                            final_panier.get(i).produit ,
+                            final_panier_achat.get(i).produit ,
                             nc,
                             colissage,
-                            new DecimalFormat( "####0.##").format(final_panier.get(i).qte), gratuit,
-                            new DecimalFormat("####0.00").format(final_panier.get(i).p_u)),
+                            new DecimalFormat( "####0.##").format(final_panier_achat.get(i).qte), gratuit,
+                            new DecimalFormat("####0.00").format(final_panier_achat.get(i).pa_ht)),
                     mergeleft , facture_y , title);
 
             canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
@@ -320,7 +322,7 @@ public class GeneratePDF {
         String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
 
-        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(final_panier.size()));
+        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(final_panier_achat.size()));
         total_ht_bon_str   =  new DecimalFormat("####0.00").format(achat1.tot_ht);
         tva_bon_str   =  new DecimalFormat("####0.00").format(achat1.tot_tva);
         timbre_bon_str   =  new DecimalFormat("####0.00").format(achat1.timbre);
@@ -526,27 +528,27 @@ public class GeneratePDF {
         double tot_qte = 0.0;
         int facture_y = 330;
 
-        for(int i = 0; i < final_panier.size() ; i++){
-            tot_qte = tot_qte + final_panier.get(i).qte;
+        for(int i = 0; i < final_panier_vente.size() ; i++){
+            tot_qte = tot_qte + final_panier_vente.get(i).qte;
             facture_y = 330 + (i * 20);
 
             String nc = "", colissage = "", gratuit = "";
             ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
-            if(final_panier.get(i).nbr_colis != 0){
-                nc = new DecimalFormat( "####0.##").format(final_panier.get(i).nbr_colis);
-                colissage = new DecimalFormat( "####0.##").format(final_panier.get(i).colissage);
+            if(final_panier_vente.get(i).nbr_colis != 0){
+                nc = new DecimalFormat( "####0.##").format(final_panier_vente.get(i).nbr_colis);
+                colissage = new DecimalFormat( "####0.##").format(final_panier_vente.get(i).colissage);
             }
-            if(final_panier.get(i).gratuit != 0){
-                gratuit = new DecimalFormat( "####0.##").format(final_panier.get(i).gratuit);
+            if(final_panier_vente.get(i).gratuit != 0){
+                gratuit = new DecimalFormat( "####0.##").format(final_panier_vente.get(i).gratuit);
             }
 
             canvas.drawText(createLine(
                             String.valueOf(i + 1),
-                            final_panier.get(i).produit ,
+                            final_panier_vente.get(i).produit ,
                             nc,
                             colissage,
-                            new DecimalFormat( "####0.##").format(final_panier.get(i).qte), gratuit,
-                            new DecimalFormat("####0.00").format(final_panier.get(i).p_u)),
+                            new DecimalFormat( "####0.##").format(final_panier_vente.get(i).qte), gratuit,
+                            new DecimalFormat("####0.00").format(final_panier_vente.get(i).pa_ht)),
                     mergeleft , facture_y , title);
 
             canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
@@ -556,7 +558,7 @@ public class GeneratePDF {
         String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
 
-        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(final_panier.size()));
+        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(final_panier_vente.size()));
         total_ht_bon_str   =  new DecimalFormat("####0.00").format(Bon1.tot_ht);
         tva_bon_str   =  new DecimalFormat("####0.00").format(Bon1.tot_tva);
         timbre_bon_str   =  new DecimalFormat("####0.00").format(Bon1.timbre);

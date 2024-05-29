@@ -21,10 +21,13 @@ import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterAchat1;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.printing.Printing;
+import com.safesoft.proapp.distribute.utils.Env;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -43,7 +46,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     RecyclerView recyclerView;
     RecyclerAdapterAchat1 adapter;
     ArrayList<PostData_Achat1> achat1s;
-    ArrayList<PostData_Bon2> final_panier;
+    ArrayList<PostData_Achat2> final_panier;
     DATABASE controller;
 
     private final String PREFS = "ALL_PREFS";
@@ -261,10 +264,11 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                                 "ACHAT2.COLISSAGE, " +
                                 "ACHAT2.QTE, " +
                                 "ACHAT2.QTE_GRAT, " +
-                                "ACHAT2.PU, " +
+                                "ACHAT2.PA_HT, " +
                                 "ACHAT2.TVA, " +
                                 "ACHAT2.CODE_DEPOT, " +
                                 "ACHAT2.QTE_GRAT, " +
+                                "PRODUIT.PAMP, " +
                                 "PRODUIT.STOCK " +
                                 "FROM ACHAT2 " +
                                 "LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
@@ -276,7 +280,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
                             Printing printer = new Printing();
                             try {
-                                printer.start_print_bon(bactivity, "ACHAT", final_panier, null, achat1s.get(position));
+                                printer.start_print_bon_achat(bactivity, "ACHAT", final_panier, achat1s.get(position));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -338,11 +342,19 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
-            Intent editIntent = new Intent(ActivityAchats.this, ActivityAchat.class);
-            editIntent.putExtra("TYPE_ACTIVITY", "NEW_ACHAT");
-            editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-            startActivity(editIntent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            if(!prefs.getBoolean("APP_ACTIVATED",false) && !achat1s.isEmpty()){
+                new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                        .show();
+            }else{
+                Intent editIntent = new Intent(ActivityAchats.this, ActivityAchat.class);
+                editIntent.putExtra("TYPE_ACTIVITY", "NEW_ACHAT");
+                editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
+                startActivity(editIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }

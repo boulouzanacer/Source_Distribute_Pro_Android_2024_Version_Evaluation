@@ -54,6 +54,7 @@ import com.rt.printerlibrary.setting.TextSetting;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
@@ -88,7 +89,8 @@ public class Printing {
     private TextSetting textSetting;
     private final String mChartsetName = "UTF-8";
     private Object configObj;
-    private ArrayList<PostData_Bon2> final_panier;
+    private ArrayList<PostData_Bon2> final_panier_vente;
+    private ArrayList<PostData_Achat2> final_panier_achat;
     private PostData_Produit produit;
     private PostData_Bon1 bon1;
     private PostData_Achat1 achat1;
@@ -96,12 +98,11 @@ public class Printing {
     private String type_print;
 
     /////////////////////////////////////// IMPRIMER BON ///////////////////////////////////////////
-    public void start_print_bon(Activity activity, String type_print, ArrayList<PostData_Bon2> final_panier, PostData_Bon1 bon1, PostData_Achat1 achat1)  throws UnsupportedEncodingException {
+    public void start_print_bon_vente(Activity activity, String type_print, ArrayList<PostData_Bon2> final_panier, PostData_Bon1 bon1)  throws UnsupportedEncodingException {
 
         mActivity = activity;
-        this.final_panier = final_panier;
+        this.final_panier_vente = final_panier;
         this.bon1 = bon1;
-        this.achat1 = achat1;
         this.type_print = type_print;
 
         AsyncTask<Void, Void, Boolean> runningTask;
@@ -159,6 +160,68 @@ public class Printing {
         }
     }
 
+
+    public void start_print_bon_achat(Activity activity, String type_print, ArrayList<PostData_Achat2> final_panier, PostData_Achat1 achat1)  throws UnsupportedEncodingException {
+
+        mActivity = activity;
+        this.final_panier_achat = final_panier;
+        this.achat1 = achat1;
+        this.type_print = type_print;
+
+        AsyncTask<Void, Void, Boolean> runningTask;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                return;
+            }
+
+        }
+
+        BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
+        printerFactory = new ThermalPrinterFactory();
+        rtPrinter = printerFactory.create();
+        textSetting = new TextSetting();
+
+
+        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            BluetoothDevice device = null;
+            pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
+            boolean isfound = false;
+            Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            for(int i = 0; i< pairedDeviceList.size() ; i++){
+                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+                    isfound = true;
+                    device = pairedDeviceList.get(i);
+
+                }
+            }
+            if(isfound){
+                Log.v("PRINTER_CONX", "Device found");
+                if(device != null){
+                    configObj = new BluetoothEdrConfigBean(device);
+                    BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
+                    runningTask = new LongOperation(bluetoothEdrConfigBean);
+                    runningTask.execute();
+                }
+            }else {
+                Log.v("PRINTER_CONX", "Device not found");
+                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+            }
+
+        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
+
+            runningTask = new LongOperation(wiFiConfigBean);
+            runningTask.execute();
+
+        }
+    }
     /////////////////////////////////// IMPRIMER ETIQUETTE /////////////////////////////////////////
     public void start_print_etiquette(Activity activity, PostData_Produit produit) {
 
@@ -564,24 +627,24 @@ public class Printing {
                     //nbr_colis = 10.0; colissage =23.0 ; qte = 120.00 ; gte_gratuit = 1.0;  prix_unit = 12345.33 ;
 
 
-                    for(int i=0; i< final_panier.size() ; i++ ){
+                    for(int i=0; i< final_panier_achat.size() ; i++ ){
 
 
-                        cmd.append(cmd.getTextCmd(textSetting, final_panier.get(i).produit));
+                        cmd.append(cmd.getTextCmd(textSetting, final_panier_achat.get(i).produit));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        nbr_colis = final_panier.get(i).nbr_colis;
+                        nbr_colis = final_panier_achat.get(i).nbr_colis;
                         nbr_colis_Str   =  new DecimalFormat("####0.##").format(nbr_colis);
 
-                        colissage = final_panier.get(i).colissage;
+                        colissage = final_panier_achat.get(i).colissage;
                         colissage_Str   =  new DecimalFormat("####0.##").format(colissage);
 
-                        qte = final_panier.get(i).qte;
+                        qte = final_panier_achat.get(i).qte;
                         qte_Str         =  new DecimalFormat("####0.##").format(qte);
 
-                        gte_gratuit = final_panier.get(i).gratuit;
+                        gte_gratuit = final_panier_achat.get(i).gratuit;
                         gte_gratuit_Str =  new DecimalFormat( "####0.##").format(gte_gratuit);
 
-                        prix_unit = final_panier.get(i).p_u;
+                        prix_unit = final_panier_achat.get(i).pa_ht;
                         prix_unit_Str   =  new DecimalFormat("####0.00").format(prix_unit);
 
 
@@ -618,7 +681,7 @@ public class Printing {
                     Double total_ht_bon, tva_bon, timbre_bon, total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
                     String nbr_produit_str, total_ht_bon_str , tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
-                    nbr_produit = final_panier.size();
+                    nbr_produit = final_panier_achat.size();
                     nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
 
                     total_ht_bon = achat1.tot_ht;
@@ -877,24 +940,24 @@ public class Printing {
                     //nbr_colis = 10.0; colissage =23.0 ; qte = 120.00 ; gte_gratuit = 1.0;  prix_unit = 12345.33 ;
 
 
-                    for(int i=0; i< final_panier.size() ; i++ ){
+                    for(int i=0; i< final_panier_vente.size() ; i++ ){
 
 
-                        cmd.append(cmd.getTextCmd(textSetting, final_panier.get(i).produit));
+                        cmd.append(cmd.getTextCmd(textSetting, final_panier_vente.get(i).produit));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        nbr_colis = final_panier.get(i).nbr_colis;
+                        nbr_colis = final_panier_vente.get(i).nbr_colis;
                         nbr_colis_Str   =  new DecimalFormat("####0.##").format(nbr_colis);
 
-                        colissage = final_panier.get(i).colissage;
+                        colissage = final_panier_vente.get(i).colissage;
                         colissage_Str   =  new DecimalFormat("####0.##").format(colissage);
 
-                        qte = final_panier.get(i).qte;
+                        qte = final_panier_vente.get(i).qte;
                         qte_Str         =  new DecimalFormat("####0.##").format(qte);
 
-                        gte_gratuit = final_panier.get(i).gratuit;
+                        gte_gratuit = final_panier_vente.get(i).gratuit;
                         gte_gratuit_Str =  new DecimalFormat( "####0.##").format(gte_gratuit);
 
-                        prix_unit = final_panier.get(i).p_u;
+                        prix_unit = final_panier_vente.get(i).pv_ht;
                         prix_unit_Str   =  new DecimalFormat("####0.00").format(prix_unit);
 
 
@@ -931,7 +994,7 @@ public class Printing {
                     Double total_ht_bon, tva_bon, timbre_bon, total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
                     String nbr_produit_str, total_ht_bon_str , tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
-                    nbr_produit = final_panier.size();
+                    nbr_produit = final_panier_vente.size();
                     nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
 
                     total_ht_bon = bon1.tot_ht;

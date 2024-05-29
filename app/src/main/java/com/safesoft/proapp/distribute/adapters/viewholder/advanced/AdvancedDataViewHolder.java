@@ -16,6 +16,7 @@ import com.safesoft.proapp.distribute.R;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Objects;
 
 import cn.nekocode.badge.BadgeDrawable;
 import eu.inloop.simplerecycleradapter.SettableViewHolder;
@@ -48,14 +49,14 @@ public class AdvancedDataViewHolder extends SettableViewHolder<WrappedMyDataObje
   public void setData(@NonNull WrappedMyDataObject data) {
     MyDataObject dataObject = data.getDataObject();
     mTitle.setText(dataObject.getTitle());
-    if(dataObject.getQuantite() != null){
+    if(dataObject.getQuantite() != 0){
       mQuantite.setText(new DecimalFormat("##,##0").format(Double.valueOf(dataObject.getQuantite())));
     }else
       mQuantite.setText("-");
 
-    if(dataObject.getMontant() != null){
-      final BadgeDrawable drawable4 =
-              new BadgeDrawable.Builder()
+    if(Objects.equals(dataObject.getParent(), "1")){
+
+      final BadgeDrawable drawable4 = new BadgeDrawable.Builder()
                       .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
                       .badgeColor(0xff303F9F)
                       .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(dataObject.getMontant())))
@@ -63,9 +64,24 @@ public class AdvancedDataViewHolder extends SettableViewHolder<WrappedMyDataObje
                       .build();
       SpannableString spannableString2 = new SpannableString(TextUtils.concat(drawable4.toSpannable()));
       mMontant.setText(spannableString2);
+
     }else{
-      mMontant.setText("-");
+      if(dataObject.getMontant() != 0){
+
+        final BadgeDrawable drawable4 = new BadgeDrawable.Builder()
+                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
+                        .badgeColor(0xff303F9F)
+                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(dataObject.getMontant())))
+                        .text2(" DA ")
+                        .build();
+        SpannableString spannableString2 = new SpannableString(TextUtils.concat(drawable4.toSpannable()));
+        mMontant.setText(spannableString2);
+
+      }else{
+        mMontant.setText("-");
+      }
     }
+
   }
 
   @Nullable

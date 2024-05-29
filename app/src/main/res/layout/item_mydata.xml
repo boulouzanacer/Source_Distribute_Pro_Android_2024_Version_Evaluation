@@ -16,7 +16,7 @@
 
         <me.grantland.widget.AutofitTextView
             android:id="@+id/title"
-            android:layout_width="185sp"
+            android:layout_width="180sp"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Title"
@@ -24,22 +24,32 @@
             tools:minTextSize="16sp" />
 
         <TextView
-            android:id="@+id/montant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="180.00 DA"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
             android:id="@+id/quantite"
             android:text="30.00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/title"
             android:layout_toEndOf="@+id/title" />
+
+        <!--<TextView
+            android:id="@+id/gratuite"
+            android:text="2.00"
+            android:gravity="end"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/quantite" />-->
+
+        <TextView
+            android:id="@+id/montant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="180.00 DA"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+
+
     </RelativeLayout>
 
 </LinearLayout>

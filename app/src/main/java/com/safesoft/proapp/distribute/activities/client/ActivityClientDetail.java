@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.activities.product.ActivityProduitDetail;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter_Situation;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
@@ -67,8 +68,6 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class ActivityClientDetail extends AppCompatActivity implements RecyclerAdapter_Situation.ItemClick {
 
 
-
-  private final String PREFS = "ALL_PREFS";
   Boolean printer_mode_integrate = true;
   private NumberFormat nf;
 
@@ -99,6 +98,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   private PostData_Carnet_c carnet_c_print;
 
   PostData_Carnet_c selected_versement = null;
+  private final String PREFS = "ALL_PREFS";
+  SharedPreferences prefs;
 
   @RequiresApi(api = Build.VERSION_CODES.S)
   @Override
@@ -110,6 +111,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     getSupportActionBar().setTitle("Situation Client");
    // getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.blue)));
 
+
+    prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
     // client.client = getIntent().getStringExtra("CLIENT");
     CODE_CLIENT = getIntent().getStringExtra("CODE_CLIENT");
@@ -230,6 +233,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
             "CLIENT.TEL, " +
             "CLIENT.CLIENT, " +
             "CLIENT.ADRESSE, " +
+            "CLIENT.WILAYA, " +
+            "CLIENT.COMMUNE, " +
             "CLIENT.RC, " +
             "Client.IFISCAL, " +
             "CLIENT.AI, " +
@@ -244,7 +249,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
             "CARNET_C.MODE_RG, " +
             "CARNET_C.REMARQUES, " +
             "CARNET_C.UTILISATEUR, " +
-            "CARNET_C.EXPORTATION " +
+            "CARNET_C.EXPORTATION, " +
+            "CARNET_C.IS_EXPORTED " +
 
             "FROM CARNET_C " +
             "LEFT JOIN CLIENT ON " +
@@ -262,10 +268,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
     TvClient.setText(client.client);
     TvTel.setText(client.tel);
-
-    if (client.adresse != null)
-      TvAdresse.setText(client.adresse);
-
+    TvAdresse.setText(client.adresse + " / " + client.commune + " - " + client.wilaya);
     TvCodeClient.setText(client.code_client);
 
 
@@ -283,8 +286,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     }
 
 
-    SharedPreferences prefs3 = getSharedPreferences(PREFS, MODE_PRIVATE);
-    if (prefs3.getBoolean("ACHATS_SHOW", false)) {
+    if (prefs.getBoolean("SHOW_ACHAT_CLIENT", false)) {
       TvAchat.setVisibility(View.VISIBLE);
     } else {
       TvAchat.setVisibility(View.GONE);
@@ -312,6 +314,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
       TvVerser.setText(spannableString7);
 
 
+    if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
       final BadgeDrawable drawable8 =
               new BadgeDrawable.Builder()
                       .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
@@ -321,6 +324,11 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                       .build();
       SpannableString spannableString8 = new SpannableString(TextUtils.concat(drawable8.toSpannable()));
       TvSolde.setText(spannableString8);
+    } else {
+      TvSolde.setText("********");
+    }
+
+
 
 
   }
@@ -405,6 +413,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+
     if(item.getItemId() == android.R.id.home){
       onBackPressed();
     }else if(item.getItemId() == R.id.print_versement){
@@ -418,6 +427,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
       FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
       fragmentnewclient.showDialogbox(ActivityClientDetail.this, getBaseContext(), "EDIT_CLIENT", client);
     }
+
     return super.onOptionsItemSelected(item);
   }
 
@@ -508,53 +518,81 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
   public void onClick(View v, int position, final  PostData_Carnet_c carnet_c) {
 
     switch (v.getId()) {
-      case R.id.btn_edit_situation ->
-              new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                      .setTitleText("Situation")
-                      .setContentText("Voulez-vous vraiment modifier cette situation?!")
-                      .setCancelText("Non")
-                      .setConfirmText("Modifier")
-                      .showCancelButton(true)
-                      .setCancelClickListener(Dialog::dismiss)
-                      .setConfirmClickListener(sDialog -> {
+        case R.id.btn_edit_situation -> {
 
-                        FragmentVersementClient fragmentversementclient = new FragmentVersementClient();
-                        fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, carnet_c.carnet_versement, carnet_c.carnet_remarque, client.code_client, true, carnet_c.recordid);
+          if (carnet_c.is_exported != 0) {
+            new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Attention !")
+                    .setContentText("Versement déjà exporté, Modification impossible !")
+                    .show();
+            return;
 
-                        sDialog.dismiss();
-                      })
-                      .show();
-      case R.id.btn_remove_situation ->
-              new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                      .setTitleText("Suppression")
-                      .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_c.recordid + " ?!")
-                      .setCancelText("Anuuler")
-                      .setConfirmText("Supprimer")
-                      .showCancelButton(true)
-                      .setCancelClickListener(Dialog::dismiss)
-                      .setConfirmClickListener(sDialog -> {
-
-                        if (controller.delete_versement(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)) {
-                          Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
-                        } else {
-                          Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
-                        }
-                        Update_client_details();
-
-                        sDialog.dismiss();
-
-                      }).show();
-      case R.id.lnr_item_root ->{
-        Log.v("fffff","ggggggg : " + position);
-        selected_versement = carnet_c;
-        /*for (int i = 0; i < recyclerView.getChildCount(); i++) {
-          if(position == i ){
-           // recyclerView.getChildAt(i).setBackgroundColor(Color.BLUE);
-            recyclerView.getChildAt(i).setBackgroundResource(R.color.blue);
-          }else{
-            recyclerView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
           }
-        }*/
+          if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
+            new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Situation")
+                    .setContentText("Voulez-vous vraiment modifier cette situation?!")
+                    .setCancelText("Non")
+                    .setConfirmText("Modifier")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
+
+                      FragmentVersementClient fragmentversementclient = new FragmentVersementClient();
+                      fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, carnet_c.carnet_versement, carnet_c.carnet_remarque, client.code_client, true, carnet_c.recordid);
+
+                      sDialog.dismiss();
+                    }).show();
+          }else {
+            new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Attention !")
+                    .setContentText("Vous n'êtes pas autorisé à modifier cette situation !")
+                    .show();
+          }
+
+        }
+        case R.id.btn_remove_situation -> {
+
+            if (carnet_c.is_exported != 0) {
+              new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
+                      .setTitleText("Attention !")
+                      .setContentText("Versement déjà exporté, Suppression impossible !")
+                      .show();
+              return;
+
+            }
+
+          if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
+            new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Suppression")
+                    .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_c.recordid + " ?!")
+                    .setCancelText("Anuuler")
+                    .setConfirmText("Supprimer")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
+
+                      if (controller.delete_versement(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)) {
+                        Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
+                      } else {
+                        Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
+                      }
+                      Update_client_details();
+
+                      sDialog.dismiss();
+
+                    }).show();
+          }else {
+            new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Attention !")
+                    .setContentText("Vous n'êtes pas autorisé à supprimer cette situation !")
+                    .show();
+          }
+
+        }
+
+        case R.id.lnr_item_root ->{
+        selected_versement = carnet_c;
       }
 
     }

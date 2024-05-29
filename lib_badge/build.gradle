@@ -16,9 +16,16 @@ android {
         }
     }
     namespace 'cn.nekocode.badge'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    /*kotlinOptions {
+        jvmTarget = '1.8'
+    }*/
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.annotation:annotation:1.7.0'
+    implementation 'androidx.annotation:annotation:1.8.0'
 }

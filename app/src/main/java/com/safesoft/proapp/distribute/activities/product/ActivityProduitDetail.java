@@ -102,41 +102,41 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
   protected void initViews() {
     //Image
-    ImgProduit = (ImageView) findViewById(R.id.imageProduit);
+    ImgProduit = findViewById(R.id.imageProduit);
     imagePopup = new ImagePopup(ActivityProduitDetail.this);
 
     //TextView
-    TvCodebarre = (TextView) findViewById(R.id.codebarre);
-    TvReference = (TextView) findViewById(R.id.reference);
-    TvProduit = (TextView) findViewById(R.id.produit);
-    TvPa_ht = (TextView) findViewById(R.id.pa_ht);
-    TvPamp = (TextView) findViewById(R.id.pamp);
+    TvCodebarre = findViewById(R.id.codebarre);
+    TvReference = findViewById(R.id.reference);
+    TvProduit = findViewById(R.id.produit);
+    TvPa_ht = findViewById(R.id.pa_ht);
+    TvPamp = findViewById(R.id.pamp);
 
-    Lnr_pv1 = (LinearLayout) findViewById(R.id.lnr_pv1);
-    Lnr_pv2 = (LinearLayout) findViewById(R.id.lnr_pv2);
-    Lnr_pv3 = (LinearLayout) findViewById(R.id.lnr_pv3);
-    Lnr_pv4 = (LinearLayout) findViewById(R.id.lnr_pv4);
-    Lnr_pv5 = (LinearLayout) findViewById(R.id.lnr_pv5);
-    Lnr_pv6 = (LinearLayout) findViewById(R.id.lnr_pv6);
+    Lnr_pv1 = findViewById(R.id.lnr_pv1);
+    Lnr_pv2 = findViewById(R.id.lnr_pv2);
+    Lnr_pv3 = findViewById(R.id.lnr_pv3);
+    Lnr_pv4 = findViewById(R.id.lnr_pv4);
+    Lnr_pv5 = findViewById(R.id.lnr_pv5);
+    Lnr_pv6 = findViewById(R.id.lnr_pv6);
 
-    TvPv1 = (TextView) findViewById(R.id.pv1);
-    TvPv2 = (TextView) findViewById(R.id.pv2);
-    TvPv3 = (TextView) findViewById(R.id.pv3);
-    TvPv4 = (TextView) findViewById(R.id.pv4);
-    TvPv5 = (TextView) findViewById(R.id.pv5);
-    TvPv6 = (TextView) findViewById(R.id.pv6);
+    TvPv1 = findViewById(R.id.pv1);
+    TvPv2 = findViewById(R.id.pv2);
+    TvPv3 = findViewById(R.id.pv3);
+    TvPv4 = findViewById(R.id.pv4);
+    TvPv5 = findViewById(R.id.pv5);
+    TvPv6 = findViewById(R.id.pv6);
 
-    TvPv1_title = (TextView) findViewById(R.id.pv1_title);
-    TvPv2_title = (TextView) findViewById(R.id.pv2_title);
-    TvPv3_title = (TextView) findViewById(R.id.pv3_title);
-    TvPv4_title = (TextView) findViewById(R.id.pv4_title);
-    TvPv5_title = (TextView) findViewById(R.id.pv5_title);
-    TvPv6_title = (TextView) findViewById(R.id.pv6_title);
+    TvPv1_title = findViewById(R.id.pv1_title);
+    TvPv2_title = findViewById(R.id.pv2_title);
+    TvPv3_title = findViewById(R.id.pv3_title);
+    TvPv4_title = findViewById(R.id.pv4_title);
+    TvPv5_title = findViewById(R.id.pv5_title);
+    TvPv6_title = findViewById(R.id.pv6_title);
 
-    TvTva = (TextView) findViewById(R.id.tva);
-    TvStock = (TextView) findViewById(R.id.stock);
-    Colissage = (TextView) findViewById(R.id.colissage);
-    Description = (TextView) findViewById(R.id.Description);
+    TvTva = findViewById(R.id.tva);
+    TvStock = findViewById(R.id.stock);
+    Colissage = findViewById(R.id.colissage);
+    Description = findViewById(R.id.Description);
   }
 
   protected void iniData(PostData_Produit produit) {
@@ -203,13 +203,13 @@ public class ActivityProduitDetail extends AppCompatActivity {
       Description.setText(produit.description);
     }
 
-    if(params.prix_2 == 1){
+    if(params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
       Lnr_pv2.setVisibility(View.VISIBLE);
     }else{
       Lnr_pv2.setVisibility(View.GONE);
     }
 
-    if(params.prix_3 == 1){
+    if(params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
       Lnr_pv3.setVisibility(View.VISIBLE);
     }else{
       Lnr_pv3.setVisibility(View.GONE);
@@ -236,7 +236,6 @@ public class ActivityProduitDetail extends AppCompatActivity {
     ImgProduit.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Log.v("sssss", "zzzzzz");
         imagePopup.viewPopup();
       }
     });

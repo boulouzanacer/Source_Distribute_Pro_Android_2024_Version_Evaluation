@@ -19,11 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.ActivityRouting;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.printing.Printing;
+import com.safesoft.proapp.distribute.utils.Env;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -128,6 +131,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE AS TOT_TTC, " +
                 "BON1_TEMP.REMISE, " +
                 "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE AS MONTANT_BON, " +
+                "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE - BON1_TEMP.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                 "BON1_TEMP.ANCIEN_SOLDE, " +
                 "BON1_TEMP.VERSER, " +
@@ -136,6 +140,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 "BON1_TEMP.CODE_CLIENT, " +
                 "CLIENT.CLIENT, " +
                 "CLIENT.ADRESSE, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
                 "CLIENT.TEL, " +
                 "CLIENT.RC, " +
                 "CLIENT.IFISCAL, " +
@@ -261,14 +267,13 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "BON2_TEMP.COLISSAGE, " +
                                 "BON2_TEMP.QTE, " +
                                 "BON2_TEMP.QTE_GRAT, " +
-                                "BON2_TEMP.PU, " +
+                                "BON2_TEMP.PV_HT, " +
+                                "BON2_TEMP.PA_HT, " +
                                 "BON2_TEMP.TVA, " +
                                 "BON2_TEMP.CODE_DEPOT, " +
                                 "BON2_TEMP.DESTOCK_TYPE, " +
                                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                 "BON2_TEMP.DESTOCK_QTE, " +
-                                "PRODUIT.PA_HT, " +
-                                "PRODUIT.PAMP, " +
                                 "PRODUIT.ISNEW, " +
                                 "PRODUIT.STOCK " +
                                 "FROM BON2_TEMP " +
@@ -282,7 +287,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                             Printing printer = new Printing();
 
                             try {
-                                printer.start_print_bon(bactivity, "ORDER", final_panier, bon1s_temp.get(position), null);
+                                printer.start_print_bon_vente(bactivity, "ORDER", final_panier, bon1s_temp.get(position));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -344,11 +349,20 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
-            Intent editIntent = new Intent(ActivityOrdersClient.this, ActivityOrderClient.class);
-            editIntent.putExtra("TYPE_ACTIVITY", "NEW_ORDER_CLIENT");
-            editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-            startActivity(editIntent);
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+            if(!prefs.getBoolean("APP_ACTIVATED",false) && !bon1s_temp.isEmpty()){
+                new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                        .show();
+            }else {
+                Intent editIntent = new Intent(ActivityOrdersClient.this, ActivityOrderClient.class);
+                editIntent.putExtra("TYPE_ACTIVITY", "NEW_ORDER_CLIENT");
+                editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
+                startActivity(editIntent);
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+
         } else if (item.getItemId() == R.id.routing) {
             //  https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
             Intent nnn= new Intent(ActivityOrdersClient.this, ActivityRouting.class);

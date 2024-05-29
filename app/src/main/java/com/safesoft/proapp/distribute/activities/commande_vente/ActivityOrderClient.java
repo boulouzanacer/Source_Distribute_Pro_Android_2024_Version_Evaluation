@@ -41,8 +41,7 @@ import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
-import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
-import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanier;
+import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierVente;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
@@ -51,7 +50,7 @@ import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.RemiseEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.eventsClasses.ValidateFactureEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentQte;
+import com.safesoft.proapp.distribute.fragments.FragmentQteVente;
 import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectClient;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
@@ -63,6 +62,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.printing.Printing;
+import com.safesoft.proapp.distribute.utils.Env;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -96,7 +96,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
     private Intent intent_location;
 
-    private ListViewAdapterPanier PanierAdapter;
+    private ListViewAdapterPanierVente PanierAdapter;
     private Button btn_select_client,btn_mode_tarif;
     private DATABASE controller;
     private  ArrayList<PostData_Bon2> final_panier;
@@ -269,14 +269,13 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     "BON2_TEMP.COLISSAGE, " +
                     "BON2_TEMP.QTE, " +
                     "BON2_TEMP.QTE_GRAT, " +
-                    "BON2_TEMP.PU, " +
+                    "BON2_TEMP.PV_HT, " +
+                    "BON2_TEMP.PA_HT, " +
                     "BON2_TEMP.TVA, " +
                     "BON2_TEMP.CODE_DEPOT, " +
                     "BON2_TEMP.DESTOCK_TYPE, " +
                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                     "BON2_TEMP.DESTOCK_QTE, " +
-                    "PRODUIT.PA_HT, " +
-                    "PRODUIT.PAMP, " +
                     "PRODUIT.ISNEW, " +
                     "PRODUIT.STOCK " +
                     "FROM BON2_TEMP " +
@@ -290,7 +289,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             onClientSelected(client_selected, false);
 
             // Create the adapter to convert the array to views
-            PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+            PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
             expandableListView = findViewById(R.id.expandable_listview);
 
@@ -433,7 +432,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     return;
                 }
 
-                if( bon1_temp.client.length() <1){
+                if(bon1_temp.client.isEmpty()){
 
                     Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                     return;
@@ -442,7 +441,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 if(client_selected.mode_tarif.equals("0")){
 
                     if(btn_mode_tarif.getText().toString().equals("Tarif 1")){
-                        if(params.prix_2 == 1){
+                        if(params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
                             bon1_temp.mode_tarif = "2";
                             btn_mode_tarif.setText("Tarif 2");
                         }else {
@@ -450,7 +449,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     }else if(btn_mode_tarif.getText().toString().equals("Tarif 2")){
-                        if(params.prix_3 == 1){
+                        if(params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
                             bon1_temp.mode_tarif = "3";
                             btn_mode_tarif.setText("Tarif 3");
                         }else {
@@ -500,17 +499,26 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                         .show();
                 return;
                 }
-                if( bon1_temp.client.length() <1){
+                if(bon1_temp.client.isEmpty()){
 
                     Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                     return;
                 }
 
+                if(!prefs.getBoolean("APP_ACTIVATED",false) && final_panier.size() >= 2){
+                    new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Important !")
+                            .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                            .show();
+
+                    return;
+                }
+
+
                 // Initialize activity
                 Activity activity;
                 // define activity of this class//
                 activity = ActivityOrderClient.this;
-
                 FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
                 fragmentSelectProduct.showDialogbox(activity, getBaseContext(),  bon1_temp.mode_tarif, "VENTE");
 
@@ -518,12 +526,12 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
             case R.id.valide_facture:
 
-                if( bon1_temp.client.length() <1){
+                if(bon1_temp.client.isEmpty()){
 
                     Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client", Style.ALERT).show();
                     return;
                 }
-                if(final_panier.size() <1){
+                if(final_panier.isEmpty()){
                     new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -638,7 +646,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     bactivity = ActivityOrderClient.this;
 
                     Printing printer = new Printing();
-                    printer.start_print_bon(bactivity, "ORDER", final_panier, bon1_temp, null);
+                    printer.start_print_bon_vente(bactivity, "ORDER", final_panier, bon1_temp);
                 }else{
                     Intent html_intent = new Intent(this, ActivityHtmlView.class);
                     html_intent.putExtra("TYPE_BON" , "COMMANDE");
@@ -794,14 +802,13 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 "BON2_TEMP.COLISSAGE, " +
                 "BON2_TEMP.QTE, " +
                 "BON2_TEMP.QTE_GRAT, " +
-                "BON2_TEMP.PU, " +
+                "BON2_TEMP.PV_HT, " +
+                "BON2_TEMP.PA_HT, " +
                 "BON2_TEMP.TVA, " +
                 "BON2_TEMP.CODE_DEPOT, " +
                 "BON2_TEMP.DESTOCK_TYPE, " +
                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                 "BON2_TEMP.DESTOCK_QTE, " +
-                "PRODUIT.PA_HT, " +
-                "PRODUIT.PAMP, " +
                 "PRODUIT.ISNEW, " +
                 "PRODUIT.STOCK " +
                 "FROM BON2_TEMP " +
@@ -809,7 +816,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 "WHERE BON2_TEMP.NUM_BON = '" + bon1_temp.num_bon + "'" );
 
         // Create the adapter to convert the array to views
-        PanierAdapter = new ListViewAdapterPanier(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+        PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
         expandableListView = findViewById(R.id.expandable_listview);
 
@@ -860,7 +867,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                                 controller.delete_from_bon2("BON2_TEMP", final_panier.get(info.position).recordid ,final_panier.get(info.position));
                                 initData();
                                 //PanierAdapter.RefrechPanier(final_panier);
-                                PanierAdapter = new ListViewAdapterPanier(ActivityOrderClient.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+                                PanierAdapter = new ListViewAdapterPanierVente(ActivityOrderClient.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
                                 expandableListView.setAdapter(PanierAdapter);
 
                             }catch (Exception e){
@@ -888,7 +895,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     Activity activity;
                     double last_price = controller.select_last_price_from_database("BON1_TEMP",bon1_temp.code_client, final_panier.get(info.position).codebarre);
                     activity = ActivityOrderClient.this;
-                    FragmentQte fragmentqte = new FragmentQte();
+                    FragmentQteVente fragmentqte = new FragmentQteVente();
                     fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), last_price);
 
                 }catch (Exception e){
@@ -916,7 +923,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
         for(int k = 0; k< final_panier.size(); k++){
 
-            double total_montant_produit = final_panier.get(k).p_u * final_panier.get(k).qte;
+            double total_montant_produit = final_panier.get(k).pv_ht * final_panier.get(k).qte;
             double montant_tva_produit = total_montant_produit  * ((final_panier.get(k).tva) / 100);
             val_total_ht = val_total_ht + total_montant_produit;
             val_tva = val_tva + montant_tva_produit;
@@ -1148,12 +1155,12 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         bon2_temp.pp1_ht = item.pp1_ht;
 
         switch (bon1_temp.mode_tarif) {
-            case "6" -> bon2_temp.p_u = item.pv6_ht;
-            case "5" -> bon2_temp.p_u = item.pv5_ht;
-            case "4" -> bon2_temp.p_u = item.pv4_ht;
-            case "3" -> bon2_temp.p_u = item.pv3_ht;
-            case "2" -> bon2_temp.p_u = item.pv2_ht;
-            default -> bon2_temp.p_u = item.pv1_ht;
+            case "6" -> bon2_temp.pv_ht = item.pv6_ht;
+            case "5" -> bon2_temp.pv_ht = item.pv5_ht;
+            case "4" -> bon2_temp.pv_ht = item.pv4_ht;
+            case "3" -> bon2_temp.pv_ht = item.pv3_ht;
+            case "2" -> bon2_temp.pv_ht = item.pv2_ht;
+            default -> bon2_temp.pv_ht = item.pv1_ht;
         }
 
         bon2_temp.num_bon = NUM_BON;
@@ -1161,7 +1168,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         SOURCE = "BON2_TEMP_INSERT";
         double last_price = controller.select_last_price_from_database("BON1_TEMP",bon1_temp.code_client, bon2_temp.codebarre);
         Activity activity = ActivityOrderClient.this;
-        FragmentQte fragmentqte = new FragmentQte();
+        FragmentQteVente fragmentqte = new FragmentQteVente();
         fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp, last_price);
 
         //Save clicked item position in list
@@ -1270,19 +1277,19 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             bon2_temp.pp1_ht = produits.get(0).pp1_ht;
 
             switch (bon1_temp.mode_tarif) {
-                case "6" -> bon2_temp.p_u = produits.get(0).pv6_ht;
-                case "5" -> bon2_temp.p_u = produits.get(0).pv5_ht;
-                case "4" -> bon2_temp.p_u = produits.get(0).pv4_ht;
-                case "3" -> bon2_temp.p_u = produits.get(0).pv3_ht;
-                case "2" -> bon2_temp.p_u = produits.get(0).pv2_ht;
-                default -> bon2_temp.p_u = produits.get(0).pv1_ht;
+                case "6" -> bon2_temp.pv_ht = produits.get(0).pv6_ht;
+                case "5" -> bon2_temp.pv_ht = produits.get(0).pv5_ht;
+                case "4" -> bon2_temp.pv_ht = produits.get(0).pv4_ht;
+                case "3" -> bon2_temp.pv_ht = produits.get(0).pv3_ht;
+                case "2" -> bon2_temp.pv_ht = produits.get(0).pv2_ht;
+                default -> bon2_temp.pv_ht = produits.get(0).pv1_ht;
             }
 
 
             SOURCE = "BON2_TEMP_INSERT";
             Activity activity = ActivityOrderClient.this;
             double last_price = controller.select_last_price_from_database("BON1_TEMP",bon1_temp.code_client, bon2_temp.codebarre);
-            FragmentQte fragmentqte = new FragmentQte();
+            FragmentQteVente fragmentqte = new FragmentQteVente();
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp, last_price);
 
         }else if(produits.size() > 1){

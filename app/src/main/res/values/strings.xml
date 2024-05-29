@@ -380,11 +380,13 @@
     <string name="desciption_sync_des_parametres">Permettre la synchronisation des paramètres tel que le nom d\'entreprise, adresse, logo ... depuis le serveur distant</string>
     <string name="telephone">Telephone</string>
     <string name="param_tres_affichage_stock_moins">Paramètres affichage stock moins</string>
+    <string name="param_tres_affichage_solde_client">Paramètres affichage solde client</string>
     <string name="param_tres_edit_price">Paramètres modification prix vente</string>
     <string name="param_tres_famille">Paramètres mode famille</string>
     <string name="param_tres_affichage_ht_tva">Paramètres affichage HT, TVA</string>
-    <string name="activer_l_affichage_ht">Activer l\'affichage HT</string>
+    <string name="activer_l_affichage_ht">Activer/Disactiver le mode HT</string>
     <string name="activer_l_affichage_stock">Masquer les produits stock moins</string>
+    <string name="activer_masquer_solde_client">Afficher/Masquer solde client</string>
     <string name="desactiver_modification_prix">Desactiver la modification de prix vente</string>
     <string name="mode_famille">Activer / Désactiver le mode famille</string>
     <string name="date_d_exportation">Date d\'exportation</string>
@@ -407,7 +409,9 @@
     <string name="sauvegarder_les_filtres_de_recherche">Sauvegarder les filtres de recherche</string>
     <string name="rechercher_client">Rechercher client</string>
     <string name="pa_ttc">Prix achat (TTC)</string>
-    <string name="activer_l_affichage_pa">Activer l\'affichage PA</string>
+    <string name="activer_l_affichage_pa">Affichager/Cacher Prix Achat</string>
+    <string name="sychroniser_tous_les_client">Sychroniser tous les clients?</string>
+    <string name="activer_l_affichage_benifice">Affichager/Cacher le benifice</string>
     <string name="achats">Achats</string>
     <string name="ramp">RAMP</string>
     <string name="pamp">PAMP (TTC)</string>
@@ -420,8 +424,11 @@
     <string name="param_tres_affichage_remise_dans_vente_achat">Paramètres affichage remise dans vente/achat</string>
     <string name="afficher_remise">Afficher remise</string>
     <string name="param_tres_modification_de_bon">Paramètres modification de bon</string>
-    <string name="autoriser_la_modification_de_bon">Autoriser la modification de bon</string>
+    <string name="autoriser_la_modification_de_bon">Autoriser la modification de bon / versement</string>
     <string name="stock_ini">Stock ini</string>
     <string name="model_ticket">Model Ticket</string>
+    <string name="wilaya">Wilaya</string>
+    <string name="commune">Commune</string>
+    <string name="afficher_cacher_achats_client">Afficher / Cacher achats client</string>
 
 </resources>

@@ -18,11 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterAchat1;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.printing.Printing;
+import com.safesoft.proapp.distribute.utils.Env;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -40,7 +43,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
     ArrayList<PostData_Achat1> achat1s_com;
     ArrayList<PostData_Bon2> final_panier;
     DATABASE controller;
-
+    SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
 
     private String SOURCE_EXPORT = "";
@@ -67,6 +70,8 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
         editor.apply();
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
     }
 
     private void initViews() {
@@ -236,14 +241,12 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                                 "BON2_TEMP.COLISSAGE, " +
                                 "BON2_TEMP.QTE, " +
                                 "BON2_TEMP.QTE_GRAT, " +
-                                "BON2_TEMP.PU, " +
+                                "BON2_TEMP.PV_HT, " +
                                 "BON2_TEMP.TVA, " +
                                 "BON2_TEMP.CODE_DEPOT, " +
                                 "BON2_TEMP.DESTOCK_TYPE, " +
                                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                 "BON2_TEMP.DESTOCK_QTE, " +
-                                "PRODUIT.PA_HT, " +
-                                "PRODUIT.PAMP, " +
                                 "PRODUIT.ISNEW, " +
                                 "PRODUIT.STOCK " +
                                 "FROM BON2_TEMP " +
@@ -308,11 +311,19 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
-            Intent editIntent = new Intent(ActivityOrdersFournisseur.this, ActivityOrderFournisseur.class);
-            editIntent.putExtra("TYPE_ACTIVITY", "NEW_ORDER_ACHAT");
-            editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-            startActivity(editIntent);
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            if(!prefs.getBoolean("APP_ACTIVATED",false) && !achat1s_com.isEmpty()){
+                new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                        .show();
+            }else {
+                Intent editIntent = new Intent(ActivityOrdersFournisseur.this, ActivityOrderFournisseur.class);
+                editIntent.putExtra("TYPE_ACTIVITY", "NEW_ORDER_ACHAT");
+                editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
+                startActivity(editIntent);
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }

@@ -5,14 +5,10 @@ import static android.content.Context.MODE_PRIVATE;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -33,9 +29,6 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.fournisseur.ActivityFournisseurs;
-import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
@@ -133,8 +126,6 @@ public class FragmentSelectProduct {
 
         add_product = (Button) view.findViewById(R.id.add_product);
 
-        ArrayList<PostData_Bon2> final_panier = new ArrayList<>();
-        ArrayList<PostData_Produit> temp_produits = new ArrayList<>();
         produits = new ArrayList<>();
 
         famille_dropdown = view.findViewById(R.id.famille_dropdown);
@@ -206,8 +197,8 @@ public class FragmentSelectProduct {
         });
 
         add_product.setOnClickListener(v -> {
-            FragmentNewProduct fragmentnewproduct = new FragmentNewProduct();
-            fragmentnewproduct.showDialogbox(this.activity, "NEW_PRODUCT");
+            FragmentNewEditProduct fragmentnewproduct = new FragmentNewEditProduct();
+            fragmentnewproduct.showDialogbox(this.activity, "NEW_PRODUCT", null);
             dialog.dismiss();
         });
 
@@ -243,7 +234,7 @@ public class FragmentSelectProduct {
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "' AND STOCK > 0 ";
 
-                    if(produits.size() == 0){
+                    if(produits.isEmpty()){
                         String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
@@ -253,7 +244,7 @@ public class FragmentSelectProduct {
                                 "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND STOCK > 0 ";
                     }
                 }else{
-                    if(querry_search.length() >0){
+                    if(!querry_search.isEmpty()){
                         querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
@@ -273,7 +264,7 @@ public class FragmentSelectProduct {
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "'  ";
 
-                    if(produits.size() == 0){
+                    if(produits.isEmpty()){
                         String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
@@ -283,7 +274,7 @@ public class FragmentSelectProduct {
                                 "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
                     }
                 }else{
-                    if(querry_search.length() >0){
+                    if(!querry_search.isEmpty()){
                         querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
@@ -306,7 +297,7 @@ public class FragmentSelectProduct {
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '"+ selected_famile +"' AND STOCK > 0 ";
 
-                    if(produits.size() == 0){
+                    if(produits.isEmpty()){
                         String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
@@ -316,7 +307,7 @@ public class FragmentSelectProduct {
                                 "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '"+ selected_famile +"' AND STOCK > 0 ";
                     }
                 }else{
-                    if(querry_search.length() >0){
+                    if(!querry_search.isEmpty()){
                         querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
@@ -336,7 +327,7 @@ public class FragmentSelectProduct {
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '"+ selected_famile +"'  ";
 
-                    if(produits.size() == 0){
+                    if(produits.isEmpty()){
                         String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
@@ -346,7 +337,7 @@ public class FragmentSelectProduct {
                                 "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '"+ selected_famile +"'";
                     }
                 }else{
-                    if(querry_search.length() >0){
+                    if(!querry_search.isEmpty()){
                         querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +

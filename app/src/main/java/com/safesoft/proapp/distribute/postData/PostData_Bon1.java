@@ -26,6 +26,8 @@ public class PostData_Bon1 implements Serializable {
     public double tot_ttc = 0.00;
     public double remise = 0.0;
     public double montant_bon = 0.0;
+    public double montant_achat = 0.0;
+    public double benifice_par_bon = 0.0;
     ////////////////////
     public double solde_ancien = 0.00;
     public double verser = 0.00;
@@ -38,6 +40,8 @@ public class PostData_Bon1 implements Serializable {
     public String code_client;
     public String client;
     public String adresse;
+    public String wilaya;
+    public String commune;
     public String tel;
     public String rc;
     public String ifiscal;

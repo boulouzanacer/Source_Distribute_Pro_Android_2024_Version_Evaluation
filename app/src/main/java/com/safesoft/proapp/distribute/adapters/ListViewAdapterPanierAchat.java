@@ -1,17 +1,20 @@
 package com.safesoft.proapp.distribute.adapters;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.safesoft.proapp.distribute.postData.PostData_Bon2;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
+import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -22,15 +25,18 @@ import java.util.Locale;
  * Created by UK2016 on 23/03/2017.
  */
 
-public class ListViewAdapterPanier extends ArrayAdapter<PostData_Bon2> {
+public class ListViewAdapterPanierAchat extends ArrayAdapter<PostData_Achat2> {
 
   NumberFormat nf,nq;
   String SOURCE_ACTIVITY;
+  final String PREFS = "ALL_PREFS";
+  SharedPreferences prefs;
 
-  public ListViewAdapterPanier(@NonNull Context context, @LayoutRes int resource, @NonNull List<PostData_Bon2> objects, String SOURCE_ACTIVITY) {
+  public ListViewAdapterPanierAchat(@NonNull Context context, @LayoutRes int resource, @NonNull List<PostData_Achat2> objects, String SOURCE_ACTIVITY) {
     super(context, resource, objects);
 
     this.SOURCE_ACTIVITY = SOURCE_ACTIVITY;
+    prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
     // Declare US print format
     nf = NumberFormat.getInstance(Locale.US);
@@ -55,7 +61,7 @@ public class ListViewAdapterPanier extends ArrayAdapter<PostData_Bon2> {
   @NonNull
   @Override
   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-    PostData_Bon2 bon2 = getItem(position);
+    PostData_Achat2 achat2 = getItem(position);
     ViewHolder viewHolder; // view lookup cache stored in tag
     if (convertView == null) {
       // If there's no view to re-use, inflate a brand new view for row
@@ -80,26 +86,32 @@ public class ListViewAdapterPanier extends ArrayAdapter<PostData_Bon2> {
     // Populate the data from the data object via the viewHolder object
     // into the template view.
 
-    viewHolder.produit.setText(bon2.produit);
-    if  (bon2.nbr_colis == 0.0 ) {
+    viewHolder.produit.setText(achat2.produit);
+    if  (achat2.nbr_colis == 0.0 ) {
       viewHolder.nbr_colis.setText("");
       viewHolder.colissage.setText("");
       viewHolder.lettre_xx.setText("");
       viewHolder.lettre_equall.setText("");
     } else {
-      viewHolder.nbr_colis.setText(nq.format(bon2.nbr_colis));
-      viewHolder.colissage.setText(nq.format(bon2.colissage));
+      viewHolder.nbr_colis.setText(nq.format(achat2.nbr_colis));
+      viewHolder.colissage.setText(nq.format(achat2.colissage));
       viewHolder.lettre_xx.setText("X");
       viewHolder.lettre_equall.setText("=");
     }
-    viewHolder.quantite.setText(nq.format(bon2.qte));
-    if  (bon2.gratuit == 0.0 ) {
+    viewHolder.quantite.setText(nq.format(achat2.qte));
+    if  (achat2.gratuit == 0.0 ) {
       viewHolder.gratuit.setText("");
     } else {
-      viewHolder.gratuit.setText(nq.format(bon2.gratuit));
+      viewHolder.gratuit.setText(nq.format(achat2.gratuit));
     }
 
-    viewHolder.pu.setText(nf.format(bon2.p_u));
+    viewHolder.pu.setText(nf.format(achat2.pa_ht));
+
+    if(prefs.getBoolean("AFFICHAGE_HT", false)){
+      viewHolder.pu.setText(nf.format(achat2.pa_ht));
+    }else{
+      viewHolder.pu.setText(nf.format(achat2.pa_ht + (achat2.pa_ht * achat2.tva / 100)));
+    }
    /* if(SOURCE_ACTIVITY.equals("NEW_ACHAT") || SOURCE_ACTIVITY.equals("EDIT_ACHAT") || SOURCE_ACTIVITY.equals("NEW_ORDER_ACHAT") || SOURCE_ACTIVITY.equals("EDIT_ORDER_ACHAT")){
       viewHolder.pu.setText(nf.format(bon2.pa_ht));
     }else {

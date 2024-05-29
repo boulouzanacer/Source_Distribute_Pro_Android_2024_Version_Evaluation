@@ -18,12 +18,14 @@ import android.view.View;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchats;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.utils.Env;
 
 
 import java.io.UnsupportedEncodingException;
@@ -131,6 +133,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                 "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE AS TOT_TTC, " +
                 "BON1.REMISE, " +
                 "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE AS MONTANT_BON, " +
+                "BON1.TOT_HT - BON1.REMISE - BON1.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                 "BON1.ANCIEN_SOLDE, " +
                 "BON1.VERSER, " +
@@ -139,6 +142,8 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                 "BON1.CODE_CLIENT, " +
                 "CLIENT.CLIENT, " +
                 "CLIENT.ADRESSE, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
                 "CLIENT.TEL, " +
                 "CLIENT.RC, " +
                 "CLIENT.IFISCAL, " +
@@ -280,14 +285,13 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                                 "BON2.COLISSAGE, " +
                                 "BON2.QTE, " +
                                 "BON2.QTE_GRAT, " +
-                                "BON2.PU, " +
+                                "BON2.PV_HT, " +
+                                "BON2.PA_HT, " +
                                 "BON2.TVA, " +
                                 "BON2.CODE_DEPOT, " +
                                 "BON2.DESTOCK_TYPE, " +
                                 "BON2.DESTOCK_CODE_BARRE, " +
                                 "BON2.DESTOCK_QTE, " +
-                                "PRODUIT.PA_HT, " +
-                                "PRODUIT.PAMP, " +
                                 "PRODUIT.ISNEW, " +
                                 "PRODUIT.STOCK " +
                                 "FROM BON2 " +
@@ -300,7 +304,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
                             Printing printer = new Printing();
                             try {
-                                printer.start_print_bon(bactivity, "VENTE", final_panier, bon1s.get(position), null);
+                                printer.start_print_bon_vente(bactivity, "VENTE", final_panier, bon1s.get(position));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -364,11 +368,19 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
-            Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
-            editIntent.putExtra("TYPE_ACTIVITY", "NEW_SALE");
-            editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-            startActivity(editIntent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            if(!prefs.getBoolean("APP_ACTIVATED",false) && (!bon1s.isEmpty())){
+                new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                        .show();
+            }else{
+                Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
+                editIntent.putExtra("TYPE_ACTIVITY", "NEW_SALE");
+                editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
+                startActivity(editIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }

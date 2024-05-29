@@ -4,32 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_root"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="150dp"
     app:cardCornerRadius="5dp"
     android:layout_margin="2dp"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="150dp"
         android:background="@drawable/client_selector"
         tools:ignore="RtlSymmetry">
 
-
-        <TextView
-            android:id="@+id/nbr_p"
-            android:layout_width="80dp"
-            android:layout_height="0dp"
-            android:layout_above="@+id/blocage"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="0dp"
-            android:text="@string/nbre_produit"
-            android:gravity="center|center_horizontal"
-            android:orientation="vertical">
-
-
-        </TextView>
 
         <com.haozhang.lib.SlantedTextView
             android:id="@+id/blocage"
@@ -48,9 +33,24 @@
             app:slantedTextColor="@color/white"
             app:slantedTextSize="16sp" />
 
+        <TextView
+            android:id="@+id/nbr_p"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/blocage"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/nbre_produit"
+            android:textSize="20dp"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical">
+        </TextView>
+
+
         <LinearLayout
+            android:id="@+id/left_side_ly"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="120dp"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="0dp"
             android:layout_toStartOf="@+id/blocage"
@@ -212,8 +212,24 @@
                 </LinearLayout>
             </LinearLayout>
 
-
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/txt_benifice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/left_side_ly"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignEnd="@+id/left_side_ly"
+            android:text="0"
+           android:textStyle="bold"
+            android:background="@color/blue"
+            android:textColor="@color/white"
+            android:gravity="center|center_horizontal">
+        </TextView>
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -25,7 +24,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.databases.DATABASE;
+import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventAchat2;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,7 +41,7 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class FragmentQte {
+public class FragmentQteAchat {
 
     private DATABASE controller;
     MaterialFancyButton btn_valider, btn_cancel;
@@ -48,13 +49,13 @@ public class FragmentQte {
     TextInputLayout stockavantLayout_colis, stockapresLayout_colis, prixhtLayout, tvaLayout, ugLayout;
     LinearLayout ly_prix_ttc, part_3_qtevente_Layout;
     TextInputEditText  edt_colissage, edt_nbr_colis, edt_qte, edt_gratuit, edt_prix_ht, edt_tva, edt_prix_ttc, edt_stock_avant, edt_stock_avant_colis, edt_stock_apres, edt_stock_apres_colis;
-    double val_nbr_colis, val_colissage, val_qte, val_gratuit, val_prix_ht, val_tva, val_prix_ttc, val_stock_avant, val_stock_avant_colis, val_stock_apres, val_stock_apres_colis, val_qte_old, val_gratuit_old;
+    double val_nbr_colis, val_colissage, val_qte, val_gratuit, val_prix_ht, val_tva, val_prix_ttc, val_stock_avant, val_stock_avant_colis, val_stock_apres, val_stock_apres_colis, val_qte_old, val_gratuit_old, val_pamp;
     private Context mContext;
     EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
     NumberFormat nf,nq;
-    PostData_Bon2 arrived_bon2;
+    PostData_Achat2 arrived_achat2;
     boolean if_bon2_exist = false;
     private final String PREFS = "ALL_PREFS";
     private String SOURCE_LOCAL;
@@ -64,11 +65,11 @@ public class FragmentQte {
 
     //PopupWindow display method
 
-    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Bon2 bon2, double last_price) throws ParseException {
+    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Achat2 achat2, double last_price) throws ParseException {
 
         mContext = context;
         this.activity = activity;
-        arrived_bon2 = bon2;
+        this.arrived_achat2 = achat2;
         this.SOURCE_LOCAL = SOURCE;
         this.last_price = last_price;
         this.controller = new DATABASE(mContext);
@@ -182,46 +183,9 @@ public class FragmentQte {
         }
 
         //********************************************************************
-        if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT") || SOURCE_LOCAL.equals("ACHAT2_INSERT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")){
-            PostData_Bon2 checked_bon2 = new PostData_Bon2();
+        if (SOURCE_LOCAL.equals("ACHAT2_INSERT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")){
+            PostData_Achat2 checked_achat2 = new PostData_Achat2();
             switch (SOURCE_LOCAL) {
-                case "BON2_INSERT" -> {
-                    String querry = "SELECT " +
-                            "BON2.RECORDID, " +
-                            "BON2.CODE_BARRE, " +
-                            "BON2.NUM_BON, " +
-                            "BON2.PRODUIT, " +
-                            "BON2.NBRE_COLIS, " +
-                            "BON2.COLISSAGE, " +
-                            "BON2.QTE, " +
-                            "BON2.QTE_GRAT, " +
-                            "BON2.PU, " +
-                            "BON2.TVA, " +
-                            "BON2.CODE_DEPOT, " +
-                            "PRODUIT.STOCK FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
-                            " WHERE BON2.NUM_BON = '"+ arrived_bon2.num_bon +"' AND BON2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
-
-                    checked_bon2 = controller.check_if_bon2_exist(querry);
-                    SOURCE_LOCAL = "BON2_EDIT";
-                }
-                case "BON2_TEMP_INSERT" -> {
-                    String querry = "SELECT " +
-                            "BON2_TEMP.RECORDID, " +
-                            "BON2_TEMP.CODE_BARRE, " +
-                            "BON2_TEMP.NUM_BON, " +
-                            "BON2_TEMP.PRODUIT, " +
-                            "BON2_TEMP.NBRE_COLIS, " +
-                            "BON2_TEMP.COLISSAGE, " +
-                            "BON2_TEMP.QTE, " +
-                            "BON2_TEMP.QTE_GRAT, " +
-                            "BON2_TEMP.PU, " +
-                            "BON2_TEMP.TVA, " +
-                            "BON2_TEMP.CODE_DEPOT, " +
-                            "PRODUIT.STOCK FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
-                            " WHERE BON2_TEMP.NUM_BON = '"+ arrived_bon2.num_bon +"' AND BON2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
-                    checked_bon2 = controller.check_if_bon2_exist(querry);
-                    SOURCE_LOCAL = "BON2_TEMP_INSERT";
-                }
                 case "ACHAT2_INSERT" -> {
                     String querry = "SELECT " +
                             "ACHAT2.RECORDID, " +
@@ -232,12 +196,12 @@ public class FragmentQte {
                             "ACHAT2.COLISSAGE, " +
                             "ACHAT2.QTE, " +
                             "ACHAT2.QTE_GRAT, " +
-                            "ACHAT2.PU, " +
+                            "ACHAT2.PA_HT, " +
                             "ACHAT2.TVA, " +
                             "ACHAT2.CODE_DEPOT, " +
                             "PRODUIT.STOCK FROM ACHAT2 LEFT JOIN PRODUIT ON (ACHAT2.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
-                            " WHERE ACHAT2.NUM_BON = '"+ arrived_bon2.num_bon +"' AND ACHAT2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
-                    checked_bon2 = controller.check_if_bon2_exist(querry);
+                            " WHERE ACHAT2.NUM_BON = '"+ arrived_achat2.num_bon +"' AND ACHAT2.CODE_BARRE = '" + arrived_achat2.codebarre + "'";
+                    checked_achat2 = controller.check_if_achat2_exist(querry);
                     SOURCE_LOCAL = "ACHAT2_INSERT";
                 }
                 case "ACHAT2_TEMP_INSERT" -> {
@@ -250,64 +214,38 @@ public class FragmentQte {
                             "ACHAT2_TEMP.COLISSAGE, " +
                             "ACHAT2_TEMP.QTE, " +
                             "ACHAT2_TEMP.QTE_GRAT, " +
-                            "ACHAT2_TEMP.PU, " +
+                            "ACHAT2_TEMP.PA_HT, " +
                             "ACHAT2_TEMP.TVA, " +
                             "ACHAT2_TEMP.CODE_DEPOT, " +
                             "PRODUIT.STOCK FROM ACHAT2_TEMP LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " + "" +
-                            " WHERE ACHAT2_TEMP.NUM_BON = '"+ arrived_bon2.num_bon +"' AND ACHAT2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
-                    checked_bon2 = controller.check_if_bon2_exist(querry);
+                            " WHERE ACHAT2_TEMP.NUM_BON = '"+ arrived_achat2.num_bon +"' AND ACHAT2_TEMP.CODE_BARRE = '" + arrived_achat2.codebarre + "'";
+                    checked_achat2 = controller.check_if_achat2_exist(querry);
                     SOURCE_LOCAL = "ACHAT2_TEMP_INSERT";
                 }
             }
 
-            if(checked_bon2 != null){
-                txv_message.setText("Produit déja inseré avec quantité: " + nq.format(checked_bon2.qte));
+            if(checked_achat2 != null){
+                txv_message.setText("Produit déja inseré avec quantité: " + nq.format(checked_achat2.qte));
                 if_bon2_exist = true;
-                arrived_bon2 = checked_bon2;
+                arrived_achat2 = checked_achat2;
             }
 
         }
 
-        val_stock_avant = arrived_bon2.stock_produit;
-        val_colissage = arrived_bon2.colissage;
+        val_stock_avant = arrived_achat2.stock_produit;
+        val_colissage = arrived_achat2.colissage;
         if(val_colissage==0){
             val_stock_avant_colis = 0.0;
         }else {
             val_stock_avant_colis = (double) (int) (val_stock_avant / val_colissage);
         }
 
-        if(bon2.promo == 1){
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            Date d1 = format.parse(bon2.d1);
-            Date d2 = format.parse(bon2.d2);
-            Date today = Calendar.getInstance().getTime();
-            assert d1 != null;
-            assert d2 != null;
-            if(d1.getTime() == d2.getTime()){
-                if(d1.before(today)){
-                    val_prix_ht = arrived_bon2.pp1_ht;
-                    txv_promotion.setText("Produit en promotion");
-                    startBlinkanimation(txv_promotion);
-                }else {
-                    val_prix_ht = arrived_bon2.p_u;
-                    txv_promotion.setText("");
-                }
-            }else if(d1.getTime() <= today.getTime() && today.getTime() <= d2.getTime()){
-                val_prix_ht = arrived_bon2.pp1_ht;
-                txv_promotion.setText("Produit en promotion");
-                startBlinkanimation(txv_promotion);
-            }else {
-                val_prix_ht = arrived_bon2.p_u;
-                txv_promotion.setText("");
-            }
 
-        }else {
-            val_prix_ht = arrived_bon2.p_u;
-            txv_promotion.setText("");
-        }
+        val_prix_ht = arrived_achat2.pa_ht;
+        txv_promotion.setText("");
 
-        val_tva = arrived_bon2.tva;
-        val_prix_ttc = val_prix_ht * (1+(bon2.tva/100));
+        val_tva = arrived_achat2.tva;
+        val_prix_ttc = val_prix_ht * (1+(achat2.tva/100));
 
         if(val_colissage == 0.0){
             stockavantLayout_colis.setVisibility(View.GONE);
@@ -329,9 +267,9 @@ public class FragmentQte {
 
         }else if(SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_TEMP_EDIT") || SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_EDIT")){
             if(SOURCE_LOCAL.equals("BON2_EDIT")){
-                val_stock_avant = arrived_bon2.stock_produit + arrived_bon2.qte + arrived_bon2.gratuit;
+                val_stock_avant = arrived_achat2.stock_produit + arrived_achat2.qte + arrived_achat2.gratuit;
             } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT")) {
-                val_stock_avant = arrived_bon2.stock_produit - arrived_bon2.qte - arrived_bon2.gratuit;
+                val_stock_avant = arrived_achat2.stock_produit - arrived_achat2.qte - arrived_achat2.gratuit;
             }
 
             if(val_colissage==0){
@@ -340,12 +278,12 @@ public class FragmentQte {
                 val_stock_avant_colis = (double) (int) (val_stock_avant / val_colissage);
             }
 
-            val_qte = arrived_bon2.qte;
-            val_qte_old = arrived_bon2.qte;
+            val_qte = arrived_achat2.qte;
+            val_qte_old = arrived_achat2.qte;
 
-            val_nbr_colis = arrived_bon2.nbr_colis;
-            val_gratuit = arrived_bon2.gratuit;
-            val_gratuit_old = arrived_bon2.gratuit;
+            val_nbr_colis = arrived_achat2.nbr_colis;
+            val_gratuit = arrived_achat2.gratuit;
+            val_gratuit_old = arrived_achat2.gratuit;
 
             if (val_qte == 0) {
                 edt_qte.setText("");
@@ -364,11 +302,11 @@ public class FragmentQte {
             } else {
                 edt_gratuit.setText(nq.format(val_gratuit));
             }
-            edt_stock_apres.setText(nq.format(arrived_bon2.stock_produit));
+            edt_stock_apres.setText(nq.format(arrived_achat2.stock_produit));
             if(val_colissage==0){
                 val_stock_apres_colis = 0.0;
             }else {
-                val_stock_apres_colis = (double) (int) (arrived_bon2.stock_produit / val_colissage);
+                val_stock_apres_colis = (double) (int) (arrived_achat2.stock_produit / val_colissage);
             }
             edt_stock_apres_colis.setText(nq.format(val_stock_apres_colis));
         }
@@ -384,7 +322,7 @@ public class FragmentQte {
 
 
 
-        txv_produit.setText(arrived_bon2.produit);
+        txv_produit.setText(arrived_achat2.produit);
         edt_stock_avant.setText(nq.format(val_stock_avant));
         edt_stock_avant_colis.setText(nq.format(val_stock_avant_colis));
 
@@ -434,14 +372,15 @@ public class FragmentQte {
 
             if(!hasError){
 
-                arrived_bon2.nbr_colis = val_nbr_colis;
-                arrived_bon2.colissage = val_colissage;
-                arrived_bon2.qte = val_qte;
-                arrived_bon2.gratuit = val_gratuit;
-                arrived_bon2.p_u = val_prix_ht;
-                arrived_bon2.tva = val_tva;
+                arrived_achat2.nbr_colis = val_nbr_colis;
+                arrived_achat2.colissage = val_colissage;
+                arrived_achat2.qte = val_qte;
+                arrived_achat2.gratuit = val_gratuit;
+                arrived_achat2.pa_ht = val_prix_ht;
+                arrived_achat2.tva = val_tva;
+               // arrived_bon2.pamp
 
-                CheckedPanierEventBon2 item_panier = new CheckedPanierEventBon2(arrived_bon2, val_qte_old, val_gratuit_old, if_bon2_exist);
+                CheckedPanierEventAchat2 item_panier = new CheckedPanierEventAchat2(arrived_achat2, val_qte_old, val_gratuit_old, if_bon2_exist);
                 bus.post(item_panier);
 
                 dialog.dismiss();

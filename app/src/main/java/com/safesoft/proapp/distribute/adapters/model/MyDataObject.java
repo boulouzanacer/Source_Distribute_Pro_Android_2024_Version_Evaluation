@@ -7,30 +7,30 @@ public class MyDataObject {
   private static final AtomicInteger sNextGeneratedId = new AtomicInteger();
 
   private final String mTitle;
-  private final String mQuantite;
-  private final String mMontant;
-  private final int mId;
+  private final double mQuantite;
+  private final double mMontant;
+  private final String mParent;
 
-  public MyDataObject(String title, String quantite,String montant) {
+  public MyDataObject(String title, double quantite,double montant, String mParent) {
     this.mTitle = title;
     this.mQuantite = quantite;
     this.mMontant = montant;
-    this.mId = sNextGeneratedId.getAndIncrement();
+    this.mParent = mParent;
   }
 
-  public int getId() {
-    return mId;
+  public String getParent() {
+    return mParent;
   }
 
   public String getTitle() {
     return mTitle;
   }
 
-  public String getQuantite() {
+  public double getQuantite() {
     return mQuantite;
   }
 
-  public String getMontant() {
+  public double getMontant() {
     return mMontant;
   }
 }

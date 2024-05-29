@@ -101,9 +101,9 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
   //  holder.code_client.setText(list_clients.get(position).code_client);
     holder.txtv_tel.setText(list_fournisseurs.get(position).tel);
 
-    holder.txtv_achats.setText("" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).achat_montant)));
-    holder.txtv_verser.setText("" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).verser_montant)));
-    holder.txtv_solde.setText("" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).solde_montant)));
+    holder.txtv_achats.setText("ACHATS :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).achat_montant)));
+    holder.txtv_verser.setText("VERSER :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).verser_montant)));
+    holder.txtv_solde.setText("SOLDE :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).solde_montant)));
 
    // convertView.setBackgroundResource(R.drawable.selector_listview_client_row);
     //On item click event

@@ -15,9 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.media.MediaPlayer;
@@ -25,14 +23,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 
 import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-//import android.telephony.TelephonyManager;
 import android.os.Environment;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -61,10 +56,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
-import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.github.ybq.android.spinkit.style.Circle;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mhadikz.toaster.Toaster;
@@ -78,12 +70,10 @@ import com.rt.printerlibrary.cmd.EscFactory;
 import com.rt.printerlibrary.cmd.TscFactory;
 import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
-import com.rt.printerlibrary.enumerate.BmpPrintMode;
 import com.rt.printerlibrary.enumerate.CommonEnum;
 import com.rt.printerlibrary.enumerate.ConnectStateEnum;
 import com.rt.printerlibrary.enumerate.PrintDirection;
 import com.rt.printerlibrary.enumerate.PrintRotation;
-import com.rt.printerlibrary.enumerate.SettingEnum;
 import com.rt.printerlibrary.exception.SdkException;
 import com.rt.printerlibrary.factory.cmd.CmdFactory;
 import com.rt.printerlibrary.factory.connect.BluetoothFactory;
@@ -96,10 +86,8 @@ import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.setting.BarcodeSetting;
-import com.rt.printerlibrary.setting.BitmapSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
-import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.activation.NetClient;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
 import com.safesoft.proapp.distribute.app.BaseActivity;
@@ -118,17 +106,13 @@ import com.safesoft.proapp.distribute.utils.TonyUtils;
 import com.safesoft.proapp.distribute.view.FlowRadioGroup;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -136,9 +120,6 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class ActivitySetting extends BaseActivity implements View.OnClickListener, PrinterObserver {
-
-    Bitmap bitmap;
-    private static final int CAMERA_PERMISSION = 5;
 
     public Circle circle;
 
@@ -151,7 +132,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, model_ticket_tite;
     private TextInputEditText edt_objectif;
 
-    private Button btntest;
+    private Button btntest, btn_get_all_depot, btn_get_all_vendeur;
 
     //////////////////////// SharedPreferences /////////////////////
     SharedPreferences prefs;
@@ -210,7 +191,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private final String SP_KEY_PORT = "port";
     private Object configObj;
     private final ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
-    private PrinterInterface curPrinterInterface = null;
     private BroadcastReceiver broadcastReceiver;//USB Attach-Deattached Receiver
 
     private final List<String> NO_PERMISSION = new ArrayList<String>();
@@ -227,7 +207,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 NO_PERMISSION.add(s);
             }
         }
-        if (NO_PERMISSION.size() == 0) {
+        if (NO_PERMISSION.isEmpty()) {
 
         } else {
             requestPermissions(NO_PERMISSION.toArray(new String[0]), REQUEST_CAMERA);
@@ -429,7 +409,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         // Chekbox
         CheckBox chkbx_safe_event = findViewById(R.id.chkbx_safe_event);
         CheckBox chkbx_stock_moins = findViewById(R.id.chkbx_stock_moins);
-        CheckBox chkbx_achats_show = findViewById(R.id.chkbx_achats_show);
         CheckBox chkbx_produit = findViewById(R.id.chkbx_photo_pr);
 
 
@@ -478,14 +457,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         // checkbox achats show
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-
-        chkbx_achats_show.setChecked(prefs.getBoolean("ACHATS_SHOW", false));
-
-        chkbx_achats_show.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("ACHATS_SHOW", isChecked);
-            editor.apply();
-        });
 
         chkbx_produit.setChecked(prefs.getBoolean("SHOW_PROD_PIC", false));
 
@@ -556,7 +527,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
 
         //Button
-        btntest = findViewById(R.id.check);
+        btntest = findViewById(R.id.check_connexion);
+        btn_get_all_depot = findViewById(R.id.get_all_depot);
+        btn_get_all_vendeur = findViewById(R.id.get_all_vendeur);
+
         btntest.setOnClickListener(v -> {
            // SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
             if (!isRunning) {
@@ -569,15 +543,63 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                     textView.setVisibility(View.VISIBLE);
                     circle.start();
-                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString());
+                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "TEST_CONNEXION");
                 }else {
                     textView.setVisibility(View.VISIBLE);
                     circle.start();
-                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password).execute();
+                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, "TEST_CONNEXION").execute();
                 }
                 isRunning = true;
             } else {
-                Crouton.showText(ActivitySetting.this, "Test Connexion est en cours!", Style.INFO);
+                Crouton.showText(ActivitySetting.this, "Demande de connexion est en cours!", Style.INFO);
+            }
+        });
+
+        btn_get_all_depot.setOnClickListener(v -> {
+           // SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+            if (!isRunning) {
+                if(prefs.getBoolean("USE_SAFE_EVENT", false)){
+
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                    editor.putString("SAFE_EVENT_USER", username_safe_event.getText().toString());
+                    editor.putString("SAFE_EVENT_PASS", password_safe_event.getText().toString());
+                    editor.apply();   // editor.commit();
+
+                    textView.setVisibility(View.VISIBLE);
+                    circle.start();
+                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "GET_ALL_DEPOT");
+                }else {
+                    textView.setVisibility(View.VISIBLE);
+                    circle.start();
+                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, "GET_ALL_DEPOT").execute();
+                }
+                isRunning = true;
+            } else {
+                Crouton.showText(ActivitySetting.this, "Demande de connexion est en cours!", Style.INFO);
+            }
+        });
+
+        btn_get_all_vendeur.setOnClickListener(v -> {
+           // SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+            if (!isRunning) {
+                if(prefs.getBoolean("USE_SAFE_EVENT", false)){
+
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                    editor.putString("SAFE_EVENT_USER", username_safe_event.getText().toString());
+                    editor.putString("SAFE_EVENT_PASS", password_safe_event.getText().toString());
+                    editor.apply();   // editor.commit();
+
+                    textView.setVisibility(View.VISIBLE);
+                    circle.start();
+                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "GET_ALL_VENDEUR");
+                }else {
+                    textView.setVisibility(View.VISIBLE);
+                    circle.start();
+                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, "GET_ALL_VENDEUR").execute();
+                }
+                isRunning = true;
+            } else {
+                Crouton.showText(ActivitySetting.this, "Demande de connexion est en cours!", Style.INFO);
             }
         });
 
@@ -676,7 +698,15 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_pa_ht = findViewById(R.id.switch_pa_ht);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_sychroniser_client = findViewById(R.id.switch_sychroniser_client);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_achat_client = findViewById(R.id.switch_achat_client);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_benifice = findViewById(R.id.switch_benifice);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_stock_moins = findViewById(R.id.switch_stock_moins);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_solde_client = findViewById(R.id.switch_solde_client);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_remise = findViewById(R.id.switch_remise);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -703,7 +733,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
         switch_pa_ht.setChecked(prefs.getBoolean("AFFICHAGE_PA_HT", false));
+        switch_sychroniser_client.setChecked(prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false));
+        switch_achat_client.setChecked(prefs.getBoolean("SHOW_ACHAT_CLIENT", false));
+        switch_benifice.setChecked(prefs.getBoolean("AFFICHAGE_BENIFICE", false));
         switch_stock_moins.setChecked(prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false));
+        switch_solde_client.setChecked(prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true));
         switch_remise.setChecked(prefs.getBoolean("AFFICHAGE_REMISE", true));
         switch_modifier_bon.setChecked(prefs.getBoolean("AUTORISE_MODIFY_BON", true));
         switch_edit_prix.setChecked(prefs.getBoolean("EDIT_PRICE", false));
@@ -735,9 +769,33 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
+        switch_sychroniser_client.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("SYCHRONISER_TOUS_CLIENT", isChecked);
+            editor.apply();
+        });
+
+        switch_achat_client.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("SHOW_ACHAT_CLIENT", isChecked);
+            editor.apply();
+        });
+
+        switch_benifice.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("AFFICHAGE_BENIFICE", isChecked);
+            editor.apply();
+        });
+
         switch_stock_moins.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("AFFICHAGE_STOCK_MOINS", isChecked);
+            editor.apply();
+        });
+
+        switch_solde_client.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("AFFICHAGE_SOLDE_CLIENT", isChecked);
             editor.apply();
         });
 
@@ -1111,7 +1169,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     tv_device_selected.setText(printerInterfaceArrayList.get(i).getConfigObject().toString());
                     rtPrinter.setPrinterInterface(printerInterfaceArrayList.get(i));//设置连接方式 Connection port settings
                     tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
-                    curPrinterInterface = printerInterfaceArrayList.get(i);
                     BaseApplication.getInstance().setRtPrinter(rtPrinter);//设置全局RTPrinter
                     setPrintEnable(printerInterfaceArrayList.get(i).getConnectState() == ConnectStateEnum.Connected);
                 }
@@ -1681,7 +1738,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         localBackup.performRestore(controller);
     }
 
-    public void sendRequest(String username_safe_event, String password_safe_event) {
+    public void sendRequest(String username_safe_event, String password_safe_event , String typeConnection) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -1699,7 +1756,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                             public void run() {
                                 if(token.length()<= 15){
                                     ip.setText(token);
-                                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password).execute();
+                                    new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, typeConnection).execute();
                                 }else {
 
                                     terminateProcessing();
@@ -1752,10 +1809,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         String _pathDatabase;
         String _Username;
         String _Password;
+        String _TypeConnection;
         Connection con = null;
         String errorMessage;
 
-        public TestConnection_Setting(String server, String database, String username, String password) {
+        public TestConnection_Setting(String server, String database, String username, String password, String typeConnection) {
             super();
             // do stuff
             _Server = server;
@@ -1763,6 +1821,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             _pathDatabase = _pathDatabase.toUpperCase().replace(".FDB", "");
             _Username = username;
             _Password = password;
+            _TypeConnection = typeConnection;
         }
 
         @Override
