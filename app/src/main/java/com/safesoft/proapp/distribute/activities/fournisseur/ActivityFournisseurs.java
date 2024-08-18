@@ -18,22 +18,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.client.ActivityClientDetail;
-import com.safesoft.proapp.distribute.activities.client.ActivityClients;
-import com.safesoft.proapp.distribute.activities.client.TSPActivityMaps;
-import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
-import com.safesoft.proapp.distribute.adapters.RecyclerAdapterClients;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterFournisseurs;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedFournisseurEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditFournisseur;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 
@@ -45,14 +36,14 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityFournisseurs extends AppCompatActivity implements RecyclerAdapterFournisseurs.ItemClick, RecyclerAdapterFournisseurs.ItemLongClick{
+public class ActivityFournisseurs extends AppCompatActivity implements RecyclerAdapterFournisseurs.ItemClick, RecyclerAdapterFournisseurs.ItemLongClick {
 
     private static final int REQUEST_ACTIVITY_NEW_CLIENT = 4000;
     RecyclerView recyclerView;
     private RecyclerAdapterFournisseurs adapter;
     private ArrayList<PostData_Fournisseur> fournisseurs;
     private DATABASE controller;
-    private  MediaPlayer mp;
+    private MediaPlayer mp;
     private EventBus bus;
     private TextView nbr_fournisseur;
 
@@ -61,6 +52,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
     private final List<String> NO_PERMISSION = new ArrayList<String>();
+
     private void CheckAllPermission() {
         NO_PERMISSION.clear();
         for (String s : NEED_PERMISSION) {
@@ -95,8 +87,8 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
     private void initViews() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_client);
-        nbr_fournisseur = (TextView) findViewById(R.id.list_client_nbr_client);
+        recyclerView = findViewById(R.id.recycler_view_client);
+        nbr_fournisseur = findViewById(R.id.list_client_nbr_client);
     }
 
     @Override
@@ -120,12 +112,12 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     }
 
     public ArrayList<PostData_Fournisseur> getItems(String qqry) {
-        if(qqry.length() > 0){
+        if (qqry.length() > 0) {
             fournisseurs = new ArrayList<>();
-            String querry = "SELECT * FROM FOURNIS WHERE CODE_FRS LIKE '%"+qqry+"%' OR FOURNIS LIKE '%"+qqry+"%' OR TEL LIKE '%"+qqry+"%' ORDER BY FOURNIS";
+            String querry = "SELECT * FROM FOURNIS WHERE CODE_FRS LIKE '%" + qqry + "%' OR FOURNIS LIKE '%" + qqry + "%' OR TEL LIKE '%" + qqry + "%' ORDER BY FOURNIS";
             // querry = "SELECT * FROM Events";
             fournisseurs = controller.select_fournisseurs_from_database(querry);
-        }else {
+        } else {
             fournisseurs = new ArrayList<>();
             String querry = "SELECT * FROM FOURNIS ORDER BY FOURNIS";
             // querry = "SELECT * FROM Events";
@@ -137,37 +129,28 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
 
     @Subscribe
-    public void onFournisseurSelected(SelectedFournisseurEvent fournisseurEvent){
+    public void onFournisseurSelected(SelectedFournisseurEvent fournisseurEvent) {
         setRecycle("");
     }
 
     @Override
     public void onClick(View v, int position) {
 
-        if(v.getId() == R.id.item_root){
+        if (v.getId() == R.id.item_root) {
             Sound(R.raw.beep);
-            /*Intent intent = new Intent(ActivityFournisseurs.this, ActivityClientDetail.class);
+            Intent intent = new Intent(ActivityFournisseurs.this, ActivityFournisseurDetail.class);
 
-            // intent.putExtra("CLIENT", clients.get(position).client);
             intent.putExtra("CODE_FRS", fournisseurs.get(position).code_frs);
-            // intent.putExtra("TEL", clients.get(position).tel);
-            // intent.putExtra("LATITUDE", clients.get(position).latitude);
-            // intent.putExtra("LONGITUDE", clients.get(position).longitude);
-            // intent.putExtra("ADRESSE", clients.get(position).adresse);
-            //  intent.putExtra("MODE_TARIF", clients.get(position).mode_tarif);
-            //  intent.putExtra("ACHAT", clients.get(position).achat_montant);
-            //  intent.putExtra("VERSER", clients.get(position).verser_montant);
-            //  intent.putExtra("SOLDE", clients.get(position).solde_montant);
 
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);*/
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
 
     }
 
     @Override
     public void onLongClick(View v, int position) {
-        if(v.getId() == R.id.item_root){
+        if (v.getId() == R.id.item_root) {
             final CharSequence[] items = {"Modifier", "Supprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -179,8 +162,8 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                         FragmentNewEditFournisseur fragmentnewfournisseur = new FragmentNewEditFournisseur();
                         fragmentnewfournisseur.showDialogbox(ActivityFournisseurs.this, getBaseContext(), "EDIT_FOURNISSEUR", fournisseurs.get(position));
                     }
-                    case 1 ->{
-                        if(fournisseurs.get(position).isNew == 0){
+                    case 1 -> {
+                        if (fournisseurs.get(position).isNew == 0) {
                             new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")
                                     .setContentText("Fournisseur importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")
@@ -191,13 +174,13 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                         String querry_has_bon1 = "SELECT CODE_FRS FROM ACHAT1 WHERE IS_EXPORTED = 0 AND CODE_FRS = '" + fournisseurs.get(position).code_frs + "'";
                         String querry_has_bon1_temp = "SELECT CODE_FRS FROM ACHAT1_TEMP WHERE IS_EXPORTED = 0 AND CODE_FRS = '" + fournisseurs.get(position).code_frs + "'";
 
-                        if(controller.check_if_has_bon(querry_has_bon1) || controller.check_if_has_bon(querry_has_bon1_temp)){
+                        if (controller.check_if_has_bon(querry_has_bon1) || controller.check_if_has_bon(querry_has_bon1_temp)) {
                             // you can't delete this fournisseur
                             new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")
                                     .setContentText("Il exist des bons créer avec ce client")
                                     .show();
-                        }else {
+                        } else {
                             new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Suppression")
                                     .setContentText("Voulez-vous vraiment supprimer le fournisseur " + fournisseurs.get(position).fournis + " ?!")
@@ -235,7 +218,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 ///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
 //////////////////////////////////////////////////////////////////////
 
-        menu.add(Menu.NONE,Menu.NONE,0,"Search")
+        menu.add(Menu.NONE, Menu.NONE, 0, "Search")
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -277,9 +260,9 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
-        }else if(item.getItemId() == R.id.new_fournisseur){
+        } else if (item.getItemId() == R.id.new_fournisseur) {
             FragmentNewEditFournisseur fragmentnewfournisseur = new FragmentNewEditFournisseur();
             fragmentnewfournisseur.showDialogbox(ActivityFournisseurs.this, getBaseContext(), "NEW_FOURNISSEUR", null);
         }
@@ -293,7 +276,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public void Sound(int SourceSound){
+    public void Sound(int SourceSound) {
         mp = MediaPlayer.create(this, SourceSound);
         mp.start();
     }

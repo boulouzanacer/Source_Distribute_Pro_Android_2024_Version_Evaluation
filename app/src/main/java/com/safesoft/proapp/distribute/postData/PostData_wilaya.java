@@ -5,8 +5,8 @@ package com.safesoft.proapp.distribute.postData;
  */
 public class PostData_wilaya {
 
-  public int id;
-  public String wilaya;
-  public double latitude;
-  public double longitude;
+    public int id;
+    public String wilaya;
+    public double latitude;
+    public double longitude;
 }

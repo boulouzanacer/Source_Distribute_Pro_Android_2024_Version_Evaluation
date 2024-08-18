@@ -30,11 +30,12 @@ public class PostData_Produit implements Serializable {
     public double pv6_ttc;
 
     public double colissage;
+    public double stock_ini;
     public double stock_colis;
     public int stock_vrac;
 
     public double stock;
-    public byte[]  photo;
+    public byte[] photo;
     public Boolean exist;
     public String description;
     public String famille;

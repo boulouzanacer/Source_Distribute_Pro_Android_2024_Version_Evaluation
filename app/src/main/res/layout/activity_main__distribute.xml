@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/font_black"
     android:padding="7dp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/lnr_vente_commande"
@@ -63,7 +62,7 @@
         android:padding="10dp"
         android:visibility="visible"
         android:orientation="horizontal"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <ImageButton
             android:id="@+id/btn_commande_fournisseur"
@@ -85,7 +84,7 @@
             android:layout_marginEnd="5dp"
             android:background="@drawable/imagebutton_rounded"
             android:backgroundTint="@color/blue_white_1"
-            android:src="@drawable/baseline_achat_24"
+            android:src="@mipmap/achats"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="achat" />
@@ -95,7 +94,7 @@
             android:layout_width="0dip"
             android:onClick="onClick"
             android:layout_marginStart="5dp"
-            android:src="@drawable/outline_fournisseur_24"
+            android:src="@mipmap/fournisseurs"
             android:background="@drawable/imagebutton_rounded"
             android:backgroundTint="@color/blue_white_2"
             android:layout_height="match_parent"
@@ -111,7 +110,7 @@
         android:layout_height="0dip"
         android:padding="10dp"
         android:orientation="horizontal"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <ImageButton
             android:id="@+id/btn_produits"
@@ -144,7 +143,7 @@
         android:layout_height="0dip"
         android:padding="10dp"
         android:orientation="horizontal"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <ImageButton
             android:id="@+id/btn_import_export"

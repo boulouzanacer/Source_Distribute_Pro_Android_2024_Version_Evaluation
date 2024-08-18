@@ -15,15 +15,15 @@ import java.io.InputStream;
 public class ImageUtils {
     public static ImageUtils mInstant;
 
-    public static ImageUtils getInstant(){
-        if(mInstant==null){
+    public static ImageUtils getInstant() {
+        if (mInstant == null) {
             mInstant = new ImageUtils();
         }
         return mInstant;
     }
 
-    public  byte [] getCompressedBitmap(byte [] b) {
-        if(b == null)
+    public byte[] getCompressedBitmap(byte[] b) {
+        if (b == null)
             return null;
 
         float maxHeight = 500.0f;
@@ -62,7 +62,7 @@ public class ImageUtils {
         options.inTempStorage = new byte[16 * 1024];
 
         try {
-             bmp = BitmapFactory.decodeByteArray(b, 0, b.length, options);
+            bmp = BitmapFactory.decodeByteArray(b, 0, b.length, options);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
 
@@ -129,5 +129,17 @@ public class ImageUtils {
             inSampleSize++;
         }
         return inSampleSize;
+    }
+
+    public static byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 }

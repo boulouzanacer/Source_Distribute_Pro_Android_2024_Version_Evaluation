@@ -18,7 +18,10 @@
 package com.safesoft.proapp.distribute.databases.backup;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +31,7 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.utils.Permissions;
 
 import java.io.File;
+import java.io.OutputStream;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -42,25 +46,24 @@ public class LocalBackup {
     }
 
     //ask to the user a name for the backup and perform it. The backup will be saved to a custom folder.
-    public void performBackup(final DATABASE db, final String outFileName) {
+    public void performBackup(final DATABASE db) {
 
         Permissions.verifyStoragePermissions(activity);
 
-        File folder = new File(Environment.getExternalStorageDirectory() + File.separator + activity.getResources().getString(R.string.app_name));
+        String outFileName = Environment.getExternalStorageDirectory() + File.separator+"backup_distribute_pro_data.db";
+        File folder = new File(Environment.getExternalStorageDirectory().getPath());
 
         boolean success = true;
         if (!folder.exists())
             success = folder.mkdirs();
         if (success) {
 
-            String out = outFileName +"backup_distribute_pro_data.db";
-
-            if(db.backup(out)){
+            if (db.backup(outFileName)) {
                 new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Information !")
                         .setContentText("Sauvegarde de base de données terminée avec succès !")
                         .show();
-            }else {
+            } else {
                 new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Attention !")
                         .setContentText("Prblème d'importation de la base de données, Réessayer !")
@@ -88,25 +91,47 @@ public class LocalBackup {
             builderSingle.setTitle("Restorer:");
             builderSingle.setNegativeButton("annuler", (dialog, which) -> dialog.dismiss());
             builderSingle.setAdapter(arrayAdapter, (dialog, which) -> {
-                        try {
-                            if(db.importDB(files[which].getPath())){
-                                new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
-                                        .setTitleText("Information !")
-                                        .setContentText("Restauration terminée avec succès !")
-                                        .show();
-                            }else {
-                                new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Attention !")
-                                        .setContentText("Prblème d'importation de la base de données, Réessayer !")
-                                        .show();
-                            }
-                        } catch (Exception e) {
-                            Crouton.makeText(activity, "Problème de restauration. Réessayer", Style.ALERT).show();
-                        }
-                    });
+                try {
+                    if (db.importDB(files[which].getPath())) {
+                        new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Information !")
+                                .setContentText("Restauration terminée avec succès !")
+                                .show();
+                    } else {
+                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention !")
+                                .setContentText("Prblème d'importation de la base de données, Réessayer !")
+                                .show();
+                    }
+                } catch (Exception e) {
+                    Crouton.makeText(activity, "Problème de restauration. Réessayer", Style.ALERT).show();
+                }
+            });
             builderSingle.show();
         } else
             Crouton.makeText(activity, "Dossier de sauvegarde absent..\nFaites une sauvegarde avant une restauration !", Style.ALERT).show();
     }
 
+
+    public void saveFileToExternalStorage(String fileName, byte[] fileContent) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "application/octet-stream");
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+        Uri externalUri = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            externalUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+        }
+        Uri fileUri = activity.getContentResolver().insert(externalUri, values);
+
+        try (OutputStream outputStream = activity.getContentResolver().openOutputStream(fileUri)) {
+            if (outputStream != null) {
+                outputStream.write(fileContent);
+                outputStream.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

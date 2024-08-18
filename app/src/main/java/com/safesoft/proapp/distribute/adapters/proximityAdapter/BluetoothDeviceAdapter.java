@@ -61,15 +61,14 @@ public class BluetoothDeviceAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.bluetooth_device_item, null);
             holder = new ViewHolder();
-            holder.tvName = (TextView) convertView.findViewById(R.id.tv_bluetooth_device_name);
+            holder.tvName = convertView.findViewById(R.id.tv_bluetooth_device_name);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         BluetoothDevice bluetoothDevice = mList.get(position);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return convertView;

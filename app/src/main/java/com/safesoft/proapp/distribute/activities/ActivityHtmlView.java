@@ -50,6 +50,7 @@ public class ActivityHtmlView extends AppCompatActivity {
     SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
     private String type_print;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +121,7 @@ public class ActivityHtmlView extends AppCompatActivity {
     }
 
 
-    String prepareAchatHtml(){
+    String prepareAchatHtml() {
         StringBuilder data = new StringBuilder();
         data.append("""
                 <HTML dir="rtl" lang="ar"><head>
@@ -131,8 +132,8 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         data.append("<center>");
 
-        String img_str= prefs.getString("COMPANY_LOGO", "");
-        if (!img_str.equals("")){
+        String img_str = prefs.getString("COMPANY_LOGO", "");
+        if (!img_str.equals("")) {
             data.append("<img src='data:image/bmp;base64,").append(img_str).append("' width='300' height='100'>");
         }
 
@@ -195,14 +196,14 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         data.append(addLine());
 
-        for(int i = 0 ; i< final_panier.size(); i++){
+        for (int i = 0; i < final_panier.size(); i++) {
             data.append("<div class='row'>");
             // product value
             data.append("<div class='product_value'>");
             data.append(final_panier.get(i).produit);
             data.append("</div>");
 
-            if(final_panier.get(i).nbr_colis != 0){
+            if (final_panier.get(i).nbr_colis != 0) {
                 // nbrcolis value
                 data.append("<div class='nbrcolis_value'>");
                 data.append(new DecimalFormat("####0.##").format(final_panier.get(i).nbr_colis));
@@ -219,7 +220,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append("<div class='equal_value'>");
                 data.append("=");
                 data.append("</div>");
-            }else{
+            } else {
                 // nbrcolis value
                 data.append("<div class='nbrcolis_value'>");
                 data.append("");
@@ -243,7 +244,7 @@ public class ActivityHtmlView extends AppCompatActivity {
             data.append(new DecimalFormat("####0.##").format(final_panier.get(i).qte));
             data.append("</div>");
 
-            if(final_panier.get(i).gratuit != 0){
+            if (final_panier.get(i).gratuit != 0) {
                 // + value
                 data.append("<div class='plus_value'>");
                 data.append("+");
@@ -252,7 +253,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append("<div class='gratuit_value'>");
                 data.append(new DecimalFormat("####0.##").format(final_panier.get(i).gratuit));
                 data.append("</div>");
-            }else{
+            } else {
                 // + value
                 data.append("<div class='plus_value'>");
                 data.append("");
@@ -279,43 +280,43 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         int nbr_produit;
         Double total_ht_bon, tva_bon, timbre_bon, total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
-        String nbr_produit_str, total_ht_bon_str , tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+        String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
         nbr_produit = final_panier.size();
-        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
+        nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(nbr_produit));
 
         total_ht_bon = achat1.tot_ht;
-        total_ht_bon_str   =  new DecimalFormat("####0.00").format(total_ht_bon);
+        total_ht_bon_str = new DecimalFormat("####0.00").format(total_ht_bon);
 
         tva_bon = achat1.tot_tva;
-        tva_bon_str   =  new DecimalFormat("####0.00").format(tva_bon);
+        tva_bon_str = new DecimalFormat("####0.00").format(tva_bon);
 
         timbre_bon = achat1.timbre;
-        timbre_bon_str   =  new DecimalFormat("####0.00").format(timbre_bon);
+        timbre_bon_str = new DecimalFormat("####0.00").format(timbre_bon);
 
         total_bon = achat1.tot_ttc;
-        total_bon_str   =  new DecimalFormat("####0.00").format(total_bon);
+        total_bon_str = new DecimalFormat("####0.00").format(total_bon);
 
         remise_bon = achat1.remise;
-        remise_bon_str   =  new DecimalFormat("####0.00").format(remise_bon);
+        remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
         ancien_solde = achat1.solde_ancien;
-        ancien_solde_str   =  new DecimalFormat("####0.00").format(ancien_solde);
+        ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
         total_a_payer = achat1.montant_bon;
-        total_a_payer_str   =  new DecimalFormat("####0.00").format(total_a_payer);
+        total_a_payer_str = new DecimalFormat("####0.00").format(total_a_payer);
 
         versement = achat1.verser;
-        versement_str   =  new DecimalFormat("####0.00").format(versement);
+        versement_str = new DecimalFormat("####0.00").format(versement);
 
         nouveau_solde = achat1.reste;
-        nouveau_solde_str   =  new DecimalFormat("####0.00").format(nouveau_solde);
+        nouveau_solde_str = new DecimalFormat("####0.00").format(nouveau_solde);
 
         data.append("<div style='float:left' dir='ltr' lang='en'>");
 
         data.append("<table>");
 
-        if(tva_bon !=0 && timbre_bon !=0){
+        if (tva_bon != 0 && timbre_bon != 0) {
 
             data.append("<tr><td class='td_class'>");
             data.append(total_ht_bon_str);
@@ -330,8 +331,8 @@ public class ActivityHtmlView extends AppCompatActivity {
             data.append("</td><td class='td_class'>الطابع ج</td></tr>");
             data.append("</div>");
 
-        }else if(tva_bon != 0){
-            if(prefs.getBoolean("AFFICHAGE_HT", false)){
+        } else if (tva_bon != 0) {
+            if (prefs.getBoolean("AFFICHAGE_HT", false)) {
                 data.append("<tr><td class='td_class'>");
                 data.append(total_ht_bon_str);
                 data.append("</td><td class='td_class'>المجموع ب.ض</td></tr>");
@@ -340,7 +341,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append(tva_bon_str);
                 data.append("</td><td class='td_class'>الضريبة</td></tr>");
             }
-        }else if(timbre_bon != 0){
+        } else if (timbre_bon != 0) {
 
             data.append("<tr><td class='td_class'>");
             data.append(total_ht_bon_str);
@@ -352,7 +353,7 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         }
 
-        if(remise_bon !=0){
+        if (remise_bon != 0) {
 
             data.append("<tr><td class='td_class'>");
             data.append(total_bon_str);
@@ -422,7 +423,7 @@ public class ActivityHtmlView extends AppCompatActivity {
         return data.toString();
     }
 
-    String prepareSaleHtml(){
+    String prepareSaleHtml() {
         StringBuilder data = new StringBuilder();
         data.append("""
                 <HTML dir="rtl" lang="ar"><head>
@@ -433,8 +434,8 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         data.append("<center>");
 
-        String img_str= prefs.getString("COMPANY_LOGO", "");
-        if (!img_str.equals("")){
+        String img_str = prefs.getString("COMPANY_LOGO", "");
+        if (!img_str.equals("")) {
             data.append("<img src='data:image/bmp;base64,").append(img_str).append("' width='300' height='100'>");
         }
 
@@ -481,9 +482,9 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         data.append("<center>");
         data.append("<h4>");
-        if(type_print.equals("VENTE")){
+        if (type_print.equals("VENTE")) {
             data.append("وصف بيع رقم : ");
-        }else if(type_print.equals("ORDER")){
+        } else if (type_print.equals("ORDER")) {
             data.append("وصف طلب رقم : ");
         }
         data.append(bon1.num_bon); /////// num bon
@@ -493,22 +494,22 @@ public class ActivityHtmlView extends AppCompatActivity {
         data.append(addLine());
 
         data.append("<div class='row'>");
-            data.append("<div class='product_title'>المنتوج</div>");
-            data.append("<div class='quantity_title'>الكمية</div>");
-            data.append("<div class='gratuit_title'>مجان</div>");
-            data.append("<div class='prix_u_title'>السعر</div>");
+        data.append("<div class='product_title'>المنتوج</div>");
+        data.append("<div class='quantity_title'>الكمية</div>");
+        data.append("<div class='gratuit_title'>مجان</div>");
+        data.append("<div class='prix_u_title'>السعر</div>");
         data.append("</div>");
 
         data.append(addLine());
 
-        for(int i = 0 ; i< final_panier.size(); i++){
+        for (int i = 0; i < final_panier.size(); i++) {
             data.append("<div class='row'>");
-                // product value
-                data.append("<div class='product_value'>");
-                data.append(final_panier.get(i).produit);
-                data.append("</div>");
+            // product value
+            data.append("<div class='product_value'>");
+            data.append(final_panier.get(i).produit);
+            data.append("</div>");
 
-            if(final_panier.get(i).nbr_colis != 0){
+            if (final_panier.get(i).nbr_colis != 0) {
                 // nbrcolis value
                 data.append("<div class='nbrcolis_value'>");
                 data.append(new DecimalFormat("####0.##").format(final_panier.get(i).nbr_colis));
@@ -525,7 +526,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append("<div class='equal_value'>");
                 data.append("=");
                 data.append("</div>");
-            }else{
+            } else {
                 // nbrcolis value
                 data.append("<div class='nbrcolis_value'>");
                 data.append("");
@@ -544,12 +545,12 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append("</div>");
             }
 
-                // quantity value
-                data.append("<div class='quantity_value'>");
-                data.append(new DecimalFormat("####0.##").format(final_panier.get(i).qte));
-                data.append("</div>");
+            // quantity value
+            data.append("<div class='quantity_value'>");
+            data.append(new DecimalFormat("####0.##").format(final_panier.get(i).qte));
+            data.append("</div>");
 
-            if(final_panier.get(i).gratuit != 0){
+            if (final_panier.get(i).gratuit != 0) {
                 // + value
                 data.append("<div class='plus_value'>");
                 data.append("+");
@@ -558,7 +559,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append("<div class='gratuit_value'>");
                 data.append(new DecimalFormat("####0.##").format(final_panier.get(i).gratuit));
                 data.append("</div>");
-            }else{
+            } else {
                 // + value
                 data.append("<div class='plus_value'>");
                 data.append("");
@@ -568,14 +569,14 @@ public class ActivityHtmlView extends AppCompatActivity {
                 data.append("</div>");
             }
 
-                // X value
-                data.append("<div class='x2_value'>");
-                data.append("X");
-                data.append("</div>");
-                // price value
-                data.append("<div class='prix_u_value'>");
-                data.append(new DecimalFormat("####0.00").format(final_panier.get(i).pv_ht));
-                data.append("</div>");
+            // X value
+            data.append("<div class='x2_value'>");
+            data.append("X");
+            data.append("</div>");
+            // price value
+            data.append("<div class='prix_u_value'>");
+            data.append(new DecimalFormat("####0.00").format(final_panier.get(i).pv_ht));
+            data.append("</div>");
             data.append("</div>");
 
 
@@ -585,43 +586,43 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         int nbr_produit;
         Double total_ht_bon, tva_bon, timbre_bon, total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
-        String nbr_produit_str, total_ht_bon_str , tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+        String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
         nbr_produit = final_panier.size();
-        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
+        nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(nbr_produit));
 
         total_ht_bon = bon1.tot_ht;
-        total_ht_bon_str   =  new DecimalFormat("####0.00").format(total_ht_bon);
+        total_ht_bon_str = new DecimalFormat("####0.00").format(total_ht_bon);
 
         tva_bon = bon1.tot_tva;
-        tva_bon_str   =  new DecimalFormat("####0.00").format(tva_bon);
+        tva_bon_str = new DecimalFormat("####0.00").format(tva_bon);
 
         timbre_bon = bon1.timbre;
-        timbre_bon_str   =  new DecimalFormat("####0.00").format(timbre_bon);
+        timbre_bon_str = new DecimalFormat("####0.00").format(timbre_bon);
 
         total_bon = bon1.tot_ttc;
-        total_bon_str   =  new DecimalFormat("####0.00").format(total_bon);
+        total_bon_str = new DecimalFormat("####0.00").format(total_bon);
 
         remise_bon = bon1.remise;
-        remise_bon_str   =  new DecimalFormat("####0.00").format(remise_bon);
+        remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
         ancien_solde = bon1.solde_ancien;
-        ancien_solde_str   =  new DecimalFormat("####0.00").format(ancien_solde);
+        ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
         total_a_payer = bon1.montant_bon;
-        total_a_payer_str   =  new DecimalFormat("####0.00").format(total_a_payer);
+        total_a_payer_str = new DecimalFormat("####0.00").format(total_a_payer);
 
         versement = bon1.verser;
-        versement_str   =  new DecimalFormat("####0.00").format(versement);
+        versement_str = new DecimalFormat("####0.00").format(versement);
 
         nouveau_solde = bon1.reste;
-        nouveau_solde_str   =  new DecimalFormat("####0.00").format(nouveau_solde);
+        nouveau_solde_str = new DecimalFormat("####0.00").format(nouveau_solde);
 
         data.append("<div style='float:left' dir='ltr' lang='en'>");
 
         data.append("<table>");
 
-        if(tva_bon !=0 && timbre_bon !=0){
+        if (tva_bon != 0 && timbre_bon != 0) {
 
             data.append("<tr><td class='td_class'>");
             data.append(total_ht_bon_str);
@@ -636,9 +637,9 @@ public class ActivityHtmlView extends AppCompatActivity {
             data.append("</td><td class='td_class'>الطابع ج</td></tr>");
             data.append("</div>");
 
-        }else if(tva_bon != 0){
+        } else if (tva_bon != 0) {
 
-            if(prefs.getBoolean("AFFICHAGE_HT", false)){
+            if (prefs.getBoolean("AFFICHAGE_HT", false)) {
                 data.append("<tr><td class='td_class'>");
                 data.append(total_ht_bon_str);
                 data.append("</td><td class='td_class'>المجموع ب.ض</td></tr>");
@@ -649,7 +650,7 @@ public class ActivityHtmlView extends AppCompatActivity {
             }
 
 
-        }else if(timbre_bon != 0){
+        } else if (timbre_bon != 0) {
 
             data.append("<tr><td class='td_class'>");
             data.append(total_ht_bon_str);
@@ -661,7 +662,7 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         }
 
-        if(remise_bon !=0){
+        if (remise_bon != 0) {
 
             data.append("<tr><td class='td_class'>");
             data.append(total_bon_str);
@@ -696,7 +697,7 @@ public class ActivityHtmlView extends AppCompatActivity {
         data.append(ancien_solde_str);
         data.append("</td></tr>");
 
-        if(type_print.equals("VENTE")){
+        if (type_print.equals("VENTE")) {
             data.append("<tr><td style='text-align: left'>مبلغ الدفع : </td>");
             data.append("<td style='text-align: right;font-weight: bold'>");
             data.append(total_a_payer_str);
@@ -721,7 +722,7 @@ public class ActivityHtmlView extends AppCompatActivity {
 
         String footer = prefs.getString("COMPANY_FOOTER", "");
 
-        if(!footer.equals("")){
+        if (!footer.equals("")) {
             data.append("<center>");
             data.append(footer);
             data.append("</center>");
@@ -734,8 +735,8 @@ public class ActivityHtmlView extends AppCompatActivity {
         return data.toString();
     }
 
-    String addLine(){
-        return  "<h4>--------------------------------------------------------</h4>";
+    String addLine() {
+        return "<h4>--------------------------------------------------------</h4>";
     }
 
     @Override
@@ -748,19 +749,19 @@ public class ActivityHtmlView extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         if (id == R.id.print) {
-                takeScreenshot();
-                Activity bactivity;
-                bactivity = ActivityHtmlView.this;
-                Printing printer = new Printing();
-                try {
-                    printer.start_print_bon_vente(bactivity, "ARABIC", null, null);
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }
+            takeScreenshot();
+            Activity bactivity;
+            bactivity = ActivityHtmlView.this;
+            Printing printer = new Printing();
+            try {
+                printer.start_print_bon_vente(bactivity, "ARABIC", null, null);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return super.onOptionsItemSelected(item);

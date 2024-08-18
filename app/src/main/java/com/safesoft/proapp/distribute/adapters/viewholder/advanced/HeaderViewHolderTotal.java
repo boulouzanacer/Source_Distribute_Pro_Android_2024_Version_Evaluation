@@ -1,8 +1,10 @@
 package com.safesoft.proapp.distribute.adapters.viewholder.advanced;
 
 import android.content.Context;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,28 +17,29 @@ import eu.inloop.simplerecycleradapter.SettableViewHolder;
 
 public class HeaderViewHolderTotal extends SettableViewHolder<WrappedMyDataObject> {
 
-  private TextView mTitle;
-  public HeaderViewHolderTotal(View itemView) {
-    super(itemView);
-    init();
-  }
+    private TextView mTitle;
 
-  public HeaderViewHolderTotal(@NonNull Context context, @LayoutRes int layoutRes, @NonNull ViewGroup parent) {
-    super(context, layoutRes, parent);
-    init();
-  }
+    public HeaderViewHolderTotal(View itemView) {
+        super(itemView);
+        init();
+    }
 
-  private void init() {
-    mTitle = (TextView) itemView.findViewById(R.id.title);
-  }
+    public HeaderViewHolderTotal(@NonNull Context context, @LayoutRes int layoutRes, @NonNull ViewGroup parent) {
+        super(context, layoutRes, parent);
+        init();
+    }
 
-  @Override
-  public void setData(@NonNull WrappedMyDataObject data) {
-    mTitle.setText(data.getHeaderTitle());
-  }
+    private void init() {
+        mTitle = itemView.findViewById(R.id.title);
+    }
 
-  @Override
-  public boolean isClickable() {
-    return false;
-  }
+    @Override
+    public void setData(@NonNull WrappedMyDataObject data) {
+        mTitle.setText(data.getHeaderTitle());
+    }
+
+    @Override
+    public boolean isClickable() {
+        return false;
+    }
 }

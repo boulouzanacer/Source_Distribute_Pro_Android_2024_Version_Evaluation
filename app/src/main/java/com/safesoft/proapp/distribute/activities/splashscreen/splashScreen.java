@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.provider.Settings;
 import android.provider.Settings.Secure;
 
 import android.view.animation.Animation;
@@ -42,9 +44,9 @@ public class splashScreen extends AppCompatActivity {
     //public static final String revendeur = "TIFAWT TECHNOLOGIE";
     //public static final String revendeur = "EASY SOFT";
 
-    ImageView imagesplash,logo_revendeur;
+    ImageView imagesplash, logo_revendeur;
     LinearLayout linear_layout_revendeur;
-    TextView inforevenedeur1,inforevenedeur2,inforevenedeur3,inforevenedeur4;
+    TextView inforevenedeur1, inforevenedeur2, inforevenedeur3, inforevenedeur4;
     Animation slide_in_from_left, slide_in_from_right;
 
     private int code_activation;
@@ -64,7 +66,7 @@ public class splashScreen extends AppCompatActivity {
         slide_in_from_left = AnimationUtils.loadAnimation(this, R.anim.slide_in_left);
         slide_in_from_right = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
 
-        if(getIntent() != null){
+        if (getIntent() != null) {
             revendeur = getIntent().getStringExtra("REVENDEUR");
         }
         revendeur = getIntent().getStringExtra("REVENDEUR");
@@ -74,20 +76,20 @@ public class splashScreen extends AppCompatActivity {
         logo_revendeur.setAnimation(slide_in_from_right);
         linear_layout_revendeur.setAnimation(slide_in_from_left);
 
-        deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        for(int i=0;i<= deviceId.length()-1 ;i++){
+        for (int i = 0; i <= deviceId.length() - 1; i++) {
             deviceId2 = deviceId2 + deviceId.charAt(i);
             if ((i + 1) % 4 == 0 && i != 15) {
                 deviceId2 = deviceId2 + "-";
             }
         }
-        deviceId2 = "8T"+ deviceId2.substring(2);
-        deviceId2= deviceId2.toUpperCase();
+        deviceId2 = "8T" + deviceId2.substring(2);
+        deviceId2 = deviceId2.toUpperCase();
         int i = 0;
-        int o = deviceId2.length()+1;
-        for(int t=0;t<= deviceId2.length()-1 ;t++){
-            i = i + (int)deviceId2.charAt(t) * 47293 * o;
+        int o = deviceId2.length() + 1;
+        for (int t = 0; t <= deviceId2.length() - 1; t++) {
+            i = i + (int) deviceId2.charAt(t) * 47293 * o;
             o = o - 1;
         }
         final int codeactivation = i;
@@ -95,11 +97,12 @@ public class splashScreen extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+
                 SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-                code_activation = prefs.getInt("CODE_ACTIVATION",0);
+                code_activation = prefs.getInt("CODE_ACTIVATION", 0);
 
 
-                if (codeactivation == code_activation ) {
+                if (codeactivation == code_activation) {
 
                     saveActivationData(true);
                     startActivity(new Intent(splashScreen.this, MainActivity.class));
@@ -122,15 +125,14 @@ public class splashScreen extends AppCompatActivity {
                             })
 
                             .setConfirmClickListener(sDialog -> {
-                            ////// GO TO REVENDEUR SCREEN ////////////////
-                            Intent intent = new Intent(splashScreen.this, ActivityActivation.class);
-                            intent.putExtra(NUM_SERIE,deviceId2);
-                            intent.putExtra(revendeur,revendeur);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                            finish();
+                                ////// GO TO REVENDEUR SCREEN ////////////////
+                                Intent intent = new Intent(splashScreen.this, ActivityActivation.class);
+                                intent.putExtra(NUM_SERIE, deviceId2);
+                                intent.putExtra(revendeur, revendeur);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                finish();
                             }).show());
-
 
 
                     saveActivationData(false);
@@ -138,36 +140,13 @@ public class splashScreen extends AppCompatActivity {
 
 
             }
-        },2000);
+        }, 2000);
 
-
-//        TextView test_spash = (TextView) findViewById(R.id.textsplash);
-//        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/fff_tusj.ttf");
-//        test_spash.setTypeface(face);
-//        //thread for splash screen running
-//        Thread logoTimer = new Thread() {
-//            public void run() {
-//                try {
-//                    sleep(2000);
-//                } catch (InterruptedException e) {
-//                    Log.d("Exception", "Exception" + e);
-//                } finally {
-//                    SharedPreferences prefs = getSharedPreferences(PREFS_ACTIVATION, MODE_PRIVATE);
-//                    if (prefs.getBoolean("IS_ACTIVATED", false)) {
-//                        startActivity(new Intent(splashScreen.this, MainActivity.class));
-//                    } else {
-//                        startActivity(new Intent(splashScreen.this, ActivityActivation.class));
-//                    }
-//                }
-//                finish();
-//            }
-//        };
-//        logoTimer.start();
 
     }
 
     public void saveActivationData(boolean is_activated) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("APP_ACTIVATED", is_activated);
         editor.apply();
@@ -180,7 +159,7 @@ public class splashScreen extends AppCompatActivity {
         inforevenedeur4 = findViewById(R.id.InfoRevendeur4);
 
         //00
-        if (revendeur.equals("SAFE SOFT"))  {
+        if (revendeur.equals("SAFE SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_safe_soft_500_100);
             inforevenedeur1.setText(R.string.INFO_SAFE_SOFT1);
             inforevenedeur2.setText(R.string.INFO_SAFE_SOFT2);
@@ -451,7 +430,14 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_OATECH3);
             inforevenedeur4.setText(R.string.INFO_OATECH4);
         }
-
+        //36
+        if (revendeur.equals("BR SOFT")) {
+            logo_revendeur.setImageResource(R.drawable.logo_brsoft_500_100);
+            inforevenedeur1.setText(R.string.INFO_BRSOFT1);
+            inforevenedeur2.setText(R.string.INFO_BRSOFT2);
+            inforevenedeur3.setText(R.string.INFO_BRSOFT3);
+            inforevenedeur4.setText(R.string.INFO_BRSOFT4);
+        }
 
 
     }

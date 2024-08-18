@@ -5,14 +5,14 @@ package com.safesoft.proapp.distribute.eventsClasses;
  */
 
 public class TimbreEvent {
-  private final double timbre;
+    private final double timbre;
 
-  public TimbreEvent(double timbre){
-    this.timbre = timbre;
-  }
+    public TimbreEvent(double timbre) {
+        this.timbre = timbre;
+    }
 
-  public double getTimbre(){
-    return timbre;
-  }
+    public double getTimbre() {
+        return timbre;
+    }
 
 }

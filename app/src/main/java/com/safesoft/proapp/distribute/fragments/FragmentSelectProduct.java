@@ -67,7 +67,7 @@ public class FragmentSelectProduct {
     private Button add_product;
 
     //PopupWindow display method
-    public void showDialogbox(Activity activity, Context context,  String mode_tariff_client, String SOURCE) {
+    public void showDialogbox(Activity activity, Context context, String mode_tariff_client, String SOURCE) {
 
         this.activity = activity;
         this.mcontext = context;
@@ -99,9 +99,9 @@ public class FragmentSelectProduct {
         prefs = context.getSharedPreferences(PREFS, MODE_PRIVATE);
         hide_stock_moins = prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false);
 
-        if(prefs.getBoolean("FILTRE_SEARCH", false)){
+        if (prefs.getBoolean("FILTRE_SEARCH", false)) {
             editsearch.setText(prefs.getString("FILTRE_SEARCH_VALUE", ""));
-        }else {
+        } else {
             editsearch.setText("");
         }
 
@@ -119,12 +119,12 @@ public class FragmentSelectProduct {
 
     private void initViews(View view) {
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_add_produit);
-        editsearch = (EditText) view.findViewById(R.id.search_field);
+        recyclerView = view.findViewById(R.id.recycler_view_add_produit);
+        editsearch = view.findViewById(R.id.search_field);
         btn_scan = view.findViewById(R.id.scan);
         btn_cancel = view.findViewById(R.id.cancel);
 
-        add_product = (Button) view.findViewById(R.id.add_product);
+        add_product = view.findViewById(R.id.add_product);
 
         produits = new ArrayList<>();
 
@@ -137,13 +137,13 @@ public class FragmentSelectProduct {
         famille_dropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selected_famile =  (String) adapterView.getItemAtPosition(i);
-                if(selected_famile.equals("<Aucune>")){
+                selected_famile = (String) adapterView.getItemAtPosition(i);
+                if (selected_famile.equals("<Aucune>")) {
                     selected_famile = "";
                 }
-                if(prefs.getBoolean("FILTRE_SEARCH", false)){
+                if (prefs.getBoolean("FILTRE_SEARCH", false)) {
                     editsearch.setText(prefs.getString("FILTRE_SEARCH_VALUE", ""));
-                }else {
+                } else {
                     setRecycle(prefs.getString("FILTRE_SEARCH_VALUE", ""), false);
                 }
             }
@@ -160,9 +160,9 @@ public class FragmentSelectProduct {
                 setRecycle(text, false);
                 prefs = mcontext.getSharedPreferences(PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = mcontext.getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                if(prefs.getBoolean("FILTRE_SEARCH", false)){
+                if (prefs.getBoolean("FILTRE_SEARCH", false)) {
                     editor.putString("FILTRE_SEARCH_VALUE", text);
-                }else{
+                } else {
                     editor.putString("FILTRE_SEARCH_VALUE", text);
                 }
                 editor.apply();
@@ -187,7 +187,7 @@ public class FragmentSelectProduct {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
 
-            }else {
+            } else {
                 selectProductFromScan();
             }
 
@@ -206,7 +206,7 @@ public class FragmentSelectProduct {
 
     private void setRecycle(String text_search, Boolean isScan) {
 
-        if(isScan){
+        if (isScan) {
             editsearch.setText(text_search);
         }
 
@@ -217,7 +217,7 @@ public class FragmentSelectProduct {
         int LAST_CLICKED_POSITION = prefs.getInt("LAST_CLICKED_POSITION", 0);
         recyclerView.scrollToPosition(LAST_CLICKED_POSITION);
 
-        adapter = new RecyclerAdapterCheckProducts(mcontext , activity, getItems(text_search, isScan), mode_tariff_client, dialog, SOURCE);
+        adapter = new RecyclerAdapterCheckProducts(mcontext, activity, getItems(text_search, isScan), mode_tariff_client, dialog, SOURCE);
         recyclerView.setAdapter(adapter);
         //bus.register(adapter);
 
@@ -225,62 +225,62 @@ public class FragmentSelectProduct {
 
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {
         String querry = "";
-        if(selected_famile.equals("Toutes")){
+        if (selected_famile.equals("Toutes")) {
 
-            if(hide_stock_moins){
-                if(isScan){
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            if (hide_stock_moins) {
+                if (isScan) {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "' AND STOCK > 0 ";
 
-                    if(produits.isEmpty()){
-                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
+                    if (produits.isEmpty()) {
+                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                                 "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND STOCK > 0 ";
                     }
-                }else{
-                    if(!querry_search.isEmpty()){
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                } else {
+                    if (!querry_search.isEmpty()) {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                                 "FROM PRODUIT WHERE (PRODUIT LIKE '%" + querry_search + "%' OR CODE_BARRE LIKE '%" + querry_search + "%' OR REF_PRODUIT LIKE '%" + querry_search + "%') AND (STOCK > 0) ORDER BY PRODUIT";
-                    }else {
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    } else {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                                 "FROM PRODUIT WHERE STOCK > 0 ORDER BY PRODUIT  ";
                     }
                 }
-            }else{
+            } else {
 
-                if(isScan){
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                if (isScan) {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "'  ";
 
-                    if(produits.isEmpty()){
-                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
+                    if (produits.isEmpty()) {
+                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                                 "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
                     }
-                }else{
-                    if(!querry_search.isEmpty()){
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                } else {
+                    if (!querry_search.isEmpty()) {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                                 "FROM PRODUIT WHERE PRODUIT LIKE '%" + querry_search + "%' OR CODE_BARRE LIKE '%" + querry_search + "%' OR REF_PRODUIT LIKE '%" + querry_search + "%' ORDER BY PRODUIT ";
-                    }else {
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    } else {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                                 "FROM PRODUIT ORDER BY PRODUIT ";
@@ -288,65 +288,65 @@ public class FragmentSelectProduct {
                 }
             }
 
-        }else {
+        } else {
 
-            if(hide_stock_moins){
-                if(isScan){
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            if (hide_stock_moins) {
+                if (isScan) {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '"+ selected_famile +"' AND STOCK > 0 ";
+                            "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '" + selected_famile + "' AND STOCK > 0 ";
 
-                    if(produits.isEmpty()){
-                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
+                    if (produits.isEmpty()) {
+                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                                "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '"+ selected_famile +"' AND STOCK > 0 ";
+                                "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '" + selected_famile + "' AND STOCK > 0 ";
                     }
-                }else{
-                    if(!querry_search.isEmpty()){
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                } else {
+                    if (!querry_search.isEmpty()) {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                                "FROM PRODUIT WHERE (PRODUIT LIKE '%" + querry_search + "%' OR CODE_BARRE LIKE '%" + querry_search + "%' OR REF_PRODUIT LIKE '%" + querry_search + "%') AND FAMILLE = '"+ selected_famile +"' AND (STOCK > 0) ORDER BY PRODUIT";
-                    }else {
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                                "FROM PRODUIT WHERE (PRODUIT LIKE '%" + querry_search + "%' OR CODE_BARRE LIKE '%" + querry_search + "%' OR REF_PRODUIT LIKE '%" + querry_search + "%') AND FAMILLE = '" + selected_famile + "' AND (STOCK > 0) ORDER BY PRODUIT";
+                    } else {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                                "FROM PRODUIT WHERE FAMILLE = '"+ selected_famile +"' AND STOCK > 0 ORDER BY PRODUIT  ";
+                                "FROM PRODUIT WHERE FAMILLE = '" + selected_famile + "' AND STOCK > 0 ORDER BY PRODUIT  ";
                     }
                 }
-            }else{
+            } else {
 
-                if(isScan){
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                if (isScan) {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '"+ selected_famile +"'  ";
+                            "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '" + selected_famile + "'  ";
 
-                    if(produits.isEmpty()){
-                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
+                    if (produits.isEmpty()) {
+                        String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
                         String code_barre = controller.select_codebarre_from_database(querry1);
 
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                                "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '"+ selected_famile +"'";
+                                "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '" + selected_famile + "'";
                     }
-                }else{
-                    if(!querry_search.isEmpty()){
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                } else {
+                    if (!querry_search.isEmpty()) {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                                "FROM PRODUIT WHERE (PRODUIT LIKE '%" + querry_search + "%' OR CODE_BARRE LIKE '%" + querry_search + "%' OR REF_PRODUIT LIKE '%" + querry_search + "%') AND FAMILLE = '"+ selected_famile +"' ORDER BY PRODUIT ";
-                    }else {
-                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                                "FROM PRODUIT WHERE (PRODUIT LIKE '%" + querry_search + "%' OR CODE_BARRE LIKE '%" + querry_search + "%' OR REF_PRODUIT LIKE '%" + querry_search + "%') AND FAMILLE = '" + selected_famile + "' ORDER BY PRODUIT ";
+                    } else {
+                        querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
                                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                                "FROM PRODUIT WHERE FAMILLE = '"+ selected_famile +"' ORDER BY PRODUIT ";
+                                "FROM PRODUIT WHERE FAMILLE = '" + selected_famile + "' ORDER BY PRODUIT ";
                     }
                 }
             }

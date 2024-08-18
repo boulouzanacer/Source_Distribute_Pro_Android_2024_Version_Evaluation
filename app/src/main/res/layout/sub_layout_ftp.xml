@@ -45,8 +45,7 @@
                 android:hint="@string/serveur_ftp"
                 android:textColor="@color/cardview_dark_background"
                 android:layout_gravity="center"
-                tools:ignore="Autofill"
-                />
+                tools:ignore="Autofill" />
         </LinearLayout>
 
 
@@ -107,7 +106,7 @@
                 android:hint="@string/utilisateur"
                 android:textColor="@color/cardview_dark_background"
                 android:layout_gravity="center"
-                tools:ignore="Autofill"/>
+                tools:ignore="Autofill" />
         </LinearLayout>
 
         <LinearLayout
@@ -200,6 +199,7 @@
             android:textColor="@color/cardview_dark_background"
             tools:ignore="Autofill" />
     </RelativeLayout>
+
     <Button
         android:id="@+id/save_ftp"
         style="@style/dialog_blue_button"

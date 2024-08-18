@@ -75,8 +75,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityOrderFournisseur extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick{
-
+public class ActivityOrderFournisseur extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick {
 
 
     ////////////////////////////////////////
@@ -88,7 +87,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     private ListViewAdapterPanierAchat PanierAdapter;
     private Button btn_select_fournisseur, btn_mode_tarif;
     private DATABASE controller;
-    private  ArrayList<PostData_Achat2> final_panier;
+    private ArrayList<PostData_Achat2> final_panier;
     private TextView total_ht, tva, txv_timbre, txv_remise, total_ttc, total_ttc_remise;
     private double val_total_ht = 0.00;
     private double val_tva = 0.00;
@@ -122,11 +121,11 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achat);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
-            if(restoredBarcode != null){
+            if (restoredBarcode != null) {
                 //  result.setText(restoredBarcode.rawValue);
-                Toast.makeText(ActivityOrderFournisseur.this, ""+restoredBarcode.rawValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityOrderFournisseur.this, restoredBarcode.rawValue, Toast.LENGTH_SHORT).show();
                 barcodeResult = restoredBarcode;
             }
         }
@@ -151,15 +150,15 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         initViews();
 
         //get num bon
-        if(getIntent() !=null){
+        if (getIntent() != null) {
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
-        }else {
+        } else {
             Crouton.makeText(ActivityOrderFournisseur.this, "Erreur séléction activity !", Style.ALERT).show();
             return;
         }
 
-        if(TYPE_ACTIVITY.equals("NEW_ORDER_ACHAT")){
+        if (TYPE_ACTIVITY.equals("NEW_ORDER_ACHAT")) {
             //get num bon
             NUM_BON = controller.select_max_num_bon("SELECT MAX(NUM_BON) AS max_id FROM ACHAT1_TEMP WHERE NUM_BON IS NOT NULL");
             // get date and time
@@ -168,7 +167,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
             String formattedDate_Show = date_format.format(c.getTime());
-           // formattedDate = df_save.format(c.getTime());
+            // formattedDate = df_save.format(c.getTime());
             String currentTime = sdf.format(c.getTime());
 
             date_time_sub_title = formattedDate_Show + " " + currentTime;
@@ -180,9 +179,9 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             achat1_com.code_depot = CODE_DEPOT;
 
 
-        }else if(TYPE_ACTIVITY.equals("EDIT_ORDER_ACHAT")){
+        } else if (TYPE_ACTIVITY.equals("EDIT_ORDER_ACHAT")) {
             //get num bon
-            if(getIntent() !=null){
+            if (getIntent() != null) {
                 NUM_BON = getIntent().getStringExtra("NUM_BON");
             }
 
@@ -217,14 +216,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     "FOURNIS.TEL " +
                     "FROM ACHAT1_TEMP " +
                     "LEFT JOIN FOURNIS ON (ACHAT1_TEMP.CODE_FRS = FOURNIS.CODE_FRS) " +
-                    " WHERE ACHAT1_TEMP.NUM_BON ='"+ NUM_BON +"'";
+                    " WHERE ACHAT1_TEMP.NUM_BON ='" + NUM_BON + "'";
 
             ///////////////////////////////////
             achat1_com = controller.select_one_acha1_from_database(querry);
 
 
-            final_panier =  controller.select_all_achat2_from_database("" +
-                    "SELECT " +
+            final_panier = controller.select_all_achat2_from_database("SELECT " +
                     "ACHAT2_TEMP.RECORDID, " +
                     "ACHAT2_TEMP.CODE_BARRE, " +
                     "ACHAT2_TEMP.NUM_BON, " +
@@ -241,7 +239,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     "PRODUIT.STOCK " +
                     "FROM ACHAT2_TEMP " +
                     "LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                    "WHERE ACHAT2_TEMP.NUM_BON = '" + NUM_BON+ "'" );
+                    "WHERE ACHAT2_TEMP.NUM_BON = '" + NUM_BON + "'");
 
 
             //private String formattedDate;
@@ -264,13 +262,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
             calcule();
 
-        }else {
+        } else {
             Crouton.makeText(ActivityOrderFournisseur.this, "Erreur séléction activity !", Style.ALERT).show();
             return;
         }
 
 
-        if(NUM_BON != null) {
+        if (NUM_BON != null) {
             getSupportActionBar().setTitle("Bon de commande N°: " + NUM_BON);
         }
 
@@ -304,11 +302,11 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(prefs.getBoolean("AFFICHAGE_HT", false)){
+        if (prefs.getBoolean("AFFICHAGE_HT", false)) {
             tr_total_ht.setVisibility(View.VISIBLE);
             tr_total_tva.setVisibility(View.VISIBLE);
             tr_total_timbre.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tr_total_ht.setVisibility(View.GONE);
             tr_total_tva.setVisibility(View.GONE);
             tr_total_timbre.setVisibility(View.GONE);
@@ -317,13 +315,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         intent_location = new Intent(this, ServiceLocation.class);
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(prefs1.getBoolean("GPS_LOCALISATION", false)){
+        if (prefs1.getBoolean("GPS_LOCALISATION", false)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCES_FINE_LOCATION);
-            }else{
+            } else {
                 startService(intent_location);
             }
-        }else {
+        } else {
             stopService(intent_location);
         }
 
@@ -337,9 +335,9 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
     @SuppressLint("NonConstantResourceId")
     public void onClickEvent(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_select_fournisseur:
-                if(achat1_com.blocage.equals("F")){
+                if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -350,7 +348,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 break;
 
             case R.id.btn_mode_tarif:
-                if(achat1_com.blocage.equals("F")){
+                if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -358,27 +356,27 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     return;
                 }
 
-                if(achat1_com.fournis.isEmpty()){
+                if (achat1_com.fournis.isEmpty()) {
                     Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
                     return;
                 }
 
                 break;
             case R.id.addProduct:
-                if(achat1_com.blocage.equals("F")){
-                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
-                return;
+                if (achat1_com.blocage.equals("F")) {
+                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Information!")
+                            .setContentText("Ce bon est déja validé")
+                            .show();
+                    return;
                 }
-                if(achat1_com.fournis.isEmpty()){
+                if (achat1_com.fournis.isEmpty()) {
 
                     Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
                     return;
                 }
 
-                if(!prefs.getBoolean("APP_ACTIVATED",false) && final_panier.size() >= 2){
+                if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Important !")
                             .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
@@ -390,25 +388,25 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 Activity activity;
                 activity = ActivityOrderFournisseur.this;
                 FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
-                fragmentSelectProduct.showDialogbox(activity, getBaseContext(),  "0", "ACHAT");
+                fragmentSelectProduct.showDialogbox(activity, getBaseContext(), "0", "ACHAT");
 
                 break;
 
             case R.id.valide_facture:
 
-                if(achat1_com.fournis.isEmpty()){
+                if (achat1_com.fournis.isEmpty()) {
 
                     Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur", Style.ALERT).show();
                     return;
                 }
-                if(final_panier.isEmpty()){
+                if (final_panier.isEmpty()) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
                             .show();
                     return;
                 }
-                if(achat1_com.blocage.equals("F")){
+                if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -422,7 +420,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
                 break;
             case R.id.txv_timbre_btn:
-                if(achat1_com.blocage.equals("F")){
+                if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -438,7 +436,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
                 break;
             case R.id.txv_remise_btn:
-                if(achat1_com.blocage.equals("F")){
+                if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -457,8 +455,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 if (ContextCompat.checkSelfPermission(ActivityOrderFournisseur.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(ActivityOrderFournisseur.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
 
-                }else{
-                    if(achat1_com.blocage.equals("F")){
+                } else {
+                    if (achat1_com.blocage.equals("F")) {
                         new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Information!")
                                 .setContentText("Ce bon est déja validé")
@@ -466,7 +464,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                         return;
                     }
 
-                    if(achat1_com.fournis.isEmpty()){
+                    if (achat1_com.fournis.isEmpty()) {
 
                         Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                         return;
@@ -476,15 +474,15 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 }
                 break;
             case R.id.btn_mofifier_bon:
-                if(!SOURCE_EXPORT.equals("EXPORTED")){
-                    if(!achat1_com.blocage.equals("F")){
+                if (!SOURCE_EXPORT.equals("EXPORTED")) {
+                    if (!achat1_com.blocage.equals("F")) {
                         new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Information!")
                                 .setContentText("Ce bon n'est pas encore validé")
                                 .show();
                         return;
 
-                    } else  {
+                    } else {
                         new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Modification")
                                 .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
@@ -494,12 +492,12 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                                 .setCancelClickListener(Dialog::dismiss)
                                 .setConfirmClickListener(sDialog -> {
 
-                                    try{
-                                        if (controller.modifier_achat1_sql("ACHAT1_TEMP", achat1_com) ) {
+                                    try {
+                                        if (controller.modifier_achat1_sql("ACHAT1_TEMP", achat1_com)) {
                                             achat1_com.blocage = "M";
                                             validate_theme();
                                         }
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
 
                                         new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                                                 .setTitleText("Attention!")
@@ -509,16 +507,16 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                                     sDialog.dismiss();
                                 }).show();
                     }
-                }else {
+                } else {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja exporté")
                             .show();
                 }
 
-            break;
+                break;
             case R.id.btn_imp_bon:
-                if(!achat1_com.blocage.equals("F")){
+                if (!achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon n'est pas encore validé")
@@ -536,8 +534,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         }
     }
 
-    protected void showListFournisseur()
-    {
+    protected void showListFournisseur() {
         // Initialize activity
         Activity activity;
         // define activity of this class//
@@ -549,12 +546,12 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
 
     @Subscribe
-    public void onFournisseurSelected(SelectedFournisseurEvent fournisseurEvent){
+    public void onFournisseurSelected(SelectedFournisseurEvent fournisseurEvent) {
         onFournisseurSelected(fournisseurEvent.getFournisseur());
     }
 
     @Subscribe
-    public void onRemiseReceived(RemiseEvent remise){
+    public void onRemiseReceived(RemiseEvent remise) {
 
         val_remise = remise.getRemise();
 
@@ -574,7 +571,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     }
 
 
-    protected void onFournisseurSelected(PostData_Fournisseur fournisseur_s){
+    protected void onFournisseurSelected(PostData_Fournisseur fournisseur_s) {
 
         fournisseur_selected = fournisseur_s;
         achat1_com.fournis = fournisseur_s.fournis;
@@ -585,14 +582,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         achat1_com.tel = fournisseur_selected.tel;
         achat1_com.adresse = fournisseur_selected.adresse;
 
-        if(!controller.insert_into_achat1("ACHAT1_TEMP", achat1_com)){
+        if (!controller.insert_into_achat1("ACHAT1_TEMP", achat1_com)) {
             finish();
         }
     }
 
-    protected void initData(){
-        final_panier = controller.select_all_achat2_from_database("" +
-                "SELECT " +
+    protected void initData() {
+        final_panier = controller.select_all_achat2_from_database("SELECT " +
                 "ACHAT2_TEMP.RECORDID, " +
                 "ACHAT2_TEMP.CODE_BARRE, " +
                 "ACHAT2_TEMP.NUM_BON, " +
@@ -608,7 +604,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 "PRODUIT.STOCK " +
                 "FROM ACHAT2_TEMP " +
                 "LEFT JOIN PRODUIT ON (ACHAT2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                "WHERE ACHAT2_TEMP.NUM_BON = '" + achat1_com.num_bon + "'" );
+                "WHERE ACHAT2_TEMP.NUM_BON = '" + achat1_com.num_bon + "'");
 
         // Create the adapter to convert the array to views
         PanierAdapter = new ListViewAdapterPanierAchat(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
@@ -629,7 +625,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()== R.id.expandable_listview) {
+        if (v.getId() == R.id.expandable_listview) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_listv, menu);
         }
@@ -639,9 +635,9 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.delete_produit:
-                if(achat1_com.blocage.equals("F")){
+                if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
@@ -657,15 +653,15 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
 
-                            try{
+                            try {
                                 SOURCE = "BON2_TEMP_DELETE";
-                                controller.delete_from_achat2("ACHAT2_TEMP", final_panier.get(info.position).recordid ,final_panier.get(info.position));
+                                controller.delete_from_achat2("ACHAT2_TEMP", final_panier.get(info.position).recordid, final_panier.get(info.position));
                                 initData();
                                 //PanierAdapter.RefrechPanier(final_panier);
                                 PanierAdapter = new ListViewAdapterPanierAchat(ActivityOrderFournisseur.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
                                 expandableListView.setAdapter(PanierAdapter);
 
-                            }catch (Exception e){
+                            } catch (Exception e) {
 
                                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                                         .setTitleText("Attention!")
@@ -678,21 +674,21 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 return true;
 
             case R.id.edit_produit:
-                if(achat1_com.blocage.equals("F")){
+                if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon est déja validé")
                             .show();
-                    return true ;
+                    return true;
                 }
-                try{
+                try {
                     SOURCE = "BON2_TEMP_EDIT";
                     Activity activity;
                     activity = ActivityOrderFournisseur.this;
                     FragmentQteAchat fragmentqte = new FragmentQteAchat();
                     fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), 0);
 
-                }catch (Exception e){
+                } catch (Exception e) {
 
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Attention!")
@@ -706,7 +702,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         }
     }
 
-    public void calcule(){
+    public void calcule() {
 
         val_total_ht = 0.00;
         val_tva = 0.00;
@@ -715,10 +711,10 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         val_total_ttc = 0.00;
         val_total_ttc_remise = 0.00;
 
-        for(int k = 0; k< final_panier.size(); k++){
+        for (int k = 0; k < final_panier.size(); k++) {
 
             double total_montant_produit = final_panier.get(k).pa_ht * final_panier.get(k).qte;
-            double montant_tva_produit = total_montant_produit  * ((final_panier.get(k).tva) / 100);
+            double montant_tva_produit = total_montant_produit * ((final_panier.get(k).tva) / 100);
             val_total_ht = val_total_ht + total_montant_produit;
             val_tva = val_tva + montant_tva_produit;
 
@@ -737,7 +733,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             val_timbre = 0.0;
         }*/
 
-        val_total_ttc =  (val_total_ht) +  val_tva + val_timbre;
+        val_total_ttc = (val_total_ht) + val_tva + val_timbre;
         val_total_ttc_remise = val_total_ttc - val_remise;
 
         final BadgeDrawable drawable1 = new BadgeDrawable.Builder()
@@ -810,17 +806,17 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         if (id == R.id.generate_pdf) {
 
-            if(!achat1_com.blocage.equals("F")){
+            if (!achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Information!")
                         .setContentText("Ce bon n'est pas validé")
                         .show();
-            }else{
+            } else {
                 /*Activity mActivity;
                 mActivity = ActivityOrderFournisseur.this;
                 GeneratePDF generate_pdf = new GeneratePDF();
@@ -833,7 +829,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
 
     //Versement
-    protected void sauvegarder(){
+    protected void sauvegarder() {
 
         achat1_com.code_frs = fournisseur_selected.code_frs;
         achat1_com.fournis = fournisseur_selected.fournis;
@@ -844,13 +840,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
 
         //bon1_a_com.tot_ht = val_total_ht;
-       // bon1_a_com.tot_tva = val_tva;
+        // bon1_a_com.tot_tva = val_tva;
         //bon1_a_com.timbre =  val_timbre;
         //bon1_a_com.tot_ttc = val_total_ttc;
-        achat1_com.remise =  val_remise;
+        achat1_com.remise = val_remise;
         achat1_com.montant_bon = val_total_ttc_remise;
         //update current bon1
-        controller.update_achat1("ACHAT1_TEMP",achat1_com.num_bon, achat1_com);
+        controller.update_achat1("ACHAT1_TEMP", achat1_com.num_bon, achat1_com);
 
     }
 
@@ -860,32 +856,31 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(requestCode == ACCES_FINE_LOCATION){
+        if (requestCode == ACCES_FINE_LOCATION) {
             startService(new Intent(this, ServiceLocation.class));
         }
     }
 
     @Override
     public void onBackPressed() {
-        Sound( R.raw.back);
+        Sound(R.raw.back);
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public void Sound(int resid){
+    public void Sound(int resid) {
         MediaPlayer mp = MediaPlayer.create(this, resid);
         mp.start();
     }
 
     @Subscribe
-    public void onEvent(LocationEvent event){
+    public void onEvent(LocationEvent event) {
 
-        Log.e("TRACKKK", "Recieved location vente : " +  event.getLocationData().getLatitude() + "  //  " + event.getLocationData().getLongitude());
+        Log.e("TRACKKK", "Recieved location vente : " + event.getLocationData().getLatitude() + "  //  " + event.getLocationData().getLongitude());
 
-      //  bon1_a_com.latitude = event.getLocationData().getLatitude();
-      //  bon1_a_com.longitude = event.getLocationData().getLongitude();
+        //  bon1_a_com.latitude = event.getLocationData().getLatitude();
+        //  bon1_a_com.longitude = event.getLocationData().getLongitude();
     }
-
 
 
     @Override
@@ -911,7 +906,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                     @Override
                     public void onResult(Barcode barcode) throws ParseException {
                         // Sound( R.raw.bleep);
-                       // setRecycle(barcode.rawValue, true);
+                        // setRecycle(barcode.rawValue, true);
                         selectProductFromScan(barcode.rawValue);
                     }
                 })
@@ -947,33 +942,33 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         SOURCE = "ACHAT2_TEMP_INSERT";
         Activity activity = ActivityOrderFournisseur.this;
         FragmentQteAchat fragmentachat = new FragmentQteAchat();
-        fragmentachat.showDialogbox(SOURCE, activity, getBaseContext(),  achat2_com, 0);
+        fragmentachat.showDialogbox(SOURCE, activity, getBaseContext(), achat2_com, 0);
 
     }
 
     @Subscribe
-    public void onItemPanierReceive(CheckedPanierEventAchat2 item_panier){
+    public void onItemPanierReceive(CheckedPanierEventAchat2 item_panier) {
 
-           try {
-               if(SOURCE.equals("BON2_TEMP_INSERT")){
-                   controller.insert_into_achat2("ACHAT2_TEMP",  item_panier.getData());
-               }else if(SOURCE.equals("BON2_TEMP_EDIT")){
-                   controller.update_into_achat2("ACHAT2_TEMP", NUM_BON, item_panier.getData(), item_panier.getQteOld(),item_panier.getGratuitOld());
-               }
+        try {
+            if (SOURCE.equals("BON2_TEMP_INSERT")) {
+                controller.insert_into_achat2("ACHAT2_TEMP", item_panier.getData());
+            } else if (SOURCE.equals("BON2_TEMP_EDIT")) {
+                controller.update_into_achat2("ACHAT2_TEMP", NUM_BON, item_panier.getData(), item_panier.getQteOld(), item_panier.getGratuitOld());
+            }
 
-               initData();
+            initData();
 
-           }catch (Exception e){
-               Crouton.makeText(ActivityOrderFournisseur.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();
-           }
+        } catch (Exception e) {
+            Crouton.makeText(ActivityOrderFournisseur.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();
+        }
 
     }
 
 
     @Subscribe
-    public void onVersementReceived(ValidateFactureEvent versement){
+    public void onVersementReceived(ValidateFactureEvent versement) {
 
-       // achat1_com.verser = 0.0;
+        // achat1_com.verser = 0.0;
 
        /* if (bon1_temp.verser != 0 ) {
             bon1_temp.mode_rg = "ESPECE";
@@ -981,7 +976,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             bon1_temp.mode_rg = "A TERME";
         }*/
 
-       // bon1_temp.reste = bon1_temp.solde_ancien + (bon1_temp.tot_ht + bon1_temp.tot_tva + bon1_temp.timbre - bon1_temp.remise) - bon1_temp.verser;
+        // bon1_temp.reste = bon1_temp.solde_ancien + (bon1_temp.tot_ht + bon1_temp.tot_tva + bon1_temp.timbre - bon1_temp.remise) - bon1_temp.verser;
 
         if (controller.validate_achat1_sql("ACHAT1_TEMP", achat1_com)) {
             achat1_com.blocage = "F";
@@ -990,7 +985,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         validate_theme();
 
     }
-    public void validate_theme(){
+
+    public void validate_theme() {
         if (achat1_com.blocage.equals("F")) {
             //findViewById(R.id.client).setBackgroundColor(Color.LTGRAY);
             //findViewById(R.id.LayoutButton).setBackgroundColor(Color.LTGRAY);
@@ -1012,25 +1008,25 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         ArrayList<PostData_Produit> produits;
         PostData_Achat2 bon2_temp = new PostData_Achat2();
 
-            String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
+        produits = controller.select_produits_from_database(querry);
+
+
+        if (produits.isEmpty()) {
+            String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + resultscan + "'";
+            String code_barre = controller.select_codebarre_from_database(querry1);
+
+            String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-            produits = controller.select_produits_from_database(querry);
+                    "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
+            produits = controller.select_produits_from_database(querry2);
+        }
 
-
-            if(produits.isEmpty()){
-                String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+resultscan+"'";
-                String code_barre = controller.select_codebarre_from_database(querry1);
-
-                String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                        "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
-                produits = controller.select_produits_from_database(querry2);
-            }
-
-        if(produits.size() == 1){
+        if (produits.size() == 1) {
 
             bon2_temp.num_bon = NUM_BON;
             bon2_temp.code_depot = CODE_DEPOT;
@@ -1045,11 +1041,11 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             SOURCE = "BON2_TEMP_INSERT";
             Activity activity = ActivityOrderFournisseur.this;
             FragmentQteAchat fragmentqte = new FragmentQteAchat();
-            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(),  bon2_temp, 0);
+            fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), bon2_temp, 0);
 
-        }else if(produits.size() > 1){
+        } else if (produits.size() > 1) {
             Crouton.makeText(ActivityOrderFournisseur.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
-        }else{
+        } else {
             Crouton.makeText(ActivityOrderFournisseur.this, "Produit introuvable !", Style.ALERT).show();
         }
     }

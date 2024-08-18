@@ -2,7 +2,6 @@ package com.safesoft.proapp.distribute.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,24 +11,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageButton;
 
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
-import com.safesoft.proapp.distribute.adapters.ListViewAdapterListClient;
 import com.safesoft.proapp.distribute.adapters.viewholder.ListViewAdapterListBon;
-import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedBonEvent;
 import com.safesoft.proapp.distribute.ftp.Ftp_export;
-import com.safesoft.proapp.distribute.postData.PostData_Client;
 
-import org.apache.commons.net.ftp.FTPFile;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class FragmentSelectBonTransfer {
 
@@ -44,10 +34,10 @@ public class FragmentSelectBonTransfer {
 
     private AppCompatImageButton btn_cancel;
 
-    private  ArrayList<String> listFile;
+    private ArrayList<String> listFile;
 
     //PopupWindow display method
-    public void showDialogbox(Activity activity, Context context,  ArrayList<String> listFile) {
+    public void showDialogbox(Activity activity, Context context, ArrayList<String> listFile) {
 
         this.activity = activity;
         mcontext = context;
@@ -85,7 +75,7 @@ public class FragmentSelectBonTransfer {
         btn_cancel = view.findViewById(R.id.cancel);
         listBon = new ArrayList<>();
         listBon = listFile;
-        listview = (ListView) view.findViewById(R.id.list_bon);
+        listview = view.findViewById(R.id.list_bon);
         btn_cancel.setOnClickListener(v -> {
             EventBus.getDefault().unregister(this);
             dialog.dismiss();

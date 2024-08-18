@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
@@ -16,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +27,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
+import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.activities.ActivityRouting;
 import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
@@ -46,21 +52,23 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityClients extends AppCompatActivity implements RecyclerAdapterClients.ItemClick, RecyclerAdapterClients.ItemLongClick{
+public class ActivityClients extends AppCompatActivity implements RecyclerAdapterClients.ItemClick, RecyclerAdapterClients.ItemLongClick {
 
+    private static final int CAMERA_PERMISSION = 5;
     RecyclerView recyclerView;
     RecyclerAdapterClients adapter;
     ArrayList<PostData_Client> clients;
     DATABASE controller;
-    private  MediaPlayer mp;
+    private MediaPlayer mp;
     private EventBus bus;
     private TextView nbr_client;
-
+    private SearchView searchView;
     private final String[] NEED_PERMISSION = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
     private final List<String> NO_PERMISSION = new ArrayList<String>();
+
     private void CheckAllPermission() {
         NO_PERMISSION.clear();
         for (String s : NEED_PERMISSION) {
@@ -83,6 +91,8 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         CheckAllPermission();
 
         controller = new DATABASE(this);
+        clients = new ArrayList<>();
+
         bus = EventBus.getDefault();
         // Register as a subscriber
         bus.register(this);
@@ -91,26 +101,23 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("List Clients");
 
+        initViews();
+
+        setRecycle("", false);
+
     }
 
     private void initViews() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_client);
-        nbr_client = (TextView) findViewById(R.id.list_client_nbr_client);
+        recyclerView = findViewById(R.id.recycler_view_client);
+        nbr_client = findViewById(R.id.list_client_nbr_client);
     }
 
-    @Override
-    protected void onStart() {
 
-        initViews();
-
-        setRecycle("");
-
-        super.onStart();
-    }
-
-    private void setRecycle(String text_search) {
-
+    private void setRecycle(String text_search, Boolean isScan) {
+        if(isScan){
+            searchView.setQuery(text_search, false);
+        }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterClients(this, getItems(text_search));
@@ -120,44 +127,37 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     }
 
     public ArrayList<PostData_Client> getItems(String qqry) {
-        if(qqry.length() > 0){
+
+        clients.clear();
+
+        if (!qqry.isEmpty()) {
             clients = new ArrayList<>();
-            String querry = "SELECT * FROM CLIENT WHERE CODE_CLIENT LIKE '%"+qqry+"%' OR CLIENT LIKE '%"+qqry+"%' OR TEL LIKE '%"+qqry+"%' ORDER BY CLIENT";
-            // querry = "SELECT * FROM Events";
+            String querry = "SELECT * FROM CLIENT WHERE CODE_CLIENT LIKE '%" + qqry + "%' OR CLIENT LIKE '%" + qqry + "%' OR TEL LIKE '%" + qqry + "%' ORDER BY CLIENT";
             clients = controller.select_clients_from_database(querry);
-        }else {
+        } else {
             clients = new ArrayList<>();
             String querry = "SELECT * FROM CLIENT ORDER BY CLIENT";
-            // querry = "SELECT * FROM Events";
             clients = controller.select_clients_from_database(querry);
         }
+
 
         return clients;
     }
 
 
     @Subscribe
-    public void onClientSelected(SelectedClientEvent clientEvent){
-        setRecycle("");
+    public void onClientSelected(SelectedClientEvent clientEvent) {
+        setRecycle("", false);
     }
 
     @Override
     public void onClick(View v, int position) {
 
-        if(v.getId() == R.id.item_root){
+        if (v.getId() == R.id.item_root) {
             Sound(R.raw.beep);
             Intent intent = new Intent(ActivityClients.this, ActivityClientDetail.class);
 
-            // intent.putExtra("CLIENT", clients.get(position).client);
             intent.putExtra("CODE_CLIENT", clients.get(position).code_client);
-            // intent.putExtra("TEL", clients.get(position).tel);
-            // intent.putExtra("LATITUDE", clients.get(position).latitude);
-            // intent.putExtra("LONGITUDE", clients.get(position).longitude);
-            // intent.putExtra("ADRESSE", clients.get(position).adresse);
-            //  intent.putExtra("MODE_TARIF", clients.get(position).mode_tarif);
-            //  intent.putExtra("ACHAT", clients.get(position).achat_montant);
-            //  intent.putExtra("VERSER", clients.get(position).verser_montant);
-            //  intent.putExtra("SOLDE", clients.get(position).solde_montant);
 
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -167,7 +167,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     public void onLongClick(View v, int position) {
-        if(v.getId() == R.id.item_root){
+        if (v.getId() == R.id.item_root) {
             final CharSequence[] items = {"Modifier", "Supprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -179,8 +179,8 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                         FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
                         fragmentnewclient.showDialogbox(ActivityClients.this, getBaseContext(), "EDIT_CLIENT", clients.get(position));
                     }
-                    case 1 ->{
-                        if(clients.get(position).isNew == 0){
+                    case 1 -> {
+                        if (clients.get(position).isNew == 0) {
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")
                                     .setContentText("Client importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")
@@ -190,13 +190,13 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
                         String querry_has_bon1 = "SELECT CODE_CLIENT FROM BON1 WHERE IS_EXPORTED = 0 AND CODE_CLIENT = '" + clients.get(position).code_client + "'";
                         String querry_has_bon1_temp = "SELECT CODE_CLIENT FROM BON1_TEMP WHERE IS_EXPORTED = 0 AND CODE_CLIENT = '" + clients.get(position).code_client + "'";
-                        if(controller.check_if_has_bon(querry_has_bon1) || controller.check_if_has_bon(querry_has_bon1_temp)){
+                        if (controller.check_if_has_bon(querry_has_bon1) || controller.check_if_has_bon(querry_has_bon1_temp)) {
                             // you can't delete this client
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")
                                     .setContentText("Il exist des bons créer avec ce client")
                                     .show();
-                        }else {
+                        } else {
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Suppression")
                                     .setContentText("Voulez-vous vraiment supprimer le client " + clients.get(position).client + " ?!")
@@ -208,7 +208,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
                                         controller.delete_client(clients.get(position).code_client);
 
-                                        setRecycle("");
+                                        setRecycle("", false);
                                         sDialog.dismiss();
 
                                     }).show();
@@ -227,14 +227,14 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_clients, menu);
 
-        final SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
+        searchView = new SearchView(getSupportActionBar().getThemedContext());
         searchView.setQueryHint("Rechercher");
 
 //////////////////////////////////////////////////////////////////////
 ///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
 //////////////////////////////////////////////////////////////////////
 
-        menu.add(Menu.NONE,Menu.NONE,0,"Search")
+        menu.add(Menu.NONE, Menu.NONE, 0, "Search")
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -244,7 +244,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                setRecycle(newText);
+                setRecycle(newText, false);
 
                 return false;
             }
@@ -276,23 +276,53 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
-        if(item.getItemId() == R.id.map){
+        if (item.getItemId() == R.id.map) {
             if ((ContextCompat.checkSelfPermission(ActivityClients.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) || ContextCompat.checkSelfPermission(ActivityClients.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(ActivityClients.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3232);
                 ActivityCompat.requestPermissions(ActivityClients.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 3232);
-            }else{
+            } else {
                 startActivity(new Intent(ActivityClients.this, ActivityMaps.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
-        }else if(item.getItemId() == R.id.new_client){
+        } else if (item.getItemId() == R.id.new_client) {
             FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
             fragmentnewclient.showDialogbox(ActivityClients.this, getBaseContext(), "NEW_CLIENT", null);
+        }else if(item.getItemId() == R.id.scan_client){
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+
+            } else {
+                startScan();
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startScan() {
+        /**
+         * Build a new MaterialBarcodeScanner
+         */
+
+        final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
+                .withActivity(this)
+                .withEnableAutoFocus(true)
+                .withBleepEnabled(true)
+                .withBackfacingCamera()
+                .withCenterTracker()
+                .withText("Scanning...")
+                .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
+                    @Override
+                    public void onResult(Barcode barcode) {
+                        // Sound( R.raw.bleep);
+                        setRecycle(barcode.rawValue, true);
+                    }
+                })
+                .build();
+        materialBarcodeScanner.startScan();
     }
 
     @Override
@@ -302,7 +332,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public void Sound(int SourceSound){
+    public void Sound(int SourceSound) {
         mp = MediaPlayer.create(this, SourceSound);
         mp.start();
     }

@@ -5,14 +5,15 @@ package com.safesoft.proapp.distribute.eventsClasses;
  */
 
 public class GetServerHashEvent {
-  private String hash;
-  public GetServerHashEvent(String hash){
-    this.hash = hash;
-  }
+    private final String hash;
+
+    public GetServerHashEvent(String hash) {
+        this.hash = hash;
+    }
 
 
-  public String getHash(){
-    return hash;
-  }
+    public String getHash() {
+        return hash;
+    }
 
 }

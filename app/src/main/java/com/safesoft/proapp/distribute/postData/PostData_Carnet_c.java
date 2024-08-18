@@ -3,7 +3,7 @@ package com.safesoft.proapp.distribute.postData;
 /**
  * Created by UK2015 on 31/08/2016.
  */
-public class PostData_Carnet_c  {
+public class PostData_Carnet_c {
     public String recordid;
     public String code_client;
     public String carnet_date;

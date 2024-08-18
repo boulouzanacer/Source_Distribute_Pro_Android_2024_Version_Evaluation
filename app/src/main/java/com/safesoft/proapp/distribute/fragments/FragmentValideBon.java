@@ -27,7 +27,7 @@ public class FragmentValideBon {
 
     MaterialFancyButton btn_valider, btn_cancel;
     private TextInputEditText edt_ancien_sold, edt_montant_bon, edt_solde_actuel, edt_versement, edt_nouveau_solde;
-    private double val_ancien_sold = 0.0, val_montant_bon = 0.0, val_solde_actuel = 0.0, val_versement = 0.0, val_nouveau_solde= 0.0;
+    private double val_ancien_sold = 0.0, val_montant_bon = 0.0, val_solde_actuel = 0.0, val_versement = 0.0, val_nouveau_solde = 0.0;
 
     private final EventBus bus = EventBus.getDefault();
     Activity activity;
@@ -43,8 +43,8 @@ public class FragmentValideBon {
         ((DecimalFormat) nf).applyPattern("####0.00");
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater =activity.getLayoutInflater();
-        View dialogview= inflater.inflate(R.layout.fragment_valider, null);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View dialogview = inflater.inflate(R.layout.fragment_valider, null);
         dialogBuilder.setView(dialogview);
         dialogBuilder.setCancelable(false);
         dialogBuilder.create();
@@ -59,14 +59,14 @@ public class FragmentValideBon {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
+        btn_valider = dialogview.findViewById(R.id.btn_remise);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
         btn_valider.setIconPosition(POSITION_LEFT);
         btn_valider.setFontIconSize(30);
 
-        btn_cancel = (MaterialFancyButton) dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
@@ -74,11 +74,11 @@ public class FragmentValideBon {
         btn_cancel.setFontIconSize(30);
 
 
-        edt_ancien_sold =  dialogview.findViewById(R.id.ancien_sold);
-        edt_montant_bon =  dialogview.findViewById(R.id.montant_bon_actuel);
-        edt_solde_actuel =  dialogview.findViewById(R.id.solde_actuel);
-        edt_versement =  dialogview.findViewById(R.id.versement);
-        edt_nouveau_solde =  dialogview.findViewById(R.id.nouveau_solde);
+        edt_ancien_sold = dialogview.findViewById(R.id.ancien_sold);
+        edt_montant_bon = dialogview.findViewById(R.id.montant_bon_actuel);
+        edt_solde_actuel = dialogview.findViewById(R.id.solde_actuel);
+        edt_versement = dialogview.findViewById(R.id.versement);
+        edt_nouveau_solde = dialogview.findViewById(R.id.nouveau_solde);
 
         val_ancien_sold = recieve_ancien_solde;
         val_montant_bon = recieve_montant_bon;
@@ -96,16 +96,16 @@ public class FragmentValideBon {
 
         btn_valider.setOnClickListener(v -> {
 
-            if(edt_versement.getText().length() > 0){
+            if (edt_versement.getText().length() > 0) {
 
-               // RemiseEventRemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
-                ValidateFactureEvent Valider_bon_versement = new ValidateFactureEvent( val_versement);
+                // RemiseEventRemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
+                ValidateFactureEvent Valider_bon_versement = new ValidateFactureEvent(val_versement);
                 // Post the event
                 bus.post(Valider_bon_versement);
 
                 dialog.dismiss();
 
-            }else {
+            } else {
                 edt_versement.setError("Montant versement obligatoire!!");
             }
         });
@@ -129,12 +129,12 @@ public class FragmentValideBon {
 
             @Override
             public void afterTextChanged(Editable s) {
-                    try{
-                        onVersementChange();
+                try {
+                    onVersementChange();
 
-                    }catch (Exception e){
+                } catch (Exception e) {
 
-                    }
+                }
 
             }
         });
@@ -142,13 +142,13 @@ public class FragmentValideBon {
     }
 
 
-    void onVersementChange(){
-        if(edt_versement.getText().toString().isEmpty()){
+    void onVersementChange() {
+        if (edt_versement.getText().toString().isEmpty()) {
             val_versement = 0.00;
-        }else {
+        } else {
             val_versement = Double.parseDouble(edt_versement.getText().toString());
         }
-        val_nouveau_solde  = val_solde_actuel - val_versement;
+        val_nouveau_solde = val_solde_actuel - val_versement;
         edt_nouveau_solde.setText(nf.format(val_nouveau_solde));
     }
 

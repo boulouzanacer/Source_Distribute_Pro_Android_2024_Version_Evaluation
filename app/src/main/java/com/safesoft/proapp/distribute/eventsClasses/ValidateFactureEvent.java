@@ -5,14 +5,14 @@ package com.safesoft.proapp.distribute.eventsClasses;
  */
 
 public class ValidateFactureEvent {
-  private final double versement;
+    private final double versement;
 
-  public ValidateFactureEvent(double versement){
-    this.versement = versement;
-  }
+    public ValidateFactureEvent(double versement) {
+        this.versement = versement;
+    }
 
-  public double getVersement(){
-    return versement;
-  }
+    public double getVersement() {
+        return versement;
+    }
 
 }

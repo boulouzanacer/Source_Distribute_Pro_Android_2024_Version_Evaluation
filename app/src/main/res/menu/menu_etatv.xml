@@ -6,15 +6,13 @@
         android:orderInCategory="2"
         android:title="synchroniser"
         android:icon="@mipmap/synchronize_256"
-        app:showAsAction="always" >
-    </item>
+        app:showAsAction="always"></item>
 
     <item
         android:id="@+id/print"
         android:orderInCategory="1"
         android:title="Imprimer"
-        android:icon="@mipmap/printing"
-        app:showAsAction="always" >
-    </item>
+        android:icon="@drawable/ic_baseline_print_24"
+        app:showAsAction="always"></item>
 
 </menu>

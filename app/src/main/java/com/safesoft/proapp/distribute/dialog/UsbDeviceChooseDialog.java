@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.proximityAdapter.UsbDeviceAdapter;
 import com.safesoft.proapp.distribute.printing.receiver.UsbDeviceReceiver;
@@ -95,8 +96,8 @@ public class UsbDeviceChooseDialog extends DialogFragment {
     }
 
     private void initView(View view) {
-        lvContent = (ListView) view.findViewById(R.id.lv_dialog_choose_usb_device);
-        tvEmpty = (TextView) view.findViewById(R.id.tv_dialog_choose_usb_device_empty);
+        lvContent = view.findViewById(R.id.lv_dialog_choose_usb_device);
+        tvEmpty = view.findViewById(R.id.tv_dialog_choose_usb_device_empty);
     }
 
     private void setListener() {

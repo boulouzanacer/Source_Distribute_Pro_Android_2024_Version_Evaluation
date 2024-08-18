@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView
-    android:id="@+id/text_wilaya_commune"
+<TextView android:id="@+id/text_wilaya_commune"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="15dp"

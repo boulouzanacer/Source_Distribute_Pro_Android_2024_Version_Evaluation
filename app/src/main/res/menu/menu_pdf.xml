@@ -7,14 +7,12 @@
         android:orderInCategory="1"
         android:title="Partager"
         android:icon="@drawable/baseline_share_24"
-        app:showAsAction="always" >
-    </item>
+        app:showAsAction="always"></item>
 
     <item
         android:id="@+id/print_pdf"
         android:orderInCategory="1"
         android:title="Imprimer"
         android:icon="@drawable/baseline_local_printshop_24"
-        app:showAsAction="always" >
-    </item>
+        app:showAsAction="always"></item>
 </menu>

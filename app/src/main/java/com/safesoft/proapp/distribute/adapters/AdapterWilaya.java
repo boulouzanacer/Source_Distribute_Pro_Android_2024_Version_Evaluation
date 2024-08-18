@@ -19,36 +19,36 @@ import java.util.ArrayList;
 
 public class AdapterWilaya extends ArrayAdapter<PostData_wilaya> {
 
-  private Context context;
-  private ArrayList<PostData_wilaya> wilayas;
-  public Resources res;
-  PostData_wilaya currRowVal = null;
-  LayoutInflater inflater;
+    private final Context context;
+    private final ArrayList<PostData_wilaya> wilayas;
+    public Resources res;
+    PostData_wilaya currRowVal = null;
+    LayoutInflater inflater;
 
-  public AdapterWilaya(Context context, int textViewResourceId, ArrayList<PostData_wilaya> wilayas, Resources resLocal) {
-    super(context, textViewResourceId, wilayas);
-    this.context = context;
-    this.wilayas = wilayas;
-    this.res = resLocal;
-    inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-  }
+    public AdapterWilaya(Context context, int textViewResourceId, ArrayList<PostData_wilaya> wilayas, Resources resLocal) {
+        super(context, textViewResourceId, wilayas);
+        this.context = context;
+        this.wilayas = wilayas;
+        this.res = resLocal;
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
-  @Override
-  public View getDropDownView(int position, View convertView, ViewGroup parent) {
-    return getCustomView(position, convertView, parent);
-  }
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        return getCustomView(position, convertView, parent);
+    }
 
-  @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
-    return getCustomView(position, convertView, parent);
-  }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        return getCustomView(position, convertView, parent);
+    }
 
-  public View getCustomView(int position, View convertView, ViewGroup parent) {
-    View row = inflater.inflate(R.layout.dropdown_wilaya_commune_item, parent, false);
-    currRowVal = wilayas.get(position);
-    TextView label = row.findViewById(R.id.text_wilaya_commune);
-    label.setText(currRowVal.wilaya);
+    public View getCustomView(int position, View convertView, ViewGroup parent) {
+        View row = inflater.inflate(R.layout.dropdown_wilaya_commune_item, parent, false);
+        currRowVal = wilayas.get(position);
+        TextView label = row.findViewById(R.id.text_wilaya_commune);
+        label.setText(currRowVal.wilaya);
 
-    return row;
-  }
+        return row;
+    }
 }

@@ -31,12 +31,11 @@ public class ConnectionDetector {
     }
 
     private boolean isConnectingToWifi() {
-        ConnectivityManager connManager = (ConnectivityManager) _context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager
-                .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        ConnectivityManager connManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (mWifi != null) {
             return mWifi.getState() == NetworkInfo.State.CONNECTED;
         }
         return false;
-    } }
+    }
+}

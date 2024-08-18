@@ -18,10 +18,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.ceylonlabs.imageviewpopup.ImagePopup;
-import com.safesoft.proapp.distribute.activities.product.ActivityProduitDetail;
-import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
@@ -54,29 +50,29 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     private final String PREFS = "ALL_PREFS";
 
     private final AlertDialog dialog;
-    private String SOURCE;
+    private final String SOURCE;
 
     SharedPreferences prefs;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView Produit, Prix, Qte_r, Colissage, Stock_colis,Stock_colis_title, Colissage_title;
+        TextView Produit, Prix, Qte_r, Colissage, Stock_colis, Stock_colis_title, Colissage_title;
         ImageView photopr;
         CardView cardView;
-        ScalingActivityAnimator mScalingActivityAnimator ;
+        ScalingActivityAnimator mScalingActivityAnimator;
 
         MyViewHolder(View view) {
             super(view);
 
-            cardView = (CardView) view.findViewById(R.id.item_root_select_produit);
-            Produit = (TextView) view.findViewById(R.id.produit);
-            Prix = (TextView) view.findViewById(R.id.prix_u);
-            Colissage = (TextView) view.findViewById(R.id.colissage);
-            Colissage_title = (TextView) view.findViewById(R.id.colissage_title);
-            Stock_colis = (TextView) view.findViewById(R.id.stock_colis);
-            Stock_colis_title = (TextView) view.findViewById(R.id.stock_colis_title);
+            cardView = view.findViewById(R.id.item_root_select_produit);
+            Produit = view.findViewById(R.id.produit);
+            Prix = view.findViewById(R.id.prix_u);
+            Colissage = view.findViewById(R.id.colissage);
+            Colissage_title = view.findViewById(R.id.colissage_title);
+            Stock_colis = view.findViewById(R.id.stock_colis);
+            Stock_colis_title = view.findViewById(R.id.stock_colis_title);
 
-            Qte_r = (TextView) view.findViewById(R.id.qte_r);
+            Qte_r = view.findViewById(R.id.qte_r);
             photopr = view.findViewById(R.id.img_product);
 
             mScalingActivityAnimator = new ScalingActivityAnimator(mContext, mActivity, R.id.root_view, R.layout.pop_view);
@@ -107,7 +103,6 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     }
 
 
-
     @Override
     public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         final PostData_Produit item = produitList.get(position);
@@ -115,17 +110,23 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         holder.Produit.setText(item.produit);
 
-        if(SOURCE.equals("ACHAT")){
+        if (SOURCE.equals("ACHAT")) {
             holder.Prix.setText(new DecimalFormat("##,##0.00").format(item.pamp));
-        }else if(SOURCE.equals("VENTE")){
+        } else if (SOURCE.equals("VENTE")) {
 
             switch (mode_tarif) {
-                case "6" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv6_ht * item.tva / 100) + item.pv6_ht));
-                case "5" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv5_ht * item.tva / 100) + item.pv5_ht));
-                case "4" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv4_ht * item.tva / 100) + item.pv4_ht));
-                case "3" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv3_ht* item.tva / 100 ) + item.pv3_ht));
-                case "2" -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv2_ht * item.tva / 100) + item.pv2_ht));
-                default -> holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv1_ht * item.tva / 100) + item.pv1_ht));
+                case "6" ->
+                        holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv6_ht * item.tva / 100) + item.pv6_ht));
+                case "5" ->
+                        holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv5_ht * item.tva / 100) + item.pv5_ht));
+                case "4" ->
+                        holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv4_ht * item.tva / 100) + item.pv4_ht));
+                case "3" ->
+                        holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv3_ht * item.tva / 100) + item.pv3_ht));
+                case "2" ->
+                        holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv2_ht * item.tva / 100) + item.pv2_ht));
+                default ->
+                        holder.Prix.setText(new DecimalFormat("##,##0.00").format((item.pv1_ht * item.tva / 100) + item.pv1_ht));
             }
 
         }
@@ -149,9 +150,8 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         holder.Qte_r.setText(new DecimalFormat("##,##0.##").format(item.stock));
 
 
-        if(prefs.getBoolean("SHOW_PROD_PIC", false)){
-            if(item.photo != null)
-            {
+        if (prefs.getBoolean("SHOW_PROD_PIC", false)) {
+            if (item.photo != null) {
                 holder.photopr.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
             }
         }
@@ -171,8 +171,8 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
             }
         });
 
-        if (color == 0){
-            if (generator!=null)
+        if (color == 0) {
+            if (generator != null)
                 color = generator.getColor(produitList.get(position).produit);
         }
 
@@ -188,7 +188,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         return position;
     }
 
-    public interface ItemClick{
+    public interface ItemClick {
         void onClick(View v, int position, PostData_Produit item) throws ParseException;
     }
 }

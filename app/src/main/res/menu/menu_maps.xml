@@ -8,6 +8,6 @@
         android:icon="@drawable/baseline_search_24"
         android:title="Rechercher"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
 </menu>

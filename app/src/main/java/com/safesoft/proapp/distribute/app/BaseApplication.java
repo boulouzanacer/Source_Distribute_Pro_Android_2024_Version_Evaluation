@@ -14,7 +14,7 @@ public class BaseApplication extends Application {
     public static BaseApplication instance = null;
     private RTPrinter rtPrinter;
     private boolean isConnected = false;
-    private boolean isAppActivated = false;
+    private final boolean isAppActivated = false;
 
     @BaseEnum.CmdType
     private int currentCmdType = BaseEnum.CMD_ESC;//默认为针打
@@ -24,7 +24,7 @@ public class BaseApplication extends Application {
 
     public static final String SP_NAME_SETTING = "setting";
 
-    public static String labelSizeStr = "80*40", labelWidth="80", labelHeight="40", labelSpeed="2", labelType="CPCL", labelOffset="0";
+    public static String labelSizeStr = "80*40", labelWidth = "80", labelHeight = "40", labelSpeed = "2", labelType = "CPCL", labelOffset = "0";
 
     @Override
     public void onCreate() {
@@ -63,11 +63,11 @@ public class BaseApplication extends Application {
         this.currentConnectType = currentConnectType;
     }
 
-    public boolean getIsConnected(){
+    public boolean getIsConnected() {
         return isConnected;
     }
 
-    public void setIsConnected(boolean isConnected){
+    public void setIsConnected(boolean isConnected) {
         this.isConnected = isConnected;
     }
 

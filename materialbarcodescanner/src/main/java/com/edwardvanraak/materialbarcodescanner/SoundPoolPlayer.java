@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class SoundPoolPlayer {
 
     private SoundPool mShortPlayer= null;
-    private HashMap mSounds = new HashMap();
+    private final HashMap mSounds = new HashMap();
 
     public SoundPoolPlayer(Context pContext) {
         this.mShortPlayer = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/QR_CODE_IM"
@@ -22,6 +21,7 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/LAB_SERIAL"
         android:layout_width="0dp"
@@ -38,6 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/QR_CODE_IM" />
+
     <TextView
         android:id="@+id/NUM_SERIAL"
         android:layout_width="0dp"
@@ -160,104 +161,5 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.safesoft.proapp.distribute.activation.ActivityActivation"
-        android:visibility="gone" >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/distribution_activation"
-        android:orientation="vertical"
-        android:weightSum="1">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="88dp"
-            android:layout_weight="1.05">
-
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/code_client_check_edittext"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="5dp"
-                android:hint="@string/code_client_hint"
-                android:inputType="number"
-                android:layout_gravity="right"
-                app:errorMessage="@string/error_message_code_client"
-                app:errorType="value"
-                app:maxChars="6"
-                app:minChars="1" />
-
-
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/nom_client_check_edittext"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/code_client_check_edittext"
-                android:layout_marginTop="5dp"
-                android:hint="@string/nom_client_hint"
-                android:layout_gravity="right"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty" />
-
-
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:id="@+id/phone_client_check_edittext"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/nom_client_check_edittext"
-                android:layout_alignStart="@+id/nom_client_check_edittext"
-                android:layout_below="@+id/nom_client_check_edittext"
-                android:layout_marginTop="5dp"
-                android:hint="@string/phone_client_hint"
-                android:inputType="number"
-                android:layout_gravity="right"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty" />
-
-
-            <com.emmasuzuki.easyform.EasyTextInputLayout
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/phone_client_check_edittext"
-                android:layout_marginTop="5dp"
-                android:hint="@string/revendeur_hint"
-                android:visibility="gone"
-                android:layout_gravity="right"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty" />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="bottom">
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="40dp"
-                android:layout_marginLeft="5dp"
-                android:background="@color/float_transparent"
-                android:onClick="onClickButton"
-                android:src="@mipmap/activate_icon" />
-
-
-        </RelativeLayout>
-    </LinearLayout>
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

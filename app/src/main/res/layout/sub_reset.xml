@@ -8,7 +8,7 @@
     android:visibility="gone"
     android:id="@+id/param_reset"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,6 +47,7 @@
 
 
     </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,7 +85,7 @@
             android:clickable="false"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        
+
     </LinearLayout>
 
 </LinearLayout>

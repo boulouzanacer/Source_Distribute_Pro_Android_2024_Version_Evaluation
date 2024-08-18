@@ -36,7 +36,7 @@ public class ActivityActivation extends AppCompatActivity {
 
     private String deviceId2 = "";
     private String revendeur;
-    TextView inforevenedeur1,inforevenedeur2,inforevenedeur3,inforevenedeur4;
+    TextView inforevenedeur1, inforevenedeur2, inforevenedeur3, inforevenedeur4;
 
     ImageView qrImage;
     private int code_activation;
@@ -70,7 +70,7 @@ public class ActivityActivation extends AppCompatActivity {
         MultiFormatWriter writer = new MultiFormatWriter();
 
         try {
-            BitMatrix matrix = writer.encode(deviceId2, BarcodeFormat.QR_CODE,350,350);
+            BitMatrix matrix = writer.encode(deviceId2, BarcodeFormat.QR_CODE, 350, 350);
             BarcodeEncoder encoder = new BarcodeEncoder();
             Bitmap bitmap = encoder.createBitmap(matrix);
             qrImage.setImageBitmap(bitmap);
@@ -160,7 +160,7 @@ public class ActivityActivation extends AppCompatActivity {
     }
 
     public void saveActivationData(boolean is_activated) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("APP_ACTIVATED", is_activated);
         editor.apply();
@@ -172,21 +172,19 @@ public class ActivityActivation extends AppCompatActivity {
 
         try {
             code_activation = Integer.parseInt(code_activation_input.getText().toString());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             code_activation = 0;
         }
 
         int i = 0;
-        int o = deviceId2.length()+1;
-        for(int t=0;t<= deviceId2.length()-1 ;t++){
-            i = i + (int)deviceId2.charAt(t) * 47293 * o;
+        int o = deviceId2.length() + 1;
+        for (int t = 0; t <= deviceId2.length() - 1; t++) {
+            i = i + (int) deviceId2.charAt(t) * 47293 * o;
             o = o - 1;
         }
-        
+
         if (code_activation == i) {
-           // Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
+            // Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
             Crouton.makeText(ActivityActivation.this, "Code d'activation correct", Style.INFO).show();
             btn_start.setVisibility(View.VISIBLE);  ///// 357272286 ///// 350889357
             saveData();
@@ -195,7 +193,7 @@ public class ActivityActivation extends AppCompatActivity {
         } else {
             //Toast.makeText(ActivityActivation.this, "Code d'activation incorrect",Toast.LENGTH_SHORT).show();
             Crouton.makeText(ActivityActivation.this, "Code d'activation incorrect", Style.ALERT).show();
-            ((EditText)findViewById(R.id.CODE_ACTIVATION)).setText("");
+            ((EditText) findViewById(R.id.CODE_ACTIVATION)).setText("");
             btn_start.setVisibility(View.INVISIBLE);
             saveActivationData(false);
         }
@@ -207,10 +205,10 @@ public class ActivityActivation extends AppCompatActivity {
     }
 
     public void saveData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("NUM_SERIE",deviceId2);
-        editor.putInt("CODE_ACTIVATION",code_activation);
+        editor.putString("NUM_SERIE", deviceId2);
+        editor.putInt("CODE_ACTIVATION", code_activation);
         editor.apply();
     }
 
@@ -221,7 +219,7 @@ public class ActivityActivation extends AppCompatActivity {
         inforevenedeur4 = findViewById(R.id.InfoRevendeur4);
 
         //00
-        if (revendeur.equals("SAFE SOFT"))  {
+        if (revendeur.equals("SAFE SOFT")) {
             inforevenedeur1.setText(R.string.INFO_SAFE_SOFT1);
             inforevenedeur2.setText(R.string.INFO_SAFE_SOFT2);
             inforevenedeur3.setText(R.string.INFO_SAFE_SOFT3);
@@ -334,10 +332,10 @@ public class ActivityActivation extends AppCompatActivity {
         }
         //16
         if (revendeur.equals("BBS")) {
-             inforevenedeur1.setText(R.string.INFO_BBS1);
-             inforevenedeur2.setText(R.string.INFO_BBS2);
-             inforevenedeur3.setText(R.string.INFO_BBS3);
-             inforevenedeur4.setText(R.string.INFO_BBS4);
+            inforevenedeur1.setText(R.string.INFO_BBS1);
+            inforevenedeur2.setText(R.string.INFO_BBS2);
+            inforevenedeur3.setText(R.string.INFO_BBS3);
+            inforevenedeur4.setText(R.string.INFO_BBS4);
         }
         //17
         if (revendeur.equals("EXPERT INFO")) {
@@ -381,7 +379,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_AZAD1);
             inforevenedeur4.setText(R.string.INFO_AZAD1);
         }
-         //24
+        //24
         if (revendeur.equals("GENERAL IT")) {
             inforevenedeur1.setText(R.string.INFO_GENERALIT1);
             inforevenedeur2.setText(R.string.INFO_GENERALIT2);
@@ -448,6 +446,13 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur2.setText(R.string.INFO_OATECH2);
             inforevenedeur3.setText(R.string.INFO_OATECH3);
             inforevenedeur4.setText(R.string.INFO_OATECH4);
+        }
+        //36
+        if (revendeur.equals("BR SOFT")) {
+            inforevenedeur1.setText(R.string.INFO_BRSOFT1);
+            inforevenedeur2.setText(R.string.INFO_BRSOFT2);
+            inforevenedeur3.setText(R.string.INFO_BRSOFT3);
+            inforevenedeur4.setText(R.string.INFO_BRSOFT4);
         }
 
 

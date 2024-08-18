@@ -2,8 +2,10 @@ package com.safesoft.proapp.distribute.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,7 +28,7 @@ public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdap
     private final List<PostData_Transfer1> transfert1List;
     private int color = 0;
     private ItemClick itemClick;
-    private  ItemLongClick itemLongClick;
+    private ItemLongClick itemLongClick;
     private ColorGeneratorModified generator;
     private final Context mContext;
 
@@ -43,12 +45,12 @@ public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdap
         MyViewHolder(View view) {
             super(view);
 
-            cardView = (CardView) view.findViewById(R.id.item_root);
-            NumBon = (TextView) view.findViewById(R.id.num_bon);
-            Source = (TextView) view.findViewById(R.id.source);
-            Dest = (TextView) view.findViewById(R.id.dest);
-            Date_bon = (TextView) view.findViewById(R.id.date_bon);
-            image = (ImageView) view.findViewById(R.id.imageId);
+            cardView = view.findViewById(R.id.item_root);
+            NumBon = view.findViewById(R.id.num_bon);
+            Source = view.findViewById(R.id.source);
+            Dest = view.findViewById(R.id.dest);
+            Date_bon = view.findViewById(R.id.date_bon);
+            image = view.findViewById(R.id.imageId);
         }
     }
 
@@ -65,13 +67,13 @@ public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdap
         View v = new MyCardView2(parent.getContext(), R.layout.item_transfer1_list);
 
         itemClick = (ItemClick) parent.getContext();
-        itemLongClick = (ItemLongClick)parent.getContext();
+        itemLongClick = (ItemLongClick) parent.getContext();
 
         return new MyViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder,int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         PostData_Transfer1 item = transfert1List.get(position);
 
         holder.NumBon.setTextSize(17);
@@ -80,11 +82,11 @@ public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdap
 
         holder.Source.setTextSize(12);
         holder.Source.setTypeface(null, Typeface.BOLD);
-        holder.Source.setText("Source : "+item.nom_depot_s);
+        holder.Source.setText("Source : " + item.nom_depot_s);
 
         holder.Dest.setTextSize(12);
         holder.Dest.setTypeface(null, Typeface.BOLD);
-        holder.Dest.setText("Destination : "+item.nom_depot_d);
+        holder.Dest.setText("Destination : " + item.nom_depot_d);
 
         holder.Date_bon.setTextSize(12);
         holder.Date_bon.setText(item.date_bon);
@@ -92,36 +94,36 @@ public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdap
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemClick.onClick(view,holder.getAdapterPosition());
+                itemClick.onClick(view, holder.getAdapterPosition());
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                itemLongClick.onLongClick(v , holder.getAdapterPosition());
+                itemLongClick.onLongClick(v, holder.getAdapterPosition());
                 return true;
             }
         });
 
         String firstChar = "NO";
-        if(item.nbr_p != null){
-            if(item.nbr_p.length() > 0){
-                if(item.nbr_p.length() == 1)
+        if (item.nbr_p != null) {
+            if (item.nbr_p.length() > 0) {
+                if (item.nbr_p.length() == 1)
                     firstChar = String.valueOf(item.nbr_p.charAt(0));
-                else if(item.nbr_p.length() == 2)
-                    firstChar = String.valueOf(item.nbr_p.charAt(0))+ item.nbr_p.charAt(1);
-                else if(item.nbr_p.length() == 3)
+                else if (item.nbr_p.length() == 2)
+                    firstChar = String.valueOf(item.nbr_p.charAt(0)) + item.nbr_p.charAt(1);
+                else if (item.nbr_p.length() == 3)
                     firstChar = String.valueOf(item.nbr_p.charAt(0)) + item.nbr_p.charAt(1) + item.nbr_p.charAt(2);
-                else if(item.nbr_p.length() == 4)
+                else if (item.nbr_p.length() == 4)
                     firstChar = String.valueOf(item.nbr_p.charAt(0)) + item.nbr_p.charAt(1) + item.nbr_p.charAt(2) + item.nbr_p.charAt(3);
-            }else{
+            } else {
                 firstChar = "NO";
             }
 
         }
 
-        if (color == 0){
-            if (generator!=null)
+        if (color == 0) {
+            if (generator != null)
                 color = generator.getColor(transfert1List.get(position).num_bon);
         }
 
@@ -134,13 +136,15 @@ public class RecyclerAdapterTransfert1 extends RecyclerView.Adapter<RecyclerAdap
         return transfert1List.size();
     }
 
-    public interface ItemClick{
+    public interface ItemClick {
         void onClick(View v, int position);
     }
-    public interface ItemLongClick{
+
+    public interface ItemLongClick {
         void onLongClick(View v, int position);
     }
-    public void refresh(List<PostData_Transfer1> new_itemList){
+
+    public void refresh(List<PostData_Transfer1> new_itemList) {
         transfert1List.clear();
         transfert1List.addAll(new_itemList);
         notifyDataSetChanged();

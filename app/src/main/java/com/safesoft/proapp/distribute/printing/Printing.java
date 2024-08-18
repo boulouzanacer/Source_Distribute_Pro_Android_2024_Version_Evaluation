@@ -58,6 +58,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
+import com.safesoft.proapp.distribute.postData.PostData_Carnet_f;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
@@ -95,10 +96,11 @@ public class Printing {
     private PostData_Bon1 bon1;
     private PostData_Achat1 achat1;
     private PostData_Carnet_c carnet_c_print;
+    private PostData_Carnet_f carnet_f_print;
     private String type_print;
 
     /////////////////////////////////////// IMPRIMER BON ///////////////////////////////////////////
-    public void start_print_bon_vente(Activity activity, String type_print, ArrayList<PostData_Bon2> final_panier, PostData_Bon1 bon1)  throws UnsupportedEncodingException {
+    public void start_print_bon_vente(Activity activity, String type_print, ArrayList<PostData_Bon2> final_panier, PostData_Bon1 bon1) throws UnsupportedEncodingException {
 
         mActivity = activity;
         this.final_panier_vente = final_panier;
@@ -107,8 +109,7 @@ public class Printing {
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return;
@@ -123,35 +124,35 @@ public class Printing {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
             Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
-            for(int i = 0; i< pairedDeviceList.size() ; i++){
-                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+            for (int i = 0; i < pairedDeviceList.size(); i++) {
+                if (pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))) {
                     isfound = true;
                     device = pairedDeviceList.get(i);
 
                 }
             }
-            if(isfound){
+            if (isfound) {
                 Log.v("PRINTER_CONX", "Device found");
-                if(device != null){
+                if (device != null) {
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     runningTask = new LongOperation(bluetoothEdrConfigBean);
                     runningTask.execute();
                 }
-            }else {
+            } else {
                 Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
-            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1"), Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
             runningTask = new LongOperation(wiFiConfigBean);
@@ -161,7 +162,7 @@ public class Printing {
     }
 
 
-    public void start_print_bon_achat(Activity activity, String type_print, ArrayList<PostData_Achat2> final_panier, PostData_Achat1 achat1)  throws UnsupportedEncodingException {
+    public void start_print_bon_achat(Activity activity, String type_print, ArrayList<PostData_Achat2> final_panier, PostData_Achat1 achat1) throws UnsupportedEncodingException {
 
         mActivity = activity;
         this.final_panier_achat = final_panier;
@@ -170,8 +171,7 @@ public class Printing {
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return;
@@ -186,35 +186,35 @@ public class Printing {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
             Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
-            for(int i = 0; i< pairedDeviceList.size() ; i++){
-                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+            for (int i = 0; i < pairedDeviceList.size(); i++) {
+                if (pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))) {
                     isfound = true;
                     device = pairedDeviceList.get(i);
 
                 }
             }
-            if(isfound){
+            if (isfound) {
                 Log.v("PRINTER_CONX", "Device found");
-                if(device != null){
+                if (device != null) {
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     runningTask = new LongOperation(bluetoothEdrConfigBean);
                     runningTask.execute();
                 }
-            }else {
+            } else {
                 Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
-            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1"), Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
             runningTask = new LongOperation(wiFiConfigBean);
@@ -222,6 +222,7 @@ public class Printing {
 
         }
     }
+
     /////////////////////////////////// IMPRIMER ETIQUETTE /////////////////////////////////////////
     public void start_print_etiquette(Activity activity, PostData_Produit produit) {
 
@@ -231,8 +232,7 @@ public class Printing {
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return;
@@ -246,36 +246,36 @@ public class Printing {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
             Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
-            for(int i = 0; i< pairedDeviceList.size() ; i++){
-                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+            for (int i = 0; i < pairedDeviceList.size(); i++) {
+                if (pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))) {
                     isfound = true;
                     device = pairedDeviceList.get(i);
 
                 }
             }
 
-            if(isfound){
+            if (isfound) {
                 Log.v("PRINTER_CONX", "Device found");
-                if(device != null){
+                if (device != null) {
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     runningTask = new LongOperation(bluetoothEdrConfigBean);
                     runningTask.execute();
                 }
-            }else {
+            } else {
                 Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
-            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1"), Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
             runningTask = new LongOperation(wiFiConfigBean);
@@ -294,8 +294,7 @@ public class Printing {
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return;
@@ -310,40 +309,40 @@ public class Printing {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
             Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
-            for(int i = 0; i< pairedDeviceList.size() ; i++){
-                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+            for (int i = 0; i < pairedDeviceList.size(); i++) {
+                if (pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))) {
                     isfound = true;
                     device = pairedDeviceList.get(i);
 
                 }
             }
 
-            if(isfound){
+            if (isfound) {
                 Log.v("PRINTER_CONX", "Device found");
-                if(device != null){
+                if (device != null) {
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     runningTask = new LongOperation(bluetoothEdrConfigBean);
                     runningTask.execute();
                 }
-            }else {
+            } else {
                 Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
 
             // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
             //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
             // assert WIFI_VALUE_PORT != null;
-            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1"), Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
             runningTask = new LongOperation(wiFiConfigBean);
@@ -353,8 +352,8 @@ public class Printing {
     }
 
 
-    /////////////////////////////////// IMPRIMER VERSEMENT /////////////////////////////////////////
-    public void start_print_versement_client(Activity activity, PostData_Carnet_c carnet_c_print ) {
+    /////////////////////////////////// IMPRIMER VERSEMENT CLIENT/////////////////////////////////////////
+    public void start_print_versement_client(Activity activity, PostData_Carnet_c carnet_c_print) {
 
         mActivity = activity;
         this.carnet_c_print = carnet_c_print;
@@ -363,8 +362,7 @@ public class Printing {
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return;
@@ -377,40 +375,106 @@ public class Printing {
         textSetting = new TextSetting();
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
             Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
-            for(int i = 0; i< pairedDeviceList.size() ; i++){
-                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+            for (int i = 0; i < pairedDeviceList.size(); i++) {
+                if (pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))) {
                     isfound = true;
                     device = pairedDeviceList.get(i);
 
                 }
             }
 
-            if(isfound){
+            if (isfound) {
                 Log.v("PRINTER_CONX", "Device found");
-                if(device != null){
+                if (device != null) {
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     runningTask = new LongOperation(bluetoothEdrConfigBean);
                     runningTask.execute();
                 }
-            }else {
+            } else {
                 Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
 
             // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
             //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
             // assert WIFI_VALUE_PORT != null;
-            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1"), Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
+
+            runningTask = new LongOperation(wiFiConfigBean);
+            runningTask.execute();
+
+        }
+    }
+
+
+    /////////////////////////////////// IMPRIMER VERSEMENT FOURNISSEUR /////////////////////////////////////////
+    public void start_print_versement_fournisseur(Activity activity, PostData_Carnet_f carnet_f_print) {
+
+        mActivity = activity;
+        this.carnet_f_print = carnet_f_print;
+
+        this.type_print = "VERSEMENT_FOURNISSEUR";
+
+        AsyncTask<Void, Void, Boolean> runningTask;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                return;
+            }
+        }
+
+        BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
+        printerFactory = new ThermalPrinterFactory();
+        rtPrinter = printerFactory.create();
+        textSetting = new TextSetting();
+
+        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            BluetoothDevice device = null;
+            pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
+            boolean isfound = false;
+            Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
+            for (int i = 0; i < pairedDeviceList.size(); i++) {
+                if (pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))) {
+                    isfound = true;
+                    device = pairedDeviceList.get(i);
+
+                }
+            }
+
+            if (isfound) {
+                Log.v("PRINTER_CONX", "Device found");
+                if (device != null) {
+                    configObj = new BluetoothEdrConfigBean(device);
+                    BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
+                    runningTask = new LongOperation(bluetoothEdrConfigBean);
+                    runningTask.execute();
+                }
+            } else {
+                Log.v("PRINTER_CONX", "Device not found");
+                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+            }
+
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
+
+
+            // WIFI_VALUE_IP = prefs.getString("PRINTER_IP", "127.0.0.1");
+            //WIFI_VALUE_PORT = prefs.getString("PRINTER_PORT", "9100");
+            // assert WIFI_VALUE_PORT != null;
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1"), Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
             runningTask = new LongOperation(wiFiConfigBean);
@@ -446,22 +510,21 @@ public class Printing {
         }
 
 
-
         @Override
         protected Boolean doInBackground(Void... params) {
 
             try {
 
-                if(!BaseApplication.getInstance().getIsConnected()){
+                if (!BaseApplication.getInstance().getIsConnected()) {
 
-                    if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+                    if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
                         PIFactory piFactory = new BluetoothFactory();
                         PrinterInterface printerInterface = piFactory.create();
                         printerInterface.setConfigObject(bluetoothEdrConfigBean);
                         rtPrinter.setPrinterInterface(printerInterface);
                         rtPrinter.connect(bluetoothEdrConfigBean);
 
-                    }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+                    } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
                         PIFactory piFactory = new WiFiFactory();
                         PrinterInterface printerInterface = piFactory.create();
@@ -472,7 +535,7 @@ public class Printing {
 
                     Thread.sleep(1500);
 
-                }else {
+                } else {
                     rtPrinter = BaseApplication.getInstance().getRtPrinter();
                 }
 
@@ -484,20 +547,21 @@ public class Printing {
         }
 
 
-
         @Override
         protected void onPostExecute(Boolean result) {
 
             mProgressDialog.dismiss();
 
-            if(result){
+            if (result) {
                 try {
                     switch (type_print) {
                         case "VENTE", "ORDER" -> print_bon();
                         case "ACHAT" -> print_achat();
                         case "ETIQUETTE" -> print_etiquette();
-                        case "ETIQUETTE_CODEBARRE" -> print_etiquette_code_barre(produit.code_barre, produit.produit, produit.pv1_ht * (1+(produit.tva/100)));
+                        case "ETIQUETTE_CODEBARRE" ->
+                                print_etiquette_code_barre(produit.code_barre, produit.produit, produit.pv1_ht * (1 + (produit.tva / 100)));
                         case "VERSEMENT_CLIENT" -> print_versement_client();
+                        case "VERSEMENT_FOURNISSEUR" -> print_versement_fournisseur();
                         case "ARABIC" -> print_arabic();
                     }
 
@@ -509,7 +573,7 @@ public class Printing {
     }
 
 
-    void print_achat()  throws UnsupportedEncodingException {
+    void print_achat() throws UnsupportedEncodingException {
 
         new Thread(new Runnable() {
             @Override
@@ -536,8 +600,8 @@ public class Printing {
                     Bitmap mBitmap = null;
                     String preBlank = "        ";
 
-                    String img_str= prefs.getString("COMPANY_LOGO", "");
-                    if (!img_str.equals("")){
+                    String img_str = prefs.getString("COMPANY_LOGO", "");
+                    if (!img_str.equals("")) {
                         //decode string to image
                         byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
                         mBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -556,15 +620,15 @@ public class Printing {
                     //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
-                    if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
+                    if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
                     }
-                    if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
+                    if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
                     }
-                    if(!prefs.getString("COMPANY_TEL", "").equals("")){
+                    if (!prefs.getString("COMPANY_TEL", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_TEL", "")));
                     }
@@ -593,9 +657,9 @@ public class Printing {
                     textSetting.setDoubleWidth(SettingEnum.Enable);
                     textSetting.setBold(SettingEnum.Enable);
                     //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
-                    if(type_print.equals("ACHAT")){
+                    if (type_print.equals("ACHAT")) {
                         cmd.append(cmd.getTextCmd(textSetting, "ACHAT N :" + achat1.num_bon));
-                    }else if(type_print.equals("ACHAT_ORDER")){
+                    } else if (type_print.equals("ACHAT_ORDER")) {
                         cmd.append(cmd.getTextCmd(textSetting, "COMMANDE.A N :" + achat1.num_bon));
                     }
 
@@ -615,37 +679,37 @@ public class Printing {
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
                     textSetting.setBold(SettingEnum.Enable);
                     String format0 = "%1$-19s %2$-9s %3$-5s %4$12s";
-                    cmd.append(cmd.getTextCmd(textSetting,  String.format(format0, "PRODUIT" ,  StringUtils.center("QTE",9) ,StringUtils.center("U.G",5) , "P.U"   )));
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format0, "PRODUIT", StringUtils.center("QTE", 9), StringUtils.center("U.G", 5), "P.U")));
                     textSetting.setBold(SettingEnum.Disable);
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     /////////////////////////////IMPRESSION BON2////////////////////////////////////
 
-                    double nbr_colis,colissage,qte,gte_gratuit,prix_unit;
-                    String nbr_colis_Str,colissage_Str,qte_Str,gte_gratuit_Str,prix_unit_Str,X1_Str ,X2_Str, eq1_Str, plus_Str  ;
+                    double nbr_colis, colissage, qte, gte_gratuit, prix_unit;
+                    String nbr_colis_Str, colissage_Str, qte_Str, gte_gratuit_Str, prix_unit_Str, X1_Str, X2_Str, eq1_Str, plus_Str;
                     //nbr_colis = 10.0; colissage =23.0 ; qte = 120.00 ; gte_gratuit = 1.0;  prix_unit = 12345.33 ;
 
 
-                    for(int i=0; i< final_panier_achat.size() ; i++ ){
+                    for (int i = 0; i < final_panier_achat.size(); i++) {
 
 
                         cmd.append(cmd.getTextCmd(textSetting, final_panier_achat.get(i).produit));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                         nbr_colis = final_panier_achat.get(i).nbr_colis;
-                        nbr_colis_Str   =  new DecimalFormat("####0.##").format(nbr_colis);
+                        nbr_colis_Str = new DecimalFormat("####0.##").format(nbr_colis);
 
                         colissage = final_panier_achat.get(i).colissage;
-                        colissage_Str   =  new DecimalFormat("####0.##").format(colissage);
+                        colissage_Str = new DecimalFormat("####0.##").format(colissage);
 
                         qte = final_panier_achat.get(i).qte;
-                        qte_Str         =  new DecimalFormat("####0.##").format(qte);
+                        qte_Str = new DecimalFormat("####0.##").format(qte);
 
                         gte_gratuit = final_panier_achat.get(i).gratuit;
-                        gte_gratuit_Str =  new DecimalFormat( "####0.##").format(gte_gratuit);
+                        gte_gratuit_Str = new DecimalFormat("####0.##").format(gte_gratuit);
 
                         prix_unit = final_panier_achat.get(i).pa_ht;
-                        prix_unit_Str   =  new DecimalFormat("####0.00").format(prix_unit);
+                        prix_unit_Str = new DecimalFormat("####0.00").format(prix_unit);
 
 
                         X1_Str = "X";
@@ -653,13 +717,18 @@ public class Printing {
                         plus_Str = "+";
 
                         if (gte_gratuit == 0.0) {
-                            gte_gratuit_Str="";
+                            gte_gratuit_Str = "";
                             plus_Str = " ";
                         }
 
-                        if (  colissage == 0.0 ) {  nbr_colis_Str ="";  colissage_Str = "";  X1_Str = " "; eq1_Str = " "; }
-                        String format1 = "  %1$-6s "+X1_Str+" %2$-6s "+eq1_Str+" %3$-9s"+plus_Str+"%4$-5sX%5$12s";
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str,6), StringUtils.center(colissage_Str,6), StringUtils.center(qte_Str,9) , StringUtils.center(gte_gratuit_Str,5) , prix_unit_Str)));
+                        if (colissage == 0.0) {
+                            nbr_colis_Str = "";
+                            colissage_Str = "";
+                            X1_Str = " ";
+                            eq1_Str = " ";
+                        }
+                        String format1 = "  %1$-6s " + X1_Str + " %2$-6s " + eq1_Str + " %3$-9s" + plus_Str + "%4$-5sX%5$12s";
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str, 6), StringUtils.center(colissage_Str, 6), StringUtils.center(qte_Str, 9), StringUtils.center(gte_gratuit_Str, 5), prix_unit_Str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
 
                        /* if(i<final_panier.size()-1){
@@ -679,70 +748,70 @@ public class Printing {
 
                     int nbr_produit;
                     Double total_ht_bon, tva_bon, timbre_bon, total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
-                    String nbr_produit_str, total_ht_bon_str , tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+                    String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
                     nbr_produit = final_panier_achat.size();
-                    nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
+                    nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(nbr_produit));
 
                     total_ht_bon = achat1.tot_ht;
-                    total_ht_bon_str   =  new DecimalFormat("####0.00").format(total_ht_bon);
+                    total_ht_bon_str = new DecimalFormat("####0.00").format(total_ht_bon);
 
                     tva_bon = achat1.tot_tva;
-                    tva_bon_str   =  new DecimalFormat("####0.00").format(tva_bon);
+                    tva_bon_str = new DecimalFormat("####0.00").format(tva_bon);
 
                     timbre_bon = achat1.timbre;
-                    timbre_bon_str   =  new DecimalFormat("####0.00").format(timbre_bon);
+                    timbre_bon_str = new DecimalFormat("####0.00").format(timbre_bon);
 
                     total_bon = achat1.tot_ttc;
-                    total_bon_str   =  new DecimalFormat("####0.00").format(total_bon);
+                    total_bon_str = new DecimalFormat("####0.00").format(total_bon);
 
                     remise_bon = achat1.remise;
-                    remise_bon_str   =  new DecimalFormat("####0.00").format(remise_bon);
+                    remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
                     ancien_solde = achat1.solde_ancien;
-                    ancien_solde_str   =  new DecimalFormat("####0.00").format(ancien_solde);
+                    ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
                     total_a_payer = achat1.montant_bon;
-                    total_a_payer_str   =  new DecimalFormat("####0.00").format(total_a_payer);
+                    total_a_payer_str = new DecimalFormat("####0.00").format(total_a_payer);
 
                     versement = achat1.verser;
-                    versement_str   =  new DecimalFormat("####0.00").format(versement);
+                    versement_str = new DecimalFormat("####0.00").format(versement);
 
                     nouveau_solde = achat1.reste;
-                    nouveau_solde_str   =  new DecimalFormat("####0.00").format(nouveau_solde);
+                    nouveau_solde_str = new DecimalFormat("####0.00").format(nouveau_solde);
 
                     String format2 = "%1$13s%2$-9s%3$13s%4$13s";
                     textSetting.setBold(SettingEnum.Enable);
 
-                    if(tva_bon !=0 && timbre_bon !=0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                    if (tva_bon != 0 && timbre_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :", tva_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :" ,timbre_bon_str)));
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :", timbre_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                    }else if(tva_bon != 0){
-                        if(prefs.getBoolean("AFFICHAGE_HT", false)){
-                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                    } else if (tva_bon != 0) {
+                        if (prefs.getBoolean("AFFICHAGE_HT", false)) {
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
                             cmd.append(cmd.getLFCRCmd()); // one line space
-                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :", tva_bon_str)));
                             cmd.append(cmd.getLFCRCmd()); // one line space
                         }
-                    }else if(timbre_bon != 0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                    } else if (timbre_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :" ,timbre_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                    }
-
-                    if(remise_bon !=0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL :" ,total_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "REMISE :" ,remise_bon_str)));
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :", timbre_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                     }
 
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "NBR PRODUIT :", StringUtils.center(nbr_produit_str,9), "TTC A PAYER :" , total_a_payer_str)));
+                    if (remise_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL :", total_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "REMISE :", remise_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                    }
+
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "NBR PRODUIT :", StringUtils.center(nbr_produit_str, 9), "TTC A PAYER :", total_a_payer_str)));
                     cmd.append(cmd.getLFCRCmd()); // one line space
 
                     textSetting.setBold(SettingEnum.Disable);
@@ -763,7 +832,7 @@ public class Printing {
                     cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "ANCIEN SOLDE :", ancien_solde_str)));
                     cmd.append(cmd.getLFCRCmd()); // one line space
 
-                    if(type_print.equals("ACHAT")){
+                    if (type_print.equals("ACHAT")) {
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "TOTAL BON :", total_a_payer_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "VERSEMENT :", versement_str)));
@@ -821,8 +890,7 @@ public class Printing {
     }
 
 
-
-    void print_bon()  throws UnsupportedEncodingException {
+    void print_bon() throws UnsupportedEncodingException {
 
         new Thread(new Runnable() {
             @Override
@@ -849,8 +917,8 @@ public class Printing {
                     Bitmap mBitmap = null;
                     String preBlank = "        ";
 
-                    String img_str= prefs.getString("COMPANY_LOGO", "");
-                    if (!img_str.equals("")){
+                    String img_str = prefs.getString("COMPANY_LOGO", "");
+                    if (!img_str.equals("")) {
                         //decode string to image
                         byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
                         mBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -869,15 +937,15 @@ public class Printing {
                     //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
-                    if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
+                    if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
                     }
-                    if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
+                    if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
                     }
-                    if(!prefs.getString("COMPANY_TEL", "").equals("")){
+                    if (!prefs.getString("COMPANY_TEL", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_TEL", "")));
                     }
@@ -906,9 +974,9 @@ public class Printing {
                     textSetting.setDoubleWidth(SettingEnum.Enable);
                     textSetting.setBold(SettingEnum.Enable);
                     //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
-                    if(type_print.equals("VENTE")){
+                    if (type_print.equals("VENTE")) {
                         cmd.append(cmd.getTextCmd(textSetting, "BL N :" + bon1.num_bon));
-                    }else if(type_print.equals("ORDER")){
+                    } else if (type_print.equals("ORDER")) {
                         cmd.append(cmd.getTextCmd(textSetting, "COMMANDE N :" + bon1.num_bon));
                     }
 
@@ -928,37 +996,37 @@ public class Printing {
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
                     textSetting.setBold(SettingEnum.Enable);
                     String format0 = "%1$-19s %2$-9s %3$-5s %4$12s";
-                    cmd.append(cmd.getTextCmd(textSetting,  String.format(format0, "PRODUIT" ,  StringUtils.center("QTE",9) ,StringUtils.center("U.G",5) , "P.U"   )));
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format0, "PRODUIT", StringUtils.center("QTE", 9), StringUtils.center("U.G", 5), "P.U")));
                     textSetting.setBold(SettingEnum.Disable);
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     /////////////////////////////IMPRESSION BON2////////////////////////////////////
 
-                    double nbr_colis,colissage,qte,gte_gratuit,prix_unit;
-                    String nbr_colis_Str,colissage_Str,qte_Str,gte_gratuit_Str,prix_unit_Str,X1_Str ,X2_Str, eq1_Str, plus_Str  ;
+                    double nbr_colis, colissage, qte, gte_gratuit, prix_unit;
+                    String nbr_colis_Str, colissage_Str, qte_Str, gte_gratuit_Str, prix_unit_Str, X1_Str, X2_Str, eq1_Str, plus_Str;
                     //nbr_colis = 10.0; colissage =23.0 ; qte = 120.00 ; gte_gratuit = 1.0;  prix_unit = 12345.33 ;
 
 
-                    for(int i=0; i< final_panier_vente.size() ; i++ ){
+                    for (int i = 0; i < final_panier_vente.size(); i++) {
 
 
                         cmd.append(cmd.getTextCmd(textSetting, final_panier_vente.get(i).produit));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                         nbr_colis = final_panier_vente.get(i).nbr_colis;
-                        nbr_colis_Str   =  new DecimalFormat("####0.##").format(nbr_colis);
+                        nbr_colis_Str = new DecimalFormat("####0.##").format(nbr_colis);
 
                         colissage = final_panier_vente.get(i).colissage;
-                        colissage_Str   =  new DecimalFormat("####0.##").format(colissage);
+                        colissage_Str = new DecimalFormat("####0.##").format(colissage);
 
                         qte = final_panier_vente.get(i).qte;
-                        qte_Str         =  new DecimalFormat("####0.##").format(qte);
+                        qte_Str = new DecimalFormat("####0.##").format(qte);
 
                         gte_gratuit = final_panier_vente.get(i).gratuit;
-                        gte_gratuit_Str =  new DecimalFormat( "####0.##").format(gte_gratuit);
+                        gte_gratuit_Str = new DecimalFormat("####0.##").format(gte_gratuit);
 
                         prix_unit = final_panier_vente.get(i).pv_ht;
-                        prix_unit_Str   =  new DecimalFormat("####0.00").format(prix_unit);
+                        prix_unit_Str = new DecimalFormat("####0.00").format(prix_unit);
 
 
                         X1_Str = "X";
@@ -966,13 +1034,18 @@ public class Printing {
                         plus_Str = "+";
 
                         if (gte_gratuit == 0.0) {
-                            gte_gratuit_Str="";
+                            gte_gratuit_Str = "";
                             plus_Str = " ";
                         }
 
-                        if (  colissage == 0.0 ) {  nbr_colis_Str ="";  colissage_Str = "";  X1_Str = " "; eq1_Str = " "; }
-                        String format1 = "  %1$-6s "+X1_Str+" %2$-6s "+eq1_Str+" %3$-9s"+plus_Str+"%4$-5sX%5$12s";
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str,6), StringUtils.center(colissage_Str,6), StringUtils.center(qte_Str,9) , StringUtils.center(gte_gratuit_Str,5) , prix_unit_Str)));
+                        if (colissage == 0.0) {
+                            nbr_colis_Str = "";
+                            colissage_Str = "";
+                            X1_Str = " ";
+                            eq1_Str = " ";
+                        }
+                        String format1 = "  %1$-6s " + X1_Str + " %2$-6s " + eq1_Str + " %3$-9s" + plus_Str + "%4$-5sX%5$12s";
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str, 6), StringUtils.center(colissage_Str, 6), StringUtils.center(qte_Str, 9), StringUtils.center(gte_gratuit_Str, 5), prix_unit_Str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
 
                        /* if(i<final_panier.size()-1){
@@ -992,72 +1065,71 @@ public class Printing {
 
                     int nbr_produit;
                     Double total_ht_bon, tva_bon, timbre_bon, total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
-                    String nbr_produit_str, total_ht_bon_str , tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+                    String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
                     nbr_produit = final_panier_vente.size();
-                    nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
+                    nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(nbr_produit));
 
                     total_ht_bon = bon1.tot_ht;
-                    total_ht_bon_str   =  new DecimalFormat("####0.00").format(total_ht_bon);
+                    total_ht_bon_str = new DecimalFormat("####0.00").format(total_ht_bon);
 
                     tva_bon = bon1.tot_tva;
-                    tva_bon_str   =  new DecimalFormat("####0.00").format(tva_bon);
+                    tva_bon_str = new DecimalFormat("####0.00").format(tva_bon);
 
                     timbre_bon = bon1.timbre;
-                    timbre_bon_str   =  new DecimalFormat("####0.00").format(timbre_bon);
+                    timbre_bon_str = new DecimalFormat("####0.00").format(timbre_bon);
 
                     total_bon = bon1.tot_ttc;
-                    total_bon_str   =  new DecimalFormat("####0.00").format(total_bon);
+                    total_bon_str = new DecimalFormat("####0.00").format(total_bon);
 
                     remise_bon = bon1.remise;
-                    remise_bon_str   =  new DecimalFormat("####0.00").format(remise_bon);
+                    remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
                     ancien_solde = bon1.solde_ancien;
-                    ancien_solde_str   =  new DecimalFormat("####0.00").format(ancien_solde);
+                    ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
                     total_a_payer = bon1.montant_bon;
-                    total_a_payer_str   =  new DecimalFormat("####0.00").format(total_a_payer);
+                    total_a_payer_str = new DecimalFormat("####0.00").format(total_a_payer);
 
                     versement = bon1.verser;
-                    versement_str   =  new DecimalFormat("####0.00").format(versement);
+                    versement_str = new DecimalFormat("####0.00").format(versement);
 
                     nouveau_solde = bon1.reste;
-                    nouveau_solde_str   =  new DecimalFormat("####0.00").format(nouveau_solde);
+                    nouveau_solde_str = new DecimalFormat("####0.00").format(nouveau_solde);
 
                     String format2 = "%1$13s%2$-9s%3$13s%4$13s";
                     textSetting.setBold(SettingEnum.Enable);
 
 
-
-                    if(tva_bon !=0 && timbre_bon !=0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                    if (tva_bon != 0 && timbre_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :", tva_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :" ,timbre_bon_str)));
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :", timbre_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                    }else if(tva_bon != 0){
-                        if(prefs.getBoolean("AFFICHAGE_HT", false)){
-                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                    } else if (tva_bon != 0) {
+                        if (prefs.getBoolean("AFFICHAGE_HT", false)) {
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
                             cmd.append(cmd.getLFCRCmd()); // one line space
-                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :" ,tva_bon_str)));
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :", tva_bon_str)));
                             cmd.append(cmd.getLFCRCmd()); // one line space
                         }
-                    }else if(timbre_bon != 0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL HT :" ,total_ht_bon_str)));
+                    } else if (timbre_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :" ,timbre_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                    }
-
-                    if(remise_bon !=0){
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2,"","", "TOTAL TTC :" ,total_bon_str)));
-                        cmd.append(cmd.getLFCRCmd()); // one line space
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "REMISE :" ,remise_bon_str)));
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :", timbre_bon_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                     }
 
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "NBR PRODUIT :", StringUtils.center(nbr_produit_str,9), "TTC A PAYER :" , total_a_payer_str)));
+                    if (remise_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL TTC :", total_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "REMISE :", remise_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                    }
+
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "NBR PRODUIT :", StringUtils.center(nbr_produit_str, 9), "TTC A PAYER :", total_a_payer_str)));
                     cmd.append(cmd.getLFCRCmd()); // one line space
 
                     textSetting.setBold(SettingEnum.Disable);
@@ -1078,7 +1150,7 @@ public class Printing {
                     cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "ANCIEN SOLDE :", ancien_solde_str)));
                     cmd.append(cmd.getLFCRCmd()); // one line space
 
-                    if(type_print.equals("VENTE")){
+                    if (type_print.equals("VENTE")) {
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "TOTAL BON :", total_a_payer_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "VERSEMENT :", versement_str)));
@@ -1119,7 +1191,7 @@ public class Printing {
 
                     cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getLFCRCmd());  // one line space
-                     cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getHeaderCmd());//初始化, Initial
                     cmd.append(cmd.getLFCRCmd());  // one line space
 
@@ -1136,8 +1208,7 @@ public class Printing {
     }
 
 
-
-    void print_etiquette()  throws UnsupportedEncodingException {
+    void print_etiquette() throws UnsupportedEncodingException {
 
         new Thread(new Runnable() {
             @Override
@@ -1170,8 +1241,8 @@ public class Printing {
                     textSetting.setBold(SettingEnum.Disable);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
-                    double prix_vente = produit.pv1_ht * (1+(produit.tva/100));
-                    String prix_vente_str   =  new DecimalFormat("####0.00").format(prix_vente);
+                    double prix_vente = produit.pv1_ht * (1 + (produit.tva / 100));
+                    String prix_vente_str = new DecimalFormat("####0.00").format(prix_vente);
 
 
                     cmd.append(cmd.getTextCmd(textSetting, produit.produit));
@@ -1241,7 +1312,7 @@ public class Printing {
                     String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
                     rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
 
-                    String prix_vente_str   =  new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
+                    String prix_vente_str = new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
                     String strPrintTxtPrix = TonyUtils.printText("80", "80", "TSS24.BF2", "0", "2", "2", prix_vente_str + ";");
                     rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
                     // String strPrint = TonyUtils.setPRINT("1", "1");
@@ -1260,7 +1331,6 @@ public class Printing {
                     barcodeSetting.setPosition(new Position(x, y));
 
 
-
                     byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
                     tscCmd.append(barcodeCmd);
 
@@ -1269,7 +1339,7 @@ public class Printing {
                     if (rtPrinter != null) {
                         rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.getMessage();
                 }
                 hideProgressDialog();
@@ -1279,7 +1349,7 @@ public class Printing {
     }
 
 
-    void print_versement_client()  throws UnsupportedEncodingException {
+    void print_versement_client() throws UnsupportedEncodingException {
 
         new Thread(new Runnable() {
             @Override
@@ -1306,8 +1376,8 @@ public class Printing {
                     Bitmap mBitmap = null;
                     String preBlank = "        ";
 
-                    String img_str= prefs.getString("COMPANY_LOGO", "");
-                    if (!img_str.equals("")){
+                    String img_str = prefs.getString("COMPANY_LOGO", "");
+                    if (!img_str.equals("")) {
                         //decode string to image
                         byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
                         mBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -1326,15 +1396,15 @@ public class Printing {
                     //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
-                    if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
+                    if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
                     }
-                    if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
+                    if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
                     }
-                    if(!prefs.getString("COMPANY_TEL", "").equals("")){
+                    if (!prefs.getString("COMPANY_TEL", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_TEL", "")));
                     }
@@ -1416,16 +1486,16 @@ public class Printing {
 
                     /////////////////////////////IMPRESSION TOTAL////////////////////////////////////
 
-                    Double  ancien_solde, nouveau_solde;
-                    String  ancien_solde_str, nouveau_solde_str;
+                    Double ancien_solde, nouveau_solde;
+                    String ancien_solde_str, nouveau_solde_str;
 
 
                     ancien_solde = carnet_c_print.carnet_achats;
-                    ancien_solde_str   =  new DecimalFormat("####0.00").format(ancien_solde);
+                    ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
 
                     nouveau_solde = carnet_c_print.carnet_achats - carnet_c_print.carnet_versement;
-                    nouveau_solde_str   =  new DecimalFormat("####0.00").format(nouveau_solde);
+                    nouveau_solde_str = new DecimalFormat("####0.00").format(nouveau_solde);
                     textSetting.setBold(SettingEnum.Enable);
 
 
@@ -1481,8 +1551,209 @@ public class Printing {
     }
 
 
-    private void print_arabic() throws UnsupportedEncodingException {
 
+    void print_versement_fournisseur() throws UnsupportedEncodingException {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Impression...");
+
+                CmdFactory cmdFactory = new EscFactory();
+                Cmd cmd = cmdFactory.create();
+                cmd.append(cmd.getHeaderCmd());
+                cmd.setChartsetName(mChartsetName);
+                //cmd.setPrinterCharacterTable(22);
+                CommonSetting commonSetting = new CommonSetting();
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                cmd.append(cmd.getCommonSettingCmd(commonSetting));
+                BitmapSetting bitmapSetting = new BitmapSetting();
+                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+
+                prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+
+
+                try {
+
+                    Bitmap mBitmap = null;
+                    String preBlank = "        ";
+
+                    String img_str = prefs.getString("COMPANY_LOGO", "");
+                    if (!img_str.equals("")) {
+                        //decode string to image
+                        byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
+                        mBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+                        cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
+                        cmd.append(cmd.getLFCRCmd());
+                    }
+
+                    cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                    textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
+                    textSetting.setBold(SettingEnum.Disable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+
+                    if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
+                    }
+                    if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
+                    }
+                    if (!prefs.getString("COMPANY_TEL", "").equals("")) {
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_TEL", "")));
+                    }
+
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    /////////////////////info bon //////////////////////////////////////////////////
+                    textSetting.setBold(SettingEnum.Enable);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "RECU DE PAIMENT FOURNISSEUR"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "N : " + carnet_f_print.carnet_num_bon));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    textSetting.setBold(SettingEnum.Disable);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+                    textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "Nous soussignes,"));
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, carnet_f_print.fournis));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Certifions avoir recu en date du : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, carnet_f_print.carnet_date));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "la somme de : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, new DecimalFormat("####0.00").format(carnet_f_print.carnet_versement)));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Mode de paiment : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, carnet_f_print.carnet_mode_rg));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "de la part de : "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Adresse: "));
+                    textSetting.setBold(SettingEnum.Enable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Observation: "));
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    /////////////////////////////IMPRESSION TOTAL////////////////////////////////////
+
+                    Double ancien_solde, nouveau_solde;
+                    String ancien_solde_str, nouveau_solde_str;
+
+
+                    ancien_solde = carnet_f_print.carnet_achats;
+                    ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
+
+
+                    nouveau_solde = carnet_f_print.carnet_achats - carnet_f_print.carnet_versement;
+                    nouveau_solde_str = new DecimalFormat("####0.00").format(nouveau_solde);
+                    textSetting.setBold(SettingEnum.Enable);
+
+
+                    //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
+                    textSetting.setBold(SettingEnum.Disable);
+
+                    String format3 = "%1$16s%2$14s";
+
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "ANCIEN SOLDE :", ancien_solde_str)));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "NOUVEAU SOLDE :", nouveau_solde_str)));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    textSetting.setBold(SettingEnum.Disable);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
+
+                    cmd.append(cmd.getTextCmd(textSetting, "Ce recu est etabli pour servir et valoir ce que de droit."));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    textSetting.setBold(SettingEnum.Enable);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    cmd.append(cmd.getTextCmd(textSetting, "Signature"));
+
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+
+                } catch (SdkException | IOException e) {
+                    e.printStackTrace();
+                }
+                if (rtPrinter != null) {
+                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                }
+                hideProgressDialog();
+            }
+        }).start();
+
+    }
+
+    private void print_arabic() throws UnsupportedEncodingException {
 
 
         new Thread(new Runnable() {
@@ -1490,12 +1761,12 @@ public class Printing {
             public void run() {
 
                 try {
-                        String fileName = Objects.requireNonNull(mActivity.getExternalCacheDir()).getPath()+"/webview_capture1.jpg";
-                        bitmap = BitmapFactory.decodeFile(fileName);
+                    String fileName = Objects.requireNonNull(mActivity.getExternalCacheDir()).getPath() + "/webview_capture1.jpg";
+                    bitmap = BitmapFactory.decodeFile(fileName);
 
-                    } catch (Exception e) {
-                        Log.e("eeeeee", e.getMessage());
-                    }
+                } catch (Exception e) {
+                    Log.e("eeeeee", e.getMessage());
+                }
 
                 try {
                     Thread.sleep(1000);
@@ -1557,16 +1828,16 @@ public class Printing {
     }
 
 
-    public void showProgressDialog(final String str){
+    public void showProgressDialog(final String str) {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(progressDialog == null){
-                    progressDialog = new ProgressDialog( mActivity);
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(mActivity);
                 }
-                if(!TextUtils.isEmpty(str)){
+                if (!TextUtils.isEmpty(str)) {
                     progressDialog.setMessage(str);
-                }else{
+                } else {
                     progressDialog.setMessage("Impression...");
                 }
                 progressDialog.show();
@@ -1575,11 +1846,11 @@ public class Printing {
 
     }
 
-    public void hideProgressDialog(){
+    public void hideProgressDialog() {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(progressDialog != null && progressDialog.isShowing()){
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
             }

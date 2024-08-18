@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/blue"
@@ -27,7 +26,7 @@
                 android:gravity="center"
                 android:textSize="23sp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
 
@@ -58,7 +57,7 @@
                         android:src="@mipmap/noimg"
                         android:layout_gravity="center"
                         android:layout_weight="4"
-                        android:layout_margin="5dp"/>
+                        android:layout_margin="5dp" />
 
                     <LinearLayout
                         android:padding="10dp"
@@ -74,7 +73,7 @@
                             android:text="Gallery"
                             android:layout_gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content" />
 
                         <Button
                             android:id="@+id/btn_select_from_camera"
@@ -82,7 +81,7 @@
                             android:layout_gravity="center"
                             android:text="Camera"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content" />
                     </LinearLayout>
 
 
@@ -127,7 +126,7 @@
                         android:src="@drawable/baseline_generate_24"
                         android:layout_gravity="center"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
 
                     <ImageButton
                         android:id="@+id/scan_codebarre"
@@ -135,7 +134,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/ic_codebarre_white_24"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
 
                 </LinearLayout>
 
@@ -179,7 +178,7 @@
                         android:src="@drawable/baseline_generate_24"
                         android:layout_gravity="center"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
 
                     <ImageButton
                         android:id="@+id/scan_reference"
@@ -187,7 +186,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/ic_codebarre_white_24"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
 
                 </LinearLayout>
 
@@ -263,7 +262,7 @@
                         android:layout_margin="5dp"
                         android:layout_gravity="center"
                         android:hint="@string/stock_ini"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:visibility="visible"
                         app:expandedHintEnabled="false"
                         android:layout_height="wrap_content">
@@ -363,7 +362,6 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
-
 
 
                 <LinearLayout

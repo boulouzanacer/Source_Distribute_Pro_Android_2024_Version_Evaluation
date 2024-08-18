@@ -90,8 +90,7 @@ public class TonyUtils {
         /**
          * 创建File对象，其中包含文件所在的目录以及文件的命名
          */
-        File file = new File(Environment.getExternalStorageDirectory(),
-                fileName);
+        File file = new File(Environment.getExternalStorageDirectory(), fileName);
         // 创建FileOutputStream对象
         FileOutputStream outputStream = null;
         // 创建BufferedOutputStream对象

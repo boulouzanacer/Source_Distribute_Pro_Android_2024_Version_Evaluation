@@ -8,13 +8,13 @@ import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
 public class ProductEvent {
 
-  private final PostData_Produit produit;
+    private final PostData_Produit produit;
 
-  public ProductEvent(PostData_Produit produit){
-    this.produit = produit;
-  }
+    public ProductEvent(PostData_Produit produit) {
+        this.produit = produit;
+    }
 
-  public PostData_Produit getProduct(){
-    return produit;
-  }
+    public PostData_Produit getProduct() {
+        return produit;
+    }
 }

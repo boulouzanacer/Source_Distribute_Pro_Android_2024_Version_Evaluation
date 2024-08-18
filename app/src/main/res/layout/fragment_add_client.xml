@@ -25,7 +25,7 @@
                 android:gravity="center"
                 android:textSize="23sp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <ScrollView
@@ -225,8 +225,6 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
 
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -323,7 +321,7 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
                     <com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout
                         android:layout_width="match_parent"
@@ -331,6 +329,7 @@
                         android:id="@+id/rd_mode_tarif">
 
                         <TableRow>
+
                             <RadioButton
                                 android:id="@+id/rb_0"
                                 android:layout_width="match_parent"
@@ -339,8 +338,7 @@
 
                         </TableRow>
 
-                        <TableRow
-                            android:weightSum="3">
+                        <TableRow android:weightSum="3">
 
                             <RadioButton
                                 android:id="@+id/rb_1"
@@ -365,8 +363,7 @@
 
                         </TableRow>
 
-                        <TableRow
-                            android:weightSum="3">
+                        <TableRow android:weightSum="3">
 
                             <RadioButton
                                 android:id="@+id/rb_4"
@@ -429,9 +426,6 @@
             </LinearLayout>
 
         </ScrollView>
-
-
-
 
 
     </LinearLayout>

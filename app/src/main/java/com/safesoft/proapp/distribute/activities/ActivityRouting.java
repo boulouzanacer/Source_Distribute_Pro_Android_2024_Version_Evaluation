@@ -46,7 +46,7 @@ import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityRouting extends AppCompatActivity implements RecyclerAdapterRouting.ItemClick, RecyclerAdapterRouting.ItemLongClick{
+public class ActivityRouting extends AppCompatActivity implements RecyclerAdapterRouting.ItemClick, RecyclerAdapterRouting.ItemLongClick {
     RecyclerView recyclerView;
     RecyclerAdapterRouting adapter;
     ArrayList<PostData_Client> clients;
@@ -73,7 +73,7 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
 
     private void initViews() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_client);
+        recyclerView = findViewById(R.id.recycler_view_client);
 
     }
 
@@ -88,7 +88,6 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
     }
 
 
-
     private void setRecycle() {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -100,7 +99,8 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
 
     public ArrayList<PostData_Client> getItems() {
 
-        clients = new ArrayList<>();String querry = "SELECT * FROM ROUTING ORDER BY RECORDID";
+        clients = new ArrayList<>();
+        String querry = "SELECT * FROM ROUTING ORDER BY RECORDID";
         clients = controller.select_routing_from_database(querry);
 
         return clients;
@@ -108,8 +108,8 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
 
 
     @Subscribe
-    public void onClientSelected(SelectedClientEvent clientEvent){
-        if(controller.insert_into_routing(clientEvent.getClient())){
+    public void onClientSelected(SelectedClientEvent clientEvent) {
+        if (controller.insert_into_routing(clientEvent.getClient())) {
             setPathValue(false);
         }
         setRecycle();
@@ -125,15 +125,15 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
 
-        if(item.getItemId() == R.id.map){
+        if (item.getItemId() == R.id.map) {
             if ((ContextCompat.checkSelfPermission(ActivityRouting.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) || ContextCompat.checkSelfPermission(ActivityRouting.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(ActivityRouting.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3232);
                 ActivityCompat.requestPermissions(ActivityRouting.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 3232);
-            }else{
+            } else {
                 //  https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
                 Intent tsp_intent = new Intent(ActivityRouting.this, TSPActivityMaps.class);
                 startActivity(tsp_intent);
@@ -141,15 +141,14 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
             }
         }
 
-        if(item.getItemId() == R.id.add_client){
+        if (item.getItemId() == R.id.add_client) {
             showListClient();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    protected void showListClient()
-    {
+    protected void showListClient() {
         // Initialize activity
         Activity activity;
         // define activity of this class//
@@ -178,7 +177,7 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     public void onLongClick(View v, int position) {
-        if(v.getId() == R.id.item_root){
+        if (v.getId() == R.id.item_root) {
 
             new SweetAlertDialog(ActivityRouting.this, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText("Suppression")
@@ -188,14 +187,14 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
-                        try{
+                        try {
 
-                            if(controller.delete_client_from_routing(clients.get(position).code_client)){
+                            if (controller.delete_client_from_routing(clients.get(position).code_client)) {
                                 setPathValue(false);
                             }
                             setRecycle();
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             new SweetAlertDialog(ActivityRouting.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention!")
                                     .setContentText("problème lors de suppression du client : " + e.getMessage())
@@ -206,9 +205,9 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
         }
     }
 
-    private void setPathValue(boolean value){
+    private void setPathValue(boolean value) {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-        editor.putBoolean("HAS_PATH",  value);
+        editor.putBoolean("HAS_PATH", value);
         editor.apply();
     }
 

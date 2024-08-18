@@ -19,51 +19,50 @@ import java.util.ArrayList;
 
 public class FragmentSelectedBonTransfert extends SwipeAwayDialogFragment {
 
-  private ListView listview;
-  private ListViewAdapterListSelectedBon adapter;
-  private ArrayList<String> list_bons_t;
-  private String title;
-  private TextView title_list_bon;
+    private ListView listview;
+    private ListViewAdapterListSelectedBon adapter;
+    private ArrayList<String> list_bons_t;
+    private String title;
+    private TextView title_list_bon;
 
 
+    public FragmentSelectedBonTransfert() {
+        // Required empty public constructor
+    }
 
-  public FragmentSelectedBonTransfert() {
-    // Required empty public constructor
-  }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+        list_bons_t = new ArrayList<>();
+        list_bons_t = this.getArguments().getStringArrayList("LIST_SELECTED_TRANSFERT_BON");
+        title = this.getArguments().getString("TITLE");
 
-    list_bons_t = new ArrayList<>();
-    list_bons_t = this.getArguments().getStringArrayList("LIST_SELECTED_TRANSFERT_BON");
-    title = this.getArguments().getString("TITLE");
+    }
 
-  }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_selected_bon_transfert, container, false);
 
-    View rootView = inflater.inflate(R.layout.fragment_selected_bon_transfert, container, false);
+        listview = rootView.findViewById(R.id.listview_bon_t);
+        title_list_bon = rootView.findViewById(R.id.title_list_bon);
+        title_list_bon.setText(title);
+        adapter = new ListViewAdapterListSelectedBon(getActivity(), list_bons_t, FragmentSelectedBonTransfert.this);
+        listview.setAdapter(adapter);
 
-    listview = (ListView) rootView.findViewById(R.id.listview_bon_t);
-    title_list_bon = (TextView) rootView.findViewById(R.id.title_list_bon);
-    title_list_bon.setText(title);
-    adapter = new ListViewAdapterListSelectedBon(getActivity(), list_bons_t, FragmentSelectedBonTransfert.this);
-    listview.setAdapter(adapter);
-
-    return rootView;
-  }
+        return rootView;
+    }
 
 
-  @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-  }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+    }
 
-  public void finich_fragment(){
-    getActivity().getFragmentManager().beginTransaction().remove(this).commit();
-  }
+    public void finich_fragment() {
+        getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+    }
 
 }

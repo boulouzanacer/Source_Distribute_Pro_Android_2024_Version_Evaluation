@@ -16,4 +16,11 @@
         android:icon="@drawable/baseline_info_24"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/show_seriel_number"
+        android:orderInCategory="100"
+        android:title="Afficher numéro de série"
+        android:icon="@drawable/baseline_info_24"
+        app:showAsAction="never" />
+
 </menu>

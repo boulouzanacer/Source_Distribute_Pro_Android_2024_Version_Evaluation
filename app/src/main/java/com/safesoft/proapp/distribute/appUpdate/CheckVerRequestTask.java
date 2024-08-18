@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import io.opencensus.trace.MessageEvent;
 
@@ -40,13 +41,13 @@ public class CheckVerRequestTask extends AsyncTask<String, Void, String> {
 
             // Set POST request body
             String postParameters = "old_version=" + param1 +
-                    "& version_code=" + param3+
-                    "& android_unique_id=" + param3+
-                    "& seriel_number=" + param4+
-                    "& activation_code=" + param5+
+                    "& version_code=" + param3 +
+                    "& android_unique_id=" + param3 +
+                    "& seriel_number=" + param4 +
+                    "& activation_code=" + param5 +
                     "& revendeur=" + param6;
 
-            byte[] postData = postParameters.getBytes("UTF-8");
+            byte[] postData = postParameters.getBytes(StandardCharsets.UTF_8);
 
             try (OutputStream os = urlConnection.getOutputStream()) {
                 os.write(postData);
@@ -85,7 +86,8 @@ public class CheckVerRequestTask extends AsyncTask<String, Void, String> {
                 String jsonString = jsonObject.toString();
                 e.printStackTrace();
                 resultToDisplay = jsonString;
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
 
         }
 

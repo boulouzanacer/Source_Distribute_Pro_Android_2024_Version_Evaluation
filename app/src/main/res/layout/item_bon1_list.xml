@@ -43,8 +43,7 @@
             android:text="@string/nbre_produit"
             android:textSize="20dp"
             android:gravity="center|center_horizontal"
-            android:orientation="vertical">
-        </TextView>
+            android:orientation="vertical"></TextView>
 
 
         <LinearLayout
@@ -175,6 +174,7 @@
                             android:textSize="13sp" />
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/lnr_versement"
                         android:weightSum="3"
@@ -224,11 +224,10 @@
             android:layout_alignParentBottom="true"
             android:layout_alignEnd="@+id/left_side_ly"
             android:text="0"
-           android:textStyle="bold"
+            android:textStyle="bold"
             android:background="@color/blue"
             android:textColor="@color/white"
-            android:gravity="center|center_horizontal">
-        </TextView>
+            android:gravity="center|center_horizontal"></TextView>
 
     </RelativeLayout>
 

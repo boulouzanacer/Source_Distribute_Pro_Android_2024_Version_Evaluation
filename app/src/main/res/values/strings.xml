@@ -220,19 +220,19 @@
     <string name="INFO_EASYSOLUTION4"> Email : MALEK_QUASAR@YAHOO.FR </string>
 
     <!--TIFAWT TECHNOLOGIE-->
-    <string name="INFO_TIFAWT_TECHNOLOGIE1"> TIFAWT TECHNOLOGIE </string>
+    <string name="INFO_TIFAWT_TECHNOLOGIE1">TIFAWT TECHNOLOGIE</string>
     <string name="INFO_TIFAWT_TECHNOLOGIE2">Cité sntp elhamiz, 16033 \n Alger</string>
     <string name="INFO_TIFAWT_TECHNOLOGIE3">Tél/Fax :  Mobile : +(213) 551 23 24 42</string>
     <string name="INFO_TIFAWT_TECHNOLOGIE4"> Email : tifawttech@gmail.com</string>
 
     <!--DARIA SOFT-->
-    <string name="INFO_DARIASOFT1"> DARIA-POS </string>
+    <string name="INFO_DARIASOFT1">DARIA-POS</string>
 
     <!--MATEN AFKAR-->
-    <string name="INFO_MATENAFKAR1"> MATEN SOLUTION </string>
+    <string name="INFO_MATENAFKAR1">MATEN SOLUTION</string>
 
     <!--NOUH BARIKA-->
-    <string name="INFO_NOUHBARIKA1"> AHMED SOFT SOLUTION</string>
+    <string name="INFO_NOUHBARIKA1">AHMED SOFT SOLUTION</string>
     <string name="INFO_NOUHBARIKA2">Barika Batna</string>
     <string name="INFO_NOUHBARIKA3"> Mobile    : 0559 10 68 76 / 0779 45 45 01</string>
     <string name="INFO_NOUHBARIKA4"> - </string>
@@ -248,6 +248,12 @@
     <string name="INFO_OATECH2">El HARRACH - BELFORT</string>
     <string name="INFO_OATECH3"> Mobile    :0554 01 47 74  </string>
     <string name="INFO_OATECH4"> - </string>
+
+    <!--BR SOFT-->
+    <string name="INFO_BRSOFT1">BR SOFT SOLUTION</string>
+    <string name="INFO_BRSOFT2"> - </string>
+    <string name="INFO_BRSOFT3"> Rachid    :0560 9374 84 \n Ali    : 0550 06 80 68</string>
+    <string name="INFO_BRSOFT4"> - </string>
 
 
     <string name="LAB_SERIAL" translatable="false">Numéro de serie</string>
@@ -277,7 +283,7 @@
     <string name="nom_d_entreprise">Nom d\'entreprise</string>
     <string name="activit">Activité</string>
     <string name="adresse">Adresse</string>
-    <string name="affichez_le_footer">Paramètres pied de page</string>
+    <string name="affichez_le_footer">-------- Paramètres pied de page --------</string>
     <string name="merci">Pied de page</string>
     <string name="s_l_ctionnez_le_scanner_qui_vous_permetra_du_scanner_le_codebarre_qrcode">Séléctionnez le scanner qui vous permetra du scanner le codebarre, qrcode .</string>
     <string name="s_l_ctionner_scanner">Séléctionner Scanner</string>

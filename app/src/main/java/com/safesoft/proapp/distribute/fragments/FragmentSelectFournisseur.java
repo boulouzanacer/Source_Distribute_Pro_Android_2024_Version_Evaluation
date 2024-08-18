@@ -88,10 +88,6 @@ public class FragmentSelectFournisseur {
         //bus.register(this);
 
 
-
-
-
-
         //Specify the length and width through constants
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.copyFrom(dialog.getWindow().getAttributes());
@@ -100,14 +96,13 @@ public class FragmentSelectFournisseur {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-
     }
 
     private void initViews(View view) {
 
 
-        editsearch = (EditText) view.findViewById(R.id.search_field);
-        add_fournisseur = (Button) view.findViewById(R.id.add_fournisseur);
+        editsearch = view.findViewById(R.id.search_field);
+        add_fournisseur = view.findViewById(R.id.add_fournisseur);
 
         btn_scan = view.findViewById(R.id.scan);
         btn_cancel = view.findViewById(R.id.cancel);
@@ -118,8 +113,8 @@ public class FragmentSelectFournisseur {
         String querry = "SELECT * FROM FOURNIS ORDER BY FOURNIS";
         listFournisseur = controller.select_fournisseurs_from_database(querry);
 
-        listview = (ListView) view.findViewById(R.id.list_client);
-        editsearch = (EditText) view.findViewById(R.id.search_field);
+        listview = view.findViewById(R.id.list_client);
+        editsearch = view.findViewById(R.id.search_field);
 
         // Capture Text in EditText
         editsearch.addTextChangedListener(new TextWatcher() {
@@ -127,7 +122,7 @@ public class FragmentSelectFournisseur {
             @Override
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
-                if(editsearch.isFocused()){
+                if (editsearch.isFocused()) {
                     String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
                     setListview(text, false);
                 }
@@ -151,7 +146,7 @@ public class FragmentSelectFournisseur {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
 
-            }else{
+            } else {
                 startScan();
             }
 
@@ -180,7 +175,7 @@ public class FragmentSelectFournisseur {
     }
 
     private void setListview(String text_search, Boolean isScan) {
-        if(isScan){
+        if (isScan) {
             editsearch.setText(text_search);
         }
         adapter = new ListViewAdapterListFournisseur(mcontext, getItems(text_search, isScan), dialog);
@@ -193,18 +188,18 @@ public class FragmentSelectFournisseur {
 
         listFournisseur.clear();
 
-        if(isScan){
-            String querry = "SELECT * FROM FOURNIS WHERE CODE_FRS = '"+querry_search+"' ORDER BY FOURNIS ";
+        if (isScan) {
+            String querry = "SELECT * FROM FOURNIS WHERE CODE_FRS = '" + querry_search + "' ORDER BY FOURNIS ";
             // querry = "SELECT * FROM Events";
             listFournisseur = controller.select_fournisseurs_from_database(querry);
-        }else{
-            if(querry_search.length() >0){
+        } else {
+            if (querry_search.length() > 0) {
 
-                String querry = "SELECT * FROM FOURNIS WHERE ( FOURNIS LIKE '%"+querry_search+"%' OR CODE_FRS LIKE '%"+querry_search+"%' ) ORDER BY FOURNIS ";
+                String querry = "SELECT * FROM FOURNIS WHERE ( FOURNIS LIKE '%" + querry_search + "%' OR CODE_FRS LIKE '%" + querry_search + "%' ) ORDER BY FOURNIS ";
                 // querry = "SELECT * FROM Events";
                 listFournisseur = controller.select_fournisseurs_from_database(querry);
 
-            }else {
+            } else {
 
                 String querry = "SELECT * FROM FOURNIS ORDER BY FOURNIS ";
                 // querry = "SELECT * FROM Events";
@@ -216,11 +211,11 @@ public class FragmentSelectFournisseur {
     }
 
 
-    public void requestPermission(){
+    public void requestPermission() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-        }else{
+        } else {
             startScan();
         }
     }
@@ -240,7 +235,7 @@ public class FragmentSelectFournisseur {
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
                     public void onResult(Barcode barcode) {
-                       // Sound( R.raw.bleep);
+                        // Sound( R.raw.bleep);
                         setListview(barcode.rawValue, true);
                     }
                 })

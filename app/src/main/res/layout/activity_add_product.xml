@@ -41,14 +41,14 @@
                 android:id="@+id/scan"
                 android:src="@drawable/ic_codebarre_scan"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:layout_weight="0.75"
                 android:id="@+id/cancel"
                 android:src="@drawable/met_ic_clear"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -101,7 +101,7 @@
                 android:textColor="@color/black"
                 app:icon="@drawable/ic_add_black_24dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
         </LinearLayout>
     </RelativeLayout>

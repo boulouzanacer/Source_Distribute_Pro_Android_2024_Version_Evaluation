@@ -8,13 +8,13 @@ import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 
 public class SelectedFournisseurEvent {
 
-  private final PostData_Fournisseur fournisseur;
+    private final PostData_Fournisseur fournisseur;
 
-  public SelectedFournisseurEvent(PostData_Fournisseur fournisseur){
-    this.fournisseur = fournisseur;
-  }
+    public SelectedFournisseurEvent(PostData_Fournisseur fournisseur) {
+        this.fournisseur = fournisseur;
+    }
 
-  public PostData_Fournisseur getFournisseur(){
-    return fournisseur;
-  }
+    public PostData_Fournisseur getFournisseur() {
+        return fournisseur;
+    }
 }

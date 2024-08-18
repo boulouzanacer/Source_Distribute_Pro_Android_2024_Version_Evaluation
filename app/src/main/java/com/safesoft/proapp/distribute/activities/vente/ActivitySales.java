@@ -6,10 +6,14 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -66,7 +70,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
-        if(getIntent() != null){
+        if (getIntent() != null) {
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         }
 
@@ -133,6 +137,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                 "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE AS TOT_TTC, " +
                 "BON1.REMISE, " +
                 "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE AS MONTANT_BON, " +
+                "BON1.MONTANT_ACHAT, " +
                 "BON1.TOT_HT - BON1.REMISE - BON1.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                 "BON1.ANCIEN_SOLDE, " +
@@ -167,9 +172,9 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                 "LEFT JOIN CLIENT ON BON1.CODE_CLIENT = CLIENT.CODE_CLIENT";
 
 
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY BON1.NUM_BON ";
-        }else {
+        } else {
             querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY BON1.NUM_BON ";
         }
 
@@ -241,8 +246,8 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                         }
 
                     }*/
-                    case 0 ->{
-                        if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
+                    case 0 -> {
+                        if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
                             new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Suppression")
                                     .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
@@ -259,7 +264,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
                                     })
                                     .show();
-                        }else{
+                        } else {
                             new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention!!")
                                     .setContentText("Vous n'avez pas l'autorisation de supprimer, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
@@ -275,8 +280,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                             return;
                         }
 
-                        final_panier = controller.select_bon2_from_database("" +
-                                "SELECT " +
+                        final_panier = controller.select_bon2_from_database("SELECT " +
                                 "BON2.RECORDID, " +
                                 "BON2.CODE_BARRE, " +
                                 "BON2.NUM_BON, " +
@@ -308,12 +312,12 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        } else {
 
                             Intent html_intent = new Intent(this, ActivityHtmlView.class);
-                            html_intent.putExtra("TYPE_BON" , "VENTE");
-                            html_intent.putExtra("BON1" , bon1s.get(position));
-                            html_intent.putExtra("BON2" , final_panier);
+                            html_intent.putExtra("TYPE_BON", "VENTE");
+                            html_intent.putExtra("BON1", bon1s.get(position));
+                            html_intent.putExtra("BON2", final_panier);
                             startActivity(html_intent);
                         }
 
@@ -355,7 +359,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_sales_client, menu);
         }
@@ -368,12 +372,12 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
-            if(!prefs.getBoolean("APP_ACTIVATED",false) && (!bon1s.isEmpty())){
+            if (!prefs.getBoolean("APP_ACTIVATED", false) && (!bon1s.isEmpty())) {
                 new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Important !")
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
-            }else{
+            } else {
                 Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
                 editIntent.putExtra("TYPE_ACTIVITY", "NEW_SALE");
                 editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);

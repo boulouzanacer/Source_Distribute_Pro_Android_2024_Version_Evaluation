@@ -69,7 +69,7 @@ import java.util.Scanner;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallback{
+public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallback {
 
     ActivityTspmapsBinding binding;
     LocationManager locationManager;
@@ -90,6 +90,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
     private double currentLongitude;
 
     private final String PREFS = "ALL_PREFS";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +123,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
     public void onClick(View v) {
         if (v.getId() == R.id.btn_best_path) {
-            if(mMap != null)
+            if (mMap != null)
                 mMap.clear();
 
             getTSP();
@@ -162,28 +163,27 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origine, 9));
         mMap.setMyLocationEnabled(true);
-        if(getPathValue()){
+        if (getPathValue()) {
             showPathOnMap();
         }
 
     }
 
 
-    private void getTSP(){
+    private void getTSP() {
 
         ConnectPyTask task = new ConnectPyTask();
         ConnectPyTask.context = getApplicationContext();
 
         JSONArray client = null;
 
-        if(tsp_clients.size() > 0){
+        if (tsp_clients.size() > 0) {
             try {
-
 
 
                 client = new JSONArray();
 
-                if(!getPathValue()){
+                if (!getPathValue()) {
 
                     PostData_Client ccc = new PostData_Client();
                     ccc.client = "Point de démmarage";
@@ -194,38 +194,37 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
                     //Add current position as starting point
                     JSONObject obj_detail = new JSONObject();
-                    obj_detail.put("CODE_CLIENT","000_ORIGIN_000");
+                    obj_detail.put("CODE_CLIENT", "000_ORIGIN_000");
                     obj_detail.put("LATITUDE", temp_clients.get(0).latitude);
                     obj_detail.put("LONGITUDE", temp_clients.get(0).longitude);
                     client.put(obj_detail);
 
                     //Creating list with position
-                    for(int i = 0; i< tsp_clients.size();i++){
-                        if(!tsp_clients.get(i).code_client.equals("000_ORIGIN_000")){
+                    for (int i = 0; i < tsp_clients.size(); i++) {
+                        if (!tsp_clients.get(i).code_client.equals("000_ORIGIN_000")) {
                             JSONObject obj_detail1 = new JSONObject();
-                            obj_detail1.put("CODE_CLIENT",tsp_clients.get(i).code_client);
+                            obj_detail1.put("CODE_CLIENT", tsp_clients.get(i).code_client);
                             obj_detail1.put("LATITUDE", tsp_clients.get(i).latitude);
                             obj_detail1.put("LONGITUDE", tsp_clients.get(i).longitude);
                             client.put(obj_detail1);
                             temp_clients.add(tsp_clients.get(i));
                         }
                     }
-                }else {
+                } else {
 
                     //Creating list with position
-                    for(int i = 0; i< tsp_clients.size();i++){
-                            JSONObject obj_detail1 = new JSONObject();
-                            obj_detail1.put("CODE_CLIENT",tsp_clients.get(i).code_client);
-                            obj_detail1.put("LATITUDE", tsp_clients.get(i).latitude);
-                            obj_detail1.put("LONGITUDE", tsp_clients.get(i).longitude);
-                            client.put(obj_detail1);
-                            temp_clients.add(tsp_clients.get(i));
+                    for (int i = 0; i < tsp_clients.size(); i++) {
+                        JSONObject obj_detail1 = new JSONObject();
+                        obj_detail1.put("CODE_CLIENT", tsp_clients.get(i).code_client);
+                        obj_detail1.put("LATITUDE", tsp_clients.get(i).latitude);
+                        obj_detail1.put("LONGITUDE", tsp_clients.get(i).longitude);
+                        client.put(obj_detail1);
+                        temp_clients.add(tsp_clients.get(i));
                     }
                 }
 
 
-
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.v("Creating list client for server : ", e.getMessage());
             }
 
@@ -233,13 +232,13 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
             task.execute(client.toString());
             dialog.setContentView(R.layout.progress_dialog_get_path);
             dialog.show();
-        }else {
+        } else {
             Crouton.makeText(TSPActivityMaps.this, "Routing list est vide", Style.INFO).show();
         }
 
     }
 
-    private List<LatLng> traceRouteBetween2Point(GeoApiContext contextApi, String startPosition, String EndPosition ){
+    private List<LatLng> traceRouteBetween2Point(GeoApiContext contextApi, String startPosition, String EndPosition) {
 
         //https://www.akexorcist.com/2015/12/google-direction-library-for-android-en.html
 
@@ -356,20 +355,19 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
     // Call this method only when you have the permissions to view a user's location.
     private void showMyLocation(Location myLocation) {
-                LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 9));
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(latLng)
-                        .zoom(9)                   // Sets the zoom
-                        .build();                   // Creates a CameraPosition from the builder
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                mMap.addMarker(new MarkerOptions().position(latLng).title("Démmarage")
+        LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 9));
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(9)                   // Sets the zoom
+                .build();                   // Creates a CameraPosition from the builder
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Démmarage")
                 .icon(BitmapFromVector(getApplicationContext(), R.drawable.baseline_location_on_24)));
 
     }
 
-    private BitmapDescriptor BitmapFromVector(Context context, int vectorResId)
-    {
+    private BitmapDescriptor BitmapFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -378,8 +376,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    class ConnectPyTask extends AsyncTask<String, Void, String>
-    {
+    class ConnectPyTask extends AsyncTask<String, Void, String> {
 
         static Context context = null;
         private Marker customMarker;
@@ -388,19 +385,19 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
         protected String doInBackground(String... data) {
             try {
 
-                StringBuilder result = new StringBuilder("");
+                StringBuilder result = new StringBuilder();
                 Socket socket = new Socket(SERVER_IP, PORT); //Server IP and PORT
                 Scanner sc = new Scanner(socket.getInputStream());
                 PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                printWriter.write(data[0].toString()); // Send Data
+                printWriter.write(data[0]); // Send Data
                 //printWriter.write("Disconnect"); // Send Data
                 printWriter.flush();
-                while (sc.hasNext()){
+                while (sc.hasNext()) {
                     result.append(sc.next());
                 }
                 return result.toString();
 
-            }catch (IOException e){
+            } catch (IOException e) {
                 Log.d("Exception", e.toString());
             }
             return null;
@@ -410,16 +407,16 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
         @Override
         protected void onPostExecute(String s) {
 
-            if(s != null){
-                if(s.startsWith("[") && s.endsWith("]")){
+            if (s != null) {
+                if (s.startsWith("[") && s.endsWith("]")) {
                     mMap.clear();
-                    String replace = s.replace("[","");
-                    String replace1 = replace.replace("]","");
+                    String replace = s.replace("[", "");
+                    String replace1 = replace.replace("]", "");
                     List<String> myList = new ArrayList<>(Arrays.asList(replace1.split(",")));
 
                     tsp_clients.clear();
 
-                    for (int i = 0; i< myList.size(); i++){
+                    for (int i = 0; i < myList.size(); i++) {
                         tsp_clients.add(temp_clients.get(Integer.parseInt(myList.get(i))));
                     }
 
@@ -428,10 +425,10 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
                     setPathValue();
 
-                }else {
+                } else {
                     Crouton.makeText(TSPActivityMaps.this, "La réponse depuis le serveur est mal formater !", Style.ALERT).show();
                 }
-            }else {
+            } else {
                 Crouton.makeText(TSPActivityMaps.this, "Aucune connexion avec le serveur !", Style.ALERT).show();
             }
 
@@ -439,8 +436,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
                 dialog.dismiss();
         }
 
-        private BitmapDescriptor BitmapFromVector(Context context, int vectorResId)
-        {
+        private BitmapDescriptor BitmapFromVector(Context context, int vectorResId) {
             Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
             vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
             Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -452,29 +448,30 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
     }
 
 
-    private void showPathOnMap(){
+    private void showPathOnMap() {
 
-        for(int i = 0; i < tsp_clients.size(); i++){
+        for (int i = 0; i < tsp_clients.size(); i++) {
             LatLng ddd = new LatLng(tsp_clients.get(i).latitude, tsp_clients.get(i).longitude);
 
-            if(i==0){
+            if (i == 0) {
                 mMap.addMarker(new MarkerOptions().position(ddd).title("Démmarage").icon(BitmapFromVector(getApplicationContext(), R.drawable.baseline_location_on_24)));
-            }else {
+            } else {
                 mMap.addMarker(new MarkerOptions().position(ddd).title(tsp_clients.get(i).client));
             }
-            if(i != tsp_clients.size() - 1){
-                traceRouteBetween2Point(contextApi, tsp_clients.get(i).latitude + "," + tsp_clients.get(i).longitude, tsp_clients.get(i +1).latitude + "," + tsp_clients.get(i +1).longitude);
+            if (i != tsp_clients.size() - 1) {
+                traceRouteBetween2Point(contextApi, tsp_clients.get(i).latitude + "," + tsp_clients.get(i).longitude, tsp_clients.get(i + 1).latitude + "," + tsp_clients.get(i + 1).longitude);
             }
         }
     }
-    private void setPathValue(){
+
+    private void setPathValue() {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.putBoolean("HAS_PATH", true);
         editor.apply();
     }
 
-    private boolean getPathValue(){
+    private boolean getPathValue() {
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        return  prefs.getBoolean("HAS_PATH", false);
+        return prefs.getBoolean("HAS_PATH", false);
     }
 }

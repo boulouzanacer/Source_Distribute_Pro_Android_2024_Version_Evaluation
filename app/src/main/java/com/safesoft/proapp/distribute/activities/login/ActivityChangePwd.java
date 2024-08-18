@@ -5,7 +5,9 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +16,6 @@ import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.R;
 
-
-import butterknife.ButterKnife;
 
 public class ActivityChangePwd extends AppCompatActivity {
 
@@ -31,12 +31,12 @@ public class ActivityChangePwd extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        ButterKnife.bind(this);
 
-        _oldpasswordText = (EditText) findViewById(R.id.input_password_old);
-        _passwordText = (EditText) findViewById(R.id.input_password);
-        _reEnterPasswordText = (EditText) findViewById(R.id.input_reEnterPassword);
-        _signupButton = (Button) findViewById(R.id.btn_signup);
+
+        _oldpasswordText = findViewById(R.id.input_password_old);
+        _passwordText = findViewById(R.id.input_password);
+        _reEnterPasswordText = findViewById(R.id.input_reEnterPassword);
+        _signupButton = findViewById(R.id.btn_signup);
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +66,6 @@ public class ActivityChangePwd extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.putString("PASSWORD", _passwordText.getText().toString());
         editor.apply();
-
 
 
         // TODO: Implement your own signup logic here.
@@ -105,10 +104,10 @@ public class ActivityChangePwd extends AppCompatActivity {
 
         SharedPreferences prefs_login = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        if(!(prefs_login.getString("PASSWORD", "0000").equals(oldpassword))){
+        if (!(prefs_login.getString("PASSWORD", "0000").equals(oldpassword))) {
             valid = false;
             _oldpasswordText.setError("Remettre l'ancien mot de passe");
-        }else{
+        } else {
             _oldpasswordText.setError(null);
         }
 

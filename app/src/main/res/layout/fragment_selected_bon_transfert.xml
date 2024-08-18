@@ -23,14 +23,14 @@
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textStyle="bold" />
+
         <ListView
             android:id="@+id/listview_bon_t"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/gray"
             android:dividerHeight="1dp"
-            android:layout_below="@+id/title_list_bon">
-        </ListView>
+            android:layout_below="@+id/title_list_bon"></ListView>
 
     </RelativeLayout>
 </RelativeLayout>

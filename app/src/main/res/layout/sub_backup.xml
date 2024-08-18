@@ -4,10 +4,10 @@
     android:padding="10dp"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:visibility="gone"
+    android:visibility="visible"
     android:id="@+id/param_backup"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
     <TextView
@@ -17,10 +17,7 @@
         android:textSize="12sp"
         android:textColor="@color/gray" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_large_size"
-        android:background="@color/divider" />
+
 
     <LinearLayout
         android:id="@+id/backup"
@@ -47,7 +44,7 @@
             android:clickable="false"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        
+
     </LinearLayout>
 
 
@@ -78,4 +75,17 @@
 
 
     </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_large_size"
+        android:background="@color/divider" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ça vous permet d'afficher / masquer le button mise à jour dans le menu principale pour pouvoir mettre à jour l'application"
+        android:textSize="12sp"
+        android:textColor="@color/gray" />
 </LinearLayout>

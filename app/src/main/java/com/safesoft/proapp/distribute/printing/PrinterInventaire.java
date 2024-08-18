@@ -90,7 +90,7 @@ public class PrinterInventaire {
     private PostData_Inv1 inv1;
     private DATABASE controller;
 
-    public void start_print_inv(Activity activity, ArrayList<PostData_Inv2> final_panier, PostData_Inv1 inv1)  throws UnsupportedEncodingException {
+    public void start_print_inv(Activity activity, ArrayList<PostData_Inv2> final_panier, PostData_Inv1 inv1) throws UnsupportedEncodingException {
 
         mActivity = activity;
         this.final_panier = final_panier;
@@ -98,8 +98,7 @@ public class PrinterInventaire {
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                 return;
@@ -107,7 +106,7 @@ public class PrinterInventaire {
 
         }
 
-        controller =  new DATABASE(mActivity);
+        controller = new DATABASE(mActivity);
 
         BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
         printerFactory = new ThermalPrinterFactory();
@@ -116,37 +115,37 @@ public class PrinterInventaire {
 
 
         prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+        if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = null;
             pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
             boolean isfound = false;
 
             Log.v("PRINTER_CONX", Objects.requireNonNull(prefs.getString("PRINTER_MAC", "00:00:00:00")));
-            for(int i = 0; i< pairedDeviceList.size() ; i++){
-                if(pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))){
+            for (int i = 0; i < pairedDeviceList.size(); i++) {
+                if (pairedDeviceList.get(i).getAddress().equals(prefs.getString("PRINTER_MAC", "00:00:00:00"))) {
                     isfound = true;
                     device = pairedDeviceList.get(i);
 
                 }
             }
 
-            if(isfound){
+            if (isfound) {
                 Log.v("PRINTER_CONX", "Device found");
-                if(device != null){
+                if (device != null) {
                     configObj = new BluetoothEdrConfigBean(device);
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     runningTask = new LongOperation(bluetoothEdrConfigBean);
                     runningTask.execute();
                 }
-            }else {
+            } else {
                 Log.v("PRINTER_CONX", "Device not found");
                 Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
             }
 
-        }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+        } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
-            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1") , Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
+            configObj = new WiFiConfigBean(prefs.getString("PRINTER_IP", "127.0.0.1"), Integer.parseInt(prefs.getString("PRINTER_PORT", "9100")));
             WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
 
             runningTask = new LongOperation(wiFiConfigBean);
@@ -186,17 +185,16 @@ public class PrinterInventaire {
             try {
 
 
+                if (!BaseApplication.getInstance().getIsConnected()) {
 
-                if(!BaseApplication.getInstance().getIsConnected()){
-
-                    if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")){
+                    if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "BLUETOOTH")) {
                         PIFactory piFactory = new BluetoothFactory();
                         PrinterInterface printerInterface = piFactory.create();
                         printerInterface.setConfigObject(bluetoothEdrConfigBean);
                         rtPrinter.setPrinterInterface(printerInterface);
                         rtPrinter.connect(bluetoothEdrConfigBean);
 
-                    }else if(Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")){
+                    } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
 
                         PIFactory piFactory = new WiFiFactory();
                         PrinterInterface printerInterface = piFactory.create();
@@ -206,7 +204,7 @@ public class PrinterInventaire {
                     }
 
                     Thread.sleep(1500);
-                }else {
+                } else {
                     rtPrinter = BaseApplication.getInstance().getRtPrinter();
                 }
 
@@ -220,7 +218,7 @@ public class PrinterInventaire {
         @Override
         protected void onPostExecute(Boolean result) {
             mProgressDialog.hide();
-            if(result){
+            if (result) {
                 try {
                     print_bon();
 
@@ -231,7 +229,7 @@ public class PrinterInventaire {
         }
     }
 
-    void print_bon()  throws UnsupportedEncodingException {
+    void print_bon() throws UnsupportedEncodingException {
 
         new Thread(new Runnable() {
             @Override
@@ -256,8 +254,8 @@ public class PrinterInventaire {
                     Bitmap mBitmap = null;
                     String preBlank = "        ";
 
-                    String img_str= prefs.getString("COMPANY_LOGO", "");
-                    if (!img_str.equals("")){
+                    String img_str = prefs.getString("COMPANY_LOGO", "");
+                    if (!img_str.equals("")) {
                         //decode string to image
                         String base = img_str;
                         byte[] imageAsBytes = Base64.decode(base.getBytes(), Base64.DEFAULT);
@@ -277,7 +275,7 @@ public class PrinterInventaire {
                         });
                     }
 */
-                   // bitmapSetting.setBimtapLimitWidth(40 * 8);
+                    // bitmapSetting.setBimtapLimitWidth(40 * 8);
 
 
                     //textSetting.setIsEscSmallCharactor(SettingEnum.Enable);
@@ -290,15 +288,15 @@ public class PrinterInventaire {
                     textSetting.setBold(SettingEnum.Disable);
                     textSetting.setDoubleWidth(SettingEnum.Disable);
 
-                    if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
+                    if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
                     }
-                    if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
+                    if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
                     }
-                    if(!prefs.getString("COMPANY_TEL", "").equals("")){
+                    if (!prefs.getString("COMPANY_TEL", "").equals("")) {
                         cmd.append(cmd.getLFCRCmd());
                         cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_TEL", "")));
                     }
@@ -318,7 +316,7 @@ public class PrinterInventaire {
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     //cmd.append(cmd.getTextCmd(textSetting, "ADRESSE :" + inv1.adresse));
                     cmd.append(cmd.getLFCRCmd()); // one line space
-                   // cmd.append(cmd.getTextCmd(textSetting, "TEL     :" + bon1.tel));
+                    // cmd.append(cmd.getTextCmd(textSetting, "TEL     :" + bon1.tel));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     /////////////////////info bon //////////////////////////////////////////////////
                     textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
@@ -340,37 +338,37 @@ public class PrinterInventaire {
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
                     textSetting.setBold(SettingEnum.Enable);
                     String format0 = "%1$-19s %2$-9s %3$-5s %4$12s";
-                    cmd.append(cmd.getTextCmd(textSetting,  String.format(format0, "PRODUIT" ,  StringUtils.center("QTE",9) , StringUtils.center("VRAC",5) , "P.U"   )));
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format0, "PRODUIT", StringUtils.center("QTE", 9), StringUtils.center("VRAC", 5), "P.U")));
                     textSetting.setBold(SettingEnum.Disable);
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     /////////////////////////////IMPRESSION BON2////////////////////////////////////
 
-                    Double nbr_colis,colissage,qte,gte_gratuit,prix_unit;
-                    String nbr_colis_Str,colissage_Str,qte_Str,gte_gratuit_Str,prix_unit_Str,X1_Str ,X2_Str, eq1_Str, plus_Str  ;
+                    Double nbr_colis, colissage, qte, gte_gratuit, prix_unit;
+                    String nbr_colis_Str, colissage_Str, qte_Str, gte_gratuit_Str, prix_unit_Str, X1_Str, X2_Str, eq1_Str, plus_Str;
                     //nbr_colis = 10.0; colissage =23.0 ; qte = 120.00 ; gte_gratuit = 1.0;  prix_unit = 12345.33 ;
 
 
-                    for(int i=0; i< final_panier.size() ; i++ ){
+                    for (int i = 0; i < final_panier.size(); i++) {
 
 
                         cmd.append(cmd.getTextCmd(textSetting, final_panier.get(i).produit));
                         cmd.append(cmd.getLFCRCmd()); // one line space
                         nbr_colis = final_panier.get(i).nbr_colis;
-                        nbr_colis_Str   =  new DecimalFormat("####0.##").format(nbr_colis);
+                        nbr_colis_Str = new DecimalFormat("####0.##").format(nbr_colis);
 
                         colissage = final_panier.get(i).colissage;
-                        colissage_Str   =  new DecimalFormat("####0.##").format(colissage);
+                        colissage_Str = new DecimalFormat("####0.##").format(colissage);
 
                         qte = final_panier.get(i).qte_physique;
-                        qte_Str         =  new DecimalFormat("####0.##").format(qte);
+                        qte_Str = new DecimalFormat("####0.##").format(qte);
 
                         gte_gratuit = final_panier.get(i).vrac;
-                        gte_gratuit_Str =  new DecimalFormat( "####0.##").format(gte_gratuit);
+                        gte_gratuit_Str = new DecimalFormat("####0.##").format(gte_gratuit);
 
                         prix_unit = final_panier.get(i).pa_ht;
-                        prix_unit_Str   =  new DecimalFormat("####0.00").format(prix_unit);
+                        prix_unit_Str = new DecimalFormat("####0.00").format(prix_unit);
 
 
                         X1_Str = "X";
@@ -378,13 +376,18 @@ public class PrinterInventaire {
                         plus_Str = "+";
 
                         if (gte_gratuit == 0.0) {
-                            gte_gratuit_Str="";
+                            gte_gratuit_Str = "";
                             plus_Str = " ";
                         }
 
-                        if (  colissage == 0.0 ) {  nbr_colis_Str ="";  colissage_Str = "";  X1_Str = " "; eq1_Str = " "; }
-                        String format1 = "  %1$-6s "+X1_Str+" %2$-6s "+eq1_Str+" %3$-9s"+plus_Str+"%4$-5sX%5$12s";
-                        cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str,6), StringUtils.center(colissage_Str,6), StringUtils.center(qte_Str,9) , StringUtils.center(gte_gratuit_Str,5) , prix_unit_Str)));
+                        if (colissage == 0.0) {
+                            nbr_colis_Str = "";
+                            colissage_Str = "";
+                            X1_Str = " ";
+                            eq1_Str = " ";
+                        }
+                        String format1 = "  %1$-6s " + X1_Str + " %2$-6s " + eq1_Str + " %3$-9s" + plus_Str + "%4$-5sX%5$12s";
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str, 6), StringUtils.center(colissage_Str, 6), StringUtils.center(qte_Str, 9), StringUtils.center(gte_gratuit_Str, 5), prix_unit_Str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
 
 
@@ -396,7 +399,7 @@ public class PrinterInventaire {
                     String nbr_produit_str;
 
                     nbr_produit = final_panier.size();
-                    nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(nbr_produit));
+                    nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(nbr_produit));
                     cmd.append(cmd.getTextCmd(textSetting, "NBR PRODUIT :" + nbr_produit_str));
 
                     textSetting.setBold(SettingEnum.Disable);
@@ -431,7 +434,7 @@ public class PrinterInventaire {
 
                     //cmd.append(cmd.getLFCRCmd());  // one line space
                     //cmd.append(cmd.getLFCRCmd());  // one line space
-                   // cmd.append(cmd.getLFCRCmd());  // one line space
+                    // cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getHeaderCmd());//初始化, Initial
                     cmd.append(cmd.getLFCRCmd());  // one line space
 
@@ -448,7 +451,7 @@ public class PrinterInventaire {
     }
 
 
-    void print_etiquette()  throws UnsupportedEncodingException {
+    void print_etiquette() throws UnsupportedEncodingException {
 
         new Thread(new Runnable() {
             @Override
@@ -484,8 +487,8 @@ public class PrinterInventaire {
                     Double prix_vente;
                     String prix_vente_str;
 
-                    prix_vente = produit.pv1_ht * (1+(produit.tva/100));
-                    prix_vente_str   =  new DecimalFormat("##,##0.00").format(prix_vente);
+                    prix_vente = produit.pv1_ht * (1 + (produit.tva / 100));
+                    prix_vente_str = new DecimalFormat("##,##0.00").format(prix_vente);
 
                     textSetting.setBold(SettingEnum.Enable);
                     cmd.append(cmd.getTextCmd(textSetting, prix_vente_str + " DA"));
@@ -549,16 +552,16 @@ public class PrinterInventaire {
         }
     }
 
-    public void showProgressDialog(final String str){
+    public void showProgressDialog(final String str) {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(progressDialog == null){
-                    progressDialog = new ProgressDialog( mActivity);
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(mActivity);
                 }
-                if(!TextUtils.isEmpty(str)){
+                if (!TextUtils.isEmpty(str)) {
                     progressDialog.setMessage(str);
-                }else{
+                } else {
                     progressDialog.setMessage("Impression...");
                 }
                 progressDialog.show();
@@ -567,11 +570,11 @@ public class PrinterInventaire {
 
     }
 
-    public void hideProgressDialog(){
+    public void hideProgressDialog() {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(progressDialog != null && progressDialog.isShowing()){
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
             }

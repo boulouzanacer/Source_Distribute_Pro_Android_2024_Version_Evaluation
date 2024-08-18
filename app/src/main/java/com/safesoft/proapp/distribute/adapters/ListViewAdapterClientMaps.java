@@ -36,7 +36,7 @@ public class ListViewAdapterClientMaps extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         clientName.setText(items.get(cursor.getPosition()).client);
-        clientCode.setText("Code client : "+items.get(cursor.getPosition()).code_client);
+        clientCode.setText("Code client : " + items.get(cursor.getPosition()).code_client);
 
     }
 
@@ -47,8 +47,8 @@ public class ListViewAdapterClientMaps extends CursorAdapter {
 
         View view = inflater.inflate(R.layout.listview_client_maps, parent, false);
 
-        clientName = (TextView) view.findViewById(R.id.clientname);
-        clientCode = (TextView) view.findViewById(R.id.clientcode);
+        clientName = view.findViewById(R.id.clientname);
+        clientCode = view.findViewById(R.id.clientcode);
 
         return view;
 

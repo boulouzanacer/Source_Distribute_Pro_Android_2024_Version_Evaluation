@@ -6,21 +6,19 @@ package com.safesoft.proapp.distribute.utils;
  */
 
 class ScrollEvent {
-  private int margin;
+    private int margin;
 
-  ScrollEvent(int margin) {
-    this.margin = margin;
-  }
+    ScrollEvent(int margin) {
+        this.margin = margin;
+    }
 
-  public int getMargin() {
-    return margin;
-  }
+    public int getMargin() {
+        return margin;
+    }
 
-  public void setMargin(int margin) {
-    this.margin = margin;
-  }
-
-
+    public void setMargin(int margin) {
+        this.margin = margin;
+    }
 
 
 }

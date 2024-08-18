@@ -13,6 +13,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.safesoft.proapp.distribute.R;
+
 public class ActivityItenerary extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;

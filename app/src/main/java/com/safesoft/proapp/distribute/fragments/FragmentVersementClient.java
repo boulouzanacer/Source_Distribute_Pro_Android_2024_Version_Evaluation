@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -35,7 +34,7 @@ public class FragmentVersementClient {
 
     MaterialFancyButton btn_valider, btn_cancel;
     private TextInputEditText edt_observation, edt_solde_actuel, edt_versement, edt_nouveau_solde;
-    private double val_solde_actuel = 0.0, val_versement_actuel = 0.0, val_versement = 0.0, val_nouveau_solde= 0.0, val_nouveau_versement = 0.0;
+    private double val_solde_actuel = 0.0, val_versement_actuel = 0.0, val_versement = 0.0, val_nouveau_solde = 0.0, val_nouveau_versement = 0.0;
     private final String observation = "";
     private String CODE_CLIENT;
     private Boolean IS_EDIT;
@@ -58,8 +57,8 @@ public class FragmentVersementClient {
         controller = new DATABASE(activity);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater =activity.getLayoutInflater();
-        View dialogview= inflater.inflate(R.layout.fragment_versement_client, null);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View dialogview = inflater.inflate(R.layout.fragment_versement_client, null);
         dialogBuilder.setView(dialogview);
         dialogBuilder.setCancelable(false);
         dialogBuilder.create();
@@ -74,14 +73,14 @@ public class FragmentVersementClient {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
+        btn_valider = dialogview.findViewById(R.id.btn_remise);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
         btn_valider.setIconPosition(POSITION_LEFT);
         btn_valider.setFontIconSize(30);
 
-        btn_cancel = (MaterialFancyButton) dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
@@ -93,10 +92,10 @@ public class FragmentVersementClient {
         String selectQuery = "SELECT MAX(NUM_BON) AS max_id FROM CARNET_C WHERE NUM_BON IS NOT NULL";
         NUM_BON_CARNET_C = controller.select_max_num_bon(selectQuery);
 
-        edt_solde_actuel =  dialogview.findViewById(R.id.solde_actuel);
-        edt_versement =  dialogview.findViewById(R.id.versement);
-        edt_observation =  dialogview.findViewById(R.id.observation);
-        edt_nouveau_solde =  dialogview.findViewById(R.id.nouveau_solde);
+        edt_solde_actuel = dialogview.findViewById(R.id.solde_actuel);
+        edt_versement = dialogview.findViewById(R.id.versement);
+        edt_observation = dialogview.findViewById(R.id.observation);
+        edt_nouveau_solde = dialogview.findViewById(R.id.nouveau_solde);
 
 
         val_versement = montant_versement;
@@ -116,14 +115,14 @@ public class FragmentVersementClient {
 
         btn_valider.setOnClickListener(v -> {
 
-            if(Objects.requireNonNull(edt_versement.getText()).length() > 0){
+            if (Objects.requireNonNull(edt_versement.getText()).length() > 0) {
                 PostData_Carnet_c carnet_c = new PostData_Carnet_c();
 
 
                 // get date and time
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat df_show = new SimpleDateFormat("dd/MM/yyyy");
-               // SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
+                // SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 String formattedDate = df_show.format(c.getTime());
                 String currentTime = sdf.format(c.getTime());
@@ -132,13 +131,13 @@ public class FragmentVersementClient {
                 carnet_c.carnet_heure = currentTime;
                 carnet_c.recordid = recordid;
                 carnet_c.carnet_num_bon = NUM_BON_CARNET_C;
-                carnet_c.code_client = CODE_CLIENT ;
+                carnet_c.code_client = CODE_CLIENT;
                 carnet_c.carnet_achats = val_solde_actuel;
                 carnet_c.carnet_versement = val_versement;
                 carnet_c.carnet_remarque = edt_observation.getText().toString();
 
-                if(!IS_EDIT){
-                    if(controller.insert_into_carnet_c(carnet_c, val_nouveau_solde , val_nouveau_versement)){
+                if (!IS_EDIT) {
+                    if (controller.insert_into_carnet_c(carnet_c, val_nouveau_solde, val_nouveau_versement)) {
 
                         new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success!")
@@ -147,16 +146,16 @@ public class FragmentVersementClient {
 
                         ((ActivityClientDetail) activity).Update_client_details();
 
-                    }else{
+                    } else {
                         // message erreur
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Opss!")
                                 .setContentText(" Erreur d'insertion versement! ")
                                 .show();
                     }
-                }else{
+                } else {
 
-                    if(controller.update_versement(carnet_c, val_nouveau_solde , val_nouveau_versement)){
+                    if (controller.update_versement_client(carnet_c, val_nouveau_solde, val_nouveau_versement)) {
 
                         new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success!")
@@ -165,7 +164,7 @@ public class FragmentVersementClient {
 
                         ((ActivityClientDetail) activity).Update_client_details();
 
-                    }else{
+                    } else {
                         // message erreur
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Opss!")
@@ -175,7 +174,7 @@ public class FragmentVersementClient {
                 }
 
                 dialog.dismiss();
-            }else {
+            } else {
                 edt_versement.setError("Montant obligatoire!!");
             }
             /*if(edt_versement.getText().length() > 0){
@@ -211,12 +210,12 @@ public class FragmentVersementClient {
 
             @Override
             public void afterTextChanged(Editable s) {
-                    try{
-                        onVersementChange();
+                try {
+                    onVersementChange();
 
-                    }catch (Exception e){
+                } catch (Exception e) {
 
-                    }
+                }
 
             }
         });
@@ -224,14 +223,14 @@ public class FragmentVersementClient {
     }
 
 
-    void onVersementChange(){
-        if(edt_versement.getText().toString().isEmpty()){
+    void onVersementChange() {
+        if (edt_versement.getText().toString().isEmpty()) {
             val_versement = 0.00;
-        }else {
+        } else {
             val_versement = Double.parseDouble(edt_versement.getText().toString());
         }
-        val_nouveau_solde  = val_solde_actuel - val_versement;
-        val_nouveau_versement  = val_versement_actuel + val_versement;
+        val_nouveau_solde = val_solde_actuel - val_versement;
+        val_nouveau_versement = val_versement_actuel + val_versement;
         edt_nouveau_solde.setText(nf.format(val_nouveau_solde));
     }
 

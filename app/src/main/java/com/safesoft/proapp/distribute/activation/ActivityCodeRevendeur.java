@@ -18,14 +18,15 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
     private boolean isVendorSaved = false;
     private String REVENDEUR = "SAFE SOFT";
     private OtpTextView otpTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code_revendeur);
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        isVendorSaved = prefs.getBoolean("SAVED_REVENDEUR",false);
-        REVENDEUR = prefs.getString("REVENDEUR","SAFE SOFT");
+        isVendorSaved = prefs.getBoolean("SAVED_REVENDEUR", false);
+        REVENDEUR = prefs.getString("REVENDEUR", "SAFE SOFT");
         if (isVendorSaved) {
             Intent intent = new Intent(ActivityCodeRevendeur.this, splashScreen.class);
             intent.putExtra("REVENDEUR", REVENDEUR);
@@ -39,7 +40,7 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
             @Override
             public void onInteractionListener() {
                 // fired when user types something in the Otpbox
-               // Toast.makeText(ActivityCodeRevendeur.this, "bbbbb",  Toast.LENGTH_SHORT).show();
+                // Toast.makeText(ActivityCodeRevendeur.this, "bbbbb",  Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -255,20 +256,26 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
+                    case "3636" -> { // BR SOFT
+                        intent.putExtra("REVENDEUR", "BR SOFT");
+                        saveData("BR SOFT");
+                        startActivity(intent);
+                        finish();
+                    }
                     default -> otpTextView.showError();
                 }
             }
 
         });
 
-       // otpTextView.showSuccess();
+        // otpTextView.showSuccess();
     }
 
     public void saveData(String revendeur) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("SAVED_REVENDEUR",true);
-        editor.putString("REVENDEUR",revendeur);
+        editor.putBoolean("SAVED_REVENDEUR", true);
+        editor.putString("REVENDEUR", revendeur);
         editor.apply();
     }
 }

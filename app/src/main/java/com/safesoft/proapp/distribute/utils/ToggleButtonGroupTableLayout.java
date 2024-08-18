@@ -121,12 +121,11 @@ public class ToggleButtonGroupTableLayout extends TableLayout implements View.On
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof SavedState)) {
+        if (!(state instanceof SavedState ss)) {
             super.onRestoreInstanceState(state);
             return;
         }
 
-        SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
 
         this.checkedButtonID = ss.buttonId;

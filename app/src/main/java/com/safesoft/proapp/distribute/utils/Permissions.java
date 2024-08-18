@@ -30,7 +30,7 @@ public class Permissions {
 
     public static final int REQUEST_CODE_PERMISSIONS = 2;
     // Storage Permissions variables
-    private static String[] PERMISSIONS_STORAGE = {
+    private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
@@ -43,11 +43,7 @@ public class Permissions {
 
         if (writePermission != PackageManager.PERMISSION_GRANTED || readPermission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_CODE_PERMISSIONS
-            );
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_CODE_PERMISSIONS);
         }
     }
 

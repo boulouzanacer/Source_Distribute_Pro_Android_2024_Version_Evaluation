@@ -8,13 +8,13 @@ import com.safesoft.proapp.distribute.postData.PostData_Client;
 
 public class SelectedClientEvent {
 
-  private final PostData_Client client;
+    private final PostData_Client client;
 
-  public SelectedClientEvent(PostData_Client client){
-    this.client = client;
-  }
+    public SelectedClientEvent(PostData_Client client) {
+        this.client = client;
+    }
 
-  public PostData_Client getClient(){
-    return client;
-  }
+    public PostData_Client getClient() {
+        return client;
+    }
 }

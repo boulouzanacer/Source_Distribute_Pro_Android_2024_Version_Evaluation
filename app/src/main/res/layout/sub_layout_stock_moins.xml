@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         style="@style/HeaderText"
@@ -15,6 +15,7 @@
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:text="@string/param_tres_affichage_stock_moins" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_large_size"

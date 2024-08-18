@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="#03A9F4"
     android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -37,11 +38,12 @@
         android:background="#ffffff"
         android:orientation="vertical"
         android:padding="16dp">
+
         <EditText
             android:id="@+id/edited_prix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
 </LinearLayout>

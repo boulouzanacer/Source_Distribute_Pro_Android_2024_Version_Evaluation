@@ -66,8 +66,8 @@ public class FragmentRemise {
         ((DecimalFormat) nf).applyPattern("####0.00");
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater =activity.getLayoutInflater();
-        View dialogview= inflater.inflate(R.layout.fragment_remise, null);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View dialogview = inflater.inflate(R.layout.fragment_remise, null);
         dialogBuilder.setView(dialogview);
         dialogBuilder.setCancelable(false);
         dialogBuilder.create();
@@ -82,24 +82,24 @@ public class FragmentRemise {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_remise = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
+        btn_remise = dialogview.findViewById(R.id.btn_remise);
         btn_remise.setBackgroundColor(Color.parseColor("#3498db"));
         btn_remise.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_remise.setTextSize(15);
         btn_remise.setIconPosition(POSITION_LEFT);
         btn_remise.setFontIconSize(30);
 
-        btn_cancel = (MaterialFancyButton) dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
         btn_cancel.setIconPosition(POSITION_LEFT);
         btn_cancel.setFontIconSize(30);
 
-        montant_avant_remise =  dialogview.findViewById(R.id.montant_avant_remise);
-        montant_remise =  dialogview.findViewById(R.id.montant_remise);
-        taux_remise =  dialogview.findViewById(R.id.taux_remise);
-        montant_apres_remise =  dialogview.findViewById(R.id.montant_apres_remise);
+        montant_avant_remise = dialogview.findViewById(R.id.montant_avant_remise);
+        montant_remise = dialogview.findViewById(R.id.montant_remise);
+        taux_remise = dialogview.findViewById(R.id.taux_remise);
+        montant_apres_remise = dialogview.findViewById(R.id.montant_apres_remise);
 
         val_avant_remise = sent_montant_av_remise;
         val_remise = sent_montant_remise;
@@ -111,7 +111,7 @@ public class FragmentRemise {
 
         btn_remise.setOnClickListener(v -> {
 
-            if(montant_avant_remise.getText().length() > 0){
+            if (montant_avant_remise.getText().length() > 0) {
 
                 RemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
                 // Post the event
@@ -119,7 +119,7 @@ public class FragmentRemise {
 
                 dialog.dismiss();
 
-            }else {
+            } else {
                 montant_avant_remise.setError("Montant obligatoire!!");
             }
         });
@@ -144,14 +144,14 @@ public class FragmentRemise {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!taux_remise.isFocused()){
-                    try{
+                if (!taux_remise.isFocused()) {
+                    try {
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
                         //  100-((M-R)/M*100),
                         onMontantRemiseChange();
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         montant_apres_remise.setText(nf.format(montant_avant_remise.getText().toString()));
                         taux_remise.getText().clear();
                     }
@@ -159,7 +159,6 @@ public class FragmentRemise {
 
             }
         });
-
 
 
         taux_remise.addTextChangedListener(new TextWatcher() {
@@ -175,8 +174,8 @@ public class FragmentRemise {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!montant_remise.isFocused()){
-                    try{
+                if (!montant_remise.isFocused()) {
+                    try {
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
                         //  100-((M-R)/M*100),
@@ -184,7 +183,7 @@ public class FragmentRemise {
                         onTauxChanged();
 
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         montant_apres_remise.setText(nf.format(montant_avant_remise.getText().toString()));
                         montant_remise.getText().clear();
                     }
@@ -196,29 +195,29 @@ public class FragmentRemise {
     }
 
 
-    void onMontantRemiseChange(){
-        if(montant_remise.getText().toString().isEmpty()){
+    void onMontantRemiseChange() {
+        if (montant_remise.getText().toString().isEmpty()) {
             val_remise = 0.00;
-        }else {
+        } else {
             val_remise = Double.parseDouble(montant_remise.getText().toString());
         }
-        val_apres_remise  = val_avant_remise - val_remise;
+        val_apres_remise = val_avant_remise - val_remise;
         montant_apres_remise.setText(nf.format(val_apres_remise));
 
-        if(val_avant_remise == 0){
+        if (val_avant_remise == 0) {
             val_taux = 0;
             taux_remise.setText("0.00");
-        }else {
+        } else {
             val_taux = 100 - ((val_avant_remise - val_remise) / val_avant_remise * 100);
             taux_remise.setText(nf.format(val_taux));
         }
 
     }
 
-    void onTauxChanged(){
-        if(taux_remise.getText().toString().isEmpty()){
+    void onTauxChanged() {
+        if (taux_remise.getText().toString().isEmpty()) {
             val_taux = 0.00;
-        }else {
+        } else {
             val_taux = Double.parseDouble(taux_remise.getText().toString());
         }
         val_remise = val_taux * val_avant_remise / 100;

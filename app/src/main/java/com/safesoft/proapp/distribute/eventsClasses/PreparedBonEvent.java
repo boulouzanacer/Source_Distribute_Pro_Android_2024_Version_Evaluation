@@ -11,18 +11,19 @@ import java.util.List;
  */
 
 public class PreparedBonEvent {
-  private final PostData_Bon1 bon1;
-  private final List<PostData_Bon2> panier;
+    private final PostData_Bon1 bon1;
+    private final List<PostData_Bon2> panier;
 
-  public PreparedBonEvent(PostData_Bon1 bon1, List<PostData_Bon2> panier){
-    this.bon1 = bon1;
-    this.panier = panier;
-  }
+    public PreparedBonEvent(PostData_Bon1 bon1, List<PostData_Bon2> panier) {
+        this.bon1 = bon1;
+        this.panier = panier;
+    }
 
-  public PostData_Bon1 getBon1Data(){
-    return bon1;
-  }
-  public List<PostData_Bon2> getPanierData(){
-    return panier;
-  }
+    public PostData_Bon1 getBon1Data() {
+        return bon1;
+    }
+
+    public List<PostData_Bon2> getPanierData() {
+        return panier;
+    }
 }

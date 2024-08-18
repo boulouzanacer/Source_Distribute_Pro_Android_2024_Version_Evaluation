@@ -51,7 +51,7 @@ public class ActivityPDF extends AppCompatActivity {
 
         initView();
 
-        if(getIntent() != null){
+        if (getIntent() != null) {
 
             NUM_BON = getIntent().getStringExtra("NUM_BON");
             SOURCE = getIntent().getStringExtra("SOURCE");
@@ -70,15 +70,15 @@ public class ActivityPDF extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             showPdfFromUri(SOURCE, NUM_BON);
-        }else {
+        } else {
 
         }
 
 
     }
 
-    private void initView(){
-         pdfView = (PDFView) findViewById(R.id.pdfView);
+    private void initView() {
+        pdfView = findViewById(R.id.pdfView);
     }
 
     private void showPdfFromUri(String SOURCE, String NUM_BON) {
@@ -87,14 +87,15 @@ public class ActivityPDF extends AppCompatActivity {
             public void run() {
                 File file = switch (SOURCE) {
                     case "FROM_SALE" -> new File(getCacheDir(), "BON_VENTE_" + NUM_BON + ".pdf");
-                    case "FROM_ORDER" -> new File(getCacheDir(), "BON_COMMANDE_" + NUM_BON + ".pdf");
+                    case "FROM_ORDER" ->
+                            new File(getCacheDir(), "BON_COMMANDE_" + NUM_BON + ".pdf");
                     case "FROM_ACHAT" -> new File(getCacheDir(), "BON_ACHAT_" + NUM_BON + ".pdf");
                     case "FROM_TICKET" -> new File(getCacheDir(), "TICKET_PRODUIT.pdf");
                     default -> null;
                 };
                 pdfView.fromFile(file)
                         .defaultPage(0)
-                       // .spacing(10)
+                        // .spacing(10)
                         //.enableSwipe(true)
                         .load();
             }
@@ -103,7 +104,7 @@ public class ActivityPDF extends AppCompatActivity {
         th.start();
     }
 
-    public void shareFile(){
+    public void shareFile() {
         try {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
@@ -116,14 +117,14 @@ public class ActivityPDF extends AppCompatActivity {
                 case "FROM_TICKET" -> new File(getCacheDir(), "TICKET_PRODUIT.pdf");
                 default -> null;
             };
-            
+
             assert file != null;
             if (file.exists()) {
                 String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
                 String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 Uri uri = FileProvider.getUriForFile(this, this.getPackageName() + ".provider", file);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION );
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.setDataAndType(uri, mimeType);
                 intent.setType("application/pdf");
@@ -131,7 +132,7 @@ public class ActivityPDF extends AppCompatActivity {
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.v("sssss", Objects.requireNonNull(e.getMessage()));
         }
 
@@ -148,18 +149,19 @@ public class ActivityPDF extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         if (id == R.id.share_pdf) {
             shareFile();
             return true;
-        }if (id == R.id.print_pdf) {
+        }
+        if (id == R.id.print_pdf) {
 
             //https://stackoverflow.com/questions/33089808/print-existing-pdf-file-in-android
             String pdf_path = null;
             switch (SOURCE) {
-                case "FROM_SALE" -> pdf_path = getCacheDir()+ "/BON_VENTE_" + NUM_BON + ".pdf";
+                case "FROM_SALE" -> pdf_path = getCacheDir() + "/BON_VENTE_" + NUM_BON + ".pdf";
                 case "FROM_ORDER" -> pdf_path = getCacheDir() + "/BON_COMMANDE_" + NUM_BON + ".pdf";
                 case "FROM_ACHAT" -> pdf_path = getCacheDir() + "/BON_ACHAT_" + NUM_BON + ".pdf";
                 case "FROM_TICKET" -> pdf_path = getCacheDir() + "/TICKET_PRODUIT.pdf";
@@ -176,11 +178,9 @@ public class ActivityPDF extends AppCompatActivity {
         try {
             PrintDocumentAdapter printAdapter = new PdfFragmentPrintDocumentAdapter(this, path);
             printManager.print("Document", printAdapter, new PrintAttributes.Builder().build());
+        } catch (Exception e) {
+            // Logger.logError(e);
         }
-        catch(Exception e)
-            {
-               // Logger.logError(e);
-            }
     }
 
     @Override

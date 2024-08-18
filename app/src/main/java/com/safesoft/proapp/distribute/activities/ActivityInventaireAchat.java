@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -19,12 +21,12 @@ import java.util.concurrent.ExecutionException;
 
 public class ActivityInventaireAchat extends AppCompatActivity {
 
-    private RelativeLayout Inventaire,Achat;
+    private RelativeLayout Inventaire, Achat;
 
     private Context mContext;
 
 
-    private  MediaPlayer mp;
+    private MediaPlayer mp;
     private final EventBus bus = EventBus.getDefault();
 
     @Override
@@ -44,14 +46,14 @@ public class ActivityInventaireAchat extends AppCompatActivity {
         super.onStart();
     }
 
-    protected void initViews(){
+    protected void initViews() {
         //  Inventaire = (RelativeLayout) findViewById(R.id.rlt_import_bon);
-        Achat = (RelativeLayout) findViewById(R.id.rlt_import_client);
+        Achat = findViewById(R.id.rlt_import_client);
         mContext = this;
     }
 
     public void onRelativeClick(View v) throws ExecutionException, InterruptedException {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rlt_inventaire:
                 lunchActivity(ActivityInventaires.class);
                 break;
@@ -61,7 +63,7 @@ public class ActivityInventaireAchat extends AppCompatActivity {
         }
     }
 
-    protected void lunchActivity(Class cls){
+    protected void lunchActivity(Class cls) {
 
         Intent exported_inventaire_intent = new Intent(ActivityInventaireAchat.this, cls);
         exported_inventaire_intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
@@ -72,7 +74,7 @@ public class ActivityInventaireAchat extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -85,7 +87,7 @@ public class ActivityInventaireAchat extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public void Sound(int SourceSound){
+    public void Sound(int SourceSound) {
         mp = MediaPlayer.create(this, SourceSound);
         mp.start();
     }

@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,9 +46,9 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
     private ColorGeneratorModified generator;
     private final String SOURCE;
 
-    private Context mContext;
+    private final Context mContext;
     private final String PREFS = "ALL_PREFS";
-    private SharedPreferences prefs;
+    private final SharedPreferences prefs;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -86,9 +87,9 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
 
     public RecyclerAdapterBon1(Context context, List<PostData_Bon1> itemList, String SOURCE) {
         this.bon1List = itemList;
-        this.SOURCE =SOURCE;
+        this.SOURCE = SOURCE;
         this.mContext = context;
-        prefs = mContext.getSharedPreferences(PREFS, mContext.MODE_PRIVATE);
+        prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
 
@@ -108,34 +109,33 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(final MyViewHolder holder,int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         PostData_Bon1 item = bon1List.get(position);
 
         holder.NumBon.setTextSize(17);
         holder.NumBon.setTypeface(null, Typeface.BOLD);
-        holder.NumBon.setText(""+item.num_bon);
+        holder.NumBon.setText(item.num_bon);
 
-        holder.NomClient.setText(""+item.client);
+        holder.NomClient.setText(item.client);
 
-        if(SOURCE.equals("SALE")){
+        if (SOURCE.equals("SALE")) {
             holder.lnr_versement.setVisibility(View.VISIBLE);
-            holder.Versement.setText(""+ new DecimalFormat("##,##0.00").format(item.verser) + " DA");
+            holder.Versement.setText(new DecimalFormat("##,##0.00").format(item.verser) + " DA");
 
-            if(prefs.getBoolean("AFFICHAGE_BENIFICE", false)){
+            if (prefs.getBoolean("AFFICHAGE_BENIFICE", false)) {
                 holder.Benifice.setVisibility(View.VISIBLE);
-                holder.Benifice.setText("Bénéfice : "+ new DecimalFormat("##,##0.00").format(item.benifice_par_bon) + " DA");
-            }else{
+                holder.Benifice.setText("Bénéfice : " + new DecimalFormat("##,##0.00").format(item.benifice_par_bon) + " DA");
+            } else {
                 holder.Benifice.setVisibility(View.GONE);
             }
-        }else if(SOURCE.equals("ORDER")){
+        } else if (SOURCE.equals("ORDER")) {
             holder.lnr_versement.setVisibility(View.GONE);
             holder.Benifice.setVisibility(View.GONE);
         }
 
-        holder.Montant.setText(""+ new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
+        holder.Montant.setText(new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
 
-        if(item.nbr_p == null)
-        {
+        if (item.nbr_p == null) {
             item.nbr_p = 0;
         }
         final BadgeDrawable drawable1 = new BadgeDrawable.Builder()
@@ -154,49 +154,58 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
 
         holder.Heure_bon.setText(item.heure);
 
-        holder.cardView.setOnClickListener(view -> itemClick.onClick(view,holder.getAdapterPosition()));
+        holder.cardView.setOnClickListener(view -> itemClick.onClick(view, holder.getAdapterPosition()));
 
         holder.cardView.setOnLongClickListener(v -> {
-            itemLongClick.onLongClick(v , holder.getAdapterPosition());
+            itemLongClick.onLongClick(v, holder.getAdapterPosition());
             return true;
         });
 
 
-        if(item.blocage.equals("F")){
-            if (item.montant_bon < 0) {
-                holder.blocage.setText("Retour")
-                        .setTextColor(Color.WHITE)
-                        .setSlantedBackgroundColor(Color.MAGENTA)
-                        .setTextSize(21)
-                        .setSlantedLength(80)
-                        .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+        switch (item.blocage) {
+            case "F" -> {
+                if (item.montant_bon < 0) {
+                    holder.blocage.setText("Retour")
+                            .setTextColor(Color.WHITE)
+                            .setSlantedBackgroundColor(Color.MAGENTA)
+                            .setTextSize(21)
+                            .setSlantedLength(80)
+                            .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
 
-                holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
-            }else {
-                holder.blocage.setText("Validé")
-                        .setTextColor(Color.WHITE)
-                        .setSlantedBackgroundColor(Color.GREEN)
-                        .setTextSize(21)
-                        .setSlantedLength(80)
-                        .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+                    holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
+                } else {
+                    holder.blocage.setText("Validé")
+                            .setTextColor(Color.WHITE)
+                            .setSlantedBackgroundColor(Color.GREEN)
+                            .setTextSize(21)
+                            .setSlantedLength(80)
+                            .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
 
-                holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
+                    holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
 
+                }
             }
-        } else {
-            holder.blocage.setText("En attente")
+            case "N" -> {
+                holder.blocage.setText("En attente")
+                        .setTextColor(Color.WHITE)
+                        .setSlantedBackgroundColor(Color.RED)
+                        .setTextSize(21)
+                        .setSlantedLength(80)
+                        .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+
+                holder.Diff_time.setText("");
+            }
+            case "T" -> holder.blocage.setText("Transféré")
                     .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.RED)
+                    .setSlantedBackgroundColor(Color.BLUE)
                     .setTextSize(21)
                     .setSlantedLength(80)
                     .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-
-            holder.Diff_time.setText("");
         }
 
 
-        if (color == 0){
-            if (generator!=null)
+        if (color == 0) {
+            if (generator != null)
                 color = generator.getColor(bon1List.get(position).num_bon);
         }
     }
@@ -206,22 +215,22 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         return bon1List.size();
     }
 
-    public interface ItemClick{
+    public interface ItemClick {
         void onClick(View v, int position);
     }
 
-    public interface ItemLongClick{
+    public interface ItemLongClick {
         void onLongClick(View v, int position);
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void refresh(List<PostData_Bon1> new_itemList){
+    public void refresh(List<PostData_Bon1> new_itemList) {
         bon1List.clear();
         bon1List.addAll(new_itemList);
         notifyDataSetChanged();
     }
 
-    private String getDateDifferenceFromNow(String startDate, String endDate){
+    private String getDateDifferenceFromNow(String startDate, String endDate) {
 
         try {
 
@@ -246,7 +255,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
             long minutes_rest = hours_rest % (60 * 1000);
             long seconds = minutes_rest / 1000;
 
-            return seconds>0 ? (minutes != 0 ? (hours!=0 ? (days !=0 ? (days + "j " + hours + "h " + minutes + "m " + seconds + "s "):hours + "h " + minutes + "m " + seconds + "s "):minutes + "m et " + seconds + "seconds"): seconds + "seconds"):"0 s";
+            return seconds > 0 ? (minutes != 0 ? (hours != 0 ? (days != 0 ? (days + "j " + hours + "h " + minutes + "m " + seconds + "s ") : hours + "h " + minutes + "m " + seconds + "s ") : minutes + "m et " + seconds + "seconds") : seconds + "seconds") : "0 s";
 
         } catch (Exception exception) {
             Log.v("DISTRIBUTE ERROR", "Unable to find difference");

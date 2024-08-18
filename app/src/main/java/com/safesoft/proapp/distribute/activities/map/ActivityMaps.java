@@ -59,7 +59,7 @@ import com.safesoft.proapp.distribute.utils.ConnectionDetector;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback, LocationListener{
+public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap myMap;
     private ProgressDialog myProgress;
@@ -91,7 +91,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         controller = new DATABASE(this);
         getItems();
@@ -218,8 +218,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
     // Call this method only when you have the permissions to view a user's location.
     private void showMyLocation() {
-        if(ConnectionDetector.isInternetAvailble())
-        {
+        if (ConnectionDetector.isInternetAvailble()) {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationProvider = this.getEnabledLocationProvider();
 
@@ -228,10 +227,9 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             try {
-                locationManager.requestLocationUpdates(locationProvider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,  this);
+                locationManager.requestLocationUpdates(locationProvider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                 myLocation = locationManager.getLastKnownLocation(locationProvider);
-            }
-            catch (SecurityException e) {
+            } catch (SecurityException e) {
                 Log.e(MYTAG, "Show My Location Error:" + e.getMessage());
                 e.printStackTrace();
                 return;
@@ -244,7 +242,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 try {
                     addresses = geocoder.getFromLocation(myLocation.getLatitude(), myLocation.getLongitude(), 1);
                     address = addresses.get(0).getAddressLine(0);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
 
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLng)
@@ -255,23 +254,21 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 Log.i(MYTAG, "Position non disponible!");
             }
-        }else
-        {
+        } else {
             Crouton.makeText(ActivityMaps.this, "Pas de connexion internet", Style.ALERT).show();
         }
     }
 
-    private void showClientsOnMap(){
+    private void showClientsOnMap() {
 
         BitmapDescriptor iconr = BitmapDescriptorFactory.fromResource(R.mipmap.rouge);
 
-        if(clients.size() > 0){
-            for(int i=0;i< clients.size();i++)
-            {
+        if (clients.size() > 0) {
+            for (int i = 0; i < clients.size(); i++) {
                 latlongi = new LatLng(clients.get(i).latitude, clients.get(i).longitude);
                 MarkerOptions option = new MarkerOptions();
                 option.position(latlongi);
-                option.title("Client : "+clients.get(i).client);
+                option.title("Client : " + clients.get(i).client);
                 option.snippet("Code client : " + clients.get(i).code_client);
                 option.icon(iconr);
                 Marker currentMarker = myMap.addMarker(option);
@@ -309,20 +306,17 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras)
-    {
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
 
     @Override
-    public void onProviderEnabled(@NonNull String provider)
-    {
+    public void onProviderEnabled(@NonNull String provider) {
 
     }
 
     @Override
-    public void onProviderDisabled(@NonNull String provider)
-    {
+    public void onProviderDisabled(@NonNull String provider) {
 
     }
 
@@ -353,7 +347,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             onBackPressed();
             return true;
         }
-        return  true;
+        return true;
     }
 
 
@@ -373,9 +367,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 @SuppressLint("Range")
                 String client_name = cursor.getString(cursor.getColumnIndex("clientName"));
                 PostData_Client client = new PostData_Client();
-                for (int i=0; i<clients.size(); i++) {
-                    if (clients.get(i).client.equals(client_name))
-                    {
+                for (int i = 0; i < clients.size(); i++) {
+                    if (clients.get(i).client.equals(client_name)) {
                         client = clients.get(i);
                         break;
                     }
@@ -420,12 +413,11 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
     // You must implements your logic to get data using OrmLite
     private void populateAdapter(String query) {
-        ArrayList<PostData_Client> client_suggest= new ArrayList<>();
-        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "clientName" });
-        for (int i=0; i<clients.size(); i++) {
-            if ((clients.get(i).client.toLowerCase().contains(query.toLowerCase())) || (clients.get(i).code_client.contains(query)))
-            {
-                c.addRow(new Object[] {i, clients.get(i).client});
+        ArrayList<PostData_Client> client_suggest = new ArrayList<>();
+        final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "clientName"});
+        for (int i = 0; i < clients.size(); i++) {
+            if ((clients.get(i).client.toLowerCase().contains(query.toLowerCase())) || (clients.get(i).code_client.contains(query))) {
+                c.addRow(new Object[]{i, clients.get(i).client});
                 client_suggest.add(clients.get(i));
             }
         }

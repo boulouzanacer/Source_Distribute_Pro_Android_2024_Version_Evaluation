@@ -47,8 +47,8 @@ public class FragmentTimbre {
         ((DecimalFormat) nf).applyPattern("####0.00");
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater =activity.getLayoutInflater();
-        View dialogview= inflater.inflate(R.layout.fragment_timbre, null);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View dialogview = inflater.inflate(R.layout.fragment_timbre, null);
         dialogBuilder.setView(dialogview);
         dialogBuilder.setCancelable(false);
         dialogBuilder.create();
@@ -63,14 +63,14 @@ public class FragmentTimbre {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_timbre = (MaterialFancyButton) dialogview.findViewById(R.id.btn_timbre);
+        btn_timbre = dialogview.findViewById(R.id.btn_timbre);
         btn_timbre.setBackgroundColor(Color.parseColor("#3498db"));
         btn_timbre.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_timbre.setTextSize(15);
         btn_timbre.setIconPosition(POSITION_LEFT);
         btn_timbre.setFontIconSize(30);
 
-        btn_cancel = (MaterialFancyButton) dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
@@ -87,10 +87,10 @@ public class FragmentTimbre {
 
             val_timbre = Double.parseDouble(montant_timbre.getText().toString());
             TimbreEvent timbre_data = new TimbreEvent(val_timbre);
-                // Post the event
-                bus.post(timbre_data);
+            // Post the event
+            bus.post(timbre_data);
 
-                dialog.dismiss();
+            dialog.dismiss();
 
         });
 

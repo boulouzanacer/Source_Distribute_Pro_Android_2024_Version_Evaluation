@@ -25,132 +25,134 @@ import java.util.List;
 
 public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAdapterFournisseurs.MyViewHolder> {
 
-  private final List<PostData_Fournisseur> fournisList;
-  private int color = 0;
-  private ItemClick itemClick;
-  private ItemLongClick itemLongClick;
-  private ColorGeneratorModified generator;
+    private final List<PostData_Fournisseur> fournisList;
+    private int color = 0;
+    private ItemClick itemClick;
+    private ItemLongClick itemLongClick;
+    private ColorGeneratorModified generator;
 
-  static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
-    TextView FournisseurN;
-    CardView cardView;
-    ImageView image;
-    ImageView img_pos_fournisseur;
-    TextView Tel_fournisseurN;
-    TextView Achats_fournisseurN;
-    TextView Verser_fournisseurN;
-    TextView Sold_fournisseurN;
+        TextView FournisseurN;
+        CardView cardView;
+        ImageView image;
+        ImageView img_pos_fournisseur;
+        TextView Tel_fournisseurN;
+        TextView Achats_fournisseurN;
+        TextView Verser_fournisseurN;
+        TextView Sold_fournisseurN;
 
-    MyViewHolder(View view)
-    {
-      super(view);
-      cardView = (CardView) view.findViewById(R.id.item_root);
-      FournisseurN = (TextView) view.findViewById(R.id.fournisseur);
-      Tel_fournisseurN = (TextView) view.findViewById(R.id.tel_fournisseur);
-      Achats_fournisseurN = (TextView) view.findViewById(R.id.achat_fournisseur);
-      Verser_fournisseurN = (TextView) view.findViewById(R.id.verser_fournisseur);
-      Sold_fournisseurN = (TextView) view.findViewById(R.id.sold_fournisseur);
-      image = (ImageView) view.findViewById(R.id.imageId);
-      img_pos_fournisseur = (ImageView) view.findViewById(R.id.img_pos_fournisseur);
-    }
-  }
-
-
-  public RecyclerAdapterFournisseurs(Context context, List<PostData_Fournisseur> itemList)
-  {
-    this.fournisList = itemList;
-    if (color == 0)
-      generator = ColorGeneratorModified.MATERIAL;
-  }
-
-  @Override
-  public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-  {
-
-    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fournisseur, parent, false);
-
-    itemClick =(ItemClick) parent.getContext();
-    itemLongClick =(ItemLongClick) parent.getContext();
-
-    return new MyViewHolder(v);
-  }
-
-  @Override
-  public void onBindViewHolder(final MyViewHolder holder,int position) {
-
-    PostData_Fournisseur item = fournisList.get(position);
-
-    holder.FournisseurN.setTextSize(17);
-    holder.FournisseurN.setTypeface(null, Typeface.BOLD);
-    holder.FournisseurN.setText(item.fournis);
-
-    holder.Tel_fournisseurN.setText("TEL : "+ item.tel);
-
-    holder.Achats_fournisseurN.setTypeface(null, Typeface.BOLD);
-    holder.Verser_fournisseurN.setTypeface(null, Typeface.BOLD);
-    holder.Sold_fournisseurN.setTypeface(null, Typeface.BOLD);
-    //holder.Sld_fournisseurN.setText("Solde : "+item.solde_montant);
-
-    holder.Achats_fournisseurN.setText("Achats :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.achat_montant)));
-    holder.Verser_fournisseurN.setText("Verser :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_montant)));
-    holder.Sold_fournisseurN.setText("Solde :"+ new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
-
-    holder.img_pos_fournisseur.setImageResource(R.drawable.ic_baseline_wrong_location_24);
-
-    holder.cardView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        itemClick.onClick(view,holder.getAdapterPosition());
-      }
-    });
-
-    holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-      @Override
-      public boolean onLongClick(View v) {
-        itemLongClick.onLongClick(v, holder.getAdapterPosition());
-        return false;
-      }
-    });
-
-
-    String firstChar = "NO";
-    if(item.fournis != null){
-      if(item.fournis.length() == 1){
-        firstChar = String.valueOf(item.fournis.charAt(0));
-      }else if(item.fournis.length() > 0){
-        firstChar = String.valueOf(item.fournis.charAt(0))+ item.fournis.charAt(1);
-      }else{
-        firstChar = "NO";
-      }
+        MyViewHolder(View view) {
+            super(view);
+            cardView = view.findViewById(R.id.item_root);
+            FournisseurN = view.findViewById(R.id.fournisseur);
+            Tel_fournisseurN = view.findViewById(R.id.tel_fournisseur);
+            Achats_fournisseurN = view.findViewById(R.id.achat_fournisseur);
+            Verser_fournisseurN = view.findViewById(R.id.verser_fournisseur);
+            Sold_fournisseurN = view.findViewById(R.id.sold_fournisseur);
+            image = view.findViewById(R.id.imageId);
+            img_pos_fournisseur = view.findViewById(R.id.img_pos_fournisseur);
+        }
     }
 
-    if (color == 0)
-    {
-      if (generator!=null)
-        color = generator.getColor(fournisList.get(position).fournis);
+
+    public RecyclerAdapterFournisseurs(Context context, List<PostData_Fournisseur> itemList) {
+        this.fournisList = itemList;
+        if (color == 0)
+            generator = ColorGeneratorModified.MATERIAL;
     }
 
-    TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), color);
-    holder.image.setImageDrawable(drawable);
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-  }
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fournisseur, parent, false);
 
-  @Override
-  public int getItemCount() {
-    return fournisList.size();
-  }
+        itemClick = (ItemClick) parent.getContext();
+        itemLongClick = (ItemLongClick) parent.getContext();
 
-  public interface ItemClick{
-    void onClick(View v, int position);
-  }
+        return new MyViewHolder(v);
+    }
 
-  public interface ItemLongClick{
-    void onLongClick(View v, int position);
-  }
-  public void refresh(List<PostData_Fournisseur> new_itemList){
-    fournisList.clear();
-    fournisList.addAll(new_itemList);
-    notifyDataSetChanged();
-  }
+    @Override
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+
+        PostData_Fournisseur item = fournisList.get(position);
+
+        holder.FournisseurN.setTextSize(17);
+        holder.FournisseurN.setTypeface(null, Typeface.BOLD);
+        holder.FournisseurN.setText(item.fournis);
+
+        holder.Tel_fournisseurN.setText("TEL : " + item.tel);
+
+        holder.Achats_fournisseurN.setTypeface(null, Typeface.BOLD);
+        holder.Verser_fournisseurN.setTypeface(null, Typeface.BOLD);
+        holder.Sold_fournisseurN.setTypeface(null, Typeface.BOLD);
+        //holder.Sld_fournisseurN.setText("Solde : "+item.solde_montant);
+
+        holder.Achats_fournisseurN.setText("Achats :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.achat_montant)));
+        holder.Verser_fournisseurN.setText("Verser :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_montant)));
+        holder.Sold_fournisseurN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+
+        if (item.latitude == 0.0) {
+            holder.img_pos_fournisseur.setImageResource(R.drawable.ic_baseline_wrong_location_24);
+        }else{
+            holder.img_pos_fournisseur.setImageResource(R.drawable.ic_baseline_location_on_24);
+        }
+
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemClick.onClick(view, holder.getAdapterPosition());
+            }
+        });
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                itemLongClick.onLongClick(v, holder.getAdapterPosition());
+                return false;
+            }
+        });
+
+
+        String firstChar = "NO";
+        if (item.fournis != null) {
+            if (item.fournis.length() == 1) {
+                firstChar = String.valueOf(item.fournis.charAt(0));
+            } else if (item.fournis.length() > 0) {
+                firstChar = String.valueOf(item.fournis.charAt(0)) + item.fournis.charAt(1);
+            } else {
+                firstChar = "NO";
+            }
+        }
+
+        if (color == 0) {
+            if (generator != null)
+                color = generator.getColor(fournisList.get(position).fournis);
+        }
+
+        TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), color);
+        holder.image.setImageDrawable(drawable);
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return fournisList.size();
+    }
+
+    public interface ItemClick {
+        void onClick(View v, int position);
+    }
+
+    public interface ItemLongClick {
+        void onLongClick(View v, int position);
+    }
+
+    public void refresh(List<PostData_Fournisseur> new_itemList) {
+        fournisList.clear();
+        fournisList.addAll(new_itemList);
+        notifyDataSetChanged();
+    }
 }

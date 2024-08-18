@@ -72,7 +72,7 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
 
     public RecyclerAdapterAchat1(Context context, List<PostData_Achat1> itemList, String SOURCE) {
         this.bon1List = itemList;
-        this.SOURCE =SOURCE;
+        this.SOURCE = SOURCE;
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
     }
@@ -91,22 +91,22 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(final MyViewHolder holder,int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         PostData_Achat1 item = bon1List.get(position);
 
         holder.NumBon.setTextSize(17);
         holder.NumBon.setTypeface(null, Typeface.BOLD);
-        holder.NumBon.setText(""+item.num_bon);
-        holder.NomFournisseur.setText(""+item.fournis);
+        holder.NumBon.setText(item.num_bon);
+        holder.NomFournisseur.setText(item.fournis);
 
-        if(SOURCE.equals("ACHAT")){
+        if (SOURCE.equals("ACHAT")) {
             holder.lnr_versement.setVisibility(View.VISIBLE);
-            holder.Versement.setText(""+ new DecimalFormat("##,##0.00").format(item.verser) + " DA");
-        }else if(SOURCE.equals("ACHAT_ORDER")){
+            holder.Versement.setText(new DecimalFormat("##,##0.00").format(item.verser) + " DA");
+        } else if (SOURCE.equals("ACHAT_ORDER")) {
             holder.lnr_versement.setVisibility(View.GONE);
         }
 
-        holder.Montant.setText(""+ new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
+        holder.Montant.setText(new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
 
         final BadgeDrawable drawable1 = new BadgeDrawable.Builder()
                 .type(BadgeDrawable.TYPE_NUMBER)
@@ -121,21 +121,21 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
         holder.nbrProduit.setText(spannableString1);
         holder.Date_bon.setText(item.date_bon);
         holder.Heure_bon.setText(item.heure);
-        holder.cardView.setOnClickListener(view -> itemClick.onClick(view,holder.getAdapterPosition()));
+        holder.cardView.setOnClickListener(view -> itemClick.onClick(view, holder.getAdapterPosition()));
         holder.cardView.setOnLongClickListener(v -> {
-            itemLongClick.onLongClick(v , holder.getAdapterPosition());
+            itemLongClick.onLongClick(v, holder.getAdapterPosition());
             return true;
         });
 
 
-        if(item.blocage.equals("F")){
+        if (item.blocage.equals("F")) {
             holder.blocage.setText("Validé")
                     .setTextColor(Color.WHITE)
                     .setSlantedBackgroundColor(Color.GREEN)
                     .setTextSize(21)
                     .setSlantedLength(80)
                     .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-        }else {
+        } else {
             holder.blocage.setText("En attente")
                     .setTextColor(Color.WHITE)
                     .setSlantedBackgroundColor(Color.RED)
@@ -145,8 +145,8 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
         }
 
 
-        if (color == 0){
-            if (generator!=null)
+        if (color == 0) {
+            if (generator != null)
                 color = generator.getColor(bon1List.get(position).num_bon);
         }
     }
@@ -156,16 +156,16 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
         return bon1List.size();
     }
 
-    public interface ItemClick{
+    public interface ItemClick {
         void onClick(View v, int position);
     }
 
-    public interface ItemLongClick{
+    public interface ItemLongClick {
         void onLongClick(View v, int position);
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void refresh(List<PostData_Achat1> new_itemList){
+    public void refresh(List<PostData_Achat1> new_itemList) {
         bon1List.clear();
         bon1List.addAll(new_itemList);
         notifyDataSetChanged();

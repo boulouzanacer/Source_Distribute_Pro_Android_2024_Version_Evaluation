@@ -42,7 +42,7 @@ public class FragmentSelectClient {
     private static final int CAMERA_PERMISSION = 5;
 
     private DATABASE controller;
-    private EventBus bus = EventBus.getDefault();
+    private EventBus bus;
     private Activity activity;
     private AlertDialog dialog;
     private NumberFormat nf;
@@ -99,8 +99,8 @@ public class FragmentSelectClient {
     private void initViews(View view) {
 
 
-        editsearch = (EditText) view.findViewById(R.id.search_field);
-        add_client = (Button) view.findViewById(R.id.add_client);
+        editsearch = view.findViewById(R.id.search_field);
+        add_client = view.findViewById(R.id.add_client);
 
         btn_scan = view.findViewById(R.id.scan);
         btn_cancel = view.findViewById(R.id.cancel);
@@ -111,8 +111,8 @@ public class FragmentSelectClient {
         String querry = "SELECT * FROM Client ORDER BY CLIENT";
         listClient = controller.select_clients_from_database(querry);
 
-        listview = (ListView) view.findViewById(R.id.list_client);
-        editsearch = (EditText) view.findViewById(R.id.search_field);
+        listview = view.findViewById(R.id.list_client);
+        editsearch = view.findViewById(R.id.search_field);
 
         // Capture Text in EditText
         editsearch.addTextChangedListener(new TextWatcher() {
@@ -120,7 +120,7 @@ public class FragmentSelectClient {
             @Override
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
-                if(editsearch.isFocused()){
+                if (editsearch.isFocused()) {
                     String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
                     setListview(text, false);
                 }
@@ -144,7 +144,7 @@ public class FragmentSelectClient {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
 
-            }else{
+            } else {
                 startScan();
             }
 
@@ -174,7 +174,7 @@ public class FragmentSelectClient {
     }
 
     private void setListview(String text_search, Boolean isScan) {
-        if(isScan){
+        if (isScan) {
             editsearch.setText(text_search);
         }
         adapter = new ListViewAdapterListClient(mcontext, getItems(text_search, isScan), dialog, SOURCE);
@@ -187,18 +187,18 @@ public class FragmentSelectClient {
 
         listClient.clear();
 
-        if(isScan){
-            String querry = "SELECT * FROM Client WHERE CODE_CLIENT = '"+querry_search+"' ORDER BY CLIENT ";
+        if (isScan) {
+            String querry = "SELECT * FROM Client WHERE CODE_CLIENT = '" + querry_search + "' ORDER BY CLIENT ";
             // querry = "SELECT * FROM Events";
             listClient = controller.select_clients_from_database(querry);
-        }else{
-            if(!querry_search.isEmpty()){
+        } else {
+            if (!querry_search.isEmpty()) {
 
-                String querry = "SELECT * FROM Client WHERE ( CLIENT LIKE '%"+querry_search+"%' OR CODE_CLIENT LIKE '%"+querry_search+"%' ) ORDER BY CLIENT ";
+                String querry = "SELECT * FROM Client WHERE ( CLIENT LIKE '%" + querry_search + "%' OR CODE_CLIENT LIKE '%" + querry_search + "%' ) ORDER BY CLIENT ";
                 // querry = "SELECT * FROM Events";
                 listClient = controller.select_clients_from_database(querry);
 
-            }else {
+            } else {
 
                 String querry = "SELECT * FROM Client ORDER BY CLIENT ";
                 // querry = "SELECT * FROM Events";
@@ -210,11 +210,11 @@ public class FragmentSelectClient {
     }
 
 
-    public void requestPermission(){
+    public void requestPermission() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-        }else{
+        } else {
             startScan();
         }
     }
@@ -234,7 +234,7 @@ public class FragmentSelectClient {
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
                     public void onResult(Barcode barcode) {
-                       // Sound( R.raw.bleep);
+                        // Sound( R.raw.bleep);
                         setListview(barcode.rawValue, true);
                     }
                 })

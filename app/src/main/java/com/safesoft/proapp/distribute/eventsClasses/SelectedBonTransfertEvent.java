@@ -6,13 +6,13 @@ package com.safesoft.proapp.distribute.eventsClasses;
 
 public class SelectedBonTransfertEvent {
 
-  private final String num_bon;
+    private final String num_bon;
 
-  public SelectedBonTransfertEvent(String num_bon){
-    this.num_bon = num_bon;
-  }
+    public SelectedBonTransfertEvent(String num_bon) {
+        this.num_bon = num_bon;
+    }
 
-  public String getNum_bon(){
-    return num_bon;
-  }
+    public String getNum_bon() {
+        return num_bon;
+    }
 }

@@ -1,9 +1,11 @@
 package com.safesoft.proapp.distribute.adapters;
 
 import android.content.Context;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +33,12 @@ public class ListViewAdapterTransfert2 extends ArrayAdapter<PostData_Transfer2> 
         super(context, resource, objects);
     }
 
-    public static class ViewHolder{
+    public static class ViewHolder {
         TextView produit;
         TextView quantite;
 
     }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -49,8 +52,8 @@ public class ListViewAdapterTransfert2 extends ArrayAdapter<PostData_Transfer2> 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.transfert2_items, parent, false);
-            viewHolder.produit = (TextView) convertView.findViewById(R.id.produit);
-            viewHolder.quantite = (TextView) convertView.findViewById(R.id.quantite);
+            viewHolder.produit = convertView.findViewById(R.id.produit);
+            viewHolder.quantite = convertView.findViewById(R.id.quantite);
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
         } else {

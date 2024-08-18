@@ -29,15 +29,15 @@ public class BarcodeGraphic extends GraphicOverlay.Graphic {
 
     private int mId;
 
-    private static int mCurrentColorIndex = 0;
+    private static final int mCurrentColorIndex = 0;
 
-    private Paint mRectPaint;
-    private Paint mTextPaint;
+    private final Paint mRectPaint;
+    private final Paint mTextPaint;
     private volatile Barcode mBarcode;
 
-    private int mStrokeWidth = 24;
-    private int mCornerWidth = 64;
-    private int mCorderPadding = mStrokeWidth / 2;
+    private final int mStrokeWidth = 24;
+    private final int mCornerWidth = 64;
+    private final int mCorderPadding = mStrokeWidth / 2;
 
     public BarcodeGraphic(GraphicOverlay overlay, final int trackerColor) {
         super(overlay);

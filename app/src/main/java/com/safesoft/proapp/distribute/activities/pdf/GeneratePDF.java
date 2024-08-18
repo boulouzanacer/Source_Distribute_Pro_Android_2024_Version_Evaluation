@@ -74,7 +74,7 @@ public class GeneratePDF {
     ArrayList<PostData_Achat2> final_panier_achat;
     String SOURCE;
 
-    public void startPDFVente(Activity mActivity, PostData_Bon1 bon1, ArrayList<PostData_Bon2> final_panier, String SOURCE){
+    public void startPDFVente(Activity mActivity, PostData_Bon1 bon1, ArrayList<PostData_Bon2> final_panier, String SOURCE) {
         this.mActivity = mActivity;
         this.Bon1 = bon1;
         this.final_panier_vente = final_panier;
@@ -88,7 +88,7 @@ public class GeneratePDF {
     }
 
 
-    public void startPDFAchat(Activity mActivity, PostData_Achat1 achat1, ArrayList<PostData_Achat2> final_panier, String SOURCE){
+    public void startPDFAchat(Activity mActivity, PostData_Achat1 achat1, ArrayList<PostData_Achat2> final_panier, String SOURCE) {
         this.mActivity = mActivity;
         this.achat1 = achat1;
         this.final_panier_achat = final_panier;
@@ -102,14 +102,14 @@ public class GeneratePDF {
     }
 
 
-    public void startPDFTicket(Activity mActivity, String code_bare, String produit, double prix, String SOURCE){
+    public void startPDFTicket(Activity mActivity, String code_bare, String produit, double prix, String SOURCE) {
         this.mActivity = mActivity;
         this.SOURCE = SOURCE;
 
         generatePDFTTicket(code_bare, produit, prix);
     }
 
-    private void generatePDFTTicket(String code_bare, String produit, double prix){
+    private void generatePDFTTicket(String code_bare, String produit, double prix) {
 
         PdfDocument pdfDocument = new PdfDocument();
         Paint paint = new Paint();
@@ -121,7 +121,7 @@ public class GeneratePDF {
 
         title.setTextAlign(Paint.Align.LEFT);
         title.setTextSize(10);
-        canvas.drawText(center_value(45, produit) , 10, 20, title);
+        canvas.drawText(center_value(45, produit), 10, 20, title);
 
         title.setTextSize(15);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -214,8 +214,8 @@ public class GeneratePDF {
         PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
         Canvas canvas = myPage.getCanvas();
 
-        String img_str= prefs.getString("COMPANY_LOGO", "");
-        if (!img_str.equals("")){
+        String img_str = prefs.getString("COMPANY_LOGO", "");
+        if (!img_str.equals("")) {
             //decode string to image
             byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
             bmp = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -227,51 +227,51 @@ public class GeneratePDF {
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         title.setTextSize(17);
 
-        if(!prefs.getString("COMPANY_NAME", "").equals("")){
+        if (!prefs.getString("COMPANY_NAME", "").equals("")) {
             canvas.drawText(prefs.getString("COMPANY_NAME", ""), mergeleft, 30, title);
         }
-        if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
+        if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
             canvas.drawText(prefs.getString("ACTIVITY_NAME", ""), mergeleft, 60, title);
         }
-        if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
+        if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
             canvas.drawText(prefs.getString("COMPANY_ADRESSE", ""), mergeleft, 90, title);
         }
-        if(!prefs.getString("COMPANY_TEL", "").equals("")){
+        if (!prefs.getString("COMPANY_TEL", "").equals("")) {
             canvas.drawText(prefs.getString("COMPANY_TEL", ""), mergeleft, 120, title);
         }
 
         title.setTextAlign(Paint.Align.CENTER);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
         title.setTextSize(15);
-        canvas.drawLine(mergeleft, 150,endright, 150, paint);
-        canvas.drawLine(mergeleft, 153,endright, 153, paint);
+        canvas.drawLine(mergeleft, 150, endright, 150, paint);
+        canvas.drawLine(mergeleft, 153, endright, 153, paint);
 
         title.setTextAlign(Paint.Align.LEFT);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        if(SOURCE.equals("FROM_ACHAT")){
+        if (SOURCE.equals("FROM_ACHAT")) {
             canvas.drawText("BON DE RECEPTION N°:" + achat1.num_bon, mergeleft, 180, title);
-        }else if(SOURCE.equals("FROM_ACHAT_ORDER")){
+        } else if (SOURCE.equals("FROM_ACHAT_ORDER")) {
             canvas.drawText("BON DE COMMANDE N°:" + achat1.num_bon, mergeleft, 180, title);
         }
 
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        if(SOURCE.equals("FROM_ACHAT")){
+        if (SOURCE.equals("FROM_ACHAT")) {
             canvas.drawText("Mode de paiement : A TERME", mergeleft, 200, title);
-        }else if(SOURCE.equals("FROM_ACHAT_ORDER")){
+        } else if (SOURCE.equals("FROM_ACHAT_ORDER")) {
             //canvas.drawText("Mode de paiement : A TERME", mergeleft, 200, title);
         }
 
         //title.setTextAlign(Paint.Align.CENTER);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        if(SOURCE.equals("FROM_ACHAT")){
+        if (SOURCE.equals("FROM_ACHAT")) {
             canvas.drawText("Fournisseur : ", 400, 180, title);
-        }else if(SOURCE.equals("FROM_ACHAT_ORDER")){
+        } else if (SOURCE.equals("FROM_ACHAT_ORDER")) {
             canvas.drawText("Fournisseur : ", 400, 180, title);
         }
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText("" + achat1.code_frs, 400, 200, title);
-        canvas.drawText("" + achat1.fournis, 400, 220, title);
-        canvas.drawText("" + achat1.adresse, 400, 240, title);
+        canvas.drawText(achat1.code_frs, 400, 200, title);
+        canvas.drawText(achat1.fournis, 400, 220, title);
+        canvas.drawText(achat1.adresse, 400, 240, title);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 //        canvas.drawText("N.R.C : "+ Bon1.rc, 400, 260, title);
 //        canvas.drawText("N.I.S : "+ Bon1.nis, 600, 260, title);
@@ -286,34 +286,34 @@ public class GeneratePDF {
         title.setTextAlign(Paint.Align.LEFT);
         title.setTextSize(10);
         canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, 300, title);
-        canvas.drawText(createLine("N°",addCaracter(25, " ") + "DESIGNATION", "NBRE CO", "COLIS", "QTE", "U.G", "PRIX U" + addCaracter(3, " ")), mergeleft , 310 , title);
+        canvas.drawText(createLine("N°", addCaracter(25, " ") + "DESIGNATION", "NBRE CO", "COLIS", "QTE", "U.G", "PRIX U" + addCaracter(3, " ")), mergeleft, 310, title);
         canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, 320, title);
 
         double tot_qte = 0.0;
         int facture_y = 330;
 
-        for(int i = 0; i < final_panier_achat.size() ; i++){
+        for (int i = 0; i < final_panier_achat.size(); i++) {
             tot_qte = tot_qte + final_panier_achat.get(i).qte;
             facture_y = 330 + (i * 20);
 
             String nc = "", colissage = "", gratuit = "";
             ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
-            if(final_panier_achat.get(i).nbr_colis != 0){
-                nc = new DecimalFormat( "####0.##").format(final_panier_achat.get(i).nbr_colis);
-                colissage = new DecimalFormat( "####0.##").format(final_panier_achat.get(i).colissage);
+            if (final_panier_achat.get(i).nbr_colis != 0) {
+                nc = new DecimalFormat("####0.##").format(final_panier_achat.get(i).nbr_colis);
+                colissage = new DecimalFormat("####0.##").format(final_panier_achat.get(i).colissage);
             }
-            if(final_panier_achat.get(i).gratuit != 0){
-                gratuit = new DecimalFormat( "####0.##").format(final_panier_achat.get(i).gratuit);
+            if (final_panier_achat.get(i).gratuit != 0) {
+                gratuit = new DecimalFormat("####0.##").format(final_panier_achat.get(i).gratuit);
             }
 
             canvas.drawText(createLine(
                             String.valueOf(i + 1),
-                            final_panier_achat.get(i).produit ,
+                            final_panier_achat.get(i).produit,
                             nc,
                             colissage,
-                            new DecimalFormat( "####0.##").format(final_panier_achat.get(i).qte), gratuit,
+                            new DecimalFormat("####0.##").format(final_panier_achat.get(i).qte), gratuit,
                             new DecimalFormat("####0.00").format(final_panier_achat.get(i).pa_ht)),
-                    mergeleft , facture_y , title);
+                    mergeleft, facture_y, title);
 
             canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
         }
@@ -322,37 +322,37 @@ public class GeneratePDF {
         String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
 
-        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(final_panier_achat.size()));
-        total_ht_bon_str   =  new DecimalFormat("####0.00").format(achat1.tot_ht);
-        tva_bon_str   =  new DecimalFormat("####0.00").format(achat1.tot_tva);
-        timbre_bon_str   =  new DecimalFormat("####0.00").format(achat1.timbre);
-        total_bon_str   =  new DecimalFormat("####0.00").format(achat1.tot_ttc);
-        remise_bon_str   =  new DecimalFormat("####0.00").format(achat1.remise);
-        total_a_payer_str   =  new DecimalFormat("####0.00").format(achat1.montant_bon);
-        ancien_solde_str   =  new DecimalFormat("####0.00").format(achat1.solde_ancien);
-        versement_str   =  new DecimalFormat("####0.00").format(achat1.verser);
-        nouveau_solde_str   =  new DecimalFormat("####0.00").format(achat1.reste);
+        nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_achat.size()));
+        total_ht_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ht);
+        tva_bon_str = new DecimalFormat("####0.00").format(achat1.tot_tva);
+        timbre_bon_str = new DecimalFormat("####0.00").format(achat1.timbre);
+        total_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ttc);
+        remise_bon_str = new DecimalFormat("####0.00").format(achat1.remise);
+        total_a_payer_str = new DecimalFormat("####0.00").format(achat1.montant_bon);
+        ancien_solde_str = new DecimalFormat("####0.00").format(achat1.solde_ancien);
+        versement_str = new DecimalFormat("####0.00").format(achat1.verser);
+        nouveau_solde_str = new DecimalFormat("####0.00").format(achat1.reste);
 
         canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
         ///////////////////////////// ancien solde /////////////////////////////////////////////////
         canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-        canvas.drawText( "|" +  center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str  ) + "|", mergeleft, facture_y + 30, title);
+        canvas.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
         canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
 
-        if(SOURCE.equals("FROM_ACHAT")){
+        if (SOURCE.equals("FROM_ACHAT")) {
             ///////////////////////////// montant bon /////////////////////////////////////////////////
-            canvas.drawText( "|" +  center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str)  + "|" , mergeleft, facture_y + 50, title);
+            canvas.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
             canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
 
             ///////////////////////////// versement /////////////////////////////////////////////////
-            canvas.drawText( "|" +  center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str)  + "|", mergeleft, facture_y + 70, title);
+            canvas.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
             canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
 
             ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
 
-            canvas.drawText( "|" +  center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str)  + "|" , mergeleft, facture_y + 90, title);
+            canvas.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
             canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
         }
 
@@ -361,53 +361,53 @@ public class GeneratePDF {
 
         facture_y = facture_y + 20;
 
-        if(achat1.tot_tva !=0 && achat1.timbre !=0){
+        if (achat1.tot_tva != 0 && achat1.timbre != 0) {
             //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TVA") + "|" + right_value(12, tva_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
             //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|" , mergeleft, facture_y + 50, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
 
             facture_y = facture_y + 60;
 
-        }else if(achat1.tot_tva != 0){
+        } else if (achat1.tot_tva != 0) {
             //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TVA") + "|" + right_value(12, tva_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
             facture_y = facture_y + 40;
 
-        }else if(achat1.timbre != 0){
+        } else if (achat1.timbre != 0) {
 
             //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
             facture_y = facture_y + 40;
         }
 
-        if(achat1.remise !=0){
+        if (achat1.remise != 0) {
 
             //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// REMISE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"REMISE") + "|" + right_value(12, remise_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
 
@@ -415,15 +415,15 @@ public class GeneratePDF {
         }
 
         ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
-        canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(achat1.montant_bon)) + "|" , mergeleft, facture_y + 10, title);
+        canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(achat1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
         canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
         pdfDocument.finishPage(myPage);
         File file = null;
-        if(SOURCE.equals("FROM_ACHAT")){
-            file = new File(mActivity.getCacheDir(), "BON_ACHAT_"+ achat1.num_bon+".pdf");
-        }else if(SOURCE.equals("FROM_ACHAT_ORDER")){
-            file = new File(mActivity.getCacheDir(), "BON_ACHAT_COMMANDE_"+ achat1.num_bon+".pdf");
+        if (SOURCE.equals("FROM_ACHAT")) {
+            file = new File(mActivity.getCacheDir(), "BON_ACHAT_" + achat1.num_bon + ".pdf");
+        } else if (SOURCE.equals("FROM_ACHAT_ORDER")) {
+            file = new File(mActivity.getCacheDir(), "BON_ACHAT_COMMANDE_" + achat1.num_bon + ".pdf");
         }
 
         try {
@@ -439,7 +439,6 @@ public class GeneratePDF {
     }
 
 
-
     private void generatePDFVente() {
         // creating an object variable
         // for our PDF document.
@@ -450,8 +449,8 @@ public class GeneratePDF {
         PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
         Canvas canvas = myPage.getCanvas();
 
-        String img_str= prefs.getString("COMPANY_LOGO", "");
-        if (!img_str.equals("")){
+        String img_str = prefs.getString("COMPANY_LOGO", "");
+        if (!img_str.equals("")) {
             //decode string to image
             byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
             bmp = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -463,56 +462,56 @@ public class GeneratePDF {
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         title.setTextSize(17);
 
-        if(!prefs.getString("COMPANY_NAME", "").equals("")){
+        if (!prefs.getString("COMPANY_NAME", "").equals("")) {
             canvas.drawText(prefs.getString("COMPANY_NAME", ""), mergeleft, 30, title);
         }
-        if(!prefs.getString("ACTIVITY_NAME", "").equals("")){
+        if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
             canvas.drawText(prefs.getString("ACTIVITY_NAME", ""), mergeleft, 60, title);
         }
-        if(!prefs.getString("COMPANY_ADRESSE", "").equals("")){
+        if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
             canvas.drawText(prefs.getString("COMPANY_ADRESSE", ""), mergeleft, 90, title);
         }
-        if(!prefs.getString("COMPANY_TEL", "").equals("")){
+        if (!prefs.getString("COMPANY_TEL", "").equals("")) {
             canvas.drawText(prefs.getString("COMPANY_TEL", ""), mergeleft, 120, title);
         }
 
         title.setTextAlign(Paint.Align.CENTER);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
         title.setTextSize(15);
-        canvas.drawLine(mergeleft, 150,endright, 150, paint);
-        canvas.drawLine(mergeleft, 153,endright, 153, paint);
+        canvas.drawLine(mergeleft, 150, endright, 150, paint);
+        canvas.drawLine(mergeleft, 153, endright, 153, paint);
 
         title.setTextAlign(Paint.Align.LEFT);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        if(SOURCE.equals("FROM_SALE")){
+        if (SOURCE.equals("FROM_SALE")) {
             canvas.drawText("BON DE LIVRAISON N°:" + Bon1.num_bon, mergeleft, 180, title);
-        }else if(SOURCE.equals("FROM_ORDER")){
+        } else if (SOURCE.equals("FROM_ORDER")) {
             canvas.drawText("BON DE COMMANDE N°:" + Bon1.num_bon, mergeleft, 180, title);
         }
 
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        if(SOURCE.equals("FROM_SALE")){
+        if (SOURCE.equals("FROM_SALE")) {
             canvas.drawText("Mode de paiement : A TERME", mergeleft, 200, title);
-        }else if(SOURCE.equals("FROM_ORDER")){
+        } else if (SOURCE.equals("FROM_ORDER")) {
             //canvas.drawText("Mode de paiement : A TERME", mergeleft, 200, title);
         }
 
         //title.setTextAlign(Paint.Align.CENTER);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        if(SOURCE.equals("FROM_SALE")){
+        if (SOURCE.equals("FROM_SALE")) {
             canvas.drawText("Doit : ", 400, 180, title);
-        }else if(SOURCE.equals("FROM_ORDER")){
+        } else if (SOURCE.equals("FROM_ORDER")) {
             canvas.drawText("Client : ", 400, 180, title);
         }
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText("" + Bon1.code_client, 400, 200, title);
-        canvas.drawText("" + Bon1.client, 400, 220, title);
-        canvas.drawText("" + Bon1.adresse, 400, 240, title);
+        canvas.drawText(Bon1.code_client, 400, 200, title);
+        canvas.drawText(Bon1.client, 400, 220, title);
+        canvas.drawText(Bon1.adresse, 400, 240, title);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        canvas.drawText("N.R.C : "+ Bon1.rc, 400, 260, title);
-        canvas.drawText("N.I.S : "+ Bon1.nis, 600, 260, title);
-        canvas.drawText("N.I.F : "+ Bon1.ifiscal, 400, 280, title);
-        canvas.drawText("N.A.I : "+ Bon1.ai, 600, 280, title);
+        canvas.drawText("N.R.C : " + Bon1.rc, 400, 260, title);
+        canvas.drawText("N.I.S : " + Bon1.nis, 600, 260, title);
+        canvas.drawText("N.I.F : " + Bon1.ifiscal, 400, 280, title);
+        canvas.drawText("N.A.I : " + Bon1.ai, 600, 280, title);
 
         title.setTextAlign(Paint.Align.RIGHT);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -522,34 +521,34 @@ public class GeneratePDF {
         title.setTextAlign(Paint.Align.LEFT);
         title.setTextSize(10);
         canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, 300, title);
-        canvas.drawText(createLine("N°",addCaracter(25, " ") + "DESIGNATION", "NBRE CO", "COLIS", "QTE", "U.G", "PRIX U" + addCaracter(3, " ")), mergeleft , 310 , title);
+        canvas.drawText(createLine("N°", addCaracter(25, " ") + "DESIGNATION", "NBRE CO", "COLIS", "QTE", "U.G", "PRIX U" + addCaracter(3, " ")), mergeleft, 310, title);
         canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, 320, title);
 
         double tot_qte = 0.0;
         int facture_y = 330;
 
-        for(int i = 0; i < final_panier_vente.size() ; i++){
+        for (int i = 0; i < final_panier_vente.size(); i++) {
             tot_qte = tot_qte + final_panier_vente.get(i).qte;
             facture_y = 330 + (i * 20);
 
             String nc = "", colissage = "", gratuit = "";
             ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
-            if(final_panier_vente.get(i).nbr_colis != 0){
-                nc = new DecimalFormat( "####0.##").format(final_panier_vente.get(i).nbr_colis);
-                colissage = new DecimalFormat( "####0.##").format(final_panier_vente.get(i).colissage);
+            if (final_panier_vente.get(i).nbr_colis != 0) {
+                nc = new DecimalFormat("####0.##").format(final_panier_vente.get(i).nbr_colis);
+                colissage = new DecimalFormat("####0.##").format(final_panier_vente.get(i).colissage);
             }
-            if(final_panier_vente.get(i).gratuit != 0){
-                gratuit = new DecimalFormat( "####0.##").format(final_panier_vente.get(i).gratuit);
+            if (final_panier_vente.get(i).gratuit != 0) {
+                gratuit = new DecimalFormat("####0.##").format(final_panier_vente.get(i).gratuit);
             }
 
             canvas.drawText(createLine(
                             String.valueOf(i + 1),
-                            final_panier_vente.get(i).produit ,
+                            final_panier_vente.get(i).produit,
                             nc,
                             colissage,
-                            new DecimalFormat( "####0.##").format(final_panier_vente.get(i).qte), gratuit,
+                            new DecimalFormat("####0.##").format(final_panier_vente.get(i).qte), gratuit,
                             new DecimalFormat("####0.00").format(final_panier_vente.get(i).pa_ht)),
-                    mergeleft , facture_y , title);
+                    mergeleft, facture_y, title);
 
             canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
         }
@@ -558,38 +557,38 @@ public class GeneratePDF {
         String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
 
-        nbr_produit_str =  new DecimalFormat( "####0.##").format(Double.valueOf(final_panier_vente.size()));
-        total_ht_bon_str   =  new DecimalFormat("####0.00").format(Bon1.tot_ht);
-        tva_bon_str   =  new DecimalFormat("####0.00").format(Bon1.tot_tva);
-        timbre_bon_str   =  new DecimalFormat("####0.00").format(Bon1.timbre);
-        total_bon_str   =  new DecimalFormat("####0.00").format(Bon1.tot_ttc);
-        remise_bon_str   =  new DecimalFormat("####0.00").format(Bon1.remise);
-        total_a_payer_str   =  new DecimalFormat("####0.00").format(Bon1.montant_bon);
+        nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_vente.size()));
+        total_ht_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ht);
+        tva_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_tva);
+        timbre_bon_str = new DecimalFormat("####0.00").format(Bon1.timbre);
+        total_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ttc);
+        remise_bon_str = new DecimalFormat("####0.00").format(Bon1.remise);
+        total_a_payer_str = new DecimalFormat("####0.00").format(Bon1.montant_bon);
 
-        ancien_solde_str   =  new DecimalFormat("####0.00").format(Bon1.solde_ancien);
-        versement_str   =  new DecimalFormat("####0.00").format(Bon1.verser);
-        nouveau_solde_str   =  new DecimalFormat("####0.00").format(Bon1.reste);
+        ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.solde_ancien);
+        versement_str = new DecimalFormat("####0.00").format(Bon1.verser);
+        nouveau_solde_str = new DecimalFormat("####0.00").format(Bon1.reste);
 
         canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
         ///////////////////////////// ancien solde /////////////////////////////////////////////////
         canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-        canvas.drawText( "|" +  center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str  ) + "|", mergeleft, facture_y + 30, title);
+        canvas.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
         canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
 
-        if(SOURCE.equals("FROM_SALE")){
+        if (SOURCE.equals("FROM_SALE")) {
             ///////////////////////////// montant bon /////////////////////////////////////////////////
-            canvas.drawText( "|" +  center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str)  + "|" , mergeleft, facture_y + 50, title);
+            canvas.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
             canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
 
             ///////////////////////////// versement /////////////////////////////////////////////////
-            canvas.drawText( "|" +  center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str)  + "|", mergeleft, facture_y + 70, title);
+            canvas.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
             canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
 
             ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
 
-            canvas.drawText( "|" +  center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str)  + "|" , mergeleft, facture_y + 90, title);
+            canvas.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
             canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
         }
 
@@ -598,53 +597,53 @@ public class GeneratePDF {
 
         facture_y = facture_y + 20;
 
-        if(Bon1.tot_tva !=0 && Bon1.timbre !=0){
+        if (Bon1.tot_tva != 0 && Bon1.timbre != 0) {
             //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TVA") + "|" + right_value(12, tva_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
             //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|" , mergeleft, facture_y + 50, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
 
             facture_y = facture_y + 60;
 
-        }else if(Bon1.tot_tva != 0){
+        } else if (Bon1.tot_tva != 0) {
             //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TVA") + "|" + right_value(12, tva_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
             facture_y = facture_y + 40;
 
-        }else if(Bon1.timbre != 0){
+        } else if (Bon1.timbre != 0) {
 
             //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
             facture_y = facture_y + 40;
         }
 
-        if(Bon1.remise !=0){
+        if (Bon1.remise != 0) {
 
             //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|" , mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
             //////////////////////////// REMISE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"REMISE") + "|" + right_value(12, remise_bon_str) + "|" , mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
             canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
 
 
@@ -652,15 +651,15 @@ public class GeneratePDF {
         }
 
         ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
-        canvas.drawText(addCaracter(86, " ") +"|" + center_value(19,"NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(Bon1.montant_bon)) + "|" , mergeleft, facture_y + 10, title);
+        canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(Bon1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
         canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
 
         pdfDocument.finishPage(myPage);
         File file = null;
-        if(SOURCE.equals("FROM_SALE")){
-            file = new File(mActivity.getCacheDir(), "BON_VENTE_"+Bon1.num_bon+".pdf");
-        }else if(SOURCE.equals("FROM_ORDER")){
-            file = new File(mActivity.getCacheDir(), "BON_COMMANDE_"+Bon1.num_bon+".pdf");
+        if (SOURCE.equals("FROM_SALE")) {
+            file = new File(mActivity.getCacheDir(), "BON_VENTE_" + Bon1.num_bon + ".pdf");
+        } else if (SOURCE.equals("FROM_ORDER")) {
+            file = new File(mActivity.getCacheDir(), "BON_COMMANDE_" + Bon1.num_bon + ".pdf");
         }
 
         try {
@@ -675,55 +674,55 @@ public class GeneratePDF {
         openPDF(Bon1.num_bon);
     }
 
-    private String createLine(String N, String produit, String nbre_colis, String colissage, String qte, String gratuit, String p_u){
+    private String createLine(String N, String produit, String nbre_colis, String colissage, String qte, String gratuit, String p_u) {
         String result = "|";
 
-        result = result + center_value(5,N) + "|";
-        result = result + " "+ produit + addCaracter(61 - produit.length(), " ") + "|";
-        result = result + center_value(7,nbre_colis) + "|";
-        result = result + center_value(8,colissage) + "|";
-        result = result + center_value(11,qte) + "|";
-        result = result + center_value(7,gratuit) + "|";
+        result = result + center_value(5, N) + "|";
+        result = result + " " + produit + addCaracter(61 - produit.length(), " ") + "|";
+        result = result + center_value(7, nbre_colis) + "|";
+        result = result + center_value(8, colissage) + "|";
+        result = result + center_value(11, qte) + "|";
+        result = result + center_value(7, gratuit) + "|";
         result = result + right_value(12, p_u) + "|";
 
         return result;
     }
 
-    private String addCaracter(int space_number, String caracter ){
+    private String addCaracter(int space_number, String caracter) {
         String space_result = "";
-        while(space_result.length() < space_number){
+        while (space_result.length() < space_number) {
             space_result = space_result + caracter;
         }
         return space_result;
     }
 
-    private String center_value(int space_number, String value_before){
+    private String center_value(int space_number, String value_before) {
         String value_after = "";
         //int value_length = value_before.length();
 
         int value_length = value_before.length();
         int diff = space_number - value_length;
-        value_after =   addCaracter((diff / 2), " ") + value_before + addCaracter((diff / 2) + diff%2, " " );
+        value_after = addCaracter((diff / 2), " ") + value_before + addCaracter((diff / 2) + diff % 2, " ");
 
 
-        return  value_after;
+        return value_after;
     }
 
-    private String right_value(int space_number, String value_before){
+    private String right_value(int space_number, String value_before) {
         String value_after = "";
         //int value_length = value_before.length();
-        if(value_before == ""){
+        if (value_before == "") {
             value_after = addCaracter(space_number, " ");
-        }else {
+        } else {
             int value_length = value_before.length();
             int diff = space_number - value_length;
-            value_after =   addCaracter(diff, " " ) + value_before;
+            value_after = addCaracter(diff, " ") + value_before;
         }
 
-        return  value_after;
+        return value_after;
     }
 
-    public void openPDF(String num_bon){
+    public void openPDF(String num_bon) {
 
         try {
             Intent intent = new Intent(mActivity, ActivityPDF.class);
@@ -731,8 +730,7 @@ public class GeneratePDF {
             intent.putExtra("SOURCE", SOURCE);
             mActivity.startActivity(intent);
             mActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

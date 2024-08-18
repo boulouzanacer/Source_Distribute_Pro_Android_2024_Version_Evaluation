@@ -28,8 +28,8 @@ import com.google.android.gms.vision.barcode.Barcode;
 public class BarcodeGraphicTracker extends Tracker<Barcode> {
 
     private NewDetectionListener mListener;
-    private GraphicOverlay<BarcodeGraphic> mOverlay;
-    private BarcodeGraphic mGraphic;
+    private final GraphicOverlay<BarcodeGraphic> mOverlay;
+    private final BarcodeGraphic mGraphic;
 
     BarcodeGraphicTracker(GraphicOverlay<BarcodeGraphic> overlay, BarcodeGraphic graphic) {
         mOverlay = overlay;

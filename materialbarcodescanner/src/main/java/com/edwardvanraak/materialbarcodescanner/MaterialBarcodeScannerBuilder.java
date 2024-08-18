@@ -62,7 +62,7 @@ public class MaterialBarcodeScannerBuilder {
      * @param activity current activity which will contain the drawer
      */
     public MaterialBarcodeScannerBuilder(@NonNull Activity activity) {
-        this.mRootView = (ViewGroup) activity.findViewById(android.R.id.content);
+        this.mRootView = activity.findViewById(android.R.id.content);
         this.mActivity = activity;
     }
 
@@ -71,7 +71,7 @@ public class MaterialBarcodeScannerBuilder {
      * @param activity current activity which will contain the MaterialBarcodeScanner
      */
     public MaterialBarcodeScannerBuilder withActivity(@NonNull Activity activity) {
-        this.mRootView = (ViewGroup) activity.findViewById(android.R.id.content);
+        this.mRootView = activity.findViewById(android.R.id.content);
         this.mActivity = activity;
         return this;
     }

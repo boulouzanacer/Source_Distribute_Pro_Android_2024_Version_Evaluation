@@ -23,5 +23,4 @@
     <include layout="@layout/content_mainn" />
 
 
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -81,14 +81,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-
         <Spinner
             android:id="@+id/type_logiciel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/database_text"
             android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown" />
 
 
         <CheckBox
@@ -97,7 +96,7 @@
             android:text="@string/connexion_instantan"
             android:checked="false"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -192,11 +191,11 @@
         android:layout_marginTop="5dp"
         android:background="@color/gray"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
+        android:layout_height="0.5dp" />
 
 
     <Button
-        android:id="@+id/check_connexion"
+        android:id="@+id/btntest_connection"
         style="@style/dialog_blue_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -303,11 +302,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_below="@+id/nom_depot_lnr"
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="5dp"
-            android:text="List depots" />
+            android:text="Depots" />
+
 
         <View
             android:id="@+id/vieww"
@@ -315,7 +315,8 @@
             android:background="@color/gray"
             android:layout_below="@+id/get_all_depot"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"/>
+            android:layout_height="0.5dp" />
+
 
         <LinearLayout
             android:id="@+id/code_vendeur_lnr"
@@ -393,11 +394,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_below="@+id/nom_vendeur_lnr"
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="5dp"
-            android:text="List vendeur" />
+            android:text="Vendeurs" />
 
     </RelativeLayout>
 
@@ -405,7 +406,7 @@
         android:layout_marginTop="5dp"
         android:background="@color/gray"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
+        android:layout_height="0.5dp" />
 
 
 </LinearLayout>

@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
@@ -50,10 +53,10 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class FragmentNewEditProduct {
 
-    final String ALLOWED_CHARACTERS_CODEBARRE ="0123456789ABCDEFGHJK";
-    final String ALLOWED_CHARACTERS_REFERENCE ="012345678-9RSTUVWXYZ";
+    final String ALLOWED_CHARACTERS_CODEBARRE = "0123456789ABCDEFGHJK";
+    final String ALLOWED_CHARACTERS_REFERENCE = "012345678-9RSTUVWXYZ";
 
-    double  val_colissage, val_stock_ini,
+    double val_colissage, val_stock_ini,
             val_prix_achat_ht, val_tva, val_prix_achat_ttc,
             val_prix1_ht, val_prix1_ttc,
             val_prix2_ht, val_prix2_ttc,
@@ -65,7 +68,7 @@ public class FragmentNewEditProduct {
     ImageButton generate_reference, scan_reference;
     MaterialFancyButton btn_valider, btn_cancel;
     Button btn_from_gallery, btn_from_camera;
-    TextInputEditText  edt_designation, edt_codebarre,
+    TextInputEditText edt_designation, edt_codebarre,
             edt_reference, edt_colissage, edt_stock_ini,
             edt_prix_achat_ht, edt_tva, edt_prix_achat_ttc,
             edt_prix1_ht, edt_prix1_ttc,
@@ -74,7 +77,7 @@ public class FragmentNewEditProduct {
             edt_prix4_ht, edt_prix4_ttc,
             edt_prix5_ht, edt_prix5_ttc,
             edt_prix6_ht, edt_prix6_ttc;
-    LinearLayout lnr_prix1,lnr_prix2,lnr_prix3,lnr_prix4,lnr_prix5,lnr_prix6;
+    LinearLayout lnr_prix1, lnr_prix2, lnr_prix3, lnr_prix4, lnr_prix5, lnr_prix6;
     TextInputLayout txt_input_prix_ht,
             txt_input_tva, txt_input_prix_ttc,
             txt_input_prix1_ht, txt_input_prix1_ttc,
@@ -94,7 +97,7 @@ public class FragmentNewEditProduct {
     PostData_Produit created_produit;
     PostData_Produit old_product;
     private DATABASE controller;
-    NumberFormat nf,nq;
+    NumberFormat nf, nq;
     private Barcode barcodeResult;
 
     private PostData_Params params;
@@ -215,7 +218,7 @@ public class FragmentNewEditProduct {
         edt_prix5_ttc = dialogview.findViewById(R.id.edt_prix5_ttc);
         edt_prix6_ttc = dialogview.findViewById(R.id.edt_prix6_ttc);
 
-        if(SOURCE_ACTIVITY.equals("EDIT_PRODUCT")){
+        if (SOURCE_ACTIVITY.equals("EDIT_PRODUCT")) {
 
             edt_codebarre.setText(old_product.code_barre);
             edt_codebarre.setEnabled(false);
@@ -224,11 +227,12 @@ public class FragmentNewEditProduct {
 
             edt_designation.setText(old_product.produit);
             edt_colissage.setText(nq.format(old_product.colissage));
+            edt_stock_ini.setText(nq.format(old_product.stock_ini));
 
             edt_prix_achat_ht.setText(nf.format(old_product.pa_ht));
             edt_tva.setText(nf.format(old_product.tva));
 
-            old_product.pa_ttc =  old_product.pa_ht + (old_product.pa_ht * old_product.tva / 100);
+            old_product.pa_ttc = old_product.pa_ht + (old_product.pa_ht * old_product.tva / 100);
             edt_prix_achat_ttc.setText(nf.format(old_product.pa_ttc));
 
 
@@ -240,18 +244,65 @@ public class FragmentNewEditProduct {
             edt_prix6_ht.setText(nf.format(old_product.pv6_ht));
 
 
-            old_product.pv1_ttc =  old_product.pv1_ht + (old_product.pv1_ht * old_product.tva / 100);
-            old_product.pv2_ttc =  old_product.pv2_ht + (old_product.pv2_ht * old_product.tva / 100);
-            old_product.pv3_ttc =  old_product.pv3_ht + (old_product.pv3_ht * old_product.tva / 100);
-            old_product.pv4_ttc =  old_product.pv4_ht + (old_product.pv4_ht * old_product.tva / 100);
-            old_product.pv5_ttc =  old_product.pv5_ht + (old_product.pv5_ht * old_product.tva / 100);
-            old_product.pv6_ttc =  old_product.pv6_ht + (old_product.pv6_ht * old_product.tva / 100);
+            old_product.pv1_ttc = old_product.pv1_ht + (old_product.pv1_ht * old_product.tva / 100);
+            old_product.pv2_ttc = old_product.pv2_ht + (old_product.pv2_ht * old_product.tva / 100);
+            old_product.pv3_ttc = old_product.pv3_ht + (old_product.pv3_ht * old_product.tva / 100);
+            old_product.pv4_ttc = old_product.pv4_ht + (old_product.pv4_ht * old_product.tva / 100);
+            old_product.pv5_ttc = old_product.pv5_ht + (old_product.pv5_ht * old_product.tva / 100);
+            old_product.pv6_ttc = old_product.pv6_ht + (old_product.pv6_ht * old_product.tva / 100);
+
             edt_prix1_ttc.setText(nf.format(old_product.pv1_ttc));
             edt_prix2_ttc.setText(nf.format(old_product.pv2_ttc));
             edt_prix3_ttc.setText(nf.format(old_product.pv3_ttc));
             edt_prix4_ttc.setText(nf.format(old_product.pv4_ttc));
             edt_prix5_ttc.setText(nf.format(old_product.pv5_ttc));
             edt_prix6_ttc.setText(nf.format(old_product.pv6_ttc));
+
+            if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
+                int black_color = ContextCompat.getColor(activity, R.color.black);
+                edt_prix_achat_ttc.setTextColor(black_color);
+                edt_prix_achat_ttc.setEnabled(true);
+                edt_prix_achat_ht.setTextColor(black_color);
+                edt_prix_achat_ht.setEnabled(true);
+            }else {
+                int white_color = ContextCompat.getColor(activity, R.color.white);
+                edt_prix_achat_ttc.setTextColor(white_color);
+                edt_prix_achat_ttc.setEnabled(false);
+                edt_prix_achat_ht.setTextColor(white_color);
+                edt_prix_achat_ht.setEnabled(false);
+            }
+
+            if (prefs.getBoolean("EDIT_PRICE", false)) {
+                edt_prix1_ttc.setEnabled(true);
+                edt_prix2_ttc.setEnabled(true);
+                edt_prix3_ttc.setEnabled(true);
+                edt_prix4_ttc.setEnabled(true);
+                edt_prix5_ttc.setEnabled(true);
+                edt_prix6_ttc.setEnabled(true);
+
+                edt_prix1_ht.setEnabled(true);
+                edt_prix2_ht.setEnabled(true);
+                edt_prix3_ht.setEnabled(true);
+                edt_prix4_ht.setEnabled(true);
+                edt_prix5_ht.setEnabled(true);
+                edt_prix6_ht.setEnabled(true);
+            }else{
+                edt_prix1_ttc.setEnabled(false);
+                edt_prix2_ttc.setEnabled(false);
+                edt_prix3_ttc.setEnabled(false);
+                edt_prix4_ttc.setEnabled(false);
+                edt_prix5_ttc.setEnabled(false);
+                edt_prix6_ttc.setEnabled(false);
+
+                edt_prix1_ht.setEnabled(false);
+                edt_prix2_ht.setEnabled(false);
+                edt_prix3_ht.setEnabled(false);
+                edt_prix4_ht.setEnabled(false);
+                edt_prix5_ht.setEnabled(false);
+                edt_prix6_ht.setEnabled(false);
+            }
+
+
 
         }
 
@@ -276,38 +327,38 @@ public class FragmentNewEditProduct {
         txt_input_prix6_ttc.setHint(params.pv6_titre + " (TTC)");
 
 
-        if(params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
+        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
             lnr_prix2.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             lnr_prix2.setVisibility(View.INVISIBLE);
         }
 
-        if(params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
+        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
             lnr_prix3.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             lnr_prix3.setVisibility(View.INVISIBLE);
         }
 
-        if(params.prix_4 == 1){
+        if (params.prix_4 == 1) {
             lnr_prix4.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             lnr_prix4.setVisibility(View.INVISIBLE);
         }
 
-        if(params.prix_5 == 1){
+        if (params.prix_5 == 1) {
             lnr_prix5.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             lnr_prix5.setVisibility(View.INVISIBLE);
         }
 
-        if(params.prix_6 == 1){
+        if (params.prix_6 == 1) {
             lnr_prix6.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             lnr_prix6.setVisibility(View.INVISIBLE);
         }
 
 
-        if(prefs.getBoolean("AFFICHAGE_HT", false)){
+        if (prefs.getBoolean("AFFICHAGE_HT", false)) {
             txt_input_prix_ht.setVisibility(View.VISIBLE);
             txt_input_tva.setVisibility(View.VISIBLE);
             ly_prix_achat.setWeightSum(5);
@@ -330,7 +381,7 @@ public class FragmentNewEditProduct {
             txt_input_prix6_ht.setVisibility(View.VISIBLE);
             lnr_prix6.setWeightSum(2);
 
-        }else {
+        } else {
 
             txt_input_prix_ht.setVisibility(View.GONE);
             txt_input_tva.setVisibility(View.GONE);
@@ -401,12 +452,12 @@ public class FragmentNewEditProduct {
         btn_valider.setOnClickListener(v -> {
             boolean hasError = false;
 
-            if (edt_codebarre.getText().length() <= 0 ) {
+            if (edt_codebarre.getText().length() <= 0) {
                 edt_codebarre.setError("Code a barre est obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_reference.getText().length() <= 0 ) {
+            if (edt_reference.getText().length() <= 0) {
                 edt_reference.setError("Reference est obligatoire!!");
                 hasError = true;
             }
@@ -419,70 +470,70 @@ public class FragmentNewEditProduct {
 
             //===================================================================
 
-            if (edt_stock_ini.getText().length() <= 0 ) {
+            if (edt_stock_ini.getText().length() <= 0) {
                 edt_stock_ini.setText("0");
                 val_stock_ini = 0;
-            }else {
+            } else {
                 val_stock_ini = Double.parseDouble(edt_stock_ini.getText().toString());
             }
 
-            if (edt_colissage.getText().length() <= 0 ) {
+            if (edt_colissage.getText().length() <= 0) {
                 edt_colissage.setText("0");
                 val_colissage = 0;
-            }else {
+            } else {
                 val_colissage = Double.parseDouble(edt_colissage.getText().toString());
             }
 
             //===================================================================
 
-            if (edt_prix_achat_ttc.getText().length() <= 0 ) {
+            if (edt_prix_achat_ttc.getText().length() <= 0) {
                 edt_prix_achat_ttc.setError("Prix achat (TTC) est obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_prix1_ttc.getText().length() <= 0 ) {
+            if (edt_prix1_ttc.getText().length() <= 0) {
                 edt_prix1_ttc.setError(params.pv1_titre + " (TTC) est obligatoire!!");
                 hasError = true;
             }
 
-            if(params.prix_2 == 1){
-                if (edt_prix2_ttc.getText().length() <= 0 ) {
+            if (params.prix_2 == 1) {
+                if (edt_prix2_ttc.getText().length() <= 0) {
                     edt_prix2_ttc.setError(params.pv2_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(params.prix_3 == 1){
-                if (edt_prix3_ttc.getText().length() <= 0 ) {
+            if (params.prix_3 == 1) {
+                if (edt_prix3_ttc.getText().length() <= 0) {
                     edt_prix3_ttc.setError(params.pv3_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(params.prix_4 == 1){
-                if (edt_prix4_ttc.getText().length() <= 0 ) {
+            if (params.prix_4 == 1) {
+                if (edt_prix4_ttc.getText().length() <= 0) {
                     edt_prix4_ttc.setError(params.pv4_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(params.prix_5 == 1){
-                if (edt_prix5_ttc.getText().length() <= 0 ) {
+            if (params.prix_5 == 1) {
+                if (edt_prix5_ttc.getText().length() <= 0) {
                     edt_prix5_ttc.setError(params.pv5_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(params.prix_6 == 1){
-                if (edt_prix6_ttc.getText().length() <= 0 ) {
+            if (params.prix_6 == 1) {
+                if (edt_prix6_ttc.getText().length() <= 0) {
                     edt_prix6_ttc.setError(params.pv6_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
-            if(prefs.getBoolean("AFFICHAGE_HT", false)){
+            if (prefs.getBoolean("AFFICHAGE_HT", false)) {
 
-                if (edt_prix_achat_ht.getText().length() <= 0 ) {
+                if (edt_prix_achat_ht.getText().length() <= 0) {
                     edt_prix_achat_ht.setError("Prix achat HT est obligatoire!!");
                     hasError = true;
                 }
@@ -492,41 +543,41 @@ public class FragmentNewEditProduct {
                     hasError = true;
                 }*/
 
-                if (edt_prix1_ht.getText().length() <= 0 ) {
+                if (edt_prix1_ht.getText().length() <= 0) {
                     edt_prix1_ht.setError("Prix 1 HT est obligatoire!!");
                     hasError = true;
                 }
 
-                if(params.prix_2 == 1){
-                    if (edt_prix2_ht.getText().length() <= 0 ) {
+                if (params.prix_2 == 1) {
+                    if (edt_prix2_ht.getText().length() <= 0) {
                         edt_prix2_ht.setError("Prix 2 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(params.prix_3 == 1){
-                    if (edt_prix3_ht.getText().length() <= 0 ) {
+                if (params.prix_3 == 1) {
+                    if (edt_prix3_ht.getText().length() <= 0) {
                         edt_prix3_ht.setError("Prix 3 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(params.prix_4 == 1){
-                    if (edt_prix4_ht.getText().length() <= 0 ) {
+                if (params.prix_4 == 1) {
+                    if (edt_prix4_ht.getText().length() <= 0) {
                         edt_prix4_ht.setError("Prix 4 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(params.prix_5 == 1){
-                    if (edt_prix5_ht.getText().length() <= 0 ) {
+                if (params.prix_5 == 1) {
+                    if (edt_prix5_ht.getText().length() <= 0) {
                         edt_prix5_ht.setError("Prix 5 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
-                if(params.prix_6 == 1){
-                    if (edt_prix6_ht.getText().length() <= 0 ) {
+                if (params.prix_6 == 1) {
+                    if (edt_prix6_ht.getText().length() <= 0) {
                         edt_prix6_ht.setError("Prix 6 HT est obligatoire!!");
                         hasError = true;
                     }
@@ -537,68 +588,70 @@ public class FragmentNewEditProduct {
             if (!hasError) {
 
                 created_produit.produit = edt_designation.getText().toString();
-                created_produit.code_barre =  edt_codebarre.getText().toString();
-                created_produit.ref_produit =  edt_reference.getText().toString();
-                created_produit.photo =  inputData;
-                created_produit.famille =  "";
+                created_produit.code_barre = edt_codebarre.getText().toString();
+                created_produit.ref_produit = edt_reference.getText().toString();
+                created_produit.photo = inputData;
+                created_produit.famille = "";
 
-                created_produit.colissage =  val_colissage;
-                created_produit.stock =  val_stock_ini;
+                created_produit.stock_ini = val_stock_ini;
+                created_produit.colissage = val_colissage;
 
-                created_produit.pa_ht =  Double.parseDouble(edt_prix_achat_ht.getText().toString());
-                created_produit.tva =  Double.parseDouble(edt_tva.getText().toString());
-                created_produit.pa_ttc =  Double.parseDouble(edt_tva.getText().toString());
+                created_produit.pa_ht = Double.parseDouble(edt_prix_achat_ht.getText().toString());
+                created_produit.tva = Double.parseDouble(edt_tva.getText().toString());
+                created_produit.pa_ttc = Double.parseDouble(edt_tva.getText().toString());
 
-                created_produit.isNew =  1;
+                created_produit.isNew = 1;
 
-                created_produit.pv1_ht =  Double.parseDouble(edt_prix1_ht.getText().toString());
-                created_produit.pv1_ttc =  created_produit.pv1_ht + (created_produit.pv1_ht * created_produit.tva / 100);
+                created_produit.pv1_ht = Double.parseDouble(edt_prix1_ht.getText().toString());
+                created_produit.pv1_ttc = created_produit.pv1_ht + (created_produit.pv1_ht * created_produit.tva / 100);
 
-                if(params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
-                    created_produit.pv2_ht =  Double.parseDouble(edt_prix2_ht.getText().toString());
-                    created_produit.pv2_ttc =  created_produit.pv2_ht + (created_produit.pv2_ht * created_produit.tva / 100);
-                }else {
+                if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                    created_produit.pv2_ht = Double.parseDouble(edt_prix2_ht.getText().toString());
+                    created_produit.pv2_ttc = created_produit.pv2_ht + (created_produit.pv2_ht * created_produit.tva / 100);
+                } else {
                     created_produit.pv2_ht = 0.00;
                     created_produit.pv2_ttc = 0.00;
                 }
 
-                if(params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
-                    created_produit.pv3_ht =  Double.parseDouble(edt_prix3_ht.getText().toString());
-                    created_produit.pv3_ttc =  created_produit.pv3_ht + (created_produit.pv3_ht * created_produit.tva / 100);
-                }else {
+                if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                    created_produit.pv3_ht = Double.parseDouble(edt_prix3_ht.getText().toString());
+                    created_produit.pv3_ttc = created_produit.pv3_ht + (created_produit.pv3_ht * created_produit.tva / 100);
+                } else {
                     created_produit.pv3_ht = 0.00;
                     created_produit.pv3_ttc = 0.00;
                 }
 
-                if(params.prix_4 == 1){
-                    created_produit.pv4_ht =  Double.parseDouble(edt_prix4_ht.getText().toString());
+                if (params.prix_4 == 1) {
+                    created_produit.pv4_ht = Double.parseDouble(edt_prix4_ht.getText().toString());
                     created_produit.pv4_ttc = created_produit.pv4_ht + (created_produit.pv4_ht * created_produit.tva / 100);
-                }else {
+                } else {
                     created_produit.pv4_ht = 0.00;
                     created_produit.pv4_ttc = 0.00;
                 }
 
-                if(params.prix_5 == 1){
-                    created_produit.pv5_ht =  Double.parseDouble(edt_prix5_ht.getText().toString());
-                    created_produit.pv5_ttc =  created_produit.pv5_ht + (created_produit.pv5_ht * created_produit.tva / 100);
-                }else {
+                if (params.prix_5 == 1) {
+                    created_produit.pv5_ht = Double.parseDouble(edt_prix5_ht.getText().toString());
+                    created_produit.pv5_ttc = created_produit.pv5_ht + (created_produit.pv5_ht * created_produit.tva / 100);
+                } else {
                     created_produit.pv5_ht = 0.00;
                     created_produit.pv5_ttc = 0.00;
                 }
 
-                if(params.prix_6 == 1){
-                    created_produit.pv6_ht =  Double.parseDouble(edt_prix6_ht.getText().toString());
-                    created_produit.pv6_ttc =  created_produit.pv6_ht + (created_produit.pv6_ht * created_produit.tva / 100);
-                }else {
+                if (params.prix_6 == 1) {
+                    created_produit.pv6_ht = Double.parseDouble(edt_prix6_ht.getText().toString());
+                    created_produit.pv6_ttc = created_produit.pv6_ht + (created_produit.pv6_ht * created_produit.tva / 100);
+                } else {
                     created_produit.pv6_ht = 0.00;
                     created_produit.pv6_ttc = 0.00;
                 }
 
-                if(SOURCE_ACTIVITY.equals("EDIT_PRODUCT")){
+                if (SOURCE_ACTIVITY.equals("EDIT_PRODUCT")) {
+
+                    created_produit.stock = old_product.stock -old_product.stock_ini + val_stock_ini;
 
                     //update client into database,
                     boolean state_update_produit = controller.update_into_produit(created_produit);
-                    if(state_update_produit){
+                    if (state_update_produit) {
 
                         Crouton.makeText(activity, "Produit bien modifier", Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
@@ -606,14 +659,17 @@ public class FragmentNewEditProduct {
 
                         dialog.dismiss();
 
-                    }else{
+                    } else {
                         Crouton.makeText(activity, "Problème mise à jour produit", Style.ALERT).show();
                     }
-                }else {
+                } else {
+
+
+                    created_produit.stock = val_stock_ini;
 
                     //update client into database,
                     boolean state_insert_produit = controller.insert_into_produit(created_produit);
-                    if(state_insert_produit){
+                    if (state_insert_produit) {
 
                         Crouton.makeText(activity, "Produit bien ajouté", Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
@@ -621,7 +677,7 @@ public class FragmentNewEditProduct {
 
                         dialog.dismiss();
 
-                    }else{
+                    } else {
                         Crouton.makeText(activity, "Problème insertion", Style.ALERT).show();
                     }
                 }
@@ -647,12 +703,12 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix_achat_ttc.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix_achat_ttc.isFocused() && !edt_tva.isFocused()) {
+                    try {
 
                         onPrixAchatHTChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -676,13 +732,13 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix_achat_ht.isFocused() && !edt_prix_achat_ttc.isFocused()){
+                if (!edt_prix_achat_ht.isFocused() && !edt_prix_achat_ttc.isFocused()) {
 
-                    try{
+                    try {
 
                         onTvaChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -705,17 +761,16 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix_achat_ht.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix_achat_ht.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrixAchatTTCChange();
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
 
             }
         });
-
 
 
         edt_prix1_ttc.addTextChangedListener(new TextWatcher() {
@@ -733,10 +788,10 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix1_ht.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix1_ht.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix1TTCChange();
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -760,10 +815,10 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix2_ht.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix2_ht.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix2TTCChange();
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -787,10 +842,10 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix3_ht.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix3_ht.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix3TTCChange();
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -814,11 +869,11 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix4_ht.isFocused() && !edt_tva.isFocused() ){
-                    try{
+                if (!edt_prix4_ht.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix4TTCChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -842,11 +897,11 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix5_ht.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix5_ht.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix5TTCChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -870,11 +925,11 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix6_ht.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix6_ht.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix6TTCChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -898,11 +953,11 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix1_ttc.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix1_ttc.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix1HtChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -926,10 +981,10 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix2_ttc.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix2_ttc.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix2HtChange();
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -953,11 +1008,11 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix3_ttc.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix3_ttc.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix3HtChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -981,11 +1036,11 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix4_ttc.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix4_ttc.isFocused() && !edt_tva.isFocused()) {
+                    try {
                         onPrix4HtChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -1009,12 +1064,12 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix5_ttc.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix5_ttc.isFocused() && !edt_tva.isFocused()) {
+                    try {
 
                         onPrix5HtChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -1038,12 +1093,12 @@ public class FragmentNewEditProduct {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_prix6_ttc.isFocused() && !edt_tva.isFocused()){
-                    try{
+                if (!edt_prix6_ttc.isFocused() && !edt_tva.isFocused()) {
+                    try {
 
                         onPrix6HtChange();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -1061,19 +1116,19 @@ public class FragmentNewEditProduct {
         EventBus.getDefault().register(this);
     }
 
-    void onPrixAchatHTChange(){
+    void onPrixAchatHTChange() {
 
-        if(edt_prix_achat_ht.getText().toString().isEmpty()){
+        if (edt_prix_achat_ht.getText().toString().isEmpty()) {
             val_prix_achat_ht = 0.00;
-        }else {
+        } else {
             val_prix_achat_ht = Double.parseDouble(edt_prix_achat_ht.getText().toString());
         }
 
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
             edt_tva.setText("0");
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1083,53 +1138,53 @@ public class FragmentNewEditProduct {
 
     }
 
-    void onTvaChange(){
+    void onTvaChange() {
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
-        if(edt_prix_achat_ht.getText().toString().isEmpty()){
+        if (edt_prix_achat_ht.getText().toString().isEmpty()) {
             val_prix_achat_ht = 0.00;
-        }else {
+        } else {
             val_prix_achat_ht = Double.parseDouble(edt_prix_achat_ht.getText().toString());
         }
 
-        if(edt_prix1_ht.getText().toString().isEmpty()){
+        if (edt_prix1_ht.getText().toString().isEmpty()) {
             val_prix1_ht = 0.00;
-        }else {
+        } else {
             val_prix1_ht = Double.parseDouble(edt_prix1_ht.getText().toString());
         }
 
-        if(edt_prix2_ht.getText().toString().isEmpty()){
+        if (edt_prix2_ht.getText().toString().isEmpty()) {
             val_prix2_ht = 0.00;
-        }else {
+        } else {
             val_prix2_ht = Double.parseDouble(edt_prix2_ht.getText().toString());
         }
 
-        if(edt_prix3_ht.getText().toString().isEmpty()){
+        if (edt_prix3_ht.getText().toString().isEmpty()) {
             val_prix3_ht = 0.00;
-        }else {
+        } else {
             val_prix3_ht = Double.parseDouble(edt_prix3_ht.getText().toString());
         }
 
-        if(edt_prix4_ht.getText().toString().isEmpty()){
+        if (edt_prix4_ht.getText().toString().isEmpty()) {
             val_prix4_ht = 0.00;
-        }else {
+        } else {
             val_prix4_ht = Double.parseDouble(edt_prix4_ht.getText().toString());
         }
 
-        if(edt_prix5_ht.getText().toString().isEmpty()){
+        if (edt_prix5_ht.getText().toString().isEmpty()) {
             val_prix5_ht = 0.00;
-        }else {
+        } else {
             val_prix5_ht = Double.parseDouble(edt_prix5_ht.getText().toString());
         }
 
-        if(edt_prix6_ht.getText().toString().isEmpty()){
+        if (edt_prix6_ht.getText().toString().isEmpty()) {
             val_prix6_ht = 0.00;
-        }else {
+        } else {
             val_prix6_ht = Double.parseDouble(edt_prix6_ht.getText().toString());
         }
 
@@ -1151,18 +1206,18 @@ public class FragmentNewEditProduct {
 
     }
 
-    void onPrixAchatTTCChange(){
+    void onPrixAchatTTCChange() {
 
-        if(edt_prix_achat_ttc.getText().toString().isEmpty()){
+        if (edt_prix_achat_ttc.getText().toString().isEmpty()) {
             val_prix_achat_ttc = 0.00;
-        }else {
+        } else {
             val_prix_achat_ttc = Double.parseDouble(edt_prix_achat_ttc.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
             edt_tva.setText("0");
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1173,17 +1228,17 @@ public class FragmentNewEditProduct {
     }
 
 
-    void onPrix1TTCChange(){
+    void onPrix1TTCChange() {
 
-        if(edt_prix1_ttc.getText().toString().isEmpty()){
+        if (edt_prix1_ttc.getText().toString().isEmpty()) {
             val_prix1_ttc = 0.00;
-        }else {
+        } else {
             val_prix1_ttc = Double.parseDouble(edt_prix1_ttc.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1193,17 +1248,17 @@ public class FragmentNewEditProduct {
 
     }
 
-    void onPrix2TTCChange(){
+    void onPrix2TTCChange() {
 
-        if(edt_prix2_ttc.getText().toString().isEmpty()){
+        if (edt_prix2_ttc.getText().toString().isEmpty()) {
             val_prix2_ttc = 0.00;
-        }else {
+        } else {
             val_prix2_ttc = Double.parseDouble(edt_prix2_ttc.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1213,17 +1268,17 @@ public class FragmentNewEditProduct {
 
     }
 
-    void onPrix3TTCChange(){
+    void onPrix3TTCChange() {
 
-        if(edt_prix3_ttc.getText().toString().isEmpty()){
+        if (edt_prix3_ttc.getText().toString().isEmpty()) {
             val_prix3_ttc = 0.00;
-        }else {
+        } else {
             val_prix3_ttc = Double.parseDouble(edt_prix3_ttc.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1233,17 +1288,17 @@ public class FragmentNewEditProduct {
 
     }
 
-    void onPrix4TTCChange(){
+    void onPrix4TTCChange() {
 
-        if(edt_prix4_ttc.getText().toString().isEmpty()){
+        if (edt_prix4_ttc.getText().toString().isEmpty()) {
             val_prix4_ttc = 0.00;
-        }else {
+        } else {
             val_prix4_ttc = Double.parseDouble(edt_prix4_ttc.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1253,17 +1308,17 @@ public class FragmentNewEditProduct {
 
     }
 
-    void onPrix5TTCChange(){
+    void onPrix5TTCChange() {
 
-        if(edt_prix5_ttc.getText().toString().isEmpty()){
+        if (edt_prix5_ttc.getText().toString().isEmpty()) {
             val_prix5_ttc = 0.00;
-        }else {
+        } else {
             val_prix5_ttc = Double.parseDouble(edt_prix5_ttc.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1273,17 +1328,17 @@ public class FragmentNewEditProduct {
 
     }
 
-    void onPrix6TTCChange(){
+    void onPrix6TTCChange() {
 
-        if(edt_prix6_ttc.getText().toString().isEmpty()){
+        if (edt_prix6_ttc.getText().toString().isEmpty()) {
             val_prix6_ttc = 0.00;
-        }else {
+        } else {
             val_prix6_ttc = Double.parseDouble(edt_prix6_ttc.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1294,17 +1349,17 @@ public class FragmentNewEditProduct {
     }
 
     //===================================
-    void onPrix1HtChange(){
+    void onPrix1HtChange() {
 
-        if(edt_prix1_ht.getText().toString().isEmpty()){
+        if (edt_prix1_ht.getText().toString().isEmpty()) {
             val_prix1_ht = 0.00;
-        }else {
+        } else {
             val_prix1_ht = Double.parseDouble(edt_prix1_ht.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1313,17 +1368,18 @@ public class FragmentNewEditProduct {
         edt_prix1_ttc.setText(nq.format(val_prix1_ttc));
 
     }
-    void onPrix2HtChange(){
 
-        if(edt_prix2_ht.getText().toString().isEmpty()){
+    void onPrix2HtChange() {
+
+        if (edt_prix2_ht.getText().toString().isEmpty()) {
             val_prix2_ht = 0.00;
-        }else {
+        } else {
             val_prix2_ht = Double.parseDouble(edt_prix2_ht.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1332,17 +1388,18 @@ public class FragmentNewEditProduct {
         edt_prix2_ttc.setText(nq.format(val_prix2_ttc));
 
     }
-    void onPrix3HtChange(){
 
-        if(edt_prix3_ht.getText().toString().isEmpty()){
+    void onPrix3HtChange() {
+
+        if (edt_prix3_ht.getText().toString().isEmpty()) {
             val_prix3_ht = 0.00;
-        }else {
+        } else {
             val_prix3_ht = Double.parseDouble(edt_prix3_ht.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1351,17 +1408,18 @@ public class FragmentNewEditProduct {
         edt_prix3_ttc.setText(nq.format(val_prix3_ttc));
 
     }
-    void onPrix4HtChange(){
 
-        if(edt_prix4_ht.getText().toString().isEmpty()){
+    void onPrix4HtChange() {
+
+        if (edt_prix4_ht.getText().toString().isEmpty()) {
             val_prix4_ht = 0.00;
-        }else {
+        } else {
             val_prix4_ht = Double.parseDouble(edt_prix4_ht.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1370,17 +1428,18 @@ public class FragmentNewEditProduct {
         edt_prix4_ttc.setText(nq.format(val_prix4_ttc));
 
     }
-    void onPrix5HtChange(){
 
-        if(edt_prix5_ht.getText().toString().isEmpty()){
+    void onPrix5HtChange() {
+
+        if (edt_prix5_ht.getText().toString().isEmpty()) {
             val_prix5_ht = 0.00;
-        }else {
+        } else {
             val_prix5_ht = Double.parseDouble(edt_prix5_ht.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1389,17 +1448,18 @@ public class FragmentNewEditProduct {
         edt_prix5_ttc.setText(nq.format(val_prix5_ttc));
 
     }
-    void onPrix6HtChange(){
 
-        if(edt_prix6_ht.getText().toString().isEmpty()){
+    void onPrix6HtChange() {
+
+        if (edt_prix6_ht.getText().toString().isEmpty()) {
             val_prix6_ht = 0.00;
-        }else {
+        } else {
             val_prix6_ht = Double.parseDouble(edt_prix6_ht.getText().toString());
         }
 
-        if(edt_tva.getText().toString().isEmpty()){
+        if (edt_tva.getText().toString().isEmpty()) {
             val_tva = 0.00;
-        }else {
+        } else {
             val_tva = Double.parseDouble(edt_tva.getText().toString());
         }
 
@@ -1421,8 +1481,14 @@ public class FragmentNewEditProduct {
                 .withResultListener(barcode -> {
                     barcodeResult = barcode;
 
-                    if(view.getId() == R.id.scan_codebarre){
-                        edt_codebarre.setText(barcodeResult.rawValue);
+                    if (view.getId() == R.id.scan_codebarre) {
+                        // check if barcode is exist in database
+                        String querry = "SELECT * FROM PRODUIT WHERE CODE_BARRE = '" + barcodeResult.rawValue + "'";
+                        if(!controller.check_product_if_exist(querry)){
+                            edt_codebarre.setText(barcodeResult.rawValue);
+                        }else {
+                            edt_codebarre.setHint("Produit / Codebarre exist ");
+                        }
                     } else if (view.getId() == R.id.scan_reference) {
                         edt_reference.setText(barcodeResult.rawValue);
                     }
@@ -1432,11 +1498,10 @@ public class FragmentNewEditProduct {
         materialBarcodeScanner.startScan();
     }
 
-    private String getRandomString(String allowed_caracters)
-    {
-        final Random random=new Random();
-        final StringBuilder sb=new StringBuilder(13);
-        for(int i = 0; i< 13; ++i)
+    private String getRandomString(String allowed_caracters) {
+        final Random random = new Random();
+        final StringBuilder sb = new StringBuilder(13);
+        for (int i = 0; i < 13; ++i)
             sb.append(allowed_caracters.charAt(random.nextInt(allowed_caracters.length())));
         return sb.toString();
     }
@@ -1451,14 +1516,14 @@ public class FragmentNewEditProduct {
         activity.startActivityForResult(pickPhoto, 4000);
     }
 
-    public void setImageFromActivity(byte[] inputData){
+    public void setImageFromActivity(byte[] inputData) {
         this.inputData = inputData;
         Bitmap bitmap = BitmapFactory.decodeByteArray(inputData, 0, inputData.length);
         img_product.setImageBitmap(bitmap);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onByteDataRecieved(ByteDataEvent byteDataEvent){
+    public void onByteDataRecieved(ByteDataEvent byteDataEvent) {
         this.inputData = byteDataEvent.getByteData();
         Bitmap bitmap = BitmapFactory.decodeByteArray(inputData, 0, inputData.length);
         img_product.setImageBitmap(bitmap);

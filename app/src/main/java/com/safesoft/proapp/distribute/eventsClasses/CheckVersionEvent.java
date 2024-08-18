@@ -5,25 +5,25 @@ package com.safesoft.proapp.distribute.eventsClasses;
  */
 
 public class CheckVersionEvent {
-  private int code;
-  private String message;
-  private String version;
+    private final int code;
+    private final String message;
+    private final String version;
 
-  public CheckVersionEvent(int code, String message, String version){
-    this.code = code;
-    this.message = message;
-    this.version = version;
-  }
+    public CheckVersionEvent(int code, String message, String version) {
+        this.code = code;
+        this.message = message;
+        this.version = version;
+    }
 
-  public int getCode(){
-    return code;
-  }
+    public int getCode() {
+        return code;
+    }
 
-  public String getMessage(){
-    return message;
-  }
+    public String getMessage() {
+        return message;
+    }
 
-  public String getVersion() {
-    return version;
-  }
+    public String getVersion() {
+        return version;
+    }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_root_select_produit"
@@ -38,7 +37,6 @@
                 android:layout_weight="2"
                 android:text=" ezdfezf dfvredvrevre erfverfrefre erferferfre erferffdgdsgsd"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
 
 
             <LinearLayout
@@ -146,7 +144,6 @@
                 </LinearLayout>
 
 
-
             </LinearLayout>
 
         </LinearLayout>
@@ -165,7 +162,7 @@
                 android:padding="1dp"
                 android:background="@drawable/produit_item_border"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"/>
+                android:layout_height="0dp" />
 
 
             <LinearLayout

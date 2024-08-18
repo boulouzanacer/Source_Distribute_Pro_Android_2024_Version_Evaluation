@@ -67,7 +67,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
-        if(getIntent() != null){
+        if (getIntent() != null) {
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         }
 
@@ -145,9 +145,9 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                 "LEFT JOIN FOURNIS ON (ACHAT1.CODE_FRS = FOURNIS.CODE_FRS)";
 
 
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY ACHAT1.NUM_BON ";
-        }else {
+        } else {
             querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY ACHAT1.NUM_BON ";
         }
 
@@ -219,8 +219,8 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                         }
 
                     }*/
-                    case 0 ->{
-                        if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
+                    case 0 -> {
+                        if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
                             new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Suppression")
                                     .setContentText("Voulez-vous vraiment supprimer le bon " + achat1s.get(position).num_bon + " ?!")
@@ -237,7 +237,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
                                     })
                                     .show();
-                        }else{
+                        } else {
                             new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention!!")
                                     .setContentText("Vous n'avez pas l'autorisation de supprimer, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
@@ -254,8 +254,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                             return;
                         }
 
-                        final_panier = controller.select_all_achat2_from_database("" +
-                                "SELECT " +
+                        final_panier = controller.select_all_achat2_from_database("SELECT " +
                                 "ACHAT2.RECORDID, " +
                                 "ACHAT2.CODE_BARRE, " +
                                 "ACHAT2.NUM_BON, " +
@@ -284,11 +283,11 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        } else {
                             Intent html_intent = new Intent(this, ActivityHtmlView.class);
-                            html_intent.putExtra("TYPE_BON" , "ACHAT");
-                            html_intent.putExtra("ACHAT1" , achat1s.get(position));
-                            html_intent.putExtra("BON2" , final_panier);
+                            html_intent.putExtra("TYPE_BON", "ACHAT");
+                            html_intent.putExtra("ACHAT1", achat1s.get(position));
+                            html_intent.putExtra("BON2", final_panier);
                             startActivity(html_intent);
                         }
 
@@ -328,7 +327,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_sales_client, menu);
         }
@@ -342,12 +341,12 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
-            if(!prefs.getBoolean("APP_ACTIVATED",false) && !achat1s.isEmpty()){
+            if (!prefs.getBoolean("APP_ACTIVATED", false) && !achat1s.isEmpty()) {
                 new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Important !")
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
-            }else{
+            } else {
                 Intent editIntent = new Intent(ActivityAchats.this, ActivityAchat.class);
                 editIntent.putExtra("TYPE_ACTIVITY", "NEW_ACHAT");
                 editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);

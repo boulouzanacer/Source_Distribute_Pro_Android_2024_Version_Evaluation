@@ -53,6 +53,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     private String SOURCE_EXPORT = "";
     private NumberFormat nf;
 
+    private String CODE_DEPOT;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +67,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
-        if(getIntent() != null){
+        if (getIntent() != null) {
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         }
 
@@ -78,6 +80,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         //Reset last item selected in list product
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         prefs.edit().putInt("LAST_CLICKED_POSITION", 0).apply();
+
+        CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
     }
 
     private void initViews() {
@@ -131,6 +135,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE AS TOT_TTC, " +
                 "BON1_TEMP.REMISE, " +
                 "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE AS MONTANT_BON, " +
+                "BON1_TEMP.MONTANT_ACHAT, " +
                 "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE - BON1_TEMP.MONTANT_ACHAT AS BENIFICE_BON, " +
 
                 "BON1_TEMP.ANCIEN_SOLDE, " +
@@ -165,9 +170,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 "LEFT JOIN CLIENT ON BON1_TEMP.CODE_CLIENT = CLIENT.CODE_CLIENT";
 
 
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY BON1_TEMP.NUM_BON ";
-        }else {
+        } else {
             querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY BON1_TEMP.NUM_BON ";
         }
 
@@ -195,7 +200,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     public void onLongClick(View v, final int position) {
 
         if (bon1s_temp.get(position).blocage.equals("F")) {
-            final CharSequence[] items = {"Supprimer", "Imprimer"};
+            final CharSequence[] items = {"Supprimer", "Imprimer", "Transferer vers bon vente"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setIcon(R.drawable.blue_circle_24);
@@ -257,8 +262,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                             return;
                         }
 
-                        final_panier = controller.select_bon2_from_database("" +
-                                "SELECT " +
+                        final_panier = controller.select_bon2_from_database("SELECT " +
                                 "BON2_TEMP.RECORDID, " +
                                 "BON2_TEMP.CODE_BARRE, " +
                                 "BON2_TEMP.NUM_BON, " +
@@ -291,12 +295,52 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
-                        }else {
+                        } else {
                             Intent html_intent = new Intent(this, ActivityHtmlView.class);
-                            html_intent.putExtra("TYPE_BON" , "COMMANDE");
-                            html_intent.putExtra("BON1" , bon1s_temp.get(position));
-                            html_intent.putExtra("BON2" , final_panier);
+                            html_intent.putExtra("TYPE_BON", "COMMANDE");
+                            html_intent.putExtra("BON1", bon1s_temp.get(position));
+                            html_intent.putExtra("BON2", final_panier);
                             startActivity(html_intent);
+                        }
+
+                    }
+                    case 2 -> {
+                        String selectQuery = "SELECT MAX(NUM_BON) AS max_id FROM BON1 WHERE NUM_BON IS NOT NULL";
+                        String NUM_BON_BON1 = controller.select_max_num_bon(selectQuery);
+
+                        final_panier = controller.select_bon2_from_database("SELECT " +
+                                "BON2_TEMP.RECORDID, " +
+                                "BON2_TEMP.CODE_BARRE, " +
+                                "BON2_TEMP.NUM_BON, " +
+                                "BON2_TEMP.PRODUIT, " +
+                                "BON2_TEMP.NBRE_COLIS, " +
+                                "BON2_TEMP.COLISSAGE, " +
+                                "BON2_TEMP.QTE, " +
+                                "BON2_TEMP.QTE_GRAT, " +
+                                "BON2_TEMP.PV_HT, " +
+                                "BON2_TEMP.PA_HT, " +
+                                "BON2_TEMP.TVA, " +
+                                "BON2_TEMP.CODE_DEPOT, " +
+                                "BON2_TEMP.DESTOCK_TYPE, " +
+                                "BON2_TEMP.DESTOCK_CODE_BARRE, " +
+                                "BON2_TEMP.DESTOCK_QTE, " +
+                                "PRODUIT.ISNEW, " +
+                                "PRODUIT.STOCK " +
+                                "FROM BON2_TEMP " +
+                                "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                                "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
+
+                        if (controller.ExCommande_Export_to_ventes(bon1s_temp.get(position), final_panier, CODE_DEPOT, NUM_BON_BON1 )) {
+                            setRecycle();
+                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.SUCCESS_TYPE)
+                                    .setTitleText("Information!")
+                                    .setContentText("Votre a été exporté avec succès")
+                                    .show();
+                        }else{
+                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
+                                    .setTitleText("Information!")
+                                    .setContentText("Probleme d'exportation de bon de commande, Exportation annulé !")
+                                    .show();
                         }
 
                     }
@@ -336,7 +380,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_orders_client, menu);
         }
@@ -350,12 +394,12 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
 
-            if(!prefs.getBoolean("APP_ACTIVATED",false) && !bon1s_temp.isEmpty()){
+            if (!prefs.getBoolean("APP_ACTIVATED", false) && !bon1s_temp.isEmpty()) {
                 new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Important !")
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
-            }else {
+            } else {
                 Intent editIntent = new Intent(ActivityOrdersClient.this, ActivityOrderClient.class);
                 editIntent.putExtra("TYPE_ACTIVITY", "NEW_ORDER_CLIENT");
                 editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
@@ -365,7 +409,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
         } else if (item.getItemId() == R.id.routing) {
             //  https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
-            Intent nnn= new Intent(ActivityOrdersClient.this, ActivityRouting.class);
+            Intent nnn = new Intent(ActivityOrdersClient.this, ActivityRouting.class);
             startActivity(nnn);
         }
         return super.onOptionsItemSelected(item);

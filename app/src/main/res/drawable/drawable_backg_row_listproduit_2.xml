@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle" >
+    android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="@color/white">
-    </solid>
+    <solid android:color="@color/white"></solid>
 
     <!-- If you want to add some padding -->
     <padding
         android:right="2dp"
-        android:left="2dp" >
-    </padding>
+        android:left="2dp"></padding>
 
 
 </shape>

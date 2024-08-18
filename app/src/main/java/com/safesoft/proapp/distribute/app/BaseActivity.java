@@ -1,12 +1,12 @@
 package com.safesoft.proapp.distribute.app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -54,11 +54,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void showToast(String msg){
+    public void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public void showAlertDialog(final String msg){
+    public void showAlertDialog(final String msg) {
 
         runOnUiThread(new Runnable() {
             @Override
@@ -72,16 +72,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    public void showProgressDialog(final String str){
+    public void showProgressDialog(final String str) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(progressDialog == null){
+                if (progressDialog == null) {
                     progressDialog = new ProgressDialog(BaseActivity.this);
                 }
-                if(!TextUtils.isEmpty(str)){
+                if (!TextUtils.isEmpty(str)) {
                     progressDialog.setMessage(str);
-                }else{
+                } else {
                     progressDialog.setMessage("Loading...");
                 }
                 progressDialog.show();
@@ -90,11 +90,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    public void hideProgressDialog(){
+    public void hideProgressDialog() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(progressDialog != null && progressDialog.isShowing()){
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.hide();
                 }
             }

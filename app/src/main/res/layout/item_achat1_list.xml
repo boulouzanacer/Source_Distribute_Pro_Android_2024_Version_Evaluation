@@ -28,8 +28,7 @@
             android:layout_marginBottom="0dp"
             android:text="@string/nbre_produit"
             android:gravity="center|center_horizontal"
-            android:orientation="vertical">
-        </TextView>
+            android:orientation="vertical"></TextView>
 
         <com.haozhang.lib.SlantedTextView
             android:id="@+id/blocage"
@@ -165,6 +164,7 @@
                             android:textSize="13sp" />
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/lnr_versement"
                         android:weightSum="3"

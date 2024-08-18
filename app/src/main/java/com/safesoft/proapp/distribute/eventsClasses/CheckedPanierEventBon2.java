@@ -9,29 +9,32 @@ import java.util.List;
  */
 
 public class CheckedPanierEventBon2 {
-  private final PostData_Bon2 panier;
-  private final double qte_old;
-  private final double gratuit_old;
-  private boolean if_exist= false;
+    private final PostData_Bon2 panier;
+    private final double qte_old;
+    private final double gratuit_old;
+    private boolean if_exist = false;
 
-  public CheckedPanierEventBon2(PostData_Bon2 panier, double qte_old, double gratuit_old, boolean if_exist){
-    this.panier = panier;
-    this.qte_old = qte_old;
-    this.gratuit_old = gratuit_old;
-    this.if_exist = if_exist;
-  }
+    public CheckedPanierEventBon2(PostData_Bon2 panier, double qte_old, double gratuit_old, boolean if_exist) {
+        this.panier = panier;
+        this.qte_old = qte_old;
+        this.gratuit_old = gratuit_old;
+        this.if_exist = if_exist;
+    }
 
-  public PostData_Bon2 getData(){
-    return panier;
-  }
-  public double getQteOld(){
-    return qte_old;
-  }
-  public double getGratuitOld(){
-    return gratuit_old;
-  }
-  public boolean getIfExist(){
-    return if_exist;
-  }
+    public PostData_Bon2 getData() {
+        return panier;
+    }
+
+    public double getQteOld() {
+        return qte_old;
+    }
+
+    public double getGratuitOld() {
+        return gratuit_old;
+    }
+
+    public boolean getIfExist() {
+        return if_exist;
+    }
 
 }

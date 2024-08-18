@@ -3,6 +3,7 @@ package com.safesoft.proapp.distribute.activities.product;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditProduct;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.utils.ImageUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,6 +65,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     private String selected_famile = "Toutes";
     private EventBus bus;
     FragmentNewEditProduct fragmentnewproduct;
+    SharedPreferences prefs;
+    private final String PREFS = "ALL_PREFS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
             if (restoredBarcode != null) {
                 //  result.setText(restoredBarcode.rawValue);
-                Toast.makeText(ActivityProduits.this, "" + restoredBarcode.rawValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityProduits.this, restoredBarcode.rawValue, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -86,6 +90,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         bus = EventBus.getDefault();
         // Register as a subscriber
         bus.register(this);
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
         initViews();
 
@@ -112,8 +118,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         famille_dropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selected_famile =  (String) adapterView.getItemAtPosition(i);
-                if(selected_famile.equals("<Aucune>")){
+                selected_famile = (String) adapterView.getItemAtPosition(i);
+                if (selected_famile.equals("<Aucune>")) {
                     selected_famile = "";
                 }
                 setRecycle("", false);
@@ -122,10 +128,10 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     }
 
     private void setRecycle(String text_search, boolean isscan) {
-        if(isscan){
+        if (isscan) {
 
-           // searchView.setIconified(false);
-           // searchView.onActionViewExpanded();
+            // searchView.setIconified(false);
+            // searchView.onActionViewExpanded();
             searchView.setQuery(text_search, false);
         }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -134,12 +140,17 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         recyclerView.setAdapter(adapter);
         total_prix.setText("Total achats : " + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
         nbr_produit.setText("Nombre de produit : " + produits.size());
+        if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
+            total_prix.setVisibility(View.VISIBLE);
+        } else {
+            total_prix.setVisibility(View.GONE);
+        }
     }
 
-    private double calcule_total(){
+    private double calcule_total() {
         double total = 0;
-        for(int i=0; i<produits.size(); i++){
-            if(produits.get(i).stock > 0){
+        for (int i = 0; i < produits.size(); i++) {
+            if (produits.get(i).stock > 0) {
                 total = total + (produits.get(i).stock * produits.get(i).pamp);
             }
         }
@@ -148,63 +159,63 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {
         String querry = "";
-        if(selected_famile.equals("Toutes")){
-            if(isScan){
-                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        if (selected_famile.equals("Toutes")) {
+            if (isScan) {
+                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "'";
 
-                if(produits.isEmpty()){
-                    String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
+                if (produits.isEmpty()) {
+                    String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
                     String code_barre = controller.select_codebarre_from_database(querry1);
 
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
                 }
-            }else{
-                if(!querry_search.isEmpty()){
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE,DESTOCK_TYPE, " +
+            } else {
+                if (!querry_search.isEmpty()) {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI,PHOTO, DETAILLE, ISNEW, FAMILLE,DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT WHERE PRODUIT LIKE \"%" + querry_search + "%\" OR CODE_BARRE LIKE \"%" + querry_search + "%\" OR REF_PRODUIT LIKE \"%" + querry_search + "%\" ORDER BY PRODUIT";
-                }else {
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                } else {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                             "FROM PRODUIT ORDER BY PRODUIT";
                 }
             }
-        }else{
+        } else {
 
-            if(isScan){
-                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            if (isScan) {
+                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                        "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '"+ selected_famile +"'";
+                        "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '" + selected_famile + "'";
 
-                if(produits.isEmpty()){
-                    String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '"+querry_search+"'";
+                if (produits.isEmpty()) {
+                    String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
                     String code_barre = controller.select_codebarre_from_database(querry1);
 
-                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '"+ selected_famile +"'";
+                            "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '" + selected_famile + "'";
                 }
-            }else{
-                if(!querry_search.isEmpty()){
-                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            } else {
+                if (!querry_search.isEmpty()) {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE (PRODUIT LIKE \"%" + querry_search + "%\" OR CODE_BARRE LIKE \"%" + querry_search + "%\" OR REF_PRODUIT LIKE \"%" + querry_search + "%\") AND FAMILLE = '"+ selected_famile +"' ORDER BY PRODUIT";
-                }else {
-                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                            "FROM PRODUIT WHERE (PRODUIT LIKE \"%" + querry_search + "%\" OR CODE_BARRE LIKE \"%" + querry_search + "%\" OR REF_PRODUIT LIKE \"%" + querry_search + "%\") AND FAMILLE = '" + selected_famile + "' ORDER BY PRODUIT";
+                } else {
+                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
                             "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE FAMILLE = '"+ selected_famile +"' ORDER BY PRODUIT";
+                            "FROM PRODUIT WHERE FAMILLE = '" + selected_famile + "' ORDER BY PRODUIT";
 
                 }
             }
@@ -216,7 +227,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     }
 
     @Subscribe
-    public void onProductAdded(ProductEvent productEvent){
+    public void onProductAdded(ProductEvent productEvent) {
         setRecycle("", false);
     }
 
@@ -240,6 +251,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         intent.putExtra("PV6_HT", produits.get(position).pv6_ht);
         intent.putExtra("STOCK", produits.get(position).stock);
         intent.putExtra("COLISSAGE", produits.get(position).colissage);
+        intent.putExtra("STOCK_INI", produits.get(position).stock_ini);
         intent.putExtra("STOCK_COLIS", produits.get(position).stock_colis);
         intent.putExtra("STOCK_VRAC", produits.get(position).stock_vrac);
         intent.putExtra("PHOTO", produits.get(position).photo);
@@ -264,11 +276,11 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         builder.setTitle("Choisissez une action");
         builder.setItems(items, (dialog, item) -> {
             switch (item) {
-                case 0 ->{
+                case 0 -> {
 
                     new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
                             .setTitleText("Modification")
-                            .setContentText("Voulez-vous vraiment modifier le produit :  " + produits.get(position).produit+ " ?!")
+                            .setContentText("Voulez-vous vraiment modifier le produit :  " + produits.get(position).produit + " ?!")
                             .setCancelText("Anuuler")
                             .setConfirmText("Modifier")
                             .showCancelButton(true)
@@ -282,22 +294,22 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                             }).show();
                 }
                 case 1 -> {
-                    if(produits.get(position).isNew == 1){
+                    if (produits.get(position).isNew == 1) {
                         ///// delete product
                         String querry_has_bon2 = "SELECT BON2.CODE_BARRE FROM BON2 LEFT JOIN BON1 ON BON1.NUM_BON == BON2.NUM_BON WHERE BON1.IS_EXPORTED = 0 AND BON2.CODE_BARRE = '" + produits.get(position).code_barre + "'";
                         String querry_has_bon2_temp = "SELECT BON2_TEMP.CODE_BARRE FROM BON2_TEMP LEFT JOIN BON1_TEMP ON BON1_TEMP.NUM_BON == BON2_TEMP.NUM_BON WHERE BON1_TEMP.IS_EXPORTED = 0 AND BON2_TEMP.CODE_BARRE = '" + produits.get(position).code_barre + "'";
                         String querry_has_achat2 = "SELECT ACHAT2.CODE_BARRE FROM ACHAT2 LEFT JOIN ACHAT1 ON ACHAT1.NUM_BON == ACHAT2.NUM_BON WHERE ACHAT1.IS_EXPORTED = 0 AND ACHAT2.CODE_BARRE = '" + produits.get(position).code_barre + "'";
 
-                        if(controller.check_if_has_bon(querry_has_bon2) || controller.check_if_has_bon(querry_has_bon2_temp) || controller.check_if_has_bon(querry_has_achat2)){
+                        if (controller.check_if_has_bon(querry_has_bon2) || controller.check_if_has_bon(querry_has_bon2_temp) || controller.check_if_has_bon(querry_has_achat2)) {
                             // you can't delete this client
                             new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")
                                     .setContentText("Il exist des bons créer avec ce produit, Suppression impossible")
                                     .show();
-                        }else {
+                        } else {
                             new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Suppression")
-                                    .setContentText("Voulez-vous vraiment supprimer le produit :  " + produits.get(position).produit+ " ?!")
+                                    .setContentText("Voulez-vous vraiment supprimer le produit :  " + produits.get(position).produit + " ?!")
                                     .setCancelText("Anuuler")
                                     .setConfirmText("Supprimer")
                                     .showCancelButton(true)
@@ -312,7 +324,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                                     }).show();
 
                         }
-                    }else {
+                    } else {
                         new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Attention. !")
                                 .setContentText("Produit exist sur le serveur, Suppression impossible")
@@ -335,7 +347,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         menu.add(Menu.NONE, Menu.NONE, 0, "Rechercher")
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS );
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         searchView.setQueryHint("Rechercher");
 
@@ -378,7 +390,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             }
         });
 
-       // searchView.setIconified(false);
+        // searchView.setIconified(false);
 
         return true;
     }
@@ -391,8 +403,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
             startScan();
         } else if (item.getItemId() == R.id.new_product) {
-            if(fragmentnewproduct == null)
-             fragmentnewproduct = new FragmentNewEditProduct();
+            if (fragmentnewproduct == null)
+                fragmentnewproduct = new FragmentNewEditProduct();
 
             fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT", null);
         }
@@ -449,8 +461,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 3000){
-            if(resultCode == RESULT_OK){
+        if (requestCode == 3000) {
+            if (resultCode == RESULT_OK) {
                 if (data != null) {
                     Bundle extras = data.getExtras();
                     assert extras != null;
@@ -462,14 +474,14 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                     fragmentnewproduct.setImageFromActivity(inputData);
                 }
             }
-        }else if(requestCode == 4000){
-            if(resultCode == RESULT_OK){
+        } else if (requestCode == 4000) {
+            if (resultCode == RESULT_OK) {
                 if (data != null) {
                     Uri selectedImage = data.getData();
-                    InputStream iStream ;
+                    InputStream iStream;
                     try {
-                        iStream  = getContentResolver().openInputStream(selectedImage);
-                        byte[] inputData = getBytes(iStream);
+                        iStream = getContentResolver().openInputStream(selectedImage);
+                        byte[] inputData = ImageUtils.getBytes(iStream);
                         fragmentnewproduct.setImageFromActivity(inputData);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -482,15 +494,5 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         }
     }
 
-    public byte[] getBytes(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
 
-        int len = 0;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-        return byteBuffer.toByteArray();
-    }
 }

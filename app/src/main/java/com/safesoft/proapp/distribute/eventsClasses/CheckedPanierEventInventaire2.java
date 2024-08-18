@@ -8,30 +8,31 @@ import com.safesoft.proapp.distribute.postData.PostData_Inv2;
  */
 
 public class CheckedPanierEventInventaire2 {
-  private final PostData_Inv2 panier;
-  private final Double qte_physique_old;
-  private final Double vrac_old;
-  private boolean if_exist= false;
+    private final PostData_Inv2 panier;
+    private final Double qte_physique_old;
+    private final Double vrac_old;
+    private boolean if_exist = false;
 
-  public CheckedPanierEventInventaire2(PostData_Inv2 panier, Double qte_physique_old, Double vrac_old, boolean if_exist){
-    this.panier = panier;
-    this.qte_physique_old = qte_physique_old;
-    this.vrac_old = vrac_old;
-    this.if_exist = if_exist;
-  }
+    public CheckedPanierEventInventaire2(PostData_Inv2 panier, Double qte_physique_old, Double vrac_old, boolean if_exist) {
+        this.panier = panier;
+        this.qte_physique_old = qte_physique_old;
+        this.vrac_old = vrac_old;
+        this.if_exist = if_exist;
+    }
 
-  public PostData_Inv2 getData(){
-    return panier;
-  }
+    public PostData_Inv2 getData() {
+        return panier;
+    }
 
-  public Double getQtePhysiqueOld(){
-    return qte_physique_old;
-  }
+    public Double getQtePhysiqueOld() {
+        return qte_physique_old;
+    }
 
-  public Double getVracOld(){
-    return vrac_old;
-  }
-  public boolean getIfExist(){
-    return if_exist;
-  }
+    public Double getVracOld() {
+        return vrac_old;
+    }
+
+    public boolean getIfExist() {
+        return if_exist;
+    }
 }

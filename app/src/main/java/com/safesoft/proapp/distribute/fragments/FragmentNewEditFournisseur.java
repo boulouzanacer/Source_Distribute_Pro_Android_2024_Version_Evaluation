@@ -18,11 +18,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedFournisseurEvent;
-import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
-import com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,7 +31,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class FragmentNewEditFournisseur {
 
     MaterialFancyButton btn_valider, btn_cancel;
-    TextInputEditText  edt_fournisseur_name, edt_fournisseur_adress, edt_fournisseur_telephone, edt_fournisseur_registre, edt_fournisseur_nif, edt_fournisseur_nis, edt_fournisseur_ai;
+    TextInputEditText edt_fournisseur_name, edt_fournisseur_adress, edt_fournisseur_telephone, edt_fournisseur_registre, edt_fournisseur_nif, edt_fournisseur_nis, edt_fournisseur_ai;
     private Context mContext;
 
     EventBus bus = EventBus.getDefault();
@@ -77,14 +74,14 @@ public class FragmentNewEditFournisseur {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
+        btn_valider = dialogview.findViewById(R.id.btn_remise);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
         btn_valider.setIconPosition(POSITION_LEFT);
         btn_valider.setFontIconSize(30);
 
-        btn_cancel = (MaterialFancyButton) dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
@@ -100,7 +97,7 @@ public class FragmentNewEditFournisseur {
         edt_fournisseur_nis = dialogview.findViewById(R.id.edt_fournisseur_nis);
         edt_fournisseur_ai = dialogview.findViewById(R.id.edt_fournisseur_ai);
 
-        if(SOURCE_ACTIVITY.equals("EDIT_FOURNISSEUR")){
+        if (SOURCE_ACTIVITY.equals("EDIT_FOURNISSEUR")) {
 
             edt_fournisseur_name.setText(old_fournisseur.fournis);
             edt_fournisseur_adress.setText(old_fournisseur.adresse);
@@ -119,12 +116,12 @@ public class FragmentNewEditFournisseur {
                 edt_fournisseur_name.setError("Nom obligatoire!!");
                 hasError = true;
             }
-            if (edt_fournisseur_adress.getText().length() <= 0 ) {
+            if (edt_fournisseur_adress.getText().length() <= 0) {
                 edt_fournisseur_adress.setError("Adresse obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_fournisseur_telephone.getText().length() <= 0 ) {
+            if (edt_fournisseur_telephone.getText().length() <= 0) {
                 edt_fournisseur_telephone.setError("Telephone obligatoire!!");
                 hasError = true;
             }
@@ -132,7 +129,7 @@ public class FragmentNewEditFournisseur {
             if (!hasError) {
 
                 created_fournisseur.fournis = edt_fournisseur_name.getText().toString();
-                created_fournisseur.adresse =  edt_fournisseur_adress.getText().toString();
+                created_fournisseur.adresse = edt_fournisseur_adress.getText().toString();
                 created_fournisseur.tel = edt_fournisseur_telephone.getText().toString();
                 created_fournisseur.rc = edt_fournisseur_registre.getText().toString();
                 created_fournisseur.ifiscal = edt_fournisseur_nif.getText().toString();
@@ -146,13 +143,13 @@ public class FragmentNewEditFournisseur {
                 CODE_VENDEUR = prefs2.getString("CODE_VENDEUR", "000000");
 
 
-                if(SOURCE_ACTIVITY.equals("EDIT_FOURNISSEUR")){
+                if (SOURCE_ACTIVITY.equals("EDIT_FOURNISSEUR")) {
 
                     created_fournisseur.code_frs = old_fournisseur.code_frs;
 
                     //Update client into database,
                     boolean state_insert_fournisseur = controller.update_fournisseur(created_fournisseur);
-                    if(state_insert_fournisseur){
+                    if (state_insert_fournisseur) {
 
                         Crouton.makeText(activity, "Fournisseur bien modifier", Style.INFO).show();
 
@@ -161,21 +158,21 @@ public class FragmentNewEditFournisseur {
 
                         dialog.dismiss();
 
-                    }else{
+                    } else {
                         Crouton.makeText(activity, "Problème de mise à jour client", Style.ALERT).show();
                     }
-                }else {
+                } else {
 
-                    if(CODE_DEPOT.equals("000000")){
-                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_VENDEUR;
+                    if (CODE_DEPOT.equals("000000")) {
+                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_VENDEUR;
 
-                    }else{
-                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_DEPOT;
+                    } else {
+                        created_fournisseur.code_frs = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_DEPOT;
                     }
 
                     //insert client into database,
                     boolean state_update_client = controller.insert_into_fournisseur(created_fournisseur);
-                    if(state_update_client){
+                    if (state_update_client) {
 
                         Crouton.makeText(activity, "Fournisseur bien ajouté", Style.INFO).show();
 
@@ -184,7 +181,7 @@ public class FragmentNewEditFournisseur {
 
                         dialog.dismiss();
 
-                    }else{
+                    } else {
                         Crouton.makeText(activity, "Problème insertion", Style.ALERT).show();
                     }
                 }

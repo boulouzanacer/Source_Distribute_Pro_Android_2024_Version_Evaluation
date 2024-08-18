@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.scanner;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.MenuItem;
 
 public class BaseScannerActivity extends AppCompatActivity {

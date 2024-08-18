@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.proximityAdapter.BluetoothDeviceAdapter;
 
@@ -80,12 +81,12 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
     }
 
     private void initView(View view) {
-        lvPairedDevices = (ListView) view.findViewById(R.id.lv_dialog_choose_bluetooth_device_paired_devices);
-        lvFoundDevices = (ListView) view.findViewById(R.id.lv_dialog_choose_bluetooth_device_found_devices);
-        tvPairedDeviceEmpty = (TextView) view.findViewById(R.id.tv_dialog_choose_bluetooth_device_paired_devices_empty);
-        tvFoundDeviceEmpty = (TextView) view.findViewById(R.id.tv_dialog_choose_bluetooth_device_found_devices_empty);
-        tvSearchDevice = (TextView) view.findViewById(R.id.tv_dialog_choose_bluetooth_device_search_device);
-        progressBar = (ProgressBar) view.findViewById(R.id.pb_dialog_choose_bluetooth_device_progress_bar);
+        lvPairedDevices = view.findViewById(R.id.lv_dialog_choose_bluetooth_device_paired_devices);
+        lvFoundDevices = view.findViewById(R.id.lv_dialog_choose_bluetooth_device_found_devices);
+        tvPairedDeviceEmpty = view.findViewById(R.id.tv_dialog_choose_bluetooth_device_paired_devices_empty);
+        tvFoundDeviceEmpty = view.findViewById(R.id.tv_dialog_choose_bluetooth_device_found_devices_empty);
+        tvSearchDevice = view.findViewById(R.id.tv_dialog_choose_bluetooth_device_search_device);
+        progressBar = view.findViewById(R.id.pb_dialog_choose_bluetooth_device_progress_bar);
         btn_hide = view.findViewById(R.id.btn_hide);
     }
 
@@ -111,8 +112,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
                 }
                 mContext.registerReceiver(mBluetoothReceiver, mBluetoothIntentFilter);
                 mRegistered = true;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 3);
                         return;
@@ -126,8 +126,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
         lvPairedDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 3);
                         return;
@@ -145,12 +144,11 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
         lvFoundDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 3);
-                            return;
-                     }
+                        ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 3);
+                        return;
+                    }
                 }
                 mBluetoothAdapter.cancelDiscovery();
                 if (mRegistered) {
@@ -180,10 +178,10 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
     private void initData() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-            return;
-        }
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                return;
+            }
         }
         pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
         if (pairedDeviceList.size() == 0) {
@@ -196,8 +194,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 3);
@@ -228,8 +225,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(mactivity, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                         return;
@@ -237,7 +233,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
                 }
                 assert device != null;
                 int devType = device.getBluetoothClass().getMajorDeviceClass();
-                if(devType != BluetoothClass.Device.Major.IMAGING){
+                if (devType != BluetoothClass.Device.Major.IMAGING) {
                     return;
                 }
 

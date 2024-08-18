@@ -22,6 +22,7 @@
             android:textStyle="italic" />
 
         <include layout="@layout/sub_layout_connexion" />
+
         <Button
             android:id="@+id/bt4"
             android:layout_width="match_parent"
@@ -55,7 +56,9 @@
             android:background="@drawable/parametre_rounded"
             android:text="@string/sauvegarde_des_donn_es"
             android:layout_height="match_parent" />
+
         <include layout="@layout/sub_backup" />
+
         <Button
             android:layout_width="match_parent"
             android:id="@+id/bt11"
@@ -65,7 +68,9 @@
             android:background="@drawable/parametre_rounded"
             android:text="@string/r_initialisation_des_donn_es"
             android:layout_height="match_parent" />
+
         <include layout="@layout/sub_reset" />
+
         <Button
             android:layout_width="match_parent"
             android:id="@+id/bt2"

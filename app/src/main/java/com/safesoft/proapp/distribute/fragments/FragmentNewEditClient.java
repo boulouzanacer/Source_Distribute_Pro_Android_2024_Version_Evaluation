@@ -48,7 +48,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class FragmentNewEditClient {
 
     MaterialFancyButton btn_valider, btn_cancel;
-    TextInputEditText  edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
+    TextInputEditText edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
     Spinner wilayaSpinner, communeSpinner;
     ToggleButtonGroupTableLayout radioGroup_mode_tarif;
     private Context mContext;
@@ -68,8 +68,8 @@ public class FragmentNewEditClient {
     AdapterCommune adaptercommune;
 
     Resources res;
-    private ArrayList<PostData_wilaya> wilayas =   new ArrayList<>();
-    private ArrayList<PostData_wilaya> wilayas_temp =   new ArrayList<>();
+    private ArrayList<PostData_wilaya> wilayas = new ArrayList<>();
+    private ArrayList<PostData_wilaya> wilayas_temp = new ArrayList<>();
     private ArrayList<PostData_commune> communes = new ArrayList<>();
     boolean shouldWork = true;
 
@@ -103,7 +103,7 @@ public class FragmentNewEditClient {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
+        btn_valider = dialogview.findViewById(R.id.btn_remise);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
@@ -119,8 +119,8 @@ public class FragmentNewEditClient {
 
 
         edt_client_name = dialogview.findViewById(R.id.edt_client_name);
-        wilayaSpinner = (Spinner) dialogview.findViewById(R.id.wilaya_spinner);
-        communeSpinner = (Spinner) dialogview.findViewById(R.id.commune_spinner);
+        wilayaSpinner = dialogview.findViewById(R.id.wilaya_spinner);
+        communeSpinner = dialogview.findViewById(R.id.commune_spinner);
 
         edt_client_adress = dialogview.findViewById(R.id.edt_client_adress);
         edt_client_telephone = dialogview.findViewById(R.id.edt_client_telephone);
@@ -130,16 +130,16 @@ public class FragmentNewEditClient {
         edt_client_ai = dialogview.findViewById(R.id.edt_client_ai);
         edt_client_solde_init = dialogview.findViewById(R.id.edt_client_solde_init);
 
-        radioGroup_mode_tarif = (ToggleButtonGroupTableLayout) dialogview.findViewById(R.id.rd_mode_tarif);
+        radioGroup_mode_tarif = dialogview.findViewById(R.id.rd_mode_tarif);
         radioGroup_mode_tarif.check(R.id.rb_0);
 
-        RadioButton rb0 =  dialogview.findViewById(R.id.rb_0);
-        RadioButton rb1 =  dialogview.findViewById(R.id.rb_1);
-        RadioButton rb2 =  dialogview.findViewById(R.id.rb_2);
-        RadioButton rb3 =  dialogview.findViewById(R.id.rb_3);
-        RadioButton rb4 =  dialogview.findViewById(R.id.rb_4);
-        RadioButton rb5 =  dialogview.findViewById(R.id.rb_5);
-        RadioButton rb6 =  dialogview.findViewById(R.id.rb_6);
+        RadioButton rb0 = dialogview.findViewById(R.id.rb_0);
+        RadioButton rb1 = dialogview.findViewById(R.id.rb_1);
+        RadioButton rb2 = dialogview.findViewById(R.id.rb_2);
+        RadioButton rb3 = dialogview.findViewById(R.id.rb_3);
+        RadioButton rb4 = dialogview.findViewById(R.id.rb_4);
+        RadioButton rb5 = dialogview.findViewById(R.id.rb_5);
+        RadioButton rb6 = dialogview.findViewById(R.id.rb_6);
 
 
         res = dialogview.getResources();
@@ -153,8 +153,7 @@ public class FragmentNewEditClient {
                 if (shouldWork) {
                     created_client.wilaya = wilayas.get(position).wilaya;
                     setRecyleCommune(res, wilayas.get(position).id);
-                }
-                else
+                } else
                     shouldWork = true;
 
             }
@@ -187,37 +186,37 @@ public class FragmentNewEditClient {
         rb5.setText(params.pv5_titre);
         rb6.setText(params.pv6_titre);
 
-        if(params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
+        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
             rb2.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rb2.setVisibility(View.GONE);
         }
 
-        if(params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)){
+        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
             rb3.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rb3.setVisibility(View.GONE);
         }
 
-        if(params.prix_4 == 1){
+        if (params.prix_4 == 1) {
             rb4.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rb4.setVisibility(View.GONE);
         }
 
-        if(params.prix_5 == 1){
+        if (params.prix_5 == 1) {
             rb5.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rb5.setVisibility(View.GONE);
         }
 
-        if(params.prix_6 == 1){
+        if (params.prix_6 == 1) {
             rb6.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rb6.setVisibility(View.GONE);
         }
 
-        if(SOURCE_ACTIVITY.equals("EDIT_CLIENT")){
+        if (SOURCE_ACTIVITY.equals("EDIT_CLIENT")) {
 
             edt_client_name.setText(old_client.client);
             edt_client_adress.setText(old_client.adresse);
@@ -225,14 +224,14 @@ public class FragmentNewEditClient {
             created_client.commune = old_client.commune;
 
             wilayas_temp = controller.select_wilayas_from_database("SELECT * FROM WILAYAS WHERE NAME = '" + old_client.wilaya + "' ORDER BY ID");
-            if(wilayas_temp.size() >1){
+            if (wilayas_temp.size() > 1) {
                 shouldWork = false;
                 wilayaSpinner.setSelection(wilayas_temp.get(1).id);
-                setRecyleCommune(res , wilayas_temp.get(1).id);
+                setRecyleCommune(res, wilayas_temp.get(1).id);
                 //communes_temp = controller.select_communes_from_database("SELECT * FROM COMMUNES WHERE NAME = '" + old_client.commune + "' ORDER BY ID");
                 int position = 0;
                 for (int i = 0; i < communes.size(); i++) {
-                    if(Objects.equals(communes.get(i).commune, old_client.commune)){
+                    if (Objects.equals(communes.get(i).commune, old_client.commune)) {
                         position = i;
                         break;
                     }
@@ -250,25 +249,25 @@ public class FragmentNewEditClient {
             edt_client_solde_init.setEnabled(false);
 
             radioGroup_mode_tarif.clearCheck();
-            if(old_client.mode_tarif.equals("0")){
+            if (old_client.mode_tarif.equals("0")) {
                 radioGroup_mode_tarif.check(R.id.rb_0);
             }
-            if(old_client.mode_tarif.equals("1")){
+            if (old_client.mode_tarif.equals("1")) {
                 radioGroup_mode_tarif.check(R.id.rb_1);
             }
-            if(old_client.mode_tarif.equals("2")){
+            if (old_client.mode_tarif.equals("2")) {
                 radioGroup_mode_tarif.check(R.id.rb_2);
             }
-            if(old_client.mode_tarif.equals("3")){
+            if (old_client.mode_tarif.equals("3")) {
                 radioGroup_mode_tarif.check(R.id.rb_3);
             }
-            if(old_client.mode_tarif.equals("4")){
+            if (old_client.mode_tarif.equals("4")) {
                 radioGroup_mode_tarif.check(R.id.rb_4);
             }
-            if(old_client.mode_tarif.equals("5")){
+            if (old_client.mode_tarif.equals("5")) {
                 radioGroup_mode_tarif.check(R.id.rb_5);
             }
-            if(old_client.mode_tarif.equals("6")){
+            if (old_client.mode_tarif.equals("6")) {
                 radioGroup_mode_tarif.check(R.id.rb_6);
             }
 
@@ -283,17 +282,17 @@ public class FragmentNewEditClient {
                 edt_client_name.setError("Nom client est obligatoire!!");
                 hasError = true;
             }
-            if (edt_client_adress.getText().length() <= 0 ) {
+            if (edt_client_adress.getText().length() <= 0) {
                 edt_client_adress.setError("Adresse est obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_client_telephone.getText().length() <= 0 ) {
+            if (edt_client_telephone.getText().length() <= 0) {
                 edt_client_telephone.setError("Telephone est obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_client_solde_init.getText().length() <= 0 ) {
+            if (edt_client_solde_init.getText().length() <= 0) {
                 edt_client_solde_init.setError("Solde initial est obligatoire!!");
                 hasError = true;
             }
@@ -301,7 +300,7 @@ public class FragmentNewEditClient {
             if (!hasError) {
 
                 created_client.client = edt_client_name.getText().toString();
-                created_client.adresse =  edt_client_adress.getText().toString();
+                created_client.adresse = edt_client_adress.getText().toString();
                 created_client.tel = edt_client_telephone.getText().toString();
                 created_client.rc = edt_client_registre.getText().toString();
                 created_client.ifiscal = edt_client_nif.getText().toString();
@@ -309,32 +308,32 @@ public class FragmentNewEditClient {
                 created_client.ai = edt_client_ai.getText().toString();
                 created_client.solde_ini = Double.parseDouble(edt_client_solde_init.getText().toString());
 
-                created_client.mode_tarif ="0";
+                created_client.mode_tarif = "0";
                 created_client.isNew = 1;
 
 
                 int selectedRadioButtonId = radioGroup_mode_tarif.getCheckedRadioButtonId();
                 if (selectedRadioButtonId != -1) {
-                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_0).getId()){
-                        created_client.mode_tarif ="0";
+                    if (selectedRadioButtonId == dialogview.findViewById(R.id.rb_0).getId()) {
+                        created_client.mode_tarif = "0";
                     }
-                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_1).getId()){
-                        created_client.mode_tarif ="1";
+                    if (selectedRadioButtonId == dialogview.findViewById(R.id.rb_1).getId()) {
+                        created_client.mode_tarif = "1";
                     }
-                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_2).getId()){
-                        created_client.mode_tarif ="2";
+                    if (selectedRadioButtonId == dialogview.findViewById(R.id.rb_2).getId()) {
+                        created_client.mode_tarif = "2";
                     }
-                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_3).getId()){
-                        created_client.mode_tarif ="3";
+                    if (selectedRadioButtonId == dialogview.findViewById(R.id.rb_3).getId()) {
+                        created_client.mode_tarif = "3";
                     }
-                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_4).getId()){
-                        created_client.mode_tarif ="4";
+                    if (selectedRadioButtonId == dialogview.findViewById(R.id.rb_4).getId()) {
+                        created_client.mode_tarif = "4";
                     }
-                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_5).getId()){
-                        created_client.mode_tarif ="5";
+                    if (selectedRadioButtonId == dialogview.findViewById(R.id.rb_5).getId()) {
+                        created_client.mode_tarif = "5";
                     }
-                    if(selectedRadioButtonId == dialogview.findViewById(R.id.rb_6).getId()){
-                        created_client.mode_tarif ="6";
+                    if (selectedRadioButtonId == dialogview.findViewById(R.id.rb_6).getId()) {
+                        created_client.mode_tarif = "6";
                     }
                 }
 
@@ -343,36 +342,36 @@ public class FragmentNewEditClient {
                 CODE_VENDEUR = prefs2.getString("CODE_VENDEUR", "000000");
 
 
-                if(SOURCE_ACTIVITY.equals("EDIT_CLIENT")){
+                if (SOURCE_ACTIVITY.equals("EDIT_CLIENT")) {
 
                     created_client.code_client = old_client.code_client;
 
                     //Insert client into database,
                     boolean state_update_client = controller.update_client(created_client);
-                    if(state_update_client){
+                    if (state_update_client) {
                         Crouton.makeText(activity, "Client bien modifier", Style.INFO).show();
                         SelectedClientEvent added_client = new SelectedClientEvent(created_client);
                         bus.post(added_client);
 
                         dialog.dismiss();
 
-                    }else{
+                    } else {
                         Crouton.makeText(activity, "Problème de mise à jour client", Style.ALERT).show();
                     }
-                }else {
+                } else {
 
                     created_client.solde_montant = created_client.solde_ini;
 
-                    if(CODE_DEPOT.equals("000000")){
-                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_VENDEUR;
+                    if (CODE_DEPOT.equals("000000")) {
+                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_VENDEUR;
 
-                    }else{
-                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) +"_"+ CODE_DEPOT;
+                    } else {
+                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_DEPOT;
                     }
 
                     //update client into database,
                     boolean state_insert_client = controller.insert_into_client(created_client);
-                    if(state_insert_client){
+                    if (state_insert_client) {
 
                         Crouton.makeText(activity, "Client bien ajouté", Style.INFO).show();
 
@@ -381,7 +380,7 @@ public class FragmentNewEditClient {
 
                         dialog.dismiss();
 
-                    }else{
+                    } else {
                         Crouton.makeText(activity, "Problème insertion", Style.ALERT).show();
                     }
                 }
@@ -395,10 +394,10 @@ public class FragmentNewEditClient {
         });
     }
 
-    public void setRecyleCommune(Resources res, int wilaya_id){
+    public void setRecyleCommune(Resources res, int wilaya_id) {
         communes.clear();
         communes = controller.select_communes_from_database("SELECT * FROM COMMUNES WHERE WILAYA_ID = " + wilaya_id + " ORDER BY NAME");
-        adaptercommune = new AdapterCommune(mContext, R.layout.dropdown_wilaya_commune_item, communes , res);
+        adaptercommune = new AdapterCommune(mContext, R.layout.dropdown_wilaya_commune_item, communes, res);
         communeSpinner.setAdapter(adaptercommune);
     }
 }

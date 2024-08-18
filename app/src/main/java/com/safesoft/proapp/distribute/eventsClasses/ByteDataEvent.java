@@ -5,14 +5,14 @@ package com.safesoft.proapp.distribute.eventsClasses;
  */
 
 public class ByteDataEvent {
-  private final byte[] inputData;
+    private final byte[] inputData;
 
-  public ByteDataEvent(byte[] inputData){
-    this.inputData = inputData;
-  }
+    public ByteDataEvent(byte[] inputData) {
+        this.inputData = inputData;
+    }
 
-  public byte[] getByteData(){
-    return inputData;
-  }
+    public byte[] getByteData() {
+        return inputData;
+    }
 
 }

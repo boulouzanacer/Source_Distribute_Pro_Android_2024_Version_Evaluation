@@ -36,7 +36,7 @@ public class PostData_Bon1 implements Serializable {
     public double latitude;
     public double longitude;
 
-     //////client///////
+    //////client///////
     public String code_client;
     public String client;
     public String adresse;
@@ -57,7 +57,6 @@ public class PostData_Bon1 implements Serializable {
     public String code_vendeur;
     public String exportation;
     public String blocage;
-
 
 
 }

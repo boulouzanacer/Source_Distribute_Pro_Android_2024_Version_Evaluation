@@ -61,7 +61,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
-        if(getIntent() != null){
+        if (getIntent() != null) {
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         }
 
@@ -132,9 +132,9 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                 "LEFT JOIN FOURNIS ON (ACHAT1_TEMP.CODE_FRS = FOURNIS.CODE_FRS)";
 
 
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY ACHAT1_TEMP.NUM_BON ";
-        }else {
+        } else {
             querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY ACHAT1_TEMP.NUM_BON ";
         }
 
@@ -170,7 +170,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
                     case 0:
-                        if(!SOURCE_EXPORT.equals("EXPORTED")){
+                        if (!SOURCE_EXPORT.equals("EXPORTED")) {
                             new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.NORMAL_TYPE)
                                     .setTitleText("Bon de commande")
                                     .setContentText("Voulez-vous vraiment modifier ce bon ?!")
@@ -190,7 +190,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                                         sDialog.dismiss();
                                     })
                                     .show();
-                        }else {
+                        } else {
 
                             new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Information!")
@@ -221,7 +221,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                         break;
                     case 2:
 
-                        if(!achat1s_com.get(position).blocage.equals("F")){
+                        if (!achat1s_com.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Information!")
                                     .setContentText("Ce bon n'est pas encore validé")
@@ -231,8 +231,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                         Activity bactivity;
                         bactivity = ActivityOrdersFournisseur.this;
 
-                        final_panier =  controller.select_bon2_from_database("" +
-                                "SELECT " +
+                        final_panier = controller.select_bon2_from_database("SELECT " +
                                 "BON2_TEMP.RECORDID, " +
                                 "BON2_TEMP.CODE_BARRE, " +
                                 "BON2_TEMP.NUM_BON, " +
@@ -251,7 +250,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                                 "PRODUIT.STOCK " +
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                                "WHERE BON2_TEMP.NUM_BON = '" + achat1s_com.get(position).num_bon + "'" );
+                                "WHERE BON2_TEMP.NUM_BON = '" + achat1s_com.get(position).num_bon + "'");
                         Printing printer = new Printing();
 
                        /* try {
@@ -298,7 +297,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!SOURCE_EXPORT.equals("EXPORTED")){
+        if (!SOURCE_EXPORT.equals("EXPORTED")) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_sales_client, menu);
         }
@@ -311,12 +310,12 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
-            if(!prefs.getBoolean("APP_ACTIVATED",false) && !achat1s_com.isEmpty()){
+            if (!prefs.getBoolean("APP_ACTIVATED", false) && !achat1s_com.isEmpty()) {
                 new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Important !")
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
-            }else {
+            } else {
                 Intent editIntent = new Intent(ActivityOrdersFournisseur.this, ActivityOrderFournisseur.class);
                 editIntent.putExtra("TYPE_ACTIVITY", "NEW_ORDER_ACHAT");
                 editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);

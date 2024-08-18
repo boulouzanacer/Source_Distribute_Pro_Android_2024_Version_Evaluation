@@ -3,6 +3,7 @@ package com.safesoft.proapp.distribute.fragments;
 import android.app.Activity;
 
 import androidx.appcompat.app.AlertDialog;
+
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 
 public class FragmentBigImage {

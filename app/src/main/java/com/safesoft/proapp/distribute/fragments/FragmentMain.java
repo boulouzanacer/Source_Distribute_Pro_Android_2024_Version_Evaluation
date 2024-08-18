@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+
 import androidx.fragment.app.Fragment;
 
 import android.content.SharedPreferences;
@@ -33,185 +34,186 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class FragmentMain extends Fragment implements View.OnClickListener{
+public class FragmentMain extends Fragment implements View.OnClickListener {
 
-  SharedPreferences prefs;
-  private final String PREFS = "ALL_PREFS";
-  String CODE_DEPOT, CODE_VENDEUR;
-  View v ;
-  LinearLayout lnr_achat, lnr_vente_commande;
-  DATABASE controller;
-  private ImageButton BtnClient,BtnVente,BtnCommandeClient,BtnFournisseur,BtnAchat,BtnCommandeFournisseur,BtnProduit,BtnInventaire,BtnImportExport,BtnParametre;
-  public FragmentMain() {
+    SharedPreferences prefs;
+    private final String PREFS = "ALL_PREFS";
+    String CODE_DEPOT, CODE_VENDEUR;
+    View v;
+    LinearLayout lnr_achat, lnr_vente_commande;
+    DATABASE controller;
+    private ImageButton BtnClient, BtnVente, BtnCommandeClient, BtnFournisseur, BtnAchat, BtnCommandeFournisseur, BtnProduit, BtnInventaire, BtnImportExport, BtnParametre;
 
-    // Required empty public constructor
-  }
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    v = inflater.inflate(R.layout.activity_main__distribute,container,false);
+    public FragmentMain() {
 
-    initView(v);
-
-    BtnClient.setOnClickListener(this);
-    BtnVente.setOnClickListener(this);
-    BtnCommandeClient.setOnClickListener(this);
-
-    BtnFournisseur.setOnClickListener(this);
-    BtnAchat.setOnClickListener(this);
-    BtnCommandeFournisseur.setOnClickListener(this);
-
-    BtnProduit.setOnClickListener(this);
-    BtnInventaire.setOnClickListener(this);
-
-    BtnImportExport.setOnClickListener(this);
-    BtnParametre.setOnClickListener(this);
-
-    return v;
-  }
-
-  private void initView(View v){
-
-    lnr_achat = v.findViewById(R.id.lnr_achat);
-    lnr_vente_commande = v.findViewById(R.id.lnr_vente_commande);
-
-    BtnClient= v.findViewById(R.id.btn_clients);
-    BtnVente  = v.findViewById(R.id.btn_ventes);
-    BtnCommandeClient = v.findViewById(R.id.btn_commande_client);
-
-    BtnFournisseur = v.findViewById(R.id.btn_fournisseur);
-    BtnAchat = v.findViewById(R.id.btn_achat);
-    BtnCommandeFournisseur = v.findViewById(R.id.btn_commande_fournisseur);
-
-    BtnProduit = v.findViewById(R.id.btn_produits);
-    BtnInventaire = v.findViewById(R.id.btn_inventaire);
-
-    BtnImportExport = v.findViewById(R.id.btn_import_export);
-    BtnParametre = v.findViewById(R.id.btn_parametres);
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    controller = new DATABASE(requireContext());
-    prefs = requireActivity().getSharedPreferences(PREFS, MODE_PRIVATE);
-
-    CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
-    CODE_VENDEUR = prefs.getString("CODE_VENDEUR", "000000");
-
-
-    //Show btn
-    if(prefs.getBoolean("MODULE_ACHAT", true)){
-      lnr_achat.setVisibility(View.VISIBLE);
-    }else {
-      lnr_achat.setVisibility(View.GONE);
+        // Required empty public constructor
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.activity_main__distribute, container, false);
 
-    if(prefs.getBoolean("MODULE_VENTE", true)){
-      BtnVente.setVisibility(View.VISIBLE);
-      lnr_vente_commande.setVisibility(View.VISIBLE);
-    }else {
-      BtnVente.setVisibility(View.GONE);
-      lnr_vente_commande.setVisibility(View.GONE);
+        initView(v);
+
+        BtnClient.setOnClickListener(this);
+        BtnVente.setOnClickListener(this);
+        BtnCommandeClient.setOnClickListener(this);
+
+        BtnFournisseur.setOnClickListener(this);
+        BtnAchat.setOnClickListener(this);
+        BtnCommandeFournisseur.setOnClickListener(this);
+
+        BtnProduit.setOnClickListener(this);
+        BtnInventaire.setOnClickListener(this);
+
+        BtnImportExport.setOnClickListener(this);
+        BtnParametre.setOnClickListener(this);
+
+        return v;
     }
 
-    if(prefs.getBoolean("MODULE_COMMANDE", true)){
-      BtnCommandeClient.setVisibility(View.VISIBLE);
-      lnr_vente_commande.setVisibility(View.VISIBLE);
-    }else {
-      BtnCommandeClient.setVisibility(View.GONE);
-     // lnr_vente_commande.setVisibility(View.GONE);
+    private void initView(View v) {
+
+        lnr_achat = v.findViewById(R.id.lnr_achat);
+        lnr_vente_commande = v.findViewById(R.id.lnr_vente_commande);
+
+        BtnClient = v.findViewById(R.id.btn_clients);
+        BtnVente = v.findViewById(R.id.btn_ventes);
+        BtnCommandeClient = v.findViewById(R.id.btn_commande_client);
+
+        BtnFournisseur = v.findViewById(R.id.btn_fournisseur);
+        BtnAchat = v.findViewById(R.id.btn_achat);
+        BtnCommandeFournisseur = v.findViewById(R.id.btn_commande_fournisseur);
+
+        BtnProduit = v.findViewById(R.id.btn_produits);
+        BtnInventaire = v.findViewById(R.id.btn_inventaire);
+
+        BtnImportExport = v.findViewById(R.id.btn_import_export);
+        BtnParametre = v.findViewById(R.id.btn_parametres);
     }
 
-    if(prefs.getBoolean("MODULE_INVENTAIRE", true)){
-      //BtnClient.setVisibility(View.VISIBLE);
-      BtnInventaire.setVisibility(View.VISIBLE);
-    }else {
-      //BtnClient.setVisibility(View.GONE);
-      BtnInventaire.setVisibility(View.GONE);
-    }
-  }
+    @Override
+    public void onResume() {
+        super.onResume();
+        controller = new DATABASE(requireContext());
+        prefs = requireActivity().getSharedPreferences(PREFS, MODE_PRIVATE);
 
-  @SuppressLint("NonConstantResourceId")
-  public void onClick(View v){
+        CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+        CODE_VENDEUR = prefs.getString("CODE_VENDEUR", "000000");
 
-    Animation fadeIn = new AlphaAnimation(0, 1);
-    fadeIn.setInterpolator(new AccelerateInterpolator()); //add this
-    fadeIn.setDuration(300);
 
-    MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.pellet);
-    mp.start();
-
-    switch (v.getId()) {
-      case R.id.btn_clients -> {
-        BtnClient.startAnimation(fadeIn);
-        startActivity(ActivityClients.class, 1);
-      }
-      case R.id.btn_ventes -> {
-        if (CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")) {
-          new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                  .setTitleText("Important !")
-                  .setContentText("Veuillez régler les paramètres de VAN ( code, nom depot ) !")
-                  .show();
+        //Show btn
+        if (prefs.getBoolean("MODULE_ACHAT", true)) {
+            lnr_achat.setVisibility(View.VISIBLE);
         } else {
-          BtnVente.startAnimation(fadeIn);
-          startActivity(ActivitySales.class, 2);
+            lnr_achat.setVisibility(View.GONE);
         }
-      }
-      case R.id.btn_commande_client -> {
-        if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
-          new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                  .setTitleText("Important !")
-                  .setContentText(" Veuillez régler les paramètres de VENDEUR ( code, nom vendeur ) !")
-                  .show();
+
+
+        if (prefs.getBoolean("MODULE_VENTE", true)) {
+            BtnVente.setVisibility(View.VISIBLE);
+            lnr_vente_commande.setVisibility(View.VISIBLE);
         } else {
-          BtnCommandeClient.startAnimation(fadeIn);
-          startActivity(ActivityOrdersClient.class, 3);
+            BtnVente.setVisibility(View.GONE);
+            lnr_vente_commande.setVisibility(View.GONE);
         }
-      }
-      case R.id.btn_fournisseur -> {
-        BtnFournisseur.startAnimation(fadeIn);
-        startActivity(ActivityFournisseurs.class, 4);
-      }
-      case R.id.btn_achat -> {
-        BtnAchat.startAnimation(fadeIn);
-        startActivity(ActivityAchats.class, 5);
-      }
-      case R.id.btn_commande_fournisseur -> {
-        BtnCommandeFournisseur.startAnimation(fadeIn);
-        startActivity(ActivityOrdersFournisseur.class, 6);
-      }
-      case R.id.btn_produits -> {
-        BtnProduit.startAnimation(fadeIn);
-        startActivity(ActivityProduits.class, 7);
-      }
-      case R.id.btn_inventaire -> {
-        BtnInventaire.startAnimation(fadeIn);
-        startActivity(ActivityInventaires.class, 8);
-      }
-      case R.id.btn_import_export -> {
-        BtnImportExport.startAnimation(fadeIn);
-        startActivity(ActivityImportsExport.class, 9);
-      }
-      case R.id.btn_parametres -> {
-        BtnParametre.startAnimation(fadeIn);
-        startActivity(ActivityLogin.class, 10);
-      }
+
+        if (prefs.getBoolean("MODULE_COMMANDE", true)) {
+            BtnCommandeClient.setVisibility(View.VISIBLE);
+            lnr_vente_commande.setVisibility(View.VISIBLE);
+        } else {
+            BtnCommandeClient.setVisibility(View.GONE);
+            // lnr_vente_commande.setVisibility(View.GONE);
+        }
+
+        if (prefs.getBoolean("MODULE_INVENTAIRE", true)) {
+            //BtnClient.setVisibility(View.VISIBLE);
+            BtnInventaire.setVisibility(View.VISIBLE);
+        } else {
+            //BtnClient.setVisibility(View.GONE);
+            BtnInventaire.setVisibility(View.GONE);
+        }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    public void onClick(View v) {
+
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new AccelerateInterpolator()); //add this
+        fadeIn.setDuration(300);
+
+        MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.pellet);
+        mp.start();
+
+        switch (v.getId()) {
+            case R.id.btn_clients -> {
+                BtnClient.startAnimation(fadeIn);
+                startActivity(ActivityClients.class, 1);
+            }
+            case R.id.btn_ventes -> {
+                if (CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")) {
+                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Important !")
+                            .setContentText("Veuillez régler les paramètres de VAN ( code, nom depot ) !")
+                            .show();
+                } else {
+                    BtnVente.startAnimation(fadeIn);
+                    startActivity(ActivitySales.class, 2);
+                }
+            }
+            case R.id.btn_commande_client -> {
+                if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
+                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Important !")
+                            .setContentText(" Veuillez régler les paramètres de VENDEUR ( code, nom vendeur ) !")
+                            .show();
+                } else {
+                    BtnCommandeClient.startAnimation(fadeIn);
+                    startActivity(ActivityOrdersClient.class, 3);
+                }
+            }
+            case R.id.btn_fournisseur -> {
+                BtnFournisseur.startAnimation(fadeIn);
+                startActivity(ActivityFournisseurs.class, 4);
+            }
+            case R.id.btn_achat -> {
+                BtnAchat.startAnimation(fadeIn);
+                startActivity(ActivityAchats.class, 5);
+            }
+            case R.id.btn_commande_fournisseur -> {
+                BtnCommandeFournisseur.startAnimation(fadeIn);
+                startActivity(ActivityOrdersFournisseur.class, 6);
+            }
+            case R.id.btn_produits -> {
+                BtnProduit.startAnimation(fadeIn);
+                startActivity(ActivityProduits.class, 7);
+            }
+            case R.id.btn_inventaire -> {
+                BtnInventaire.startAnimation(fadeIn);
+                startActivity(ActivityInventaires.class, 8);
+            }
+            case R.id.btn_import_export -> {
+                BtnImportExport.startAnimation(fadeIn);
+                startActivity(ActivityImportsExport.class, 9);
+            }
+            case R.id.btn_parametres -> {
+                BtnParametre.startAnimation(fadeIn);
+                startActivity(ActivityLogin.class, 10);
+            }
 
       /*case R.id.btn_b_reception:
         //BtnBonReception.playSoundEffect(SoundEffectConstants.CLICK);
         startActivity(ActivityTransferts.class, REQUEST_ACTIVITY_BON_RECEPTION);
         break*/
+        }
     }
-  }
 
 
-  public void startActivity(Class clss, int request)
-  {
-    Intent intent = new Intent(getActivity(), clss);
-    intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
-    startActivityForResult(intent, request);
-    requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-  }
+    public void startActivity(Class clss, int request) {
+        Intent intent = new Intent(getActivity(), clss);
+        intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
+        startActivityForResult(intent, request);
+        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
 
 }

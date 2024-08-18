@@ -6,6 +6,6 @@ public class PostData_Position {
     public String adresse;
     public Integer color;
     public String client;
-    public String  num_bon;
+    public String num_bon;
 
 }

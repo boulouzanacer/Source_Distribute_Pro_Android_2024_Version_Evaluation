@@ -7,13 +7,13 @@ import android.location.Location;
  */
 
 public class LocationEvent {
-  private final Location mLocation;
+    private final Location mLocation;
 
-  public LocationEvent(Location location){
-    this.mLocation = location;
-  }
+    public LocationEvent(Location location) {
+        this.mLocation = location;
+    }
 
-  public Location getLocationData(){
-    return mLocation;
-  }
+    public Location getLocationData() {
+        return mLocation;
+    }
 }

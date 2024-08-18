@@ -39,8 +39,8 @@ public class FragmentQteInventaire {
     TextView txv_produit, txv_message;
     LinearLayout part_3_qteinv_Layout;
     TextInputLayout stockavantLayout_colis, ecartLayout_colis, qteLayout, vracLayout;
-    TextInputEditText  edt_colissage, edt_nbr_colis, edt_qte_physique, edt_vrac, edt_stock_avant, edt_stock_avant_colis, edt_ecart_qte, edt_ecart_colis;
-    Double val_nbr_colis, val_colissage, val_qte_physique, val_vrac,  val_stock_avant, val_stock_avant_colis, val_ecart, val_ecart_colis;
+    TextInputEditText edt_colissage, edt_nbr_colis, edt_qte_physique, edt_vrac, edt_stock_avant, edt_stock_avant_colis, edt_ecart_qte, edt_ecart_colis;
+    Double val_nbr_colis, val_colissage, val_qte_physique, val_vrac, val_stock_avant, val_stock_avant_colis, val_ecart, val_ecart_colis;
 
     private Context mContext;
 
@@ -48,7 +48,7 @@ public class FragmentQteInventaire {
 
     Activity activity;
     AlertDialog dialog;
-    NumberFormat nf,nq;
+    NumberFormat nf, nq;
 
     PostData_Inv2 arrived_inv2;
 
@@ -91,14 +91,14 @@ public class FragmentQteInventaire {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = (MaterialFancyButton) dialogview.findViewById(R.id.btn_remise);
+        btn_valider = dialogview.findViewById(R.id.btn_remise);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
         btn_valider.setIconPosition(POSITION_LEFT);
         btn_valider.setFontIconSize(30);
 
-        btn_cancel = (MaterialFancyButton) dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
@@ -126,7 +126,7 @@ public class FragmentQteInventaire {
         part_3_qteinv_Layout = dialogview.findViewById(R.id.part_3_qteinv_Layout);
 
         //********************************************************************
-        if (SOURCE_LOCAL.equals("INV2_INSERT")){
+        if (SOURCE_LOCAL.equals("INV2_INSERT")) {
             PostData_Inv2 checked_inv2 = new PostData_Inv2();
             String querry = "SELECT " +
                     "INV2.RECORDID, " +
@@ -147,7 +147,7 @@ public class FragmentQteInventaire {
             checked_inv2 = controller.check_if_inv2_exist(querry);
             SOURCE_LOCAL = "BON2_EDIT";
 
-            if(checked_inv2 != null){
+            if (checked_inv2 != null) {
                 txv_message.setText("Produit déja inseré avec une quantité : " + checked_inv2.qte_physique);
                 if_inv2_exist = true;
                 arrived_inv2 = checked_inv2;
@@ -158,13 +158,13 @@ public class FragmentQteInventaire {
         val_stock_avant = arrived_inv2.qte_theorique;
         val_colissage = arrived_inv2.colissage;
 
-        if(val_colissage==0){
+        if (val_colissage == 0) {
             val_stock_avant_colis = 0.0;
-        }else {
+        } else {
             val_stock_avant_colis = (double) (int) (val_stock_avant / val_colissage);
         }
 
-        if(val_colissage == 0.0){
+        if (val_colissage == 0.0) {
 
             edt_colissage.setText("");
             edt_qte_physique.requestFocus();
@@ -173,7 +173,7 @@ public class FragmentQteInventaire {
             //part_3_qteinv_Layout.setWeightSum(3);
             //vracLayout.setVisibility(View.GONE);
 
-        }else{
+        } else {
             edt_colissage.setText(nq.format(val_colissage));
             edt_nbr_colis.requestFocus();
             stockavantLayout_colis.setVisibility(View.VISIBLE);
@@ -182,18 +182,18 @@ public class FragmentQteInventaire {
             //part_3_qteinv_Layout.setWeightSum(4);
         }
 
-        if (SOURCE.equals("INV2_INSERT")){
+        if (SOURCE.equals("INV2_INSERT")) {
             edt_ecart_qte.setText(nq.format(val_stock_avant));
             edt_ecart_colis.setText(nq.format(val_stock_avant_colis));
             val_nbr_colis = 0.0;
             val_qte_physique = 0.0;
             val_vrac = 0.0;
 
-        }else if(SOURCE.equals("INV2_EDIT")){
+        } else if (SOURCE.equals("INV2_EDIT")) {
             val_stock_avant = arrived_inv2.qte_theorique;
-            if(val_colissage==0){
+            if (val_colissage == 0) {
                 val_stock_avant_colis = 0.0;
-            }else {
+            } else {
                 val_stock_avant_colis = (double) (int) (val_stock_avant / val_colissage);
             }
 
@@ -223,9 +223,9 @@ public class FragmentQteInventaire {
             val_ecart = val_stock_avant - val_qte_physique - val_vrac;
             edt_ecart_qte.setText(nq.format(val_ecart));
 
-            if(val_colissage==0){
+            if (val_colissage == 0) {
                 val_ecart_colis = 0.0;
-            }else {
+            } else {
                 val_ecart_colis = (double) (int) (val_ecart / val_colissage);
             }
             edt_ecart_colis.setText(nq.format(val_ecart_colis));
@@ -243,13 +243,13 @@ public class FragmentQteInventaire {
 
             boolean hasError = false;
 
-            if (Objects.requireNonNull(edt_qte_physique.getText()).length() <= 0 ) {
+            if (Objects.requireNonNull(edt_qte_physique.getText()).length() <= 0) {
 
                 edt_qte_physique.setError("Quantité obligatoire!!");
                 hasError = true;
             }
 
-            if(!hasError){
+            if (!hasError) {
 
                 arrived_inv2.nbr_colis = val_nbr_colis;
                 arrived_inv2.colissage = val_colissage;
@@ -285,16 +285,16 @@ public class FragmentQteInventaire {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_qte_physique.isFocused()){
-                    try{
+                if (!edt_qte_physique.isFocused()) {
+                    try {
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
                         //  100-((M-R)/M*100),
                         onNbrColisChange();
 
-                    }catch (Exception e){
-                       // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                       // taux_remise.getEditText().getText().clear();
+                    } catch (Exception e) {
+                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
+                        // taux_remise.getEditText().getText().clear();
                     }
                 }
 
@@ -316,15 +316,15 @@ public class FragmentQteInventaire {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_qte_physique.isFocused()){
-                    try{
+                if (!edt_qte_physique.isFocused()) {
+                    try {
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
                         //  100-((M-R)/M*100),
                         onColissageChange();
 
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
                         // taux_remise.getEditText().getText().clear();
                     }
@@ -348,15 +348,15 @@ public class FragmentQteInventaire {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(!edt_nbr_colis.isFocused() && !edt_colissage.isFocused()){
-                    try{
+                if (!edt_nbr_colis.isFocused() && !edt_colissage.isFocused()) {
+                    try {
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
                         //  100-((M-R)/M*100),
                         onQteChange();
 
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
                         // taux_remise.getEditText().getText().clear();
                     }
@@ -381,17 +381,17 @@ public class FragmentQteInventaire {
             public void afterTextChanged(Editable s) {
 
 
-                    try{
-                        //Double.valueOf(montant_avant_remise.getEditText().getText())
-                        // montant_remise.getEditText().getText(
-                        //  100-((M-R)/M*100),
-                        onVracChange();
+                try {
+                    //Double.valueOf(montant_avant_remise.getEditText().getText())
+                    // montant_remise.getEditText().getText(
+                    //  100-((M-R)/M*100),
+                    onVracChange();
 
 
-                    }catch (Exception e){
-                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        // taux_remise.getEditText().getText().clear();
-                    }
+                } catch (Exception e) {
+                    // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
+                    // taux_remise.getEditText().getText().clear();
+                }
 
 
             }
@@ -399,30 +399,30 @@ public class FragmentQteInventaire {
 
     }
 
-    void onNbrColisChange(){
-        if(edt_nbr_colis.getText().toString().isEmpty()){
+    void onNbrColisChange() {
+        if (edt_nbr_colis.getText().toString().isEmpty()) {
             val_nbr_colis = 0.00;
-        }else {
+        } else {
             val_nbr_colis = Double.parseDouble(edt_nbr_colis.getText().toString());
         }
-        if(edt_vrac.getText().toString().isEmpty()){
+        if (edt_vrac.getText().toString().isEmpty()) {
             val_vrac = 0.00;
-        }else {
+        } else {
             val_vrac = Double.parseDouble(edt_vrac.getText().toString());
         }
 
-        if(val_colissage == 0 || val_nbr_colis == 0){
+        if (val_colissage == 0 || val_nbr_colis == 0) {
             val_qte_physique = 0.0;
             edt_qte_physique.setText("");
 
-        }else {
+        } else {
             val_qte_physique = val_nbr_colis * val_colissage;
             edt_qte_physique.setText(nq.format(val_qte_physique));
         }
         val_ecart = val_stock_avant - val_qte_physique - val_vrac;
-        if(val_colissage ==0){
+        if (val_colissage == 0) {
             val_ecart_colis = 0.0;
-        }else {
+        } else {
             val_ecart_colis = (double) (int) (val_ecart / val_colissage);
         }
 
@@ -432,37 +432,37 @@ public class FragmentQteInventaire {
     }
 
 
-    void onColissageChange(){
-        if(edt_colissage.getText().toString().isEmpty()){
+    void onColissageChange() {
+        if (edt_colissage.getText().toString().isEmpty()) {
             val_colissage = 0.00;
-        }else {
+        } else {
             val_colissage = Double.parseDouble(edt_colissage.getText().toString());
         }
 
-        if(edt_vrac.getText().toString().isEmpty()){
-            val_vrac= 0.00;
-        }else {
+        if (edt_vrac.getText().toString().isEmpty()) {
+            val_vrac = 0.00;
+        } else {
             val_vrac = Double.parseDouble(edt_vrac.getText().toString());
         }
 
-        if(val_colissage == 0 || val_nbr_colis == 0){
+        if (val_colissage == 0 || val_nbr_colis == 0) {
             val_qte_physique = 0.0;
             edt_qte_physique.setText("");
 
-        }else {
+        } else {
             val_qte_physique = val_nbr_colis * val_colissage;
             edt_qte_physique.setText(nq.format(val_qte_physique));
         }
 
         val_ecart = val_stock_avant - val_qte_physique - val_vrac;
-        if(val_colissage == 0.0){
+        if (val_colissage == 0.0) {
             val_stock_avant_colis = 0.0;
             val_ecart_colis = 0.0;
             stockavantLayout_colis.setVisibility(View.GONE);
             ecartLayout_colis.setVisibility(View.GONE);
-        }else{
+        } else {
             val_stock_avant_colis = (double) (int) (val_stock_avant / val_colissage);
-            val_ecart_colis = (double) (int)  (val_ecart / val_colissage);
+            val_ecart_colis = (double) (int) (val_ecart / val_colissage);
             stockavantLayout_colis.setVisibility(View.VISIBLE);
             ecartLayout_colis.setVisibility(View.VISIBLE);
         }
@@ -473,16 +473,16 @@ public class FragmentQteInventaire {
     }
 
 
-    void onQteChange(){
-        if(edt_qte_physique.getText().toString().isEmpty()){
+    void onQteChange() {
+        if (edt_qte_physique.getText().toString().isEmpty()) {
             val_qte_physique = 0.00;
-        }else {
+        } else {
             val_qte_physique = Double.parseDouble(edt_qte_physique.getText().toString());
         }
 
-        if(edt_vrac.getText().toString().isEmpty()){
+        if (edt_vrac.getText().toString().isEmpty()) {
             val_vrac = 0.00;
-        }else {
+        } else {
             val_vrac = Double.parseDouble(edt_vrac.getText().toString());
         }
 
@@ -500,23 +500,23 @@ public class FragmentQteInventaire {
     }
 
 
-    void onVracChange(){
-        if(edt_qte_physique.getText().toString().isEmpty()){
+    void onVracChange() {
+        if (edt_qte_physique.getText().toString().isEmpty()) {
             val_qte_physique = 0.00;
-        }else {
+        } else {
             val_qte_physique = Double.parseDouble(edt_qte_physique.getText().toString());
         }
 
-        if(edt_vrac.getText().toString().isEmpty()){
-            val_vrac= 0.00;
-        }else {
+        if (edt_vrac.getText().toString().isEmpty()) {
+            val_vrac = 0.00;
+        } else {
             val_vrac = Double.parseDouble(edt_vrac.getText().toString());
         }
 
         val_ecart = val_stock_avant - val_qte_physique - val_vrac;
-        if(val_colissage ==0){
+        if (val_colissage == 0) {
             val_ecart_colis = 0.0;
-        }else {
+        } else {
             val_ecart_colis = (double) (int) (val_ecart / val_colissage);
         }
 

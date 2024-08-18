@@ -57,7 +57,7 @@ public class UsbDeviceAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.basic_dialog_item, null);
             holder = new ViewHolder();
-            holder.tvText = (TextView) convertView.findViewById(R.id.tv_basic_dialog_item_text);
+            holder.tvText = convertView.findViewById(R.id.tv_basic_dialog_item_text);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
