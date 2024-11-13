@@ -32,6 +32,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
@@ -48,6 +49,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Random;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -218,12 +220,18 @@ public class FragmentNewEditProduct {
         edt_prix5_ttc = dialogview.findViewById(R.id.edt_prix5_ttc);
         edt_prix6_ttc = dialogview.findViewById(R.id.edt_prix6_ttc);
 
+
         if (SOURCE_ACTIVITY.equals("EDIT_PRODUCT")) {
 
             edt_codebarre.setText(old_product.code_barre);
             edt_codebarre.setEnabled(false);
+            generate_codebarre.setEnabled(false);
+            scan_codebarre.setEnabled(false);
+
             edt_reference.setText(old_product.ref_produit);
             edt_reference.setEnabled(false);
+            generate_reference.setEnabled(false);
+            scan_reference.setEnabled(false);
 
             edt_designation.setText(old_product.produit);
             edt_colissage.setText(nq.format(old_product.colissage));
@@ -273,20 +281,6 @@ public class FragmentNewEditProduct {
             }
 
             if (prefs.getBoolean("EDIT_PRICE", false)) {
-                edt_prix1_ttc.setEnabled(true);
-                edt_prix2_ttc.setEnabled(true);
-                edt_prix3_ttc.setEnabled(true);
-                edt_prix4_ttc.setEnabled(true);
-                edt_prix5_ttc.setEnabled(true);
-                edt_prix6_ttc.setEnabled(true);
-
-                edt_prix1_ht.setEnabled(true);
-                edt_prix2_ht.setEnabled(true);
-                edt_prix3_ht.setEnabled(true);
-                edt_prix4_ht.setEnabled(true);
-                edt_prix5_ht.setEnabled(true);
-                edt_prix6_ht.setEnabled(true);
-            }else{
                 edt_prix1_ttc.setEnabled(false);
                 edt_prix2_ttc.setEnabled(false);
                 edt_prix3_ttc.setEnabled(false);
@@ -300,9 +294,22 @@ public class FragmentNewEditProduct {
                 edt_prix4_ht.setEnabled(false);
                 edt_prix5_ht.setEnabled(false);
                 edt_prix6_ht.setEnabled(false);
+            }else{
+                edt_prix1_ttc.setEnabled(true);
+                edt_prix2_ttc.setEnabled(true);
+                edt_prix3_ttc.setEnabled(true);
+                edt_prix4_ttc.setEnabled(true);
+                edt_prix5_ttc.setEnabled(true);
+                edt_prix6_ttc.setEnabled(true);
+
+                edt_prix1_ht.setEnabled(true);
+                edt_prix2_ht.setEnabled(true);
+                edt_prix3_ht.setEnabled(true);
+                edt_prix4_ht.setEnabled(true);
+                edt_prix5_ht.setEnabled(true);
+                edt_prix6_ht.setEnabled(true);
+
             }
-
-
 
         }
 
@@ -327,13 +334,13 @@ public class FragmentNewEditProduct {
         txt_input_prix6_ttc.setHint(params.pv6_titre + " (TTC)");
 
 
-        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
             lnr_prix2.setVisibility(View.VISIBLE);
         } else {
             lnr_prix2.setVisibility(View.INVISIBLE);
         }
 
-        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
             lnr_prix3.setVisibility(View.VISIBLE);
         } else {
             lnr_prix3.setVisibility(View.INVISIBLE);
@@ -605,7 +612,7 @@ public class FragmentNewEditProduct {
                 created_produit.pv1_ht = Double.parseDouble(edt_prix1_ht.getText().toString());
                 created_produit.pv1_ttc = created_produit.pv1_ht + (created_produit.pv1_ht * created_produit.tva / 100);
 
-                if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
                     created_produit.pv2_ht = Double.parseDouble(edt_prix2_ht.getText().toString());
                     created_produit.pv2_ttc = created_produit.pv2_ht + (created_produit.pv2_ht * created_produit.tva / 100);
                 } else {
@@ -613,7 +620,7 @@ public class FragmentNewEditProduct {
                     created_produit.pv2_ttc = 0.00;
                 }
 
-                if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
                     created_produit.pv3_ht = Double.parseDouble(edt_prix3_ht.getText().toString());
                     created_produit.pv3_ttc = created_produit.pv3_ht + (created_produit.pv3_ht * created_produit.tva / 100);
                 } else {
@@ -649,37 +656,37 @@ public class FragmentNewEditProduct {
 
                     created_produit.stock = old_product.stock -old_product.stock_ini + val_stock_ini;
 
-                    //update client into database,
-                    boolean state_update_produit = controller.update_into_produit(created_produit);
-                    if (state_update_produit) {
-
+                    try {
+                        //update client into database,
+                        controller.update_into_produit(created_produit);
                         Crouton.makeText(activity, "Produit bien modifier", Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);
 
                         dialog.dismiss();
-
-                    } else {
-                        Crouton.makeText(activity, "Problème mise à jour produit", Style.ALERT).show();
+                    }catch (Exception e){
+                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention. !")
+                                .setContentText("Problème mise à jour produit : " + e.getMessage())
+                                .show();
                     }
                 } else {
-
-
                     created_produit.stock = val_stock_ini;
-
-                    //update client into database,
-                    boolean state_insert_produit = controller.insert_into_produit(created_produit);
-                    if (state_insert_produit) {
-
+                    try {
+                        //update client into database,
+                        controller.insert_into_produit(created_produit);
                         Crouton.makeText(activity, "Produit bien ajouté", Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);
 
                         dialog.dismiss();
-
-                    } else {
-                        Crouton.makeText(activity, "Problème insertion", Style.ALERT).show();
+                    }catch (Exception e){
+                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention. !")
+                                .setContentText("Problème insertion : " + e.getMessage())
+                                .show();
                     }
+
                 }
 
                 EventBus.getDefault().unregister(this);

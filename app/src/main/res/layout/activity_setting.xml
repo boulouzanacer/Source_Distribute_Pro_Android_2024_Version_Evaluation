@@ -5,7 +5,9 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.safesoft.proapp.distribute.activities.ActivitySetting">
+    tools:context="com.safesoft.proapp.distribute.activities.ActivitySetting"
+    tools:ignore="NewApi">
+
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -20,6 +20,123 @@
 
 
     <LinearLayout
+        android:id="@+id/backup_confique"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background_holo_light"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:onClick="onClickListener"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        tools:ignore="RtlSymmetry,UsingOnClickInXml">
+
+        <LinearLayout
+            android:weightSum="10"
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:textColor="@color/black"
+                android:singleLine="true"
+                android:text="Email :"
+                android:clickable="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/txtv_email_cloud"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:textColor="@color/black"
+                android:singleLine="true"
+                android:text="boulouza.nacer@gmail.com"
+                android:clickable="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:weightSum="10"
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:textColor="@color/black"
+                android:singleLine="true"
+                android:text="Password :"
+                android:clickable="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/txtv_password_cloud"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:textColor="@color/black"
+                android:singleLine="true"
+                android:text="12345678"
+                android:clickable="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:weightSum="2"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_delete_cloud"
+            style="@style/dialog_blue_button"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp"
+            android:text="Vider le compte" />
+
+
+        <Button
+            android:id="@+id/btn_add_update_cloud"
+            style="@style/dialog_blue_button"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginStart="15dp"
+            android:text="Créer/Maj cloud" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
         android:id="@+id/backup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +160,6 @@
             android:text="@string/sauvegarder_backup"
             android:clickable="false"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
 
     </LinearLayout>
 

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -58,7 +59,7 @@ public class FragmentNewEditClient {
     AlertDialog dialog;
 
     private final String PREFS = "ALL_PREFS";
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
     private String CODE_DEPOT, CODE_VENDEUR;
 
     PostData_Client created_client;
@@ -131,9 +132,8 @@ public class FragmentNewEditClient {
         edt_client_solde_init = dialogview.findViewById(R.id.edt_client_solde_init);
 
         radioGroup_mode_tarif = dialogview.findViewById(R.id.rd_mode_tarif);
-        radioGroup_mode_tarif.check(R.id.rb_0);
 
-        RadioButton rb0 = dialogview.findViewById(R.id.rb_0);
+        RadioButton  rb0= dialogview.findViewById(R.id.rb_0);
         RadioButton rb1 = dialogview.findViewById(R.id.rb_1);
         RadioButton rb2 = dialogview.findViewById(R.id.rb_2);
         RadioButton rb3 = dialogview.findViewById(R.id.rb_3);
@@ -186,35 +186,94 @@ public class FragmentNewEditClient {
         rb5.setText(params.pv5_titre);
         rb6.setText(params.pv6_titre);
 
-        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
-            rb2.setVisibility(View.VISIBLE);
-        } else {
-            rb2.setVisibility(View.GONE);
+        rb0.setVisibility(View.GONE);
+        rb1.setVisibility(View.GONE);
+        rb2.setVisibility(View.GONE);
+        rb3.setVisibility(View.GONE);
+        rb4.setVisibility(View.GONE);
+        rb5.setVisibility(View.GONE);
+        rb6.setVisibility(View.GONE);
+
+
+        if (!prefs.getBoolean("APP_AUTONOME", false)) {
+
+            if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Libre")){
+
+                rb0.setVisibility(View.VISIBLE);
+                rb1.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_0);
+
+                if (params.prix_2 == 1) {
+                    rb2.setVisibility(View.VISIBLE);
+                } else {
+                    rb2.setVisibility(View.GONE);
+                }
+
+                if (params.prix_3 == 1) {
+                    rb3.setVisibility(View.VISIBLE);
+                } else {
+                    rb3.setVisibility(View.GONE);
+                }
+
+                if (params.prix_4 == 1) {
+                    rb4.setVisibility(View.VISIBLE);
+                } else {
+                    rb4.setVisibility(View.GONE);
+                }
+
+                if (params.prix_5 == 1) {
+                    rb5.setVisibility(View.VISIBLE);
+                } else {
+                    rb5.setVisibility(View.GONE);
+                }
+
+                if (params.prix_6 == 1) {
+                    rb6.setVisibility(View.VISIBLE);
+                } else {
+                    rb6.setVisibility(View.GONE);
+                }
+
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv1_titre)) {
+                rb1.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_1);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv2_titre)) {
+                rb2.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_2);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv3_titre)) {
+                rb3.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_3);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv4_titre)) {
+                rb4.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_4);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv5_titre)) {
+                rb5.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_5);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv6_titre)) {
+                rb6.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_6);
+            }
+        }else{
+            if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Libre")){
+                rb0.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_0);
+
+                rb1.setVisibility(View.VISIBLE);
+                rb2.setVisibility(View.VISIBLE);
+                rb3.setVisibility(View.VISIBLE);
+
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Prix 1")) {
+                rb1.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_1);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Prix 2")) {
+                rb2.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_2);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Prix 3")) {
+                rb3.setVisibility(View.VISIBLE);
+                radioGroup_mode_tarif.check(R.id.rb_3);
+            }
         }
 
-        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
-            rb3.setVisibility(View.VISIBLE);
-        } else {
-            rb3.setVisibility(View.GONE);
-        }
 
-        if (params.prix_4 == 1) {
-            rb4.setVisibility(View.VISIBLE);
-        } else {
-            rb4.setVisibility(View.GONE);
-        }
-
-        if (params.prix_5 == 1) {
-            rb5.setVisibility(View.VISIBLE);
-        } else {
-            rb5.setVisibility(View.GONE);
-        }
-
-        if (params.prix_6 == 1) {
-            rb6.setVisibility(View.VISIBLE);
-        } else {
-            rb6.setVisibility(View.GONE);
-        }
 
         if (SOURCE_ACTIVITY.equals("EDIT_CLIENT")) {
 
@@ -245,7 +304,8 @@ public class FragmentNewEditClient {
             edt_client_nif.setText(old_client.ifiscal);
             edt_client_nis.setText(old_client.nis);
             edt_client_ai.setText(old_client.ai);
-            edt_client_solde_init.setText(new DecimalFormat("####0.00").format(old_client.solde_ini));
+            //edt_client_solde_init.setText(new DecimalFormat("####0.00").format(old_client.solde_ini));
+            edt_client_solde_init.setText(String.valueOf(old_client.solde_ini));
             edt_client_solde_init.setEnabled(false);
 
             radioGroup_mode_tarif.clearCheck();
@@ -302,10 +362,10 @@ public class FragmentNewEditClient {
                 created_client.client = edt_client_name.getText().toString();
                 created_client.adresse = edt_client_adress.getText().toString();
                 created_client.tel = edt_client_telephone.getText().toString();
-                created_client.rc = edt_client_registre.getText().toString();
-                created_client.ifiscal = edt_client_nif.getText().toString();
-                created_client.nis = edt_client_nis.getText().toString();
-                created_client.ai = edt_client_ai.getText().toString();
+                created_client.rc = Objects.requireNonNull(edt_client_registre.getText()).toString();
+                created_client.ifiscal = Objects.requireNonNull(edt_client_nif.getText()).toString();
+                created_client.nis = Objects.requireNonNull(edt_client_nis.getText()).toString();
+                created_client.ai = Objects.requireNonNull(edt_client_ai.getText()).toString();
                 created_client.solde_ini = Double.parseDouble(edt_client_solde_init.getText().toString());
 
                 created_client.mode_tarif = "0";
@@ -346,22 +406,24 @@ public class FragmentNewEditClient {
 
                     created_client.code_client = old_client.code_client;
 
-                    //Insert client into database,
-                    boolean state_update_client = controller.update_client(created_client);
-                    if (state_update_client) {
+                    try {
+
+                        controller.update_client(created_client);
                         Crouton.makeText(activity, "Client bien modifier", Style.INFO).show();
                         SelectedClientEvent added_client = new SelectedClientEvent(created_client);
                         bus.post(added_client);
-
                         dialog.dismiss();
 
-                    } else {
-                        Crouton.makeText(activity, "Problème de mise à jour client", Style.ALERT).show();
+                    }catch (Exception e){
+                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention. !")
+                                .setContentText("Problème de mise à jour client : " + e.getMessage())
+                                .show();
                     }
+                    //Insert client into database,
+
                 } else {
-
                     created_client.solde_montant = created_client.solde_ini;
-
                     if (CODE_DEPOT.equals("000000")) {
                         created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_VENDEUR;
 
@@ -369,20 +431,21 @@ public class FragmentNewEditClient {
                         created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_DEPOT;
                     }
 
-                    //update client into database,
-                    boolean state_insert_client = controller.insert_into_client(created_client);
-                    if (state_insert_client) {
+                    try {
+                        //update client into database,
+                         controller.insert_into_client(created_client);
+                         Crouton.makeText(activity, "Client bien ajouté", Style.INFO).show();
+                         SelectedClientEvent added_client = new SelectedClientEvent(created_client);
+                         bus.post(added_client);
+                         dialog.dismiss();
 
-                        Crouton.makeText(activity, "Client bien ajouté", Style.INFO).show();
-
-                        SelectedClientEvent added_client = new SelectedClientEvent(created_client);
-                        bus.post(added_client);
-
-                        dialog.dismiss();
-
-                    } else {
-                        Crouton.makeText(activity, "Problème insertion", Style.ALERT).show();
+                    }catch (Exception e){
+                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention. !")
+                                .setContentText("Problème insertion : " + e.getMessage())
+                                .show();
                     }
+
                 }
 
             }

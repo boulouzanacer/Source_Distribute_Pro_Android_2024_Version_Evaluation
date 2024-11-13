@@ -10,10 +10,10 @@ android {
         minSdkVersion 26
         targetSdkVersion 34
         versionCode 538
-        versionName "240818"
+        versionName "241026"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
-        //setProperty("archivesBaseName", "app-debug" + versionName)
+        //setProperty("archivesBaseName", "distribute_pro" + versionName)
     }
 
     buildTypes {
@@ -36,18 +36,18 @@ android {
 
         android.applicationVariants.all { variant ->
             variant.outputs.all {
-                outputFileName = "app-debug"
+                outputFileName = "distribute_pro"
                 outputFileName += android.defaultConfig.versionName + ".apk"
             }
         }
     }
+
 
     lintOptions {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
         abortOnError false
-
     }
 
     packagingOptions {
@@ -63,14 +63,17 @@ android {
         exclude 'META-INF/LGPL2.1'
 
     }
+
     namespace 'com.safesoft.proapp.distribute'
     buildFeatures {
         viewBinding true
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_16
         targetCompatibility JavaVersion.VERSION_16
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -81,10 +84,11 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.exifinterface:exifinterface:1.3.7'
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.4.0', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.6.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
@@ -113,7 +117,7 @@ dependencies {
 
     implementation 'com.jzxiang.pickerview:TimePickerDialog:1.0.1'
     implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.7'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'com.github.mhadikz:toaster:1.0.0'
 
     //Button
@@ -130,6 +134,8 @@ dependencies {
     implementation 'com.github.medyo:fancybuttons:1.9.1'
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
     implementation 'com.github.chathuralakmal:AndroidImagePopup:1.2.2'
+
+    implementation "com.github.skydoves:powerspinner:1.2.7"
 
     // externel librery
     implementation project(':folding-cell')

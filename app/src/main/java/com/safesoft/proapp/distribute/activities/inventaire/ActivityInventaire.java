@@ -4,7 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -45,6 +48,7 @@ import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentQteInventaire;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
@@ -100,6 +104,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     private NumberFormat nf;
 
     public static final String BARCODE_KEY = "BARCODE";
+    private final static String SCAN_ACTION = "safesoft.barcode.signal";
+    private final static String BROADCAST_KEYBOARD = "com.scanner.broadcast";
 
     private Barcode barcodeResult;
     final String PREFS = "ALL_PREFS";
@@ -251,6 +257,17 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         // Register as a subscriber
         bus.register(this);
 
+    }
+
+    @Override
+    protected void onResume() {
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SCAN_ACTION);
+        filter.addAction(BROADCAST_KEYBOARD);
+        registerReceiver(mScanReceiver, filter);
+
+        super.onResume();
     }
 
     @SuppressLint({"CutPasteId", "WrongViewCast"})
@@ -700,15 +717,6 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
 
     @Override
-    protected void onDestroy() {
-        // Unregister
-        bus.unregister(this);
-        stopService(intent_location);
-        super.onDestroy();
-    }
-
-
-    @Override
     public void onClick(View v, int position, PostData_Produit item) {
 
         PostData_Inv2 inv2 = new PostData_Inv2();
@@ -810,4 +818,40 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             Crouton.makeText(ActivityInventaire.this, "Produit introuvable !", Style.ALERT).show();
         }
     }
+
+    private final BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+                if (Objects.requireNonNull(intent.getAction()).equals(BROADCAST_KEYBOARD)){
+
+                    String barcode2 = intent.getStringExtra("com.symbol.datawedge.data_string");
+                    Log.v("TEST", "code_barre : " + barcode2);
+                    selectProductFromScan(barcode2);
+
+                }else {
+                    String barcode = intent.getStringExtra("barcode");
+                    //byte[] barcode = intent.getByteArrayExtra("barcode");
+                    int barocodelen = intent.getIntExtra("length", 0);
+                    byte temp = intent.getByteExtra("barcodeType", (byte) 0);
+                    //android.util.Log.i("debug", "----codetype--" + temp);
+                    selectProductFromScan(barcode);
+                }
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(mScanReceiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister
+        bus.unregister(this);
+        stopService(intent_location);
+        super.onDestroy();
+    }
+
 }

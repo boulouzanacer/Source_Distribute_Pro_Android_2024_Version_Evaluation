@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
                 // Check if it is a file or directory
                 if (file.isFile() && file.getName().endsWith(".apk")) {
 
-                    dowloaded_version = file.getName().substring(9);
+                    dowloaded_version = file.getName().substring(14);
                     dowloaded_version = dowloaded_version.replace(".apk", "");
 
                     break;
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
         int dowloaded_version = getLocalVersion(getExternalCacheDir().getPath());
         String server_hash = event.getHash();
-        String doanload_hash = APKUtils.getApkHash(getExternalCacheDir() + "/app-debug"+dowloaded_version+".apk", Env.hashAlgorithm);
+        String doanload_hash = APKUtils.getApkHash(getExternalCacheDir() + "/distribute_pro"+dowloaded_version+".apk", Env.hashAlgorithm);
 
 
         if (doanload_hash.equalsIgnoreCase(server_hash)) {
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
                     .setConfirmClickListener(sDialog -> {
 
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(FileProvider.getUriForFile(MainActivity.this, getApplicationContext().getPackageName() + ".provider", new File(getExternalCacheDir() + "/app-debug" + dowloaded_version + ".apk")), "application/vnd.android.package-archive");
+                        intent.setDataAndType(FileProvider.getUriForFile(MainActivity.this, getApplicationContext().getPackageName() + ".provider", new File(getExternalCacheDir() + "/distribute_pro" + dowloaded_version + ".apk")), "application/vnd.android.package-archive");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivity(intent);
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
                         UpdateApp atualizaApp = new UpdateApp(this, event.getVersion());
                         atualizaApp.setContext(getApplicationContext());
-                        atualizaApp.execute("http://144.91.122.24/apk/distribute/app-debug" + event.getVersion() + ".apk");
+                        atualizaApp.execute("http://144.91.122.24/apk/distribute/distribute_pro" + event.getVersion() + ".apk");
 
                         sDialog.dismiss();
 

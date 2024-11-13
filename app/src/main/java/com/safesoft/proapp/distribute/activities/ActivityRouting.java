@@ -134,7 +134,7 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
                 ActivityCompat.requestPermissions(ActivityRouting.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3232);
                 ActivityCompat.requestPermissions(ActivityRouting.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 3232);
             } else {
-                //  https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
+                //https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
                 Intent tsp_intent = new Intent(ActivityRouting.this, TSPActivityMaps.class);
                 startActivity(tsp_intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

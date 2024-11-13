@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 public class FragmentValideBon {
 
@@ -96,7 +97,7 @@ public class FragmentValideBon {
 
         btn_valider.setOnClickListener(v -> {
 
-            if (edt_versement.getText().length() > 0) {
+            if (Objects.requireNonNull(edt_versement.getText()).length() > 0) {
 
                 // RemiseEventRemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
                 ValidateFactureEvent Valider_bon_versement = new ValidateFactureEvent(val_versement);

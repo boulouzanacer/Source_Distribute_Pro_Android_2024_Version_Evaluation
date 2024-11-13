@@ -166,7 +166,7 @@ public class GeneratePDF {
         Map<EncodeHintType, Object> hints = null;
         String encoding = guessAppropriateEncoding(contentsToEncode);
         if (encoding != null) {
-            hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+            hints = new EnumMap<>(EncodeHintType.class);
             hints.put(EncodeHintType.CHARACTER_SET, encoding);
         }
         MultiFormatWriter writer = new MultiFormatWriter();
@@ -203,6 +203,8 @@ public class GeneratePDF {
         return null;
     }
 
+
+
     private void generatePDFAchat() {
 
         // creating an object variable
@@ -215,7 +217,7 @@ public class GeneratePDF {
         Canvas canvas = myPage.getCanvas();
 
         String img_str = prefs.getString("COMPANY_LOGO", "");
-        if (!img_str.equals("")) {
+        if (!img_str.isEmpty()) {
             //decode string to image
             byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
             bmp = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -547,7 +549,7 @@ public class GeneratePDF {
                             nc,
                             colissage,
                             new DecimalFormat("####0.##").format(final_panier_vente.get(i).qte), gratuit,
-                            new DecimalFormat("####0.00").format(final_panier_vente.get(i).pa_ht)),
+                            new DecimalFormat("####0.00").format(final_panier_vente.get(i).pv_ht)),
                     mergeleft, facture_y, title);
 
             canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);

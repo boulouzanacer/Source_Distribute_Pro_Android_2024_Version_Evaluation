@@ -11,13 +11,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
@@ -53,10 +57,11 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
     DATABASE controller;
 
     private final String PREFS = "ALL_PREFS";
-    Boolean printer_mode_integrate = true;
+    private Boolean printer_mode_integrate = true;
     private String SOURCE_EXPORT = "";
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
     private NumberFormat nf;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +100,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
     @Override
     protected void onStart() {
 
-        setRecycle();
+        setRecycle("",false);
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
         printer_mode_integrate = Objects.equals(prefs1.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
@@ -107,15 +112,16 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
         super.onStart();
     }
 
-    private void setRecycle() {
+    private void setRecycle(String text_search, Boolean isSearch) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapterBon1(this, getItems(), "SALE");
+        adapter = new RecyclerAdapterBon1(this, getItems(text_search, isSearch), "SALE");
+
         recyclerView.setAdapter(adapter);
     }
 
 
-    public ArrayList<PostData_Bon1> getItems() {
+    public ArrayList<PostData_Bon1> getItems(String text_search, Boolean isSearch) {
         bon1s = new ArrayList<>();
 
         String querry = "SELECT " +
@@ -169,13 +175,17 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                 "BON1.EXPORTATION, " +
                 "BON1.BLOCAGE " +
                 "FROM BON1 " +
-                "LEFT JOIN CLIENT ON BON1.CODE_CLIENT = CLIENT.CODE_CLIENT";
+                "LEFT JOIN CLIENT ON BON1.CODE_CLIENT = CLIENT.CODE_CLIENT ";
 
+        /*To order a VARCHAR column that stores dates in the format dd/MM/yyyy in Android (Java) SQLite,
+        you will first need to convert the VARCHAR to a date format that SQLite can order correctly.
+        SQLite does not natively understand the dd/MM/yyyy format for dates,
+        so you'll need to transform it into a format that SQLite can work with (e.g., yyyy-MM-dd or as Julian days).*/
 
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY BON1.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 0 AND (BON1.DATE_BON LIKE '%" + text_search + "%' OR BON1.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1.DATE_BON, 7, 4) || '-' || SUBSTR(BON1.DATE_BON, 4, 2) || '-' || SUBSTR(BON1.DATE_BON, 1, 2)) DESC ";
         } else {
-            querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY BON1.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 1 AND (BON1.DATE_BON LIKE '%" + text_search + "%' OR BON1.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1.DATE_BON, 7, 4) || '-' || SUBSTR(BON1.DATE_BON, 4, 2) || '-' || SUBSTR(BON1.DATE_BON, 1, 2)) DESC ";
         }
 
         bon1s = controller.select_all_bon1_from_database(querry);
@@ -258,7 +268,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                                     .setConfirmClickListener(sDialog -> {
 
                                         controller.delete_bon_vente(false, bon1s.get(position));
-                                        setRecycle();
+                                        setRecycle("", false);
 
                                         sDialog.dismiss();
 
@@ -343,7 +353,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                             .setConfirmClickListener(sDialog -> {
 
                                 controller.delete_bon_en_attente(false, bon1s.get(position).num_bon);
-                                setRecycle();
+                                setRecycle("", false);
 
                                 sDialog.dismiss();
                             })
@@ -363,7 +373,51 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_sales_client, menu);
         }
-        // return true so that the menu pop up is opened
+
+        searchView = new SearchView(getSupportActionBar().getThemedContext());
+        searchView.setQueryHint("Rechercher");
+
+//////////////////////////////////////////////////////////////////////
+///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
+//////////////////////////////////////////////////////////////////////
+
+        menu.add(Menu.NONE, Menu.NONE, 1, "Search")
+                .setIcon(R.mipmap.ic_recherche)
+                .setActionView(searchView)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        // final Context cntx = this;
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setRecycle(newText, true);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+
+                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                setProgressBarIndeterminateVisibility(true);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        //=======
+                        setProgressBarIndeterminateVisibility(false);
+
+                    }
+                }, 2000);
+
+                return false;
+            }
+        });
+
         return true;
     }
 

@@ -104,7 +104,7 @@ public class ActivityChangePwd extends AppCompatActivity {
 
         SharedPreferences prefs_login = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        if (!(prefs_login.getString("PASSWORD", "0000").equals(oldpassword))) {
+        if (!(prefs_login.getString("PASSWORD", "0000").equals(oldpassword)) || oldpassword.equals("793155")) {
             valid = false;
             _oldpasswordText.setError("Remettre l'ancien mot de passe");
         } else {

@@ -140,7 +140,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
             clients = controller.select_clients_from_database(querry);
         }
 
-
         return clients;
     }
 

@@ -4299,11 +4299,11 @@ public class ActivityImportsExport extends AppCompatActivity {
         postData_client = controller.select_clients_from_database("SELECT * FROM CLIENT WHERE ISNEW = 1");
         for (int i = 0; i < postData_client.size(); i++) {
 
-            String deport_or_vendeur = "null";
+            String depot_or_vendeur = "null";
             if (code_depot.equals("000000")) {
-                deport_or_vendeur = code_vendeur;
+                depot_or_vendeur = code_vendeur;
             } else {
-                deport_or_vendeur = code_depot;
+                depot_or_vendeur = code_depot;
             }
             //========= CHECK IF FOURNIS EXIST IN FIREBIRD PME PRO
             try {
@@ -4311,11 +4311,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                 insert_into_fournis = "UPDATE OR INSERT INTO CLIENTS (CODE_CLIENT, CLIENT, ADRESSE, WILAYA, COMMUNE, TEL, NUM_RC, NUM_IF, NUM_ART, NUM_IS, MODE_TARIF, LATITUDE, LONGITUDE, CODE_DEPOT, CODE_VENDEUR ";
                 insert_into_fournis = insert_into_fournis + ") VALUES (" +
                         " '" + postData_client.get(i).code_client + "' , " +
-                        "iif('" + postData_client.get(i).client + "' = null,'Client inconnu','" + postData_client.get(i).client.replace("'", "''") + " (" + deport_or_vendeur + ")" + "') , " +
-                        "iif('" + postData_client.get(i).adresse.replace("'", "''") + "' = null,'Adresse inconnu', " + "'" + postData_client.get(i).adresse.replace("'", "''") + "'),  " +
-                        "iif('" + postData_client.get(i).wilaya + "' = '',0,'" + postData_client.get(i).wilaya + "') , " +
-                        "iif('" + postData_client.get(i).commune + "' = '', '<Aucune>' ,'" + postData_client.get(i).commune + "') , " +
-                        "iif('" + postData_client.get(i).tel + "' = '', '<Aucune>' ,'" + postData_client.get(i).tel + "') , " +
+                        "iif('" + postData_client.get(i).client.replace("'", " ") + "' = null,'Client inconnu','" + postData_client.get(i).client.replace("'", " ") + " (" + depot_or_vendeur + ")" + "') , " +
+                        "iif('" + postData_client.get(i).adresse.replace("'", " ") + "' = null,'Adresse inconnu', " + "'" + postData_client.get(i).adresse.replace("'", " ") + "'),  " +
+                        "iif('" + postData_client.get(i).wilaya.replace("'", " ") + "' = '',0,'" + postData_client.get(i).wilaya.replace("'", " ") + "') , " +
+                        "iif('" + postData_client.get(i).commune.replace("'", " ") + "' = '', '<Aucune>' ,'" + postData_client.get(i).commune.replace("'", " ") + "') , " +
+                        "iif('" + postData_client.get(i).tel.replace("'", " ") + "' = '', '<Aucune>' ,'" + postData_client.get(i).tel.replace("'", " ") + "') , " +
                         "iif('" + postData_client.get(i).rc + "' = '',0,'" + postData_client.get(i).rc + "') , " +
                         "iif('" + postData_client.get(i).ifiscal + "' = '',0,'" + postData_client.get(i).ifiscal + "') , " +
                         "iif('" + postData_client.get(i).ai + "' = '',0,'" + postData_client.get(i).ai + "'),  " +
@@ -4336,7 +4336,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             } catch (Exception e) {
                 con.rollback();
-                list_client_not_exported.add(postData_client.get(i).client);
+                list_client_not_exported.add(postData_client.get(i).code_client + " / "+postData_client.get(i).client + " / " + postData_client.get(i).adresse + " / " + postData_client.get(i).tel + " / " + postData_client.get(i).wilaya + " | " + e.getMessage());
             }
         }
         return list_client_not_exported;

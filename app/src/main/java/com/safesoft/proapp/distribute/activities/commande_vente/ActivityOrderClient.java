@@ -439,7 +439,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 if (client_selected.mode_tarif.equals("0")) {
 
                     if (btn_mode_tarif.getText().toString().equals("Tarif 1")) {
-                        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
                             bon1_temp.mode_tarif = "2";
                             btn_mode_tarif.setText("Tarif 2");
                         } else {
@@ -447,7 +447,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     } else if (btn_mode_tarif.getText().toString().equals("Tarif 2")) {
-                        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
                             bon1_temp.mode_tarif = "3";
                             btn_mode_tarif.setText("Tarif 3");
                         } else {

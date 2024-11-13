@@ -7,12 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +56,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
     private String SOURCE_EXPORT = "";
     private NumberFormat nf;
+    private SearchView searchView;
 
     private String CODE_DEPOT;
 
@@ -93,7 +98,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     @Override
     protected void onStart() {
 
-        setRecycle();
+        setRecycle("", false);
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         printer_mode_integrate = Objects.equals(prefs.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
@@ -105,15 +110,15 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         super.onStart();
     }
 
-    private void setRecycle() {
+    private void setRecycle(String text_search, Boolean isSearch) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapterBon1(this, getItems(), "ORDER");
+        adapter = new RecyclerAdapterBon1(this, getItems(text_search, isSearch), "ORDER");
         recyclerView.setAdapter(adapter);
     }
 
 
-    public ArrayList<PostData_Bon1> getItems() {
+    public ArrayList<PostData_Bon1> getItems(String text_search, Boolean isSearch) {
         bon1s_temp = new ArrayList<>();
 
         String querry = "SELECT " +
@@ -171,9 +176,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
 
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY BON1_TEMP.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 0 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1_TEMP.DATE_BON, 7, 4) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 4, 2) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 1, 2)) DESC ";
         } else {
-            querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY BON1_TEMP.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 1 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1_TEMP.DATE_BON, 7, 4) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 4, 2) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 1, 2)) DESC ";
         }
 
         bon1s_temp = controller.select_all_bon1_from_database(querry);
@@ -247,7 +252,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                     .setConfirmClickListener(sDialog -> {
 
                                         controller.delete_bon_vente(true, bon1s_temp.get(position));
-                                        setRecycle();
+                                        setRecycle("", false);
 
                                         sDialog.dismiss();
 
@@ -331,7 +336,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
 
                         if (controller.ExCommande_Export_to_ventes(bon1s_temp.get(position), final_panier, CODE_DEPOT, NUM_BON_BON1 )) {
-                            setRecycle();
+                            setRecycle("", false);
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.SUCCESS_TYPE)
                                     .setTitleText("Information!")
                                     .setContentText("Votre a été exporté avec succès")
@@ -365,7 +370,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                             .setConfirmClickListener(sDialog -> {
 
                                 controller.delete_bon_en_attente(true, bon1s_temp.get(position).num_bon);
-                                setRecycle();
+                                setRecycle("", false);
 
                                 sDialog.dismiss();
                             })
@@ -384,7 +389,50 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_orders_client, menu);
         }
-        // return true so that the menu pop up is opened
+        searchView = new SearchView(getSupportActionBar().getThemedContext());
+        searchView.setQueryHint("Rechercher");
+
+//////////////////////////////////////////////////////////////////////
+///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
+//////////////////////////////////////////////////////////////////////
+
+        menu.add(Menu.NONE, Menu.NONE, 1, "Search")
+                .setIcon(R.mipmap.ic_recherche)
+                .setActionView(searchView)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        // final Context cntx = this;
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setRecycle(newText, true);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+
+                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                setProgressBarIndeterminateVisibility(true);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        //=======
+                        setProgressBarIndeterminateVisibility(false);
+
+                    }
+                }, 2000);
+
+                return false;
+            }
+        });
+
         return true;
     }
 

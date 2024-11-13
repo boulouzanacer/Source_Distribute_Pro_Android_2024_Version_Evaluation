@@ -1,22 +1,24 @@
 package com.safesoft.proapp.distribute.activities;
 
 import static com.rt.printerlibrary.enumerate.BarcodeType.CODE128;
+import static com.safesoft.proapp.distribute.MainActivity.getAndroidID;
 
 import android.Manifest;
 //import android.content.Context;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,6 +37,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -97,16 +100,26 @@ import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.setting.BarcodeSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
+import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.activation.NetClient;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
+import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.cloud.DownloadBackupTask;
+import com.safesoft.proapp.distribute.cloud.FetchFilesTask;
+import com.safesoft.proapp.distribute.cloud.FileUploader;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.databases.backup.LocalBackup;
 import com.safesoft.proapp.distribute.dialog.BluetoothDeviceChooseDialog;
 import com.safesoft.proapp.distribute.dialog.UsbDeviceChooseDialog;
+import com.safesoft.proapp.distribute.eventsClasses.AddedEmailEvent;
+import com.safesoft.proapp.distribute.eventsClasses.CheckEmailEvent;
+import com.safesoft.proapp.distribute.eventsClasses.SelectedBackupEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedDepotEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedVendeurEvent;
+import com.safesoft.proapp.distribute.fragments.FragmentCloudAccount;
+import com.safesoft.proapp.distribute.fragments.FragmentListDatabases;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedDepot;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedVendeur;
 import com.safesoft.proapp.distribute.fragments.PasswordResetDialogFragment;
@@ -120,12 +133,18 @@ import com.safesoft.proapp.distribute.utils.SPUtils;
 import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
 import com.safesoft.proapp.distribute.utils.TonyUtils;
 import com.safesoft.proapp.distribute.view.FlowRadioGroup;
+import com.skydoves.powerspinner.IconSpinnerAdapter;
+import com.skydoves.powerspinner.IconSpinnerItem;
+import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
+import com.skydoves.powerspinner.PowerSpinnerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -148,7 +167,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private EditText ip, pathdatabase, nom_serveur_ftp, num_port_ftp, nom_utilisateur_ftp, password_ftp, ch_exp_ftp, ch_imp_ftp;
     private TextInputLayout username_safe_event_text, password_safe_event_text;
     private EditText username_safe_event, password_safe_event;
-    Spinner type_logiciel_dropdown;
+    private Spinner type_logiciel_dropdown;
     private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, model_ticket_tite;
     private TextInputEditText edt_objectif;
     private Button btntest_connection,
@@ -184,6 +203,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private RadioButton rdb_scanner_camera;
 
     private LinearLayout param_co, param_ftp, param_impr, param_backup, param_reset, param_divers;
+    private LinearLayout lnr_back_up;
 
     Button bt1, bt2, bt3, bt4, bt10, bt11;
     RelativeLayout param_pda;
@@ -196,6 +216,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_MEDIA_IMAGES
     };
+
     private TextSetting textSetting;
 
     private BluetoothAdapter mBluetoothAdapter;
@@ -212,13 +233,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private final String SP_KEY_PORT = "port";
     private Object configObj;
     private final ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
-    private BroadcastReceiver broadcastReceiver;//USB Attach-Deattached Receiver
+
 
     private final List<String> NO_PERMISSION = new ArrayList<>();
     private static final int REQUEST_CAMERA = 0;
     private DATABASE controller;
     private PostData_Params params;
-    private LocalBackup localBackup;
+
+    private PowerSpinnerView amazingSpinner;
+    private IconSpinnerItem selected_prix_revendeur;
+
+    private TextView txtv_email_cloud, txtv_password_cloud;
+    private Button btn_add_update_cloud,btn_delete_cloud;
 
 
     private void CheckAllPermission() {
@@ -246,7 +272,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         getSupportActionBar().setTitle("Parametres");
 
         controller = new DATABASE(this);
-        localBackup = new LocalBackup(this);
 
         params = new PostData_Params();
         try {
@@ -265,6 +290,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     @Override
     public void initView() {
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter() {
@@ -286,6 +313,149 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 return null;
             }
         };
+
+        amazingSpinner = findViewById(R.id.amazingspinner);
+        List<IconSpinnerItem> iconSpinnerItems = new ArrayList<>();
+
+        PostData_Params params = new PostData_Params();
+        params = controller.select_params_from_database("SELECT * FROM PARAMS");
+
+        iconSpinnerItems.add(new IconSpinnerItem("Libre"));
+
+        if (!prefs.getBoolean("APP_AUTONOME", false)) {
+            iconSpinnerItems.add(new IconSpinnerItem(params.pv1_titre));
+        }else {
+            iconSpinnerItems.add(new IconSpinnerItem("Prix 1"));
+        }
+
+        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+            iconSpinnerItems.add(new IconSpinnerItem(params.pv2_titre));
+        }else {
+            iconSpinnerItems.add(new IconSpinnerItem("Prix 2"));
+        }
+
+        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+            iconSpinnerItems.add(new IconSpinnerItem(params.pv3_titre));
+        }else {
+            iconSpinnerItems.add(new IconSpinnerItem("Prix 3"));
+        }
+
+        if (params.prix_4 == 1) {
+            iconSpinnerItems.add(new IconSpinnerItem(params.pv4_titre));
+        }
+
+        if (params.prix_5 == 1) {
+            iconSpinnerItems.add(new IconSpinnerItem(params.pv5_titre));
+        }
+
+        if (params.prix_6 == 1) {
+            iconSpinnerItems.add(new IconSpinnerItem(params.pv6_titre));
+        }
+
+
+        //ArrayAdapter<String> adapter_prix_revendeurs = new ArrayAdapter<>(this, R.layout.dropdown_famille_item, prix_revendeurs);
+        //amazingSpinner.setSpinnerAdapter(adapter_prix_revendeurs);
+
+        lnr_back_up = findViewById(R.id.backup);
+
+        IconSpinnerAdapter iconSpinnerAdapter = new IconSpinnerAdapter(amazingSpinner);
+        amazingSpinner.setSpinnerAdapter(iconSpinnerAdapter);
+        amazingSpinner.setItems(iconSpinnerItems);
+        //amazingSpinner.selectItemByIndex(0);
+        amazingSpinner.setLifecycleOwner(this);
+
+
+
+        if (!prefs.getBoolean("APP_AUTONOME", false)) {
+            if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Libre")){
+                amazingSpinner.selectItemByIndex(0);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv1_titre)) {
+                amazingSpinner.selectItemByIndex(1);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv2_titre)) {
+                amazingSpinner.selectItemByIndex(2);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv3_titre)) {
+                amazingSpinner.selectItemByIndex(3);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv4_titre)) {
+                amazingSpinner.selectItemByIndex(4);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv5_titre)) {
+                amazingSpinner.selectItemByIndex(5);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv6_titre)) {
+                amazingSpinner.selectItemByIndex(6);
+            }
+        }else{
+            if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Libre")){
+                amazingSpinner.selectItemByIndex(0);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Prix 1")) {
+                amazingSpinner.selectItemByIndex(1);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Prix 2")) {
+                amazingSpinner.selectItemByIndex(2);
+            }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Prix 3")) {
+                amazingSpinner.selectItemByIndex(3);
+            }
+        }
+
+
+        amazingSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
+            @Override public void onItemSelected(int oldIndex, @Nullable Object oldItem, int newIndex, Object newItem) {
+
+                selected_prix_revendeur = (IconSpinnerItem) newItem;
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putString("PRIX_REVENDEUR", selected_prix_revendeur.getText().toString());
+                editor.apply();
+
+            }
+        });
+
+
+        txtv_email_cloud = findViewById(R.id.txtv_email_cloud);
+        txtv_password_cloud = findViewById(R.id.txtv_password_cloud);
+        btn_add_update_cloud = findViewById(R.id.btn_add_update_cloud);
+        btn_delete_cloud = findViewById(R.id.btn_delete_cloud);
+
+        txtv_email_cloud.setText(prefs.getString("EMAIL_COMPTE_CLOUD", ""));
+        txtv_password_cloud.setText(prefs.getString("PASSWORD_COMPTE_CLOUD", ""));
+        if(txtv_email_cloud.getText().equals("")){
+            lnr_back_up.setEnabled(false);
+        }
+        btn_add_update_cloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentCloudAccount fragmentCloudAccount = new FragmentCloudAccount();
+                fragmentCloudAccount.showDialogbox(ActivitySetting.this, txtv_email_cloud.getText().toString(), txtv_password_cloud.getText().toString());
+            }
+        });
+
+        btn_delete_cloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Compte cloud")
+                        .setContentText("Voulez-vous vraiment supprimer le compte cloud maintenant ?")
+                        .setCancelText("Non")
+                        .setConfirmText("Oui")
+                        .showCancelButton(true)
+                        .setCancelClickListener(Dialog::dismiss)
+                        .setConfirmClickListener(sDialog -> {
+
+                            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                            editor.putString("EMAIL_COMPTE_CLOUD", "");
+                            editor.putString("PASSWORD_COMPTE_CLOUD", "");
+                            editor.apply();
+
+                            txtv_email_cloud.setText("");
+                            txtv_password_cloud.setText("");
+
+                            lnr_back_up.setEnabled(false);
+
+                            sDialog.dismiss();
+                        })
+                        .setCancelClickListener(Dialog::dismiss)
+                        .show();
+
+
+            }
+        });
 
         //EditText
         ip = findViewById(R.id.ip);
@@ -426,7 +596,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_logiciel_list, android.R.layout.simple_spinner_dropdown_item);
         type_logiciel_dropdown.setAdapter(adapter);
 
-        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+
         String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
         type_logiciel_dropdown.setSelection(adapter.getPosition(TYPE_LOGICIEL));
         type_logiciel_dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1776,95 +1946,138 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
-    public void lunch_back_up() {
+    private void backup_db() {
+        String currentDBPath = "//data//data//" + mContext.getPackageName() + "//databases//safe_distribute_pro";
 
-        //TelephonyManager telephonyManager = (TelephonyManager) getSystemService(ActivityActivation.TELEPHONY_SERVICE);
+        String current_version = "0";
+        String android_unique_id = "0";
+        String seriel_number = "0";
 
-        //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-        // TODO: Consider calling
-        //    ActivityCompat#requestPermissions
-        // here to request the missing permissions, and then overriding
-        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        //                                          int[] grantResults)
-        // to handle the case where the user grants the permission. See the documentation
-        // for ActivityCompat#requestPermissions for more details.
-        //return;
-        //}
-        //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-        // TODO: Consider calling
-        //    ActivityCompat#requestPermissions
-        // here to request the missing permissions, and then overriding
-        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        //                                          int[] grantResults)
-        // to handle the case where the user grants the permission. See the documentation
-        // for ActivityCompat#requestPermissions for more details.
-        //return;
-        // }
+        try {
 
+            PackageManager pm = getApplicationContext().getPackageManager();
+            String packageName =getApplicationContext().getPackageName();
+            PackageInfo packageInfo = pm.getPackageInfo(packageName, 0);
 
-/*
-        backup_database.getName();
-        FTPClient con = null;
+            current_version = String.valueOf(packageInfo.versionName);
+            android_unique_id = getAndroidID(getApplicationContext());
 
-        try
-        {
-            con = new FTPClient();
-            con.connect("files.000webhost.com");
-
-            if (con.login("getwhatyouwant-all", "Boulouza1111"))
-            {
-                con.enterLocalPassiveMode(); // important!
-                con.setFileType(FTP.BINARY_FILE_TYPE);
-               // String data = "/sdcard/vivekm4a.m4a";
-                String data = backup_database.getAbsolutePath();
-
-                FileInputStream in = new FileInputStream(new File(data));
-                boolean result = con.storeFile("/"+backup_database.getName(), in);
-                in.close();
-                if (result) Log.v("upload result", "succeeded");
-                con.logout();
-                con.disconnect();
-            }
-        }
-        catch (Exception e)
-        {
-            Log.e("TRACKKK", "gggggg" +  e.getMessage());
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
 
+        new UploadFileTask().execute(currentDBPath, seriel_number, android_unique_id, current_version, txtv_email_cloud.getText().toString());
 
-        */
-    }
-
-    //Backup ftp function
-   /* private void Backup_db_to_ftp() {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 454545);
-            //return;
-        } else {
-            lunch_back_up();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 454545) {
-            lunch_back_up();
-
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }*/
-
-
-    private void backup_db() throws IOException {
-       // localBackup.performBackup(controller);
-       // localBackup.saveFileToExternalStorage(controller, outFileName);
-        controller.backupDatabase();
     }
 
     private void restore_db() {
-        localBackup.performRestore(controller);
+        //localBackup.performRestore(controller);
+        new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Info...")
+                .setContentText("Cette operation necessite l'intervention de l'administrateur, Veuillez contacter le fournisseur !")
+                .show();
+        //new GetFileTask().execute(txtv_email_cloud.getText().toString());
     }
+
+
+    private class GetFileTask extends AsyncTask<String, Integer, JSONArray> {
+
+        ProgressDialog mProgressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(ActivitySetting.this);
+            mProgressDialog.setMessage("Récupération list des bases de données ...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... params) {
+
+            return FetchFilesTask.getListFile(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray result) {
+
+            mProgressDialog.dismiss();
+           try {
+               if(result.length() > 0){
+                   ArrayList<String> list_databases = new ArrayList<>();
+                   for (int i = 0; i < result.length(); i++) {
+                       list_databases.add(result.getString(i));
+                       String fileName = result.getString(i);
+                       Log.d("File", "File: " + fileName);
+                   }
+                   showListBackup(list_databases, "Sauvegarde list");
+               }else{
+                   new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.NORMAL_TYPE)
+                           .setTitleText("Info...")
+                           .setContentText("Aucune sauvegarde base de données disponible sur le serveur !")
+                           .show();
+               }
+
+           } catch (Exception e) {
+             Log.e("FetchFilesTask", "Error parsing JSON", e);
+               new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
+                       .setTitleText("Erreur...")
+                       .setContentText("Probleme au moment du récuperation la liste des bases de donnees")
+                       .show();
+           }
+
+        }
+    }
+
+
+    private class GetDownloadTask extends AsyncTask<String, Integer, Boolean> {
+
+        ProgressDialog mProgressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(ActivitySetting.this);
+            mProgressDialog.setMessage("Téléchargement backup (bases de données)");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            return DownloadBackupTask.downloadBackupFile(getApplicationContext(), params[0], params[1], percentage -> publishProgress(percentage));
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int progress = values[0];
+            mProgressDialog.setTitle(progress + "%");
+            mProgressDialog.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            mProgressDialog.dismiss();
+
+            if(result){
+                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Succès...")
+                        .setContentText("Téléchargement terminé")
+                        .show();
+            }else{
+                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Erreur...")
+                        .setContentText("Probleme au moment du téléchargement la base de données")
+                        .show();
+            }
+        }
+    }
+
 
     public void sendRequest(String username_safe_event, String password_safe_event, String typeConnection) {
         new Thread(new Runnable() {
@@ -1965,7 +2178,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 System.setProperty("FBAdbLog", "true");
                 java.sql.DriverManager.setLoginTimeout(5);
                 Class.forName("org.firebirdsql.jdbc.FBDriver");
-                String sCon = "jdbc:firebirdsql:" + _Server + ":" + _pathDatabase + ".FDB";
+                String sCon = "jdbc:firebirdsql:" + _Server + ":" + _pathDatabase + ".FDB?encoding=WIN1256";
                 Log.d("TAG", "doInBackground: " + sCon);
                 con = DriverManager.getConnection(sCon, _Username, _Password);
                 executed = true;
@@ -2259,6 +2472,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             super.onPostExecute(integer);
         }
     }
+
     protected void showListDepot(ArrayList<PostData_Depot> depots, String title) {
         android.app.FragmentManager fm = getFragmentManager();
         DialogFragment dialog = new FragmentSelectedDepot(); // creating new object
@@ -2281,6 +2495,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     }
 
+    protected void showListBackup(ArrayList<String> backups, String title) {
+        android.app.FragmentManager fm = getFragmentManager();
+        DialogFragment dialog = new FragmentListDatabases(); // creating new object
+        Bundle args = new Bundle();
+        args.putStringArrayList("LIST_DATABASES", backups);
+        args.putString("TITLE", title);
+        dialog.setArguments(args);
+        dialog.show(fm, "dialog");
+
+    }
 
     @Subscribe
     public void onDepotSelected(SelectedDepotEvent event){
@@ -2305,6 +2529,132 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         editor.apply();
     }
 
+    @Subscribe
+    public void onBackupSelected(SelectedBackupEvent event){
+        String fileName = event.getNom_database();
+        new GetDownloadTask().execute(fileName, txtv_email_cloud.getText().toString());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAddedEmailEvent(AddedEmailEvent event) {
+
+        if(event.getIsAdded()){
+
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putString("EMAIL_COMPTE_CLOUD", event.getEmailCloud());
+            editor.putString("PASSWORD_COMPTE_CLOUD", event.getPaswordCloud());
+            editor.apply();
+
+            txtv_email_cloud.setText(event.getEmailCloud());
+            txtv_password_cloud.setText(event.getPaswordCloud());
+
+            new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Compte cloud")
+                    .setContentText("Compte cloud bien crée, Voulez-vous vraiment faire un backup cloud maintenant ?")
+                    .setCancelText("Non")
+                    .setConfirmText("Oui")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
+
+                        String currentDBPath = "//data//data//" + mContext.getPackageName() + "//databases//safe_distribute_pro";
+
+                        String current_version = "0";
+                        String android_unique_id = "0";
+                        String seriel_number = "0";
+
+                        try {
+
+                            PackageManager pm = getApplicationContext().getPackageManager();
+                            String packageName =getApplicationContext().getPackageName();
+                            PackageInfo packageInfo = pm.getPackageInfo(packageName, 0);
+
+                            current_version = String.valueOf(packageInfo.versionName);
+                            android_unique_id = getAndroidID(getApplicationContext());
+
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        new UploadFileTask().execute(currentDBPath, seriel_number, android_unique_id, current_version, event.getEmailCloud());
+
+                        sDialog.dismiss();
+                    })
+                    .setCancelClickListener(Dialog::dismiss)
+                    .show();
+
+            lnr_back_up.setEnabled(true);
+
+        }else{
+            new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Erreur")
+                    .setContentText("Erreur lors de l'ajout du compte cloud : " + event.getMessage())
+                    .show();
+        }
+
+    }
+
+
+    private class UploadFileTask extends AsyncTask<String, Integer, String> {
+
+        ProgressDialog mProgressDialog;
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(ActivitySetting.this);
+            mProgressDialog.setMessage("Sauvegarde cloud ...");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String filePath = params[0];
+            String seriel_number = params[1];
+            String android_id = params[2];
+            String version = params[3];
+            String email = params[4];
+
+            return FileUploader.uploadFile(filePath, seriel_number, android_id, version, email, percentage -> publishProgress(percentage));
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int progress = values[0];
+            mProgressDialog.setTitle(progress + "%");
+            mProgressDialog.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            mProgressDialog.dismiss();
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject = new JSONObject(result);
+                if(jsonObject.getString("status").equals("success")){
+                    new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Information...")
+                            .setContentText(jsonObject.getString("message"))
+                            .show();
+                }else{
+                    new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Erreur...")
+                            .setContentText(jsonObject.getString("message"))
+                            .show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Error...")
+                        .setContentText(e.getMessage())
+                        .show();
+            }
+        }
+    }
 
     void imageChooserGallery() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

@@ -59,8 +59,8 @@ public class RecyclerAdapterRouting extends RecyclerView.Adapter<RecyclerAdapter
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_routing, parent, false);
+        itemClick = (ItemClick) parent.getContext();
         itemLongClick = (ItemLongClick) parent.getContext();
-
 
         return new MyViewHolder(v);
     }

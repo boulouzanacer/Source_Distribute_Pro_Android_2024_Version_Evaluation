@@ -422,6 +422,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                 showListClient();
             }
             case R.id.btn_mode_tarif -> {
+
                 if (bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
@@ -429,15 +430,16 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                             .show();
                     return;
                 }
-                if (bon1.client.isEmpty()) {
 
+                if (bon1.client.isEmpty()) {
                     Crouton.makeText(ActivitySale.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                     return;
                 }
+
                 if (client_selected.mode_tarif.equals("0")) {
 
                     if (btn_mode_tarif.getText().toString().equals("Tarif 1")) {
-                        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
                             bon1.mode_tarif = "2";
                             btn_mode_tarif.setText("Tarif 2");
                         } else {
@@ -445,7 +447,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     } else if (btn_mode_tarif.getText().toString().equals("Tarif 2")) {
-                        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+                        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
                             bon1.mode_tarif = "3";
                             btn_mode_tarif.setText("Tarif 3");
                         } else {

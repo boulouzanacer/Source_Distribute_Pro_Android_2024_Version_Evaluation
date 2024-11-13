@@ -16,6 +16,9 @@ android {
         }
         debug {
             testCoverageEnabled = true
+            multiDexEnabled true
+        }
+        android {
         }
     }
     compileOptions {
@@ -37,6 +40,12 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:2.22.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 

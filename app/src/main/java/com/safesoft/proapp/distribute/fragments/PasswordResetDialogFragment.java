@@ -51,8 +51,7 @@ public class PasswordResetDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialogfragment_password_reset, container);
     }
 
@@ -68,6 +67,7 @@ public class PasswordResetDialogFragment extends DialogFragment {
         // Get field from view
         mPassword = view.findViewById(R.id.txt_pasword);
         reset = view.findViewById(R.id.reset);
+
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +99,7 @@ public class PasswordResetDialogFragment extends DialogFragment {
                                     editor.apply();
 
                                     controller.ResetPda();
+                                    //controller.insertproduits();
                                     sDialog.dismiss();
                                     getDialog().dismiss();
                                 }

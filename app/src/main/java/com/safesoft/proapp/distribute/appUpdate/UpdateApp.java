@@ -63,7 +63,7 @@ public class UpdateApp extends AsyncTask<String, Integer, Integer> {
             // Get file length
             long fileLength = connection.getContentLength();
 
-            File outputFile = new File(context.getExternalCacheDir(), "app-debug" + version + ".apk");
+            File outputFile = new File(context.getExternalCacheDir(), "distribute_pro" + version + ".apk");
             FileOutputStream fos = new FileOutputStream(outputFile);
 
             InputStream is = connection.getInputStream();
@@ -112,7 +112,7 @@ public class UpdateApp extends AsyncTask<String, Integer, Integer> {
 
         if (result == 1) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", new File(context.getExternalCacheDir() + "/app-debug" + version + ".apk")), "application/vnd.android.package-archive");
+            intent.setDataAndType(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", new File(context.getExternalCacheDir() + "/distribute_pro" + version + ".apk")), "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             context.startActivity(intent);

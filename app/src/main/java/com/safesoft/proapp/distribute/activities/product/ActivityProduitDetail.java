@@ -205,13 +205,13 @@ public class ActivityProduitDetail extends AppCompatActivity {
             Description.setText(produit.description);
         }
 
-        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
             Lnr_pv2.setVisibility(View.VISIBLE);
         } else {
             Lnr_pv2.setVisibility(View.GONE);
         }
 
-        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", true)) {
+        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
             Lnr_pv3.setVisibility(View.VISIBLE);
         } else {
             Lnr_pv3.setVisibility(View.GONE);

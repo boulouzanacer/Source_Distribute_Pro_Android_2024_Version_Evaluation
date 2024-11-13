@@ -7,12 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,6 +58,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     private String SOURCE_EXPORT = "";
     SharedPreferences prefs;
     private NumberFormat nf;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +97,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     @Override
     protected void onStart() {
 
-        setRecycle();
+        setRecycle("", false);
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
         printer_mode_integrate = Objects.equals(prefs1.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
@@ -104,15 +109,15 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         super.onStart();
     }
 
-    private void setRecycle() {
+    private void setRecycle(String text_search, Boolean isSearch) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapterAchat1(this, getItems(), "ACHAT");
+        adapter = new RecyclerAdapterAchat1(this, getItems(text_search, isSearch), "ACHAT");
         recyclerView.setAdapter(adapter);
     }
 
 
-    public ArrayList<PostData_Achat1> getItems() {
+    public ArrayList<PostData_Achat1> getItems(String text_search, Boolean isSearch) {
         achat1s = new ArrayList<>();
 
         String querry = "SELECT " +
@@ -146,9 +151,9 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
 
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            querry = querry + " WHERE IS_EXPORTED = 0 ORDER BY ACHAT1.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 0 AND (ACHAT1.DATE_BON LIKE '%" + text_search + "%' OR ACHAT1.MODE_RG LIKE '%" + text_search + "%' OR FOURNIS.FOURNIS LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(ACHAT1.DATE_BON, 7, 4) || '-' || SUBSTR(ACHAT1.DATE_BON, 4, 2) || '-' || SUBSTR(ACHAT1.DATE_BON, 1, 2)) DESC ";
         } else {
-            querry = querry + " WHERE IS_EXPORTED = 1 ORDER BY ACHAT1.NUM_BON ";
+            querry = querry + " WHERE IS_EXPORTED = 1 AND (ACHAT1.DATE_BON LIKE '%" + text_search + "%' OR ACHAT1.MODE_RG LIKE '%" + text_search + "%' OR FOURNIS.FOURNIS LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(ACHAT1.DATE_BON, 7, 4) || '-' || SUBSTR(ACHAT1.DATE_BON, 4, 2) || '-' || SUBSTR(ACHAT1.DATE_BON, 1, 2)) DESC ";
         }
 
         achat1s = controller.select_all_achat1_from_database(querry);
@@ -231,7 +236,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                                     .setConfirmClickListener(sDialog -> {
 
                                         controller.delete_bon_achat(false, achat1s.get(position));
-                                        setRecycle();
+                                        setRecycle("", false);
 
                                         sDialog.dismiss();
 
@@ -313,7 +318,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                             .setConfirmClickListener(sDialog -> {
 
                                 controller.delete_bon_achat(false, achat1s.get(position));
-                                setRecycle();
+                                setRecycle("", false);
 
                                 sDialog.dismiss();
                             })
@@ -331,7 +336,50 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_sales_client, menu);
         }
-        // return true so that the menu pop up is opened
+        searchView = new SearchView(getSupportActionBar().getThemedContext());
+        searchView.setQueryHint("Rechercher");
+
+//////////////////////////////////////////////////////////////////////
+///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
+//////////////////////////////////////////////////////////////////////
+
+        menu.add(Menu.NONE, Menu.NONE, 1, "Search")
+                .setIcon(R.mipmap.ic_recherche)
+                .setActionView(searchView)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        // final Context cntx = this;
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setRecycle(newText, true);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+
+                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                setProgressBarIndeterminateVisibility(true);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        //=======
+                        setProgressBarIndeterminateVisibility(false);
+
+                    }
+                }, 2000);
+
+                return false;
+            }
+        });
+
         return true;
     }
 

@@ -327,7 +327,7 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
                 break;
 
             case R.id.btnVerser:
-                if(!prefs.getBoolean("APP_AUTONOME", true)){
+                if(!prefs.getBoolean("APP_AUTONOME", false)){
                     FragmentVersementFournisseur fragmentversementfournisseur = new FragmentVersementFournisseur();
                     fragmentversementfournisseur.showDialogbox(ActivityFournisseurDetail.this, fournisseur.solde_montant, fournisseur.verser_montant, 0, "", fournisseur.code_frs, false, "");
                 }else {

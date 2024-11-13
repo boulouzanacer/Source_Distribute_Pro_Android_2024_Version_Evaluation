@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:visibility="visible"
+    android:visibility="gone"
     android:id="@+id/param_divers"
     android:layout_height="wrap_content">
 
