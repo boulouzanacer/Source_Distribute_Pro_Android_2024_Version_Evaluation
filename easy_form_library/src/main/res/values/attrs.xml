@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EasyForm">
+        <attr name="submitButton" format="reference" />
+        <attr name="showErrorOn" format="enum">
+            <enum name="unfocus" value="0" />
+            <enum name="change" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="EasyFormEditText">
+        <attr name="errorType" format="enum">
+            <enum name="empty" value="0" />
+            <enum name="pattern" value="1" />
+            <enum name="value" value="2" />
+            <enum name="chars" value="3" />
+        </attr>
+        <attr name="type" format="enum">
+            <enum name="phoneNumber" value="0" />
+            <enum name="creditCard" value="1" />
+        </attr>
+        <attr name="errorMessage" format="string|reference" />
+        <attr name="regexPattern" format="string|reference" />
+        <attr name="minValue" format="float" />
+        <attr name="maxValue" format="float" />
+        <attr name="minChars" format="integer" />
+        <attr name="maxChars" format="integer" />
+
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="EasyAutoCompleteTextView">
+        <attr name="errorType"/>
+        <attr name="errorMessage" />
+        <attr name="regexPattern" />
+        <attr name="minChars" />
+        <attr name="maxChars" />
+        <attr name="items" format="reference" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+
+android {
+  compileSdk 34
+
+  defaultConfig {
+    minSdkVersion 26
+  }
+
+  namespace 'cn.pedant.SweetAlert'
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  buildTypes {
+    android {
+    }
+  }
+  buildToolsVersion '34.0.0'
+  lint {
+    abortOnError false
+  }
+  /* kotlinOptions {
+       jvmTarget = '1.8'
+   }*/
+}
+

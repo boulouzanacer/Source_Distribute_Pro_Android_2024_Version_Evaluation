@@ -4,7 +4,7 @@ group = 'com.ramotion.foldingcell'
 version = '1.1.0'
 
 android {
-    compileSdkVersion 34
+    compileSdk 34
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 34
@@ -15,8 +15,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            testCoverageEnabled = true
             multiDexEnabled true
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
         }
         android {
         }
@@ -31,15 +32,16 @@ android {
     productFlavors {
     }
     namespace 'com.ramotion.foldingcell'
-   /* kotlinOptions {
-        jvmTarget = '1.8'
-    }*/
+    buildToolsVersion '34.0.0'
+    /* kotlinOptions {
+         jvmTarget = '1.8'
+     }*/
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:2.22.0'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
 }
 
 java {

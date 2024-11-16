@@ -4,16 +4,12 @@ version = "1.0"
 project.group = "com.safesoft.uk2015.restopro"
 
 android {
-    compileSdkVersion 34
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 26
     }
 
-    lintOptions {
-
-        abortOnError false
-    }
     namespace 'cn.pedant.SweetAlert'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -22,6 +18,10 @@ android {
     buildTypes {
         android {
         }
+    }
+    buildToolsVersion '34.0.0'
+    lint {
+        abortOnError false
     }
     /* kotlinOptions {
          jvmTarget = '1.8'

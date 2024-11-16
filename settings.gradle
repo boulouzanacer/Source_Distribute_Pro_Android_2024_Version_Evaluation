@@ -1,4 +1,11 @@
-plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
-}
-include ':app',':folding-cell', ':lib_badge', ':SpinKitLib', ':materialbarcodescanner', ':sweet_alert_dialog_library'
+include ':app',':folding-cell',
+        ':lib_badge',
+        ':SpinKitLib',
+        ':materialbarcodescanner',
+        ':sweet_alert_dialog_library',
+        ':text_drawable_library',
+        ':swipe_away_dialog_library',
+        ':slanted_textview_library',
+        ':easy_form_library',
+        ':materialfancybuttons_library',
+        ':time_picker_dialog_library'
