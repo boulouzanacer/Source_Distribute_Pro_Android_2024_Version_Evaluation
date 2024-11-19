@@ -33,7 +33,6 @@ import androidx.core.content.ContextCompat;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
-import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.safesoft.proapp.distribute.R;
@@ -48,6 +47,7 @@ import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentQteInventaire;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
@@ -265,7 +265,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         IntentFilter filter = new IntentFilter();
         filter.addAction(SCAN_ACTION);
         filter.addAction(BROADCAST_KEYBOARD);
-        registerReceiver(mScanReceiver, filter);
+        registerReceiver(mScanReceiver , filter, RECEIVER_EXPORTED);
 
         super.onResume();
     }

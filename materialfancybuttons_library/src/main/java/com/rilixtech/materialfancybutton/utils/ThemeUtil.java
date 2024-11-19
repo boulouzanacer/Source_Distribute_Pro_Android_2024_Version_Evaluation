@@ -6,7 +6,6 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.TypedValue;
-import com.rilixtech.materialfancybutton.R;
 
 public class ThemeUtil {
 

@@ -29,10 +29,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:ignore="SelectedPhotoAccess" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <!--<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />-->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
@@ -150,24 +151,40 @@
 
         <!-- Inventaire classes -->
         <activity android:name=".activities.inventaire.ActivityInventaire" />
-        <activity android:name=".activities.inventaire.ActivityInventaires" /> <!-- Scanner classes -->
+        <activity android:name=".activities.inventaire.ActivityInventaires" />
+
+        <!-- Scanner classes -->
         <activity
             android:name=".scanner.FullScannerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".scanner.BaseScannerActivity" /> <!-- achat classes -->
+        <activity android:name=".scanner.BaseScannerActivity" />
+
+        <!-- achat classes -->
         <activity android:name=".activities.achats.ActivityAchats" />
-        <activity android:name=".activities.achats.ActivityAchat" /> <!-- vente classes -->
+        <activity android:name=".activities.achats.ActivityAchat" />
+
+        <!-- vente classes -->
         <activity android:name=".activities.vente.ActivitySale" />
-        <activity android:name=".activities.vente.ActivitySales" /> <!-- Commande classes -->
+        <activity android:name=".activities.vente.ActivitySales" />
+
+        <!-- Commande classes -->
         <activity android:name=".activities.commande_vente.ActivityOrderClient" />
-        <activity android:name=".activities.commande_vente.ActivityOrdersClient" /> <!-- Bluetooth classes -->
-        <activity android:name=".activities.map.ActivityItenerary" /> <!-- Services -->
-        <service android:name=".gps.ServiceLocation" /> <!-- Maps -->
+        <activity android:name=".activities.commande_vente.ActivityOrdersClient" />
+
+        <!-- Bluetooth classes -->
+        <activity android:name=".activities.map.ActivityItenerary" />
+
+        <!-- Services -->
+        <service android:name=".gps.ServiceLocation" />
+
+        <!-- Maps -->
         <activity
             android:name=".activities.map.ActivityMaps"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.NoActionBar" /> <!-- Etat -->
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- Etat -->
         <activity android:name=".activities.vente.ActivityEtatV" />
         <activity android:name=".activities.commande_vente.ActivityEtatC" />
 

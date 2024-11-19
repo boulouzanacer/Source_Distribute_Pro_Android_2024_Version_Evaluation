@@ -42,12 +42,12 @@ import java.text.DecimalFormat;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
-import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.PrintEvent;
+import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;

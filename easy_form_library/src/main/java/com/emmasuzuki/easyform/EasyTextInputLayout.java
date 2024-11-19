@@ -18,8 +18,6 @@ package com.emmasuzuki.easyform;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -27,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import static com.emmasuzuki.easyform.FormValidator.INVALID_VALUE;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 public class EasyTextInputLayout extends TextInputLayout implements View.OnFocusChangeListener {
 
@@ -95,7 +95,6 @@ public class EasyTextInputLayout extends TextInputLayout implements View.OnFocus
         }
     }
 
-    @NonNull
     @Override
     public EditText getEditText() {
         return easyFormEditText;

@@ -7,8 +7,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import com.rilixtech.materialfancybutton.R;
 import com.rilixtech.materialfancybutton.drawable.RippleDrawable;
+
+import cn.pedant.SweetAlert.R;
 
 public final class RippleManager implements View.OnClickListener {
 

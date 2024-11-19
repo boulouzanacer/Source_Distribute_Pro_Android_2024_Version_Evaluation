@@ -8,20 +8,15 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.provider.Settings;
-import android.provider.Settings.Secure;
-
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.activation.ActivityActivation;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
-import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -33,7 +33,6 @@ import androidx.core.content.ContextCompat;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
-import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierAchat;
@@ -51,6 +50,7 @@ import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectFournisseur;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;

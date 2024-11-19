@@ -1,21 +1,14 @@
 apply plugin: 'com.android.library'
 
-ext {
-    PUBLISH_GROUP_ID = 'com.emmasuzuki'
-    PUBLISH_ARTIFACT_ID = 'easyform'
-    PUBLISH_VERSION = '1.2.1'
-}
-
 android {
+    namespace 'com.emmasuzuki.easyform'
+
     compileSdkVersion 34
-    buildToolsVersion '28.0.3'
     publishNonDefault true
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 34
-        versionCode 4
-        versionName "1.2.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -31,10 +24,16 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        android {
+        }
     }
 
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 

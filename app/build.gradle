@@ -3,14 +3,14 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
 android {
-    compileSdk 34
+    compileSdk 35
     defaultConfig {
 
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
         targetSdkVersion 34
-        versionCode 538
-        versionName "241026"
+        versionCode 539
+        versionName "241117"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)
@@ -54,14 +54,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildToolsVersion '34.0.0'
     lint {
         abortOnError false
         checkReleaseBuilds false
@@ -70,15 +69,7 @@ android {
 
 allprojects {
     repositories {
-        google()
-        mavenCentral()
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
-            maven { url 'https://jitpack.io' }
-
-        }
-
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -93,25 +84,23 @@ dependencies {
         exclude group: 'com.google.android', module: 'support-v4'
     }
 
-    //implementation "com.haozhang.libary:android-slanted-textview:1.2"
+    //implementation 'com.haozhang.libary:android-slanted-textview:1.2'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-
     //implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    implementation 'org.greenrobot:eventbus:3.3.1'
     //implementation 'com.labo.kaji:swipeawaydialog:0.1.0'
     //implementation 'com.emmasuzuki:easyform:1.1.0'
-
-    implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'com.google.android.gms:play-services-maps:19.0.0'
     implementation 'com.google.maps:google-maps-services:2.2.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
 
-    implementation 'com.github.paolorotolo:expandableheightlistview:1.1.0'
+    //implementation 'com.github.paolorotolo:expandableheightlistview:1.1.0'
     //implementation 'com.victor:lib:1.0.4'
-    //implementation 'eu.inloop:simplerecycleradapter:0.3.4'
+    //implementation 'eu.inloop:simplerecycleradapter:0.3.1'
     implementation 'me.grantland:autofittextview:0.2.1'
 
     //implementation 'com.jzxiang.pickerview:TimePickerDialog:1.0.1'
@@ -120,34 +109,42 @@ dependencies {
     implementation 'com.github.mhadikz:toaster:1.0.0'
 
     //Button
-    //implementation 'com.github.joielechong:MaterialFancyButtons:Tag'
+    //implementation 'com.rilixtech:materialfancybuttons:1.8.7'
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
     implementation 'me.dm7.barcodescanner:zbar:1.9.8'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 
 
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'com.github.aabhasr1:OtpView:v1.1.2'
 
     //Date time pickr
-    implementation 'com.github.florent37:singledateandtimepicker:1.2.2'
-    implementation 'com.github.medyo:fancybuttons:1.9.1'
-    implementation 'com.github.mhiew:android-pdf-viewer:3.2.0-beta.3'
+    //implementation 'com.github.florent37:singledateandtimepicker:1.2.2'
+    //implementation 'com.github.medyo:fancybuttons:1.9.1'
+    //implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
     implementation 'com.github.chathuralakmal:AndroidImagePopup:1.2.2'
 
     implementation "com.github.skydoves:powerspinner:1.2.7"
+    //implementation 'cn.pedant.sweetalert:library:1.3'
+    implementation 'com.github.f0ris.sweetalert:library:1.6.2'
 
     // externel librery
     implementation project(':folding-cell')
     implementation project(':lib_badge')
     implementation project(':materialbarcodescanner')
     implementation project(path: ':SpinKitLib')
-    implementation project(':sweet_alert_dialog_library')
+    //implementation project(':sweet_alert_dialog_library')
     implementation project(':text_drawable_library')
     implementation project(':swipe_away_dialog_library')
     implementation project(':slanted_textview_library')
     implementation project(':easy_form_library')
     implementation project(':materialfancybuttons_library')
     implementation project(':time_picker_dialog_library')
+    implementation project(':pdf_viewer_library')
+    implementation project(':fancybuttons_library')
+    implementation project(':victor_library')
+    implementation project(':simple_recycler_adapter_library')
+
 
     // /Libs
     implementation files('libs/Jaybird2_2_4.jar')
@@ -158,7 +155,5 @@ dependencies {
         exclude group: 'com.google.zxing', module: 'android-core'
         transitive = false
     }
-
-    implementation 'com.github.aabhasr1:OtpView:v1.1.2'
 
 }

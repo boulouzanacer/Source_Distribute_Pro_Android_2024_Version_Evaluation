@@ -1,9 +1,10 @@
 package com.labo.kaji.swipeawaydialog.support.v4;
 
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+
+import androidx.fragment.app.DialogFragment;
 
 import com.labo.kaji.swipeawaydialog.SwipeDismissTouchListener;
 import com.labo.kaji.swipeawaydialog.SwipeableFrameLayout;

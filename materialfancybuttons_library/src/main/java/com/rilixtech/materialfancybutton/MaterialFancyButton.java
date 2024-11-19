@@ -27,6 +27,8 @@ import com.rilixtech.materialfancybutton.utils.FontUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.R;
+
 public class MaterialFancyButton extends LinearLayout {
 
   public static final String TAG = MaterialFancyButton.class.getSimpleName();

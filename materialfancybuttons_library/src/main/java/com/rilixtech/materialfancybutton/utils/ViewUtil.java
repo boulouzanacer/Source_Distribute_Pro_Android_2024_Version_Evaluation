@@ -7,14 +7,14 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.TypedValue;
+
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
+
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.rilixtech.materialfancybutton.R;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import cn.pedant.SweetAlert.R;
 
 public class ViewUtil {
 	

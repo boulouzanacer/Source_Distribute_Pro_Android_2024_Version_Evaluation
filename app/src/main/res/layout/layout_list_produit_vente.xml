@@ -49,7 +49,7 @@
             android:layout_height="0dp"
             android:orientation="vertical">
 
-            <com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView
+            <com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView
                 android:id="@+id/expandable_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

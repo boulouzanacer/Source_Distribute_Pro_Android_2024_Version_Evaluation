@@ -1,28 +1,30 @@
 apply plugin: 'com.android.library'
 
-version = "1.0"
-project.group = "com.safesoft.uk2015.restopro"
-
 android {
+    namespace 'cn.pedant.SweetAlert'
     compileSdk 34
 
     defaultConfig {
         minSdkVersion 26
+        targetSdkVersion 34
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
-    namespace 'cn.pedant.SweetAlert'
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
     buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         android {
         }
     }
-    buildToolsVersion '34.0.0'
     lint {
         abortOnError false
     }
+    //resourcePrefix "sweetalert_" // Pour éviter les conflits de ressources avec d'autres bibliothèques.
     /* kotlinOptions {
          jvmTarget = '1.8'
      }*/
@@ -30,4 +32,10 @@ android {
 
 dependencies {
     implementation 'com.pnikosis:materialish-progress:1.7'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }

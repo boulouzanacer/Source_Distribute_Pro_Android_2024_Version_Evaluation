@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 group = 'com.github.ybq'
 version = '1.0'
+
 android {
     compileSdkVersion 34
     defaultConfig {
@@ -16,10 +17,10 @@ android {
         android {
         }
     }
-    buildToolsVersion '35.0.0'
     /*kotlinOptions {
         jvmTarget = '1.8'
     }*/
 }
 dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
 }

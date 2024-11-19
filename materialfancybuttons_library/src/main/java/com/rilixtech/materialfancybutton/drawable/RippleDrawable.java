@@ -27,10 +27,11 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import com.rilixtech.materialfancybutton.R;
 import com.rilixtech.materialfancybutton.utils.ColorUtil;
 import com.rilixtech.materialfancybutton.utils.ThemeUtil;
 import com.rilixtech.materialfancybutton.utils.ViewUtil;
+
+import cn.pedant.SweetAlert.R;
 
 public class RippleDrawable extends Drawable implements Animatable, OnTouchListener {
 

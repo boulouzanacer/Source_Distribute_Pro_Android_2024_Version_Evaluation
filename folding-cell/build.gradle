@@ -23,8 +23,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     testOptions {
         unitTests.returnDefaultValues = true
@@ -32,7 +32,6 @@ android {
     productFlavors {
     }
     namespace 'com.ramotion.foldingcell'
-    buildToolsVersion '34.0.0'
     /* kotlinOptions {
          jvmTarget = '1.8'
      }*/
@@ -43,6 +42,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.14.2'
 }
+
 
 java {
     toolchain {
@@ -55,24 +55,4 @@ tasks.register('jacocoReport', JacocoReport) {
     dependsOn 'testDebugUnitTest'
     group = 'Reporting'
     description = 'Generate Jacoco coverage reports after running tests.'
-
-
-//    classDirectories = fileTree(
-//            dir: 'build/intermediates/classes/debug',
-//            excludes: [
-//                    '**/R*.class',
-//                    '**/BuildConfig*'
-//            ]
-//    )
-
-//    sourceDirectories = files('src/main/java')
-//    executionData = files('build/jacoco/testDebugUnitTest.exec')
-//
-//    doFirst {
-//        files('build/intermediates/classes/debug').getFiles().each { file ->
-//            if (file.name.contains('$$')) {
-//                file.renameTo(file.path.replace('$$', '$'))
-//            }
-//        }
-//    }
 }

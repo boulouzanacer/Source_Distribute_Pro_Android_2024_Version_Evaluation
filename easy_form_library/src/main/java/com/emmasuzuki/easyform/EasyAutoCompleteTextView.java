@@ -18,7 +18,6 @@ package com.emmasuzuki.easyform;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -27,6 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.emmasuzuki.easyform.FormValidator.INVALID_VALUE;
+
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
 public class EasyAutoCompleteTextView extends AppCompatAutoCompleteTextView implements View.OnFocusChangeListener {
 

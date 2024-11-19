@@ -18,7 +18,6 @@ package com.emmasuzuki.easyform;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.AttributeSet;
@@ -26,6 +25,8 @@ import android.util.Log;
 import android.view.View;
 
 import static com.emmasuzuki.easyform.FormValidator.INVALID_VALUE;
+
+import androidx.appcompat.widget.AppCompatEditText;
 
 public class EasyFormEditText extends AppCompatEditText implements View.OnFocusChangeListener, EasyFormTextListener {
 

@@ -160,7 +160,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class ActivitySetting extends BaseActivity implements View.OnClickListener, PrinterObserver {
 
     public Circle circle;
