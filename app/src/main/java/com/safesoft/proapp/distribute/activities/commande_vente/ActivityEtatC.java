@@ -201,6 +201,11 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
             protected int getItemViewType(int position) {
                 return mRecyclerAdapter.getItem(position).getType();
             }
+
+            @Override
+            protected int getItemViewType(@NonNull WrappedMyDataObject item, int position) {
+                return item.getType();
+            }
         });
         mRecyclerAdapter.setLongClickListener(this);
         mRecyclerView.setAdapter(mRecyclerAdapter);

@@ -21,7 +21,7 @@
         android:id="@+id/logo_revendeur"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo_safe_soft_500_100"
+        android:src="@drawable/splash_pme_pro_distribute"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ImageSplash" />
@@ -41,7 +41,7 @@
             android:id="@+id/InfoRevendeur1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppinsbold"
+            android:fontFamily="serif"
             android:gravity="center"
             android:text="@string/INFO_GLOBAL_TECH1"
             android:textColor="@color/color_pme_pro_distribute"
@@ -51,7 +51,7 @@
             android:id="@+id/InfoRevendeur2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppinsbold"
+            android:fontFamily="serif"
             android:gravity="center"
             android:text="@string/INFO_GLOBAL_TECH2"
             android:textSize="13sp" />
@@ -60,7 +60,7 @@
             android:id="@+id/InfoRevendeur3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppinsbold"
+            android:fontFamily="serif"
             android:gravity="center"
 
             android:text="@string/INFO_GLOBAL_TECH3"
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:fontFamily="@font/poppinsbold"
+            android:fontFamily="serif"
             android:gravity="center"
             android:text="@string/INFO_GLOBAL_TECH4"
             android:textColor="@color/color_pme_pro_distribute"
@@ -81,8 +81,6 @@
             android:id="@+id/progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_weight="2"
             android:background="@color/color_pme_pro_distribute"
             android:visibility="gone" />
@@ -90,8 +88,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_weight="2"
             android:background="@color/color_pme_pro_distribute"
             android:visibility="gone" />

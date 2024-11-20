@@ -25,25 +25,3 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 }
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-        }
-        resources {
-            srcDir 'src/main/res'
-        }
-    }
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-tasks.register('sourcesJar', Jar) {
-    //classifier = 'sources'
-    from sourceSets.main.java, sourceSets.main.resources
-}
