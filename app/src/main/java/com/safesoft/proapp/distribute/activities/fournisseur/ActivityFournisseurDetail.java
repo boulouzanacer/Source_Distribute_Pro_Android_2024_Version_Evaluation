@@ -393,7 +393,9 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
     @Override
     public void onBackPressed() {
-        Sound();
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound();
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

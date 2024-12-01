@@ -190,7 +190,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     @Override
     public void onClick(View v, int position) {
 
-        Sound(R.raw.beep);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.beep);
+        }
 
         Intent editIntent = new Intent(ActivityOrdersClient.this, ActivityOrderClient.class);
         editIntent.putExtra("NUM_BON", bon1s_temp.get(position).num_bon);
@@ -289,7 +291,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
 
-                        if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                        if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
                             Activity bactivity;
                             bactivity = ActivityOrdersClient.this;
 
@@ -465,7 +467,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

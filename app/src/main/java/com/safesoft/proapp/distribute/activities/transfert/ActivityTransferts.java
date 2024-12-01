@@ -43,6 +43,7 @@ public class ActivityTransferts extends AppCompatActivity implements RecyclerAda
 
     private MediaPlayer mp;
     private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
     Boolean printer_mode_integrate = true;
 
     private NumberFormat nf;
@@ -53,6 +54,7 @@ public class ActivityTransferts extends AppCompatActivity implements RecyclerAda
         setContentView(R.layout.activity_transfer1);
 
         controller = new DATABASE(this);
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Bons de Transferts");
@@ -104,7 +106,9 @@ public class ActivityTransferts extends AppCompatActivity implements RecyclerAda
     @Override
     public void onClick(View v, int position) {
 
-        Sound(R.raw.beep);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.beep);
+        }
         Intent intent = new Intent(ActivityTransferts.this, ActivityTransfert.class);
         intent.putExtra("NUM_BON", transfert1s.get(position).num_bon);
         startActivity(intent);
@@ -121,7 +125,9 @@ public class ActivityTransferts extends AppCompatActivity implements RecyclerAda
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

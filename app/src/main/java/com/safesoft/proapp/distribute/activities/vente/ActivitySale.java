@@ -635,7 +635,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                             .show();
                     return;
                 }
-                if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
                     Activity bactivity;
                     bactivity = ActivitySale.this;
 
@@ -668,9 +668,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     @Subscribe
     public void onClientSelected(SelectedClientEvent clientEvent) {
-
         onClientSelected(clientEvent.getClient(), true);
-
     }
 
     @Subscribe
@@ -1064,7 +1062,9 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
@@ -1184,7 +1184,9 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
             }
 
             initData();
-            Sound(R.raw.cashier_quotka);
+            if (prefs.getBoolean("ENABLE_SOUND", false)) {
+                Sound(R.raw.cashier_quotka);
+            }
 
         } catch (Exception e) {
             Crouton.makeText(ActivitySale.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();

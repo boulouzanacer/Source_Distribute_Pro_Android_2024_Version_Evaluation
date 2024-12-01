@@ -4,7 +4,7 @@
     android:padding="10dp"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:visibility="visible"
+    android:visibility="gone"
     android:id="@+id/param_backup"
     android:layout_height="wrap_content"
     android:orientation="vertical">

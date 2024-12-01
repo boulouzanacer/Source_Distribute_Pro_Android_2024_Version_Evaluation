@@ -32,6 +32,7 @@ import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
 import org.greenrobot.eventbus.EventBus;
@@ -224,6 +225,19 @@ public class FragmentSelectProduct {
     }
 
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {
+
+
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+        ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+
+        String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE != '" + querry_search + "' AND CODE_BARRE_SYN = '" + querry_search + "' ";
+        codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+        if(!codebarres.isEmpty()){
+            querry_search = codebarres.get(0).code_barre;
+        }
+
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+
         String querry = "";
         if (selected_famile.equals("Toutes")) {
 

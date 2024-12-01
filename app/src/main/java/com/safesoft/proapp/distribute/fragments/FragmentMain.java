@@ -2,12 +2,16 @@ package com.safesoft.proapp.distribute.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,8 +146,11 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
         fadeIn.setInterpolator(new AccelerateInterpolator()); //add this
         fadeIn.setDuration(300);
 
-        MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.pellet);
-        mp.start();
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.pellet);
+            mp.start();
+        }
+
 
         switch (v.getId()) {
             case R.id.btn_clients -> {

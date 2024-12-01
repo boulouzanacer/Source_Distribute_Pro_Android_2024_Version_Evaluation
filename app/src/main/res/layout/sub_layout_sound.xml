@@ -5,17 +5,18 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone"
+    android:visibility="visible"
     android:orientation="vertical">
 
 
     <TextView
-        android:id="@+id/descrip_code_depot"
-        android:layout_width="wrap_content"
+        style="@style/HeaderText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/a_vous_permet_d_activer_ou_d_sactiver_le_son_de_pda"
-        android:textSize="12sp"
-        android:textColor="@color/gray" />
+        android:textSize="18sp"
+        android:textColor="@color/black_overlay"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="Paramètres de son" />
 
     <View
         android:layout_width="match_parent"
@@ -33,21 +34,12 @@
         android:focusable="true"
         tools:ignore="RtlSymmetry">
 
-        <TextView
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:textColor="@color/black"
-            android:singleLine="true"
-            android:text="@string/activer_le_song"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Switch
-            android:layout_width="wrap_content"
+            android:id="@+id/switch_son"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="@string/activer_le_song"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 

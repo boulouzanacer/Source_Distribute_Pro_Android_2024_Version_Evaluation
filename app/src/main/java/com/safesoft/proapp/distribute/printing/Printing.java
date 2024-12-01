@@ -555,7 +555,13 @@ public class Printing {
             if (result) {
                 try {
                     switch (type_print) {
-                        case "VENTE", "ORDER" -> print_bon();
+                        case "VENTE", "ORDER" -> {
+                            if (prefs.getString("MODEL_TICKET", "MODEL 1").equals("MODEL 1")) {
+                                print_bon_with_colisage();
+                            } else {
+                                print_bon_without_colisage();
+                            }
+                        }
                         case "ACHAT" -> print_achat();
                         case "ETIQUETTE" -> print_etiquette();
                         case "ETIQUETTE_CODEBARRE" ->
@@ -890,7 +896,7 @@ public class Printing {
     }
 
 
-    void print_bon() throws UnsupportedEncodingException {
+    void print_bon_with_colisage() throws UnsupportedEncodingException {
 
         new Thread(new Runnable() {
             @Override
@@ -1046,6 +1052,330 @@ public class Printing {
                         }
                         String format1 = "  %1$-6s " + X1_Str + " %2$-6s " + eq1_Str + " %3$-9s" + plus_Str + "%4$-5sX%5$12s";
                         cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str, 6), StringUtils.center(colissage_Str, 6), StringUtils.center(qte_Str, 9), StringUtils.center(gte_gratuit_Str, 5), prix_unit_Str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+
+                       /* if(i<final_panier.size()-1){
+                            textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                            cmd.append(cmd.getTextCmd(textSetting, "------------------------"));
+                            textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+                            cmd.append(cmd.getLFCRCmd()); // one line space
+                        }*/
+
+
+                    }
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    /////////////////////////////IMPRESSION BON2////////////////////////////////////
+
+                    /////////////////////////////IMPRESSION TOTAL////////////////////////////////////
+
+                    int nbr_produit;
+                    Double total_ht_bon, tva_bon, timbre_bon, total_bon, remise_bon, total_a_payer, ancien_solde, versement, nouveau_solde;
+                    String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+
+                    nbr_produit = final_panier_vente.size();
+                    nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(nbr_produit));
+
+                    total_ht_bon = bon1.tot_ht;
+                    total_ht_bon_str = new DecimalFormat("####0.00").format(total_ht_bon);
+
+                    tva_bon = bon1.tot_tva;
+                    tva_bon_str = new DecimalFormat("####0.00").format(tva_bon);
+
+                    timbre_bon = bon1.timbre;
+                    timbre_bon_str = new DecimalFormat("####0.00").format(timbre_bon);
+
+                    total_bon = bon1.tot_ttc;
+                    total_bon_str = new DecimalFormat("####0.00").format(total_bon);
+
+                    remise_bon = bon1.remise;
+                    remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
+
+                    ancien_solde = bon1.solde_ancien;
+                    ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
+
+                    total_a_payer = bon1.montant_bon;
+                    total_a_payer_str = new DecimalFormat("####0.00").format(total_a_payer);
+
+                    versement = bon1.verser;
+                    versement_str = new DecimalFormat("####0.00").format(versement);
+
+                    nouveau_solde = bon1.reste;
+                    nouveau_solde_str = new DecimalFormat("####0.00").format(nouveau_solde);
+
+                    String format2 = "%1$13s%2$-9s%3$13s%4$13s";
+                    textSetting.setBold(SettingEnum.Enable);
+
+
+                    if (tva_bon != 0 && timbre_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :", tva_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :", timbre_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                    } else if (tva_bon != 0) {
+                        if (prefs.getBoolean("AFFICHAGE_HT", false)) {
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
+                            cmd.append(cmd.getLFCRCmd()); // one line space
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TVA :", tva_bon_str)));
+                            cmd.append(cmd.getLFCRCmd()); // one line space
+                        }
+                    } else if (timbre_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL HT :", total_ht_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TIMBRE :", timbre_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                    }
+
+                    if (remise_bon != 0) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "TOTAL TTC :", total_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "", "", "REMISE :", remise_bon_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                    }
+
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format2, "NBR PRODUIT :", StringUtils.center(nbr_produit_str, 9), "TTC A PAYER :", total_a_payer_str)));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    textSetting.setBold(SettingEnum.Disable);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    /////////////////////////////IMPRESSION TOTAL///////////////////////////////////
+                    //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
+                    textSetting.setBold(SettingEnum.Enable);
+                    //textSetting.setDoubleWidth(SettingEnum.Enable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+
+                    String format3 = "%1$16s%2$14s";
+
+                    //cmd.append(cmd.getTextCmd(textSetting, "123456789.123456789.123456789.123456789.123456789.123456789.123456789."));
+
+
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "ANCIEN SOLDE :", ancien_solde_str)));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    if (type_print.equals("VENTE")) {
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "TOTAL BON :", total_a_payer_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "VERSEMENT :", versement_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format3, "NOUVEAU SOLDE :", nouveau_solde_str)));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                    }
+
+                    textSetting.setBold(SettingEnum.Disable);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
+
+                    textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                    cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_FOOTER", "")));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
+                    BarcodeSetting barcodeSetting = new BarcodeSetting();
+                    barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+                    barcodeSetting.setHeightInDot(50);//accept value:1~255
+                    barcodeSetting.setBarcodeWidth(3);//accept value:2~6
+                    barcodeSetting.setQrcodeDotSize(5);//accept value: Esc(1~15), Tsc(1~10);
+
+                    try {
+                        cmd.append(cmd.getBarcodeCmd(BarcodeType.CODE39, barcodeSetting, bon1.num_bon));
+                    } catch (SdkException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
+
+
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    cmd.append(cmd.getHeaderCmd());//初始化, Initial
+                    cmd.append(cmd.getLFCRCmd());  // one line space
+
+                } catch (SdkException | IOException e) {
+                    e.printStackTrace();
+                }
+                if (rtPrinter != null) {
+                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                }
+                hideProgressDialog();
+            }
+        }).start();
+
+    }
+
+
+    void print_bon_without_colisage() throws UnsupportedEncodingException {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Impression...");
+
+                CmdFactory cmdFactory = new EscFactory();
+                Cmd cmd = cmdFactory.create();
+                cmd.append(cmd.getHeaderCmd());
+                cmd.setChartsetName(mChartsetName);
+                //cmd.setPrinterCharacterTable(22);
+                CommonSetting commonSetting = new CommonSetting();
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                cmd.append(cmd.getCommonSettingCmd(commonSetting));
+                BitmapSetting bitmapSetting = new BitmapSetting();
+                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+
+                prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
+
+
+                try {
+
+                    Bitmap mBitmap = null;
+                    String preBlank = "        ";
+
+                    String img_str = prefs.getString("COMPANY_LOGO", "");
+                    if (!img_str.equals("")) {
+                        //decode string to image
+                        byte[] imageAsBytes = Base64.decode(img_str.getBytes(), Base64.DEFAULT);
+                        mBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+                        cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
+                        cmd.append(cmd.getLFCRCmd());
+                    }
+
+                    cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                    textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_NAME", "")));
+                    textSetting.setBold(SettingEnum.Disable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+
+                    if (!prefs.getString("ACTIVITY_NAME", "").equals("")) {
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("ACTIVITY_NAME", "")));
+                    }
+                    if (!prefs.getString("COMPANY_ADRESSE", "").equals("")) {
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_ADRESSE", "")));
+                    }
+                    if (!prefs.getString("COMPANY_TEL", "").equals("")) {
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getTextCmd(textSetting, prefs.getString("COMPANY_TEL", "")));
+                    }
+
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    ////////////////////////////////////// INFO CLIENT ///////////////////////////////////////////
+                    textSetting.setAlign(CommonEnum.ALIGN_RIGHT);
+                    //textSetting.setIsEscSmallCharactor(SettingEnum.Enable);
+                    cmd.append(cmd.getTextCmd(textSetting, "Date :" + bon1.date_bon + " " + bon1.heure));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+
+                    textSetting.setBold(SettingEnum.Enable);
+                    cmd.append(cmd.getTextCmd(textSetting, "CLIENT  :" + bon1.client));
+                    textSetting.setBold(SettingEnum.Disable);
+
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "ADRESSE :" + bon1.adresse));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "TEL     :" + bon1.tel));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    /////////////////////info bon //////////////////////////////////////////////////
+                    textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                    textSetting.setDoubleWidth(SettingEnum.Enable);
+                    textSetting.setBold(SettingEnum.Enable);
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_B_9x24);
+                    if (type_print.equals("VENTE")) {
+                        cmd.append(cmd.getTextCmd(textSetting, "BL N :" + bon1.num_bon));
+                    } else if (type_print.equals("ORDER")) {
+                        cmd.append(cmd.getTextCmd(textSetting, "COMMANDE N :" + bon1.num_bon));
+                    }
+
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    //cmd.append(cmd.getTextCmd(textSetting, "123456789.123456789.123456789.123456789.123456789.123456789.123456789."));
+                    //textSetting.setEscFontType(ESCFontTypeEnum.FONT_A_12x24);
+                    textSetting.setBold(SettingEnum.Disable);
+                    textSetting.setDoubleWidth(SettingEnum.Disable);
+                    textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+                    //cmd.append(cmd.getLFCRCmd()); // one line space
+                    /////////////////////info bon //////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////
+
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+
+                    textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+                    textSetting.setBold(SettingEnum.Enable);
+                    String format0 = "%1$-25s %2$-4s %3$-8s %4$8s";
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format0, "PRODUIT", StringUtils.center("QTE", 4), StringUtils.center("P.U", 8), "TOTAL")));
+                    textSetting.setBold(SettingEnum.Disable);
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    /////////////////////////////IMPRESSION BON2////////////////////////////////////
+
+                    double nbr_colis, colissage, qte, gte_gratuit, prix_unit;
+                    String nbr_colis_Str, colissage_Str, qte_Str, gte_gratuit_Str, prix_unit_Str, X1_Str, X2_Str, eq1_Str, plus_Str, total_par_produit_str;
+                    //nbr_colis = 10.0; colissage =23.0 ; qte = 120.00 ; gte_gratuit = 1.0;  prix_unit = 12345.33 ;
+
+
+                    for (int i = 0; i < final_panier_vente.size(); i++) {
+
+                        double total_par_produit = 0.0;
+
+                        //cmd.append(cmd.getTextCmd(textSetting, final_panier_vente.get(i).produit));
+                        //cmd.append(cmd.getLFCRCmd()); // one line space
+                        nbr_colis = final_panier_vente.get(i).nbr_colis;
+                        nbr_colis_Str = new DecimalFormat("####0.##").format(nbr_colis);
+
+                        colissage = final_panier_vente.get(i).colissage;
+                        colissage_Str = new DecimalFormat("####0.##").format(colissage);
+
+                        qte = final_panier_vente.get(i).qte;
+                        qte_Str = new DecimalFormat("####0.##").format(qte);
+
+                        gte_gratuit = final_panier_vente.get(i).gratuit;
+                        gte_gratuit_Str = new DecimalFormat("####0.##").format(gte_gratuit);
+
+                        prix_unit = final_panier_vente.get(i).pv_ht;
+                        prix_unit_Str = new DecimalFormat("####0.00").format(prix_unit);
+
+                        total_par_produit = final_panier_vente.get(i).pv_ht * final_panier_vente.get(i).qte;
+                        total_par_produit_str = new DecimalFormat("####0.00").format(total_par_produit);
+
+
+                        X1_Str = "X";
+                        eq1_Str = "=";
+                        plus_Str = "+";
+
+                        if (gte_gratuit == 0.0) {
+                            gte_gratuit_Str = "";
+                            plus_Str = " ";
+                        }
+
+                        if (colissage == 0.0) {
+                            nbr_colis_Str = "";
+                            colissage_Str = "";
+                            X1_Str = " ";
+                            eq1_Str = " ";
+                        }
+
+                        //String format0 = "%1$-25s %2$-4s %3$-8s %4$8s";
+                        String format1 = "%1$-23s%2$-1s"+plus_Str+"%3$-5sX%4$-9s%5$8s";
+                        cmd.append(cmd.getTextCmd(textSetting, String.format(format1, final_panier_vente.get(i).produit, StringUtils.center(gte_gratuit_Str, 1), StringUtils.center(qte_Str, 5), StringUtils.center(prix_unit_Str, 9), total_par_produit_str)));
                         cmd.append(cmd.getLFCRCmd()); // one line space
 
                        /* if(i<final_panier.size()-1){

@@ -431,7 +431,9 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

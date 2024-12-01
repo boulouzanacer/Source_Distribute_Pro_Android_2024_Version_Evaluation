@@ -16,14 +16,6 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:text="@string/param_tres_syst_me_objectif" />
 
-    <TextView
-        android:id="@+id/descrip_code_depot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/a_vous_permet_de_definir_une_somme_objective_a_atteindre_ap_res_des_ventes_faites"
-        android:textSize="12sp"
-        android:textColor="@color/gray" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_large_size"
@@ -33,11 +25,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="4"
+        android:padding="5dp"
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_gravity="center"
             app:errorMessage="@string/error_message_empty"

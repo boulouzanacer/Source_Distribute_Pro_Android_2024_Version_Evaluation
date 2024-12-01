@@ -280,8 +280,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         nbr_produit = findViewById(R.id.total_nbr_produit);
         intent_location = new Intent(this, ServiceLocation.class);
 
-        SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if (prefs1.getBoolean("GPS_LOCALISATION", false)) {
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (prefs.getBoolean("GPS_LOCALISATION", false)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCES_FINE_LOCATION);
             } else {
@@ -664,7 +664,9 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

@@ -37,6 +37,7 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
@@ -673,8 +674,24 @@ public class FragmentNewEditProduct {
                 } else {
                     created_produit.stock = val_stock_ini;
                     try {
+                        PostData_Codebarre created_codebarre = new PostData_Codebarre();
+                        created_codebarre.code_barre = created_produit.code_barre;
+                        created_codebarre.code_barre_syn = created_produit.code_barre;
+                        //check if product already exist with codebarre
+                       // String querry = "SELECT * FROM PRODUIT WHERE CODE_BARRE = '" + created_produit.code_barre + "'";
+                        /*if(controller.check_product_if_exist(querry)){
+                            //check if has same description
+                            PostData_Produit existed_product = new PostData_Produit();
+                            String querry_get_product = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
+                                    "FROM PRODUIT WHERE CODE_BARRE = '" + created_produit.code_barre + "'";
+                            existed_product = controller.select_one_produit_from_database(querry_get_product);
+                            if(cr)
+                        }*/
                         //update client into database,
-                        controller.insert_into_produit(created_produit);
+                        //controller.insert_into_produit(created_produit);
+                        controller.ExecuteTransaction_product_codebarre(created_produit, created_codebarre);
                         Crouton.makeText(activity, "Produit bien ajouté", Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);

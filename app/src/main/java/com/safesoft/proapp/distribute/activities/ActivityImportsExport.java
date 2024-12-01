@@ -1100,7 +1100,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Sound();
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound();
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
@@ -1122,7 +1124,6 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
         public Check_connection_export_server(String typeBon) {
-
             this.typeBon = typeBon;
         }
 
@@ -4180,6 +4181,7 @@ public class ActivityImportsExport extends AppCompatActivity {
     private List<String> update_produit_into_server(Connection con, Statement stmt) throws SQLException {
         List<String> list_produit_not_exported = new ArrayList<>();
         ArrayList<PostData_Produit> postData_produits;
+        ArrayList<PostData_Codebarre> postData_codebarres;
 
         //Get product and  Insert it into produit tables
         String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
@@ -4224,6 +4226,26 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 stmt.addBatch(insert_into_produit);
 
+                //---------------------------------------------------------------------------------
+                //Get product and  Insert it into produit tables
+                String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE = '" + postData_produits.get(i).code_barre + "'";
+                postData_codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+
+                for(int k = 0;k<postData_codebarres.size(); k++){
+                    //insert into codebarre
+                    String insert_into_codebarre = "";
+                    insert_into_codebarre = "UPDATE OR INSERT INTO CODEBARRE (CODE_BARRE, CODE_BARRE_SYN) VALUES (";
+                    insert_into_codebarre = insert_into_codebarre +
+                            " '" + postData_codebarres.get(k).code_barre + "' ," +
+                            " '" + postData_codebarres.get(k).code_barre_syn + "'" ;
+
+                    insert_into_codebarre = insert_into_codebarre + ") MATCHING (CODE_BARRE)";
+
+                    stmt.addBatch(insert_into_codebarre);
+                }
+
+
+                //---------------------------------------------------------------------------------
 
                 String insert_into_depot2 = "";
                 insert_into_depot2 = "UPDATE OR INSERT INTO DEPOT2 (CODE_DEPOT, CODE_BARRE, STOCK, STOCK_INI) VALUES (";
@@ -4236,7 +4258,6 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 stmt.addBatch(insert_into_depot2);
 
-
                 stmt.executeBatch();
                 con.commit();
 
@@ -4248,6 +4269,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             controller.update_produit_after_export(postData_produits.get(i).code_barre);
 
         }
+
         return list_produit_not_exported;
     }
 

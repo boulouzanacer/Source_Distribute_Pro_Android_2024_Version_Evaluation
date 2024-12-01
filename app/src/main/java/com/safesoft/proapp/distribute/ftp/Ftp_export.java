@@ -16,6 +16,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
@@ -267,7 +268,24 @@ public class Ftp_export {
                 }
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
 
-                ///////////////////////////////////BON 2 ///////////////////////////////////////
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
+                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+
+                String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN " +
+                        "FROM CODEBARRE WHERE CODE_BARRE = '" + bon2s.get(j).codebarre + "'";
+
+                codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+
+                for(int k = 0;k<codebarres.size(); k++){
+                    //insert into codebarre
+                    F_SQL = F_SQL + "UPDATE OR INSERT INTO CODEBARRE (CODE_BARRE, CODE_BARRE_SYN) VALUES (";
+                    F_SQL = F_SQL + " '" + codebarres.get(k).code_barre + "' , '" + codebarres.get(k).code_barre_syn + "' ";
+                    F_SQL = F_SQL + ") MATCHING (CODE_BARRE);";
+                }
+
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
+
+                ///////////////////////////////////BON 2 ///////////////////////////////////////////
                 F_SQL = F_SQL + "INSERT INTO BON2 (CODE_DEPOT,RECORDID,NUM_BON,";
                 F_SQL = F_SQL + "CODE_BARRE,PRODUIT,DESTOCK_TYPE,DESTOCK_CODE_BARRE,DESTOCK_QTE,";
                 F_SQL = F_SQL + "NBRE_COLIS,COLISSAGE,QTE,QTE_GRAT,";
@@ -563,6 +581,23 @@ public class Ftp_export {
                 }
                 ///////////////////////////////////PRODUIT ///////////////////////////////////////
 
+
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
+                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+
+                String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN " +
+                        "FROM CODEBARRE WHERE CODE_BARRE = '" + bon2s.get(j).codebarre + "'";
+
+                codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+
+                for(int k = 0;k<codebarres.size(); k++){
+                    //insert into codebarre
+                    F_SQL = F_SQL + "UPDATE OR INSERT INTO CODEBARRE (CODE_BARRE, CODE_BARRE_SYN) VALUES (";
+                    F_SQL = F_SQL + " '" + codebarres.get(k).code_barre + "' , '" + codebarres.get(k).code_barre_syn + "' ";
+                    F_SQL = F_SQL + ") MATCHING (CODE_BARRE);";
+                }
+
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
                 F_SQL = F_SQL + "INSERT INTO BON2 (CODE_DEPOT,RECORDID,NUM_BON,";
@@ -861,6 +896,24 @@ public class Ftp_export {
                 }
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
 
+
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
+                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+
+                String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN " +
+                        "FROM CODEBARRE WHERE CODE_BARRE = '" + bon2s_Temp.get(j).codebarre + "'";
+
+                codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+
+                for(int k = 0;k<codebarres.size(); k++){
+                    //insert into codebarre
+                    F_SQL = F_SQL + "UPDATE OR INSERT INTO CODEBARRE (CODE_BARRE, CODE_BARRE_SYN) VALUES (";
+                    F_SQL = F_SQL + " '" + codebarres.get(k).code_barre + "' , '" + codebarres.get(k).code_barre_syn + "' ";
+                    F_SQL = F_SQL + ") MATCHING (CODE_BARRE);";
+                }
+
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
+
                 ///////////////////////////////////BON 2 ///////////////////////////////////////
                 F_SQL = F_SQL + "INSERT INTO BCC2 (CODE_DEPOT,RECORDID,NUM_BON,";
                 F_SQL = F_SQL + "CODE_BARRE,PRODUIT,DESTOCK_TYPE,DESTOCK_CODE_BARRE,DESTOCK_QTE,";
@@ -1075,6 +1128,23 @@ public class Ftp_export {
                     }
                 }
                 /////////////////////////////////// PRODUIT ////////////////////////////////////////
+
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
+                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+
+                String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN " +
+                        "FROM CODEBARRE WHERE CODE_BARRE = '" + Inv2s.get(j).codebarre + "'";
+
+                codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+
+                for(int k = 0;k<codebarres.size(); k++){
+                    //insert into codebarre
+                    F_SQL = F_SQL + "UPDATE OR INSERT INTO CODEBARRE (CODE_BARRE, CODE_BARRE_SYN) VALUES (";
+                    F_SQL = F_SQL + " '" + codebarres.get(k).code_barre + "' , '" + codebarres.get(k).code_barre_syn + "' ";
+                    F_SQL = F_SQL + ") MATCHING (CODE_BARRE);";
+                }
+
+                ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
                 ///////////////////////////////////INV 2 ///////////////////////////////////////////
                 F_SQL = F_SQL + "INSERT INTO INV2 (CODE_DEPOT,RECORDID,NUM_INV,";

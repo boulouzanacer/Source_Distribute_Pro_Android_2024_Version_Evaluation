@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,8 +48,6 @@ import eu.inloop.simplerecycleradapter.SimpleRecyclerAdapter;
 
 public class ActivityEtatC extends AppCompatActivity implements ItemClickListener<WrappedMyDataObject>, ItemLongClickListener<WrappedMyDataObject> {
 
-    private final String PREFS = "ALL_PREFS";
-
     private RecyclerView mRecyclerView;
     private SimpleRecyclerAdapter<WrappedMyDataObject> mRecyclerAdapter;
     private RelativeLayout relative_error;
@@ -74,11 +73,15 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     private String to_d;
     private String wilaya;
     private String commune;
+    private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_etat_v);
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
         // Register as a subscriber
         bus.register(this);
@@ -423,7 +426,9 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

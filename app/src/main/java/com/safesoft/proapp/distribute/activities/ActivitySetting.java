@@ -37,7 +37,6 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -66,7 +65,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.style.Circle;
 import com.google.android.material.textfield.TextInputEditText;
@@ -100,21 +98,17 @@ import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.setting.BarcodeSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
-import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.activation.NetClient;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.cloud.DownloadBackupTask;
 import com.safesoft.proapp.distribute.cloud.FetchFilesTask;
 import com.safesoft.proapp.distribute.cloud.FileUploader;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.databases.backup.LocalBackup;
 import com.safesoft.proapp.distribute.dialog.BluetoothDeviceChooseDialog;
 import com.safesoft.proapp.distribute.dialog.UsbDeviceChooseDialog;
 import com.safesoft.proapp.distribute.eventsClasses.AddedEmailEvent;
-import com.safesoft.proapp.distribute.eventsClasses.CheckEmailEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedBackupEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedDepotEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedVendeurEvent;
@@ -142,7 +136,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -160,6 +153,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class ActivitySetting extends BaseActivity implements View.OnClickListener, PrinterObserver {
 
     public Circle circle;
@@ -167,7 +161,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private TextInputLayout username_safe_event_text, password_safe_event_text;
     private EditText username_safe_event, password_safe_event;
     private Spinner type_logiciel_dropdown;
-    private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, model_ticket_tite;
+    private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, langue_ticket_title, model_ticket_title;
     private TextInputEditText edt_objectif;
     private Button btntest_connection,
             btn_get_all_depot,
@@ -193,7 +187,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private ImageView company_logo;
     private FlowRadioGroup rg_connect;
-    private FlowRadioGroup rg_type;
+    private FlowRadioGroup rg_type_imprimente;
+    private FlowRadioGroup rg_langue_ticket;
     private FlowRadioGroup rg_model_ticket;
     private TextView tv_device_selected;
     private ProgressBar pb_connect;
@@ -224,7 +219,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     @BaseEnum.ConnectType
     private int checkedConType = BaseEnum.CON_WIFI;
     private int checkedImpType = BaseEnum.IMP_TYPE_TICKET;
-    private int checkedTicketModel = BaseEnum.TICKET_MODEL_LATIN;
+    private int checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
 
@@ -790,8 +785,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
 
         rg_connect = findViewById(R.id.rg_connect);
-        rg_type = findViewById(R.id.rg_type);
+        rg_type_imprimente = findViewById(R.id.rg_type_imprimente);
+        rg_langue_ticket = findViewById(R.id.rg_langue_ticket);
         rg_model_ticket = findViewById(R.id.rg_model_ticket);
+
         btn_connect_printer = findViewById(R.id.btn_connect_printer);
         btn_disConnect_printer = findViewById(R.id.btn_disConnect_printer);
         tv_device_selected = findViewById(R.id.tv_device_selected);
@@ -945,7 +942,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         code_vendeur = findViewById(R.id.code_vendeur);
         nom_vendeur = findViewById(R.id.nom_vendeur);
 
-        model_ticket_tite = findViewById(R.id.model_ticket_title);
+        langue_ticket_title = findViewById(R.id.langue_ticket_title);
+        model_ticket_title = findViewById(R.id.model_ticket_title);
 
         textView = findViewById(R.id.progress);
         circle = new Circle();
@@ -988,8 +986,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         });
 
         //Switch
+
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_gps = findViewById(R.id.switch_gps);
+        Switch switch_module_achat = findViewById(R.id.switch_module_achat);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_module_vente = findViewById(R.id.switch_module_vente);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_module_commande = findViewById(R.id.switch_module_commande);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_module_inventaire = findViewById(R.id.switch_module_inventaire);
+
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_ht = findViewById(R.id.switch_ht);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -1016,18 +1022,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         Switch switch_filtre_recherche = findViewById(R.id.switch_filtre_recherche);
 
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_module_achat = findViewById(R.id.switch_module_achat);
+        Switch switch_gps = findViewById(R.id.switch_gps);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_module_vente = findViewById(R.id.switch_module_vente);
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_module_commande = findViewById(R.id.switch_module_commande);
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_module_inventaire = findViewById(R.id.switch_module_inventaire);
+        Switch switch_son = findViewById(R.id.switch_son);
+
+
 
 
         //////////////////////////////// SWITCH ///////////////////////////////////
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
+        switch_son.setChecked(prefs.getBoolean("ENABLE_SOUND", false));
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
         switch_pa_ht.setChecked(prefs.getBoolean("AFFICHAGE_PA_HT", false));
         switch_sychroniser_client.setChecked(prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false));
@@ -1050,6 +1055,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_gps.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("GPS_LOCALISATION", isChecked);
+            editor.apply();
+        });
+
+        switch_son.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("ENABLE_SOUND", isChecked);
             editor.apply();
         });
 
@@ -1220,15 +1231,21 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
 
         if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_TICKET")) {
-            rg_type.check(R.id.rb_type_ticket);
+            rg_type_imprimente.check(R.id.rb_type_ticket);
         } else if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_CODEBARRE")) {
-            rg_type.check(R.id.rb_type_codebarre);
+            rg_type_imprimente.check(R.id.rb_type_codebarre);
         }
 
-        if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
-            rg_model_ticket.check(R.id.rb_model_latin);
-        } else if (Objects.equals(prefs.getString("MODEL_TICKET", "ARABE"), "ARABE")) {
-            rg_model_ticket.check(R.id.rb_model_arabe);
+        if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
+            rg_langue_ticket.check(R.id.rb_langue_latin);
+        } else if (Objects.equals(prefs.getString("LANGUE_TICKET", "ARABE"), "ARABE")) {
+            rg_langue_ticket.check(R.id.rb_langue_arabe);
+        }
+
+        if (Objects.equals(prefs.getString("MODEL_TICKET", "MODEL 1"), "MODEL 1")) {
+            rg_model_ticket.check(R.id.rb_model_1);
+        } else if (Objects.equals(prefs.getString("MODEL_TICKET", "MODEL 1"), "MODEL 2")) {
+            rg_model_ticket.check(R.id.rb_model_2);
         }
 
         //EventBus listener
@@ -1254,24 +1271,24 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }
         });
 
-        rg_type.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        rg_type_imprimente.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                 // doDisConnect();
                 switch (i) {
                     case R.id.rb_type_ticket ->//Ticket
                     {
-                        model_ticket_tite.setVisibility(View.VISIBLE);
-                        rg_model_ticket.setVisibility(View.VISIBLE);
+                        langue_ticket_title.setVisibility(View.VISIBLE);
+                        rg_langue_ticket.setVisibility(View.VISIBLE);
                         checkedImpType = BaseEnum.IMP_TYPE_TICKET;
                     }
                     case R.id.rb_type_codebarre ->//codebarre
                     {
-                        model_ticket_tite.setVisibility(View.GONE);
-                        rg_model_ticket.setVisibility(View.GONE);
+                        langue_ticket_title.setVisibility(View.GONE);
+                        rg_langue_ticket.setVisibility(View.GONE);
                         checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
-                        checkedTicketModel = BaseEnum.TICKET_MODEL_LATIN;
-                        saveConfigTicketType(checkedTicketModel);
+                        checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
+                        saveConfigTicketLangue(checkedTicketModel);
                     }
                 }
                 saveConfigImpType(checkedImpType);
@@ -1279,17 +1296,41 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }
         });
 
+        rg_langue_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                // doDisConnect();
+                switch (i) {
+                    case R.id.rb_langue_latin ->//Ticket latin
+                    {
+                        model_ticket_title.setVisibility(View.VISIBLE);
+                        rg_model_ticket.setVisibility(View.VISIBLE);
+                        checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
+                    }
+                    case R.id.rb_langue_arabe ->//ticket arabe
+                    {
+                        model_ticket_title.setVisibility(View.GONE);
+                        rg_model_ticket.setVisibility(View.GONE);
+                        checkedTicketModel = BaseEnum.TICKET_LANGUE_ARABE;
+                    }
+                }
+                saveConfigTicketLangue(checkedTicketModel);
+            }
+        });
+
+
         rg_model_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                 // doDisConnect();
                 switch (i) {
-                    case R.id.rb_model_latin ->//Ticket latin
-                            checkedTicketModel = BaseEnum.TICKET_MODEL_LATIN;
-                    case R.id.rb_model_arabe ->//ticket arabe
-                            checkedTicketModel = BaseEnum.TICKET_MODEL_ARABE;
+                    case R.id.rb_model_1 ->//Ticket latin
+                            checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_1;
+                    case R.id.rb_model_2 ->//ticket arabe
+                            checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_2;
                 }
-                saveConfigTicketType(checkedTicketModel);
+
+                saveConfigTicketModel(checkedTicketModel);
             }
         });
     }
@@ -1395,14 +1436,27 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         editor.apply();
     }
 
-    private void saveConfigTicketType(int ticketType) {
+    private void saveConfigTicketLangue(int ticketLangue) {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-        switch (ticketType) {
-            case BaseEnum.TICKET_MODEL_LATIN -> {//ticket latine
-                editor.putString("MODEL_TICKET", "LATIN");
+        switch (ticketLangue) {
+            case BaseEnum.TICKET_LANGUE_LATIN -> {//ticket latine
+                editor.putString("LANGUE_TICKET", "LATIN");
             }
-            case BaseEnum.TICKET_MODEL_ARABE -> {//ticket arabe
-                editor.putString("MODEL_TICKET", "ARABE");
+            case BaseEnum.TICKET_LANGUE_ARABE -> {//ticket arabe
+                editor.putString("LANGUE_TICKET", "ARABE");
+            }
+        }
+        editor.apply();
+    }
+
+    private void saveConfigTicketModel(int ticketModel) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        switch (ticketModel) {
+            case BaseEnum.TICKET_LATIN_MODEL_1 -> {//ticket model 1
+                editor.putString("MODEL_TICKET", "MODEL 1");
+            }
+            case BaseEnum.TICKET_LATIN_MODEL_2 -> {//ticket model 2
+                editor.putString("MODEL_TICKET", "MODEL 2");
             }
         }
         editor.apply();
@@ -2697,7 +2751,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

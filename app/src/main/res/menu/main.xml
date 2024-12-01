@@ -5,7 +5,7 @@
     <item
         android:id="@+id/update"
         android:orderInCategory="100"
-        android:title="Update app"
+        android:title="Mise a jour"
         android:icon="@drawable/baseline_system_update_alt_24"
         app:showAsAction="always" />
 

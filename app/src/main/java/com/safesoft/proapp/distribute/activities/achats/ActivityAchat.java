@@ -338,8 +338,8 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
 
         intent_location = new Intent(this, ServiceLocation.class);
 
-        SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if (prefs1.getBoolean("GPS_LOCALISATION", false)) {
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (prefs.getBoolean("GPS_LOCALISATION", false)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCES_FINE_LOCATION);
             } else {
@@ -534,7 +534,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                     return;
                 }
 
-                if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
                     Activity bactivity;
                     bactivity = ActivityAchat.this;
 
@@ -874,7 +874,9 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
@@ -979,7 +981,9 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                 controller.update_into_achat2("ACHAT2", NUM_BON, item_panier.getData(), item_panier.getQteOld(), item_panier.getGratuitOld());
             }
             initData();
-            Sound(R.raw.cashier_quotka);
+            if (prefs.getBoolean("ENABLE_SOUND", false)) {
+                Sound(R.raw.cashier_quotka);
+            }
 
         } catch (Exception e) {
             Crouton.makeText(ActivityAchat.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();

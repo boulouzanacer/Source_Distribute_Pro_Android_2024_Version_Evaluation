@@ -1,11 +1,13 @@
 package com.safesoft.proapp.distribute;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.core.content.FileProvider;
@@ -165,7 +167,9 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
         } else if (item.getItemId() == R.id.update) {
 
-            String current_version = "0";
+            openPlayStoreApp("com.safesoft.proapp.distribute");
+
+            /*String current_version = "0";
             String versionCode = "0";
             String android_unique_id = "0";
             String seriel_number = "0";
@@ -195,9 +199,25 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
             } else {
                 new CheckVerRequestTask().execute(Env.URL_CHECK_VERSION, current_version, versionCode, android_unique_id, seriel_number, String.valueOf(activation_code), revendeur);
-            }
+            }*/
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openPlayStoreApp(String packageName) {
+        try {
+            // Open the app directly in the Play Store
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=" + packageName));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException e) {
+            // Fallback: Open the Play Store in a browser if the Play Store app is unavailable
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     public int getLocalVersion(String path) {
@@ -222,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
         return Integer.parseInt(dowloaded_version);
     }
 
+    @SuppressLint("HardwareIds")
     public static String getAndroidID(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }

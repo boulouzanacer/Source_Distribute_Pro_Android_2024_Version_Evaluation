@@ -160,8 +160,9 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
     @Override
     public void onClick(View v, int position) {
-
-        Sound(R.raw.beep);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.beep);
+        }
         Intent editIntent = new Intent(ActivityInventaires.this, ActivityInventaire.class);
         editIntent.putExtra("NUM_INV", inv1s.get(position).num_inv);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_INV");
@@ -297,7 +298,9 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

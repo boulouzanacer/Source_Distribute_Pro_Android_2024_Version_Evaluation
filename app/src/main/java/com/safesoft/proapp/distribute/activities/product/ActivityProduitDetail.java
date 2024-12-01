@@ -51,6 +51,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
     SharedPreferences prefs;
     private DATABASE controller;
     private final String PREFS = "ALL_PREFS";
+    private int position_item = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,8 @@ public class ActivityProduitDetail extends AppCompatActivity {
         controller = new DATABASE(this);
         produit = new PostData_Produit();
 
+
+        position_item = getIntent().getIntExtra("POSITION_ITEM", 0);
         produit.code_barre = getIntent().getStringExtra("CODE_BARRE");
         produit.ref_produit = getIntent().getStringExtra("REF_PRODUIT");
         produit.produit = getIntent().getStringExtra("PRODUIT");
@@ -81,7 +84,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
         produit.stock = getIntent().getDoubleExtra("STOCK", 0);
         produit.colissage = getIntent().getDoubleExtra("COLISSAGE", 0);
         produit.stock_ini = getIntent().getDoubleExtra("STOCK_INI", 0);
-        produit.photo = getIntent().getByteArrayExtra("PHOTO");
+        produit.photo = ActivityProduits.produits.get(position_item).photo;
         produit.description = getIntent().getStringExtra("DESCRIPTION");
 
         produit.promo = getIntent().getIntExtra("PROMO", 0);
@@ -282,7 +285,9 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Sound();
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound();
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

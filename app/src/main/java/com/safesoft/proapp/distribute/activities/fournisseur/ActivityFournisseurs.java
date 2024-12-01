@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -38,7 +39,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ActivityFournisseurs extends AppCompatActivity implements RecyclerAdapterFournisseurs.ItemClick, RecyclerAdapterFournisseurs.ItemLongClick {
 
-    private static final int REQUEST_ACTIVITY_NEW_CLIENT = 4000;
     RecyclerView recyclerView;
     private RecyclerAdapterFournisseurs adapter;
     private ArrayList<PostData_Fournisseur> fournisseurs;
@@ -46,6 +46,8 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     private MediaPlayer mp;
     private EventBus bus;
     private TextView nbr_fournisseur;
+    private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
 
     private final String[] NEED_PERMISSION = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -78,6 +80,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         bus = EventBus.getDefault();
         // Register as a subscriber
         bus.register(this);
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -137,7 +140,9 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     public void onClick(View v, int position) {
 
         if (v.getId() == R.id.item_root) {
-            Sound(R.raw.beep);
+            if (prefs.getBoolean("ENABLE_SOUND", false)) {
+                Sound(R.raw.beep);
+            }
             Intent intent = new Intent(ActivityFournisseurs.this, ActivityFournisseurDetail.class);
 
             intent.putExtra("CODE_FRS", fournisseurs.get(position).code_frs);
@@ -271,7 +276,9 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

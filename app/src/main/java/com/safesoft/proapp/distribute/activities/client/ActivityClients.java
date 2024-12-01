@@ -1,10 +1,10 @@
 package com.safesoft.proapp.distribute.activities.client;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -30,23 +30,17 @@ import android.widget.Toast;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
-import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
-import com.safesoft.proapp.distribute.activities.ActivityRouting;
 import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterClients;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.printing.Printing;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +57,8 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     private EventBus bus;
     private TextView nbr_client;
     private SearchView searchView;
+    private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
     private final String[] NEED_PERMISSION = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
@@ -96,7 +92,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         bus = EventBus.getDefault();
         // Register as a subscriber
         bus.register(this);
-
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("List Clients");
@@ -153,7 +149,10 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     public void onClick(View v, int position) {
 
         if (v.getId() == R.id.item_root) {
-            Sound(R.raw.beep);
+
+            if (prefs.getBoolean("ENABLE_SOUND", false)) {
+                Sound(R.raw.beep);
+            }
             Intent intent = new Intent(ActivityClients.this, ActivityClientDetail.class);
 
             intent.putExtra("CODE_CLIENT", clients.get(position).code_client);
@@ -326,7 +325,10 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

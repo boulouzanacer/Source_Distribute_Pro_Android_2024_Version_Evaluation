@@ -2,6 +2,7 @@ package com.safesoft.proapp.distribute.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
@@ -25,7 +26,8 @@ public class ActivityInventaireAchat extends AppCompatActivity {
 
     private Context mContext;
 
-
+    private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
     private MediaPlayer mp;
     private final EventBus bus = EventBus.getDefault();
 
@@ -33,6 +35,8 @@ public class ActivityInventaireAchat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventaire_achat);
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Inventaires/Achats");
@@ -82,7 +86,9 @@ public class ActivityInventaireAchat extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

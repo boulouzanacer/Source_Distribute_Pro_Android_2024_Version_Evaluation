@@ -785,6 +785,26 @@ public class DATABASE extends SQLiteOpenHelper {
         return executed;
     }
 
+    public boolean ExecuteTransaction_product_codebarre(PostData_Produit produits, PostData_Codebarre codebarres) {
+        boolean executed = false;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            try {
+                    insert_into_produit(produits);
+                    insert_into_codebarre(codebarres);
+
+                db.setTransactionSuccessful();
+                executed = true;
+            } finally {
+                db.endTransaction();
+            }
+        } catch (SQLiteDatabaseLockedException sqlilock) {
+            Log.v("TRACKKK", sqlilock.getMessage());
+        }
+        return executed;
+    }
+
 
     public boolean update_into_produit(PostData_Produit produit) {
 
@@ -883,10 +903,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 for (int h = 0; h < codebarres.size(); h++) {
 
-                    ContentValues values = new ContentValues();
-                    values.put("CODE_BARRE", codebarres.get(h).code_barre);
-                    values.put("CODE_BARRE_SYN", codebarres.get(h).code_barre_syn);
-                    db.insert("CODEBARRE", null, values);
+                    insert_into_codebarre(codebarres.get(h));
 
                 }
 
@@ -2070,6 +2087,29 @@ public class DATABASE extends SQLiteOpenHelper {
         }
         cursor.close();
         return code_barre;
+    }
+
+    //========================== FUNCTION SELECT All Code_barre FROM DATABASE ===========================
+    @SuppressLint("Range")
+    public ArrayList<PostData_Codebarre> select_all_codebarre_from_database(String querry) {
+        ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(querry, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+                PostData_Codebarre codebarre = new PostData_Codebarre();
+
+                codebarre.code_barre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
+                codebarre.code_barre_syn = cursor.getString(cursor.getColumnIndex("CODE_BARRE_SYN"));
+
+                codebarres.add(codebarre);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return codebarres;
     }
 
     //============================ FUNCTION SELECT commande achat FROM DATABASE=============================

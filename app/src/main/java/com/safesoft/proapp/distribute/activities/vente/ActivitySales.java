@@ -197,8 +197,9 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
     @Override
     public void onClick(View v, int position) {
 
-        Sound(R.raw.beep);
-
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.beep);
+        }
         Intent editIntent = new Intent(ActivitySales.this, ActivitySale.class);
         editIntent.putExtra("NUM_BON", bon1s.get(position).num_bon);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_SALE");
@@ -312,7 +313,7 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
                                 "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2.NUM_BON = '" + bon1s.get(position).num_bon + "'");
 
-                        if (Objects.equals(prefs.getString("MODEL_TICKET", "LATIN"), "LATIN")) {
+                        if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
                             Activity bactivity;
                             bactivity = ActivitySales.this;
 
@@ -445,7 +446,9 @@ public class ActivitySales extends AppCompatActivity implements RecyclerAdapterB
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

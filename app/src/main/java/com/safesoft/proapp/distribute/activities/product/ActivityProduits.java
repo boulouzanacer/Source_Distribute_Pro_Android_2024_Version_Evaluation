@@ -34,6 +34,7 @@ import com.safesoft.proapp.distribute.adapters.RecyclerAdapterProduits;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditProduct;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.utils.ImageUtils;
@@ -55,7 +56,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
     RecyclerView recyclerView;
     RecyclerAdapterProduits adapter;
-    ArrayList<PostData_Produit> produits;
+    public static ArrayList<PostData_Produit> produits;
     DATABASE controller;
     private MediaPlayer mp;
     public static final String BARCODE_KEY = "BARCODE";
@@ -158,6 +159,18 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     }
 
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {
+
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+        ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+
+        String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE != '" + querry_search + "' AND CODE_BARRE_SYN = '" + querry_search + "' ";
+        codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+        if(!codebarres.isEmpty()){
+            querry_search = codebarres.get(0).code_barre;
+        }
+
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+
         String querry = "";
         if (selected_famile.equals("Toutes")) {
             if (isScan) {
@@ -233,8 +246,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
     @Override
     public void onClick(View v, int position) {
-
-        Sound(R.raw.beep);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.beep);
+        }
         Intent intent = new Intent(ActivityProduits.this, ActivityProduitDetail.class);
 
         intent.putExtra("CODE_BARRE", produits.get(position).code_barre);
@@ -261,6 +275,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         intent.putExtra("D1", produits.get(position).d1);
         intent.putExtra("D2", produits.get(position).d2);
         intent.putExtra("PP1_HT", produits.get(position).pp1_ht);
+        intent.putExtra("POSITION_ITEM", position);
+
+
 
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -427,7 +444,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
                     public void onResult(Barcode barcode) {
-                        Sound(R.raw.bleep);
+                        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+                            Sound(R.raw.bleep);
+                        }
                         // result.setText(barcode.rawValue);
                         // Toast.makeText(ActivityProduits.this, ""+barcode.rawValue, Toast.LENGTH_SHORT).show();
                         // Do search after barcode scanned
@@ -440,7 +459,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

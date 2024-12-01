@@ -314,8 +314,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
         intent_location = new Intent(this, ServiceLocation.class);
 
-        SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if (prefs1.getBoolean("GPS_LOCALISATION", false)) {
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (prefs.getBoolean("GPS_LOCALISATION", false)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCES_FINE_LOCATION);
             } else {
@@ -863,7 +863,9 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
@@ -957,6 +959,9 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             }
 
             initData();
+            if (prefs.getBoolean("ENABLE_SOUND", false)) {
+                Sound(R.raw.cashier_quotka);
+            }
 
         } catch (Exception e) {
             Crouton.makeText(ActivityOrderFournisseur.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();

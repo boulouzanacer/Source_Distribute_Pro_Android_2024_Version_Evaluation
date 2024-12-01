@@ -335,7 +335,7 @@
                 android:background="@drawable/button_bg"
                 android:onClick="onClickEvent"
                 android:text="@string/valider"
-                android:textSize="14sp"
+                android:textSize="11sp"
                 android:textColor="@color/white"
                 android:autoSizeTextType="uniform"
                 tools:targetApi="o" />
@@ -351,7 +351,7 @@
                 android:background="@drawable/button_bg"
                 android:onClick="onClickEvent"
                 android:text="@string/modifier"
-                android:textSize="14sp"
+                android:textSize="11sp"
                 android:textColor="@color/white"
                 android:autoSizeTextType="uniform"
                 tools:targetApi="o" />
@@ -366,7 +366,7 @@
                 android:background="@drawable/button_bg"
                 android:onClick="onClickEvent"
                 android:text="@string/imprimer"
-                android:textSize="14sp"
+                android:textSize="11sp"
                 android:textColor="@color/white"
                 android:autoSizeTextType="uniform"
                 tools:targetApi="o" />

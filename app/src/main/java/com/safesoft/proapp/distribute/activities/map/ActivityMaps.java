@@ -4,6 +4,7 @@ package com.safesoft.proapp.distribute.activities.map;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.location.Address;
@@ -80,6 +81,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     Location myLocation = null;
     String locationProvider;
     private static final String MYTAG = "MYTAG";
+    private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
     LatLng latlongi;
     private Toolbar mToolbar;
     private ListViewAdapterClientMaps mAdapter;
@@ -94,6 +97,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         controller = new DATABASE(this);
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         getItems();
 
 
@@ -322,7 +326,9 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

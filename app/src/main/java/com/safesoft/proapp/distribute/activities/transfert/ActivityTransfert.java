@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activities.transfert;
 
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,8 @@ public class ActivityTransfert extends AppCompatActivity {
     private DATABASE controller;
 
     private MediaPlayer mp;
+    private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,8 @@ public class ActivityTransfert extends AppCompatActivity {
         setContentView(R.layout.activity_transfert2_detail);
 
         controller = new DATABASE(this);
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         NUM_BON = getIntent().getStringExtra("NUM_BON");
         getSupportActionBar().setTitle("Bon Transfert : " + NUM_BON);
@@ -63,7 +68,9 @@ public class ActivityTransfert extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Sound(R.raw.back);
+        if (prefs.getBoolean("ENABLE_SOUND", false)) {
+            Sound(R.raw.back);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

@@ -95,7 +95,7 @@
 
 
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
-            android:id="@+id/rg_type"
+            android:id="@+id/rg_type_imprimente"
             android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -121,6 +121,43 @@
 
 
         <TextView
+            android:id="@+id/langue_ticket_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadingEdge="horizontal"
+            android:textColor="@color/black"
+            android:text="Langue ticket"
+            android:visibility="visible"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+        <com.safesoft.proapp.distribute.view.FlowRadioGroup
+            android:id="@+id/rg_langue_ticket"
+            android:weightSum="2"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_langue_latin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Ticket latin " />
+
+            <RadioButton
+                android:id="@+id/rb_langue_arabe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Ticket arabe" />
+
+        </com.safesoft.proapp.distribute.view.FlowRadioGroup>
+
+        <TextView
             android:id="@+id/model_ticket_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -140,20 +177,20 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/rb_model_latin"
+                android:id="@+id/rb_model_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Ticket latin " />
+                android:text="Model détailé" />
 
             <RadioButton
-                android:id="@+id/rb_model_arabe"
+                android:id="@+id/rb_model_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="Ticket arabe" />
+                android:text="Model optimisé" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
