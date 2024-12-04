@@ -502,14 +502,15 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
                     return;
                 }
 
-                if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
+               /* if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                     new SweetAlertDialog(ActivitySale.this, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Important !")
                             .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                             .show();
 
                     return;
-                }
+                }*/
+
                 // Initialize activity
                 Activity activity;
                 // define activity of this class//
@@ -1075,7 +1076,7 @@ public class ActivitySale extends AppCompatActivity implements RecyclerAdapterCh
     }
 
     @Subscribe
-    public void onEvent(LocationEvent event) {
+    public void onLocationEvent(LocationEvent event) {
 
         Log.e("TRACKKK", "Recieved location vente : " + event.getLocationData().getLatitude() + "  //  " + event.getLocationData().getLongitude());
 

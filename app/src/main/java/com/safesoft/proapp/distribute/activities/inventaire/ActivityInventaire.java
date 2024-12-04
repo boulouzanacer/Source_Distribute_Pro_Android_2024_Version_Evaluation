@@ -172,7 +172,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             inv1.date_inv = formattedDate_Show;
             inv1.heure_inv = currentTime;
             inv1.num_inv = NUM_INV;
-            inv1.blocage = "N";
+            inv1.blocage = "M";
             inv1.nom_inv = "";
             inv1.code_depot = CODE_DEPOT;
 

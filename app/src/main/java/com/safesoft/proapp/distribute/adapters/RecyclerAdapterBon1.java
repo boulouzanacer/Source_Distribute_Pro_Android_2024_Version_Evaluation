@@ -185,7 +185,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
 
                 }
             }
-            case "N" -> {
+            case "M" -> {
                 holder.blocage.setText("En attente")
                         .setTextColor(Color.WHITE)
                         .setSlantedBackgroundColor(Color.RED)

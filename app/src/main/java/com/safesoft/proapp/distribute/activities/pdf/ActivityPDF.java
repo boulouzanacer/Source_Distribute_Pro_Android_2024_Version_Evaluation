@@ -87,8 +87,7 @@ public class ActivityPDF extends AppCompatActivity {
             public void run() {
                 File file = switch (SOURCE) {
                     case "FROM_SALE" -> new File(getCacheDir(), "BON_VENTE_" + NUM_BON + ".pdf");
-                    case "FROM_ORDER" ->
-                            new File(getCacheDir(), "BON_COMMANDE_" + NUM_BON + ".pdf");
+                    case "FROM_ORDER" -> new File(getCacheDir(), "BON_COMMANDE_" + NUM_BON + ".pdf");
                     case "FROM_ACHAT" -> new File(getCacheDir(), "BON_ACHAT_" + NUM_BON + ".pdf");
                     case "FROM_TICKET" -> new File(getCacheDir(), "TICKET_PRODUIT.pdf");
                     default -> null;

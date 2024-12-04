@@ -13,18 +13,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.fonts.Font;
 import android.graphics.pdf.PdfDocument;
 import android.util.Base64;
-import android.view.Gravity;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
@@ -48,8 +46,9 @@ public class GeneratePDF {
 
     // declaring width and height
     // for our PDF file.
+    //int pageHeight = 1122;
     int pageHeight = 1122;
-    int pagewidth = 792;
+    int pageWidth = 792;
 
     int mergeleft = 38;
     int endright = 754;
@@ -114,7 +113,7 @@ public class GeneratePDF {
         PdfDocument pdfDocument = new PdfDocument();
         Paint paint = new Paint();
         Paint title = new Paint();
-        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
+        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create();
         PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
         Canvas canvas = myPage.getCanvas();
 
@@ -187,8 +186,7 @@ public class GeneratePDF {
             }
         }
 
-        Bitmap bitmap = Bitmap.createBitmap(width, height,
-                Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         return bitmap;
     }
@@ -212,9 +210,9 @@ public class GeneratePDF {
         PdfDocument pdfDocument = new PdfDocument();
         Paint paint = new Paint();
         Paint title = new Paint();
-        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-        Canvas canvas = myPage.getCanvas();
+        PdfDocument.PageInfo pageInfo1 = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create();
+        PdfDocument.Page page1 = pdfDocument.startPage(pageInfo1);
+        Canvas canvas = page1.getCanvas();
 
         String img_str = prefs.getString("COMPANY_LOGO", "");
         if (!img_str.isEmpty()) {
@@ -294,133 +292,303 @@ public class GeneratePDF {
         double tot_qte = 0.0;
         int facture_y = 330;
 
-        for (int i = 0; i < final_panier_achat.size(); i++) {
-            tot_qte = tot_qte + final_panier_achat.get(i).qte;
-            facture_y = 330 + (i * 20);
+        if(final_panier_achat.size() <= 35){
+            for (int i = 0; i < final_panier_achat.size(); i++) {
+                tot_qte = tot_qte + final_panier_achat.get(i).qte;
+                facture_y = 330 + (i * 20);
 
-            String nc = "", colissage = "", gratuit = "";
-            ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
-            if (final_panier_achat.get(i).nbr_colis != 0) {
-                nc = new DecimalFormat("####0.##").format(final_panier_achat.get(i).nbr_colis);
-                colissage = new DecimalFormat("####0.##").format(final_panier_achat.get(i).colissage);
+                String nc = "", colissage = "", gratuit = "";
+                ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
+                if (final_panier_achat.get(i).nbr_colis != 0) {
+                    nc = new DecimalFormat("####0.##").format(final_panier_achat.get(i).nbr_colis);
+                    colissage = new DecimalFormat("####0.##").format(final_panier_achat.get(i).colissage);
+                }
+                if (final_panier_achat.get(i).gratuit != 0) {
+                    gratuit = new DecimalFormat("####0.##").format(final_panier_achat.get(i).gratuit);
+                }
+
+                canvas.drawText(createLine(
+                                String.valueOf(i + 1),
+                                final_panier_achat.get(i).produit,
+                                nc,
+                                colissage,
+                                new DecimalFormat("####0.##").format(final_panier_achat.get(i).qte), gratuit,
+                                new DecimalFormat("####0.00").format(final_panier_achat.get(i).pa_ht)),
+                        mergeleft, facture_y, title);
+
+                canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
             }
-            if (final_panier_achat.get(i).gratuit != 0) {
-                gratuit = new DecimalFormat("####0.##").format(final_panier_achat.get(i).gratuit);
+
+            String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+
+
+            nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_achat.size()));
+            total_ht_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ht);
+            tva_bon_str = new DecimalFormat("####0.00").format(achat1.tot_tva);
+            timbre_bon_str = new DecimalFormat("####0.00").format(achat1.timbre);
+            total_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ttc);
+            remise_bon_str = new DecimalFormat("####0.00").format(achat1.remise);
+            total_a_payer_str = new DecimalFormat("####0.00").format(achat1.montant_bon);
+            ancien_solde_str = new DecimalFormat("####0.00").format(achat1.solde_ancien);
+            versement_str = new DecimalFormat("####0.00").format(achat1.verser);
+            nouveau_solde_str = new DecimalFormat("####0.00").format(achat1.reste);
+
+            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+            ///////////////////////////// ancien solde /////////////////////////////////////////////////
+            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+            canvas.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+            if (SOURCE.equals("FROM_ACHAT")) {
+                ///////////////////////////// montant bon /////////////////////////////////////////////////
+                canvas.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
+                canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                ///////////////////////////// versement /////////////////////////////////////////////////
+                canvas.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
+                canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
+
+                ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
+
+                canvas.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
+                canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
             }
 
-            canvas.drawText(createLine(
-                            String.valueOf(i + 1),
-                            final_panier_achat.get(i).produit,
-                            nc,
-                            colissage,
-                            new DecimalFormat("####0.##").format(final_panier_achat.get(i).qte), gratuit,
-                            new DecimalFormat("####0.00").format(final_panier_achat.get(i).pa_ht)),
-                    mergeleft, facture_y, title);
 
-            canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
+            canvas.drawText("Nombre de produit : " + nbr_produit_str + ", Total quantité : " + new DecimalFormat("####0.##").format(Double.valueOf(tot_qte)), mergeleft, facture_y + 120, title);
+
+            facture_y = facture_y + 20;
+
+            if (achat1.tot_tva != 0 && achat1.timbre != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                facture_y = facture_y + 60;
+
+            } else if (achat1.tot_tva != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+
+            } else if (achat1.timbre != 0) {
+
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+            }
+
+            if (achat1.remise != 0) {
+
+                //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// REMISE /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+                facture_y = facture_y + 40;
+            }
+
+            ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(achat1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+            pdfDocument.finishPage(page1);
+
+        }else{
+
+            for (int i = 0; i < 35; i++) {
+                tot_qte = tot_qte + final_panier_achat.get(i).qte;
+                facture_y = 330 + (i * 20);
+
+                String nc = "", colissage = "", gratuit = "";
+                ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
+                if (final_panier_achat.get(i).nbr_colis != 0) {
+                    nc = new DecimalFormat("####0.##").format(final_panier_achat.get(i).nbr_colis);
+                    colissage = new DecimalFormat("####0.##").format(final_panier_achat.get(i).colissage);
+                }
+                if (final_panier_achat.get(i).gratuit != 0) {
+                    gratuit = new DecimalFormat("####0.##").format(final_panier_achat.get(i).gratuit);
+                }
+
+                canvas.drawText(createLine(
+                                String.valueOf(i + 1),
+                                final_panier_achat.get(i).produit,
+                                nc,
+                                colissage,
+                                new DecimalFormat("####0.##").format(final_panier_achat.get(i).qte), gratuit,
+                                new DecimalFormat("####0.00").format(final_panier_achat.get(i).pa_ht)),
+                        mergeleft, facture_y, title);
+
+                canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
+            }
+
+            pdfDocument.finishPage(page1);
+
+            PdfDocument.PageInfo pageInfo2 = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 2).create();
+            PdfDocument.Page page2 = pdfDocument.startPage(pageInfo2);
+            // Step 6: Draw content on the second page
+            Canvas canvas2 = page2.getCanvas();
+
+            facture_y = 10;
+
+            canvas2.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
+
+            for (int i = 35; i < final_panier_achat.size(); i++) {
+                tot_qte = tot_qte + final_panier_achat.get(i).qte;
+                facture_y = facture_y +  20;
+
+                String nc = "", colissage = "", gratuit = "";
+                ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
+                if (final_panier_achat.get(i).nbr_colis != 0) {
+                    nc = new DecimalFormat("####0.##").format(final_panier_achat.get(i).nbr_colis);
+                    colissage = new DecimalFormat("####0.##").format(final_panier_achat.get(i).colissage);
+                }
+                if (final_panier_achat.get(i).gratuit != 0) {
+                    gratuit = new DecimalFormat("####0.##").format(final_panier_achat.get(i).gratuit);
+                }
+
+                canvas2.drawText(createLine(
+                                String.valueOf(i + 1),
+                                final_panier_achat.get(i).produit,
+                                nc,
+                                colissage,
+                                new DecimalFormat("####0.##").format(final_panier_achat.get(i).qte), gratuit,
+                                new DecimalFormat("####0.00").format(final_panier_achat.get(i).pa_ht)),
+                        mergeleft, facture_y, title);
+
+                canvas2.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
+            }
+
+            String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+
+
+            nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_achat.size()));
+            total_ht_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ht);
+            tva_bon_str = new DecimalFormat("####0.00").format(achat1.tot_tva);
+            timbre_bon_str = new DecimalFormat("####0.00").format(achat1.timbre);
+            total_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ttc);
+            remise_bon_str = new DecimalFormat("####0.00").format(achat1.remise);
+            total_a_payer_str = new DecimalFormat("####0.00").format(achat1.montant_bon);
+            ancien_solde_str = new DecimalFormat("####0.00").format(achat1.solde_ancien);
+            versement_str = new DecimalFormat("####0.00").format(achat1.verser);
+            nouveau_solde_str = new DecimalFormat("####0.00").format(achat1.reste);
+
+            canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+            ///////////////////////////// ancien solde /////////////////////////////////////////////////
+            canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+            canvas2.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
+            canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+            if (SOURCE.equals("FROM_ACHAT")) {
+                ///////////////////////////// montant bon /////////////////////////////////////////////////
+                canvas2.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
+                canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                ///////////////////////////// versement /////////////////////////////////////////////////
+                canvas2.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
+                canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
+
+                ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
+
+                canvas2.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
+                canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
+            }
+
+
+            canvas2.drawText("Nombre de produit : " + nbr_produit_str + ", Total quantité : " + new DecimalFormat("####0.##").format(Double.valueOf(tot_qte)), mergeleft, facture_y + 120, title);
+
+            facture_y = facture_y + 20;
+
+            if (achat1.tot_tva != 0 && achat1.timbre != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                facture_y = facture_y + 60;
+
+            } else if (achat1.tot_tva != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+
+            } else if (achat1.timbre != 0) {
+
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+            }
+
+            if (achat1.remise != 0) {
+
+                //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// REMISE /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+                facture_y = facture_y + 40;
+            }
+
+            ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
+            canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(achat1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
+            canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+            pdfDocument.finishPage(page2);
+
         }
 
 
-        String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
-
-
-        nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_achat.size()));
-        total_ht_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ht);
-        tva_bon_str = new DecimalFormat("####0.00").format(achat1.tot_tva);
-        timbre_bon_str = new DecimalFormat("####0.00").format(achat1.timbre);
-        total_bon_str = new DecimalFormat("####0.00").format(achat1.tot_ttc);
-        remise_bon_str = new DecimalFormat("####0.00").format(achat1.remise);
-        total_a_payer_str = new DecimalFormat("####0.00").format(achat1.montant_bon);
-        ancien_solde_str = new DecimalFormat("####0.00").format(achat1.solde_ancien);
-        versement_str = new DecimalFormat("####0.00").format(achat1.verser);
-        nouveau_solde_str = new DecimalFormat("####0.00").format(achat1.reste);
-
-        canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-        ///////////////////////////// ancien solde /////////////////////////////////////////////////
-        canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-        canvas.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
-        canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-
-        if (SOURCE.equals("FROM_ACHAT")) {
-            ///////////////////////////// montant bon /////////////////////////////////////////////////
-            canvas.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
-            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
-
-            ///////////////////////////// versement /////////////////////////////////////////////////
-            canvas.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
-            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
-
-            ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
-
-            canvas.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
-            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
-        }
-
-
-        canvas.drawText("Nombre de produit : " + nbr_produit_str + ", Total quantité : " + new DecimalFormat("####0.##").format(Double.valueOf(tot_qte)), mergeleft, facture_y + 120, title);
-
-        facture_y = facture_y + 20;
-
-        if (achat1.tot_tva != 0 && achat1.timbre != 0) {
-            //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-            //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
-
-            facture_y = facture_y + 60;
-
-        } else if (achat1.tot_tva != 0) {
-            //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-            facture_y = facture_y + 40;
-
-        } else if (achat1.timbre != 0) {
-
-            //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-            facture_y = facture_y + 40;
-        }
-
-        if (achat1.remise != 0) {
-
-            //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// REMISE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-
-            facture_y = facture_y + 40;
-        }
-
-        ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
-        canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(achat1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
-        canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-        pdfDocument.finishPage(myPage);
         File file = null;
         if (SOURCE.equals("FROM_ACHAT")) {
             file = new File(mActivity.getCacheDir(), "BON_ACHAT_" + achat1.num_bon + ".pdf");
@@ -447,9 +615,9 @@ public class GeneratePDF {
         PdfDocument pdfDocument = new PdfDocument();
         Paint paint = new Paint();
         Paint title = new Paint();
-        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-        Canvas canvas = myPage.getCanvas();
+        PdfDocument.PageInfo pageInfo1 = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create();
+        PdfDocument.Page page1 = pdfDocument.startPage(pageInfo1);
+        Canvas canvas = page1.getCanvas();
 
         String img_str = prefs.getString("COMPANY_LOGO", "");
         if (!img_str.equals("")) {
@@ -529,134 +697,337 @@ public class GeneratePDF {
         double tot_qte = 0.0;
         int facture_y = 330;
 
-        for (int i = 0; i < final_panier_vente.size(); i++) {
-            tot_qte = tot_qte + final_panier_vente.get(i).qte;
-            facture_y = 330 + (i * 20);
+        if(final_panier_vente.size() <= 35){
 
-            String nc = "", colissage = "", gratuit = "";
-            ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
-            if (final_panier_vente.get(i).nbr_colis != 0) {
-                nc = new DecimalFormat("####0.##").format(final_panier_vente.get(i).nbr_colis);
-                colissage = new DecimalFormat("####0.##").format(final_panier_vente.get(i).colissage);
+            for (int i = 0; i < final_panier_vente.size(); i++) {
+                tot_qte = tot_qte + final_panier_vente.get(i).qte;
+                facture_y = 330 + (i * 20);
+
+                String nc = "", colissage = "", gratuit = "";
+                ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
+                if (final_panier_vente.get(i).nbr_colis != 0) {
+                    nc = new DecimalFormat("####0.##").format(final_panier_vente.get(i).nbr_colis);
+                    colissage = new DecimalFormat("####0.##").format(final_panier_vente.get(i).colissage);
+                }
+                if (final_panier_vente.get(i).gratuit != 0) {
+                    gratuit = new DecimalFormat("####0.##").format(final_panier_vente.get(i).gratuit);
+                }
+
+                canvas.drawText(createLine(
+                                String.valueOf(i + 1),
+                                final_panier_vente.get(i).produit,
+                                nc,
+                                colissage,
+                                new DecimalFormat("####0.##").format(final_panier_vente.get(i).qte), gratuit,
+                                new DecimalFormat("####0.00").format(final_panier_vente.get(i).pv_ht)),
+                        mergeleft, facture_y, title);
+
+                canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
             }
-            if (final_panier_vente.get(i).gratuit != 0) {
-                gratuit = new DecimalFormat("####0.##").format(final_panier_vente.get(i).gratuit);
+
+            String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+
+
+            nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_vente.size()));
+            total_ht_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ht);
+            tva_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_tva);
+            timbre_bon_str = new DecimalFormat("####0.00").format(Bon1.timbre);
+            total_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ttc);
+            remise_bon_str = new DecimalFormat("####0.00").format(Bon1.remise);
+            total_a_payer_str = new DecimalFormat("####0.00").format(Bon1.montant_bon);
+
+            ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.solde_ancien);
+            versement_str = new DecimalFormat("####0.00").format(Bon1.verser);
+            nouveau_solde_str = new DecimalFormat("####0.00").format(Bon1.reste);
+
+            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+            ///////////////////////////// ancien solde /////////////////////////////////////////////////
+            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+            canvas.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
+            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+            if (SOURCE.equals("FROM_SALE")) {
+                ///////////////////////////// montant bon /////////////////////////////////////////////////
+                canvas.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
+                canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                ///////////////////////////// versement /////////////////////////////////////////////////
+                canvas.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
+                canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
+
+                ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
+
+                canvas.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
+                canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
             }
 
-            canvas.drawText(createLine(
-                            String.valueOf(i + 1),
-                            final_panier_vente.get(i).produit,
-                            nc,
-                            colissage,
-                            new DecimalFormat("####0.##").format(final_panier_vente.get(i).qte), gratuit,
-                            new DecimalFormat("####0.00").format(final_panier_vente.get(i).pv_ht)),
-                    mergeleft, facture_y, title);
 
-            canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
+            canvas.drawText("Nombre de produit : " + nbr_produit_str + ", Total quantité : " + new DecimalFormat("####0.##").format(Double.valueOf(tot_qte)), mergeleft, facture_y + 120, title);
+
+            facture_y = facture_y + 20;
+
+            if (Bon1.tot_tva != 0 && Bon1.timbre != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                facture_y = facture_y + 60;
+
+            } else if (Bon1.tot_tva != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+
+            } else if (Bon1.timbre != 0) {
+
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+            }
+
+            if (Bon1.remise != 0) {
+
+                //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// REMISE /////////////////////////////////////////////////////
+                canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+                facture_y = facture_y + 40;
+            }
+
+            ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
+            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(Bon1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
+            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+
+
+
+
+
+
+            pdfDocument.finishPage(page1);
+
+        }else{
+
+            for (int i = 0; i < 35; i++) {
+                tot_qte = tot_qte + final_panier_vente.get(i).qte;
+                facture_y = 330 + (i * 20);
+
+                String nc = "", colissage = "", gratuit = "";
+                ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
+                if (final_panier_vente.get(i).nbr_colis != 0) {
+                    nc = new DecimalFormat("####0.##").format(final_panier_vente.get(i).nbr_colis);
+                    colissage = new DecimalFormat("####0.##").format(final_panier_vente.get(i).colissage);
+                }
+                if (final_panier_vente.get(i).gratuit != 0) {
+                    gratuit = new DecimalFormat("####0.##").format(final_panier_vente.get(i).gratuit);
+                }
+
+                canvas.drawText(createLine(
+                                String.valueOf(i + 1),
+                                final_panier_vente.get(i).produit,
+                                nc,
+                                colissage,
+                                new DecimalFormat("####0.##").format(final_panier_vente.get(i).qte), gratuit,
+                                new DecimalFormat("####0.00").format(final_panier_vente.get(i).pv_ht)),
+                        mergeleft, facture_y, title);
+
+                canvas.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
+
+
+            }
+
+            pdfDocument.finishPage(page1);
+
+            PdfDocument.PageInfo pageInfo2 = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 2).create();
+            PdfDocument.Page page2 = pdfDocument.startPage(pageInfo2);
+            // Step 6: Draw content on the second page
+            Canvas canvas2 = page2.getCanvas();
+
+            facture_y = 10;
+
+            canvas2.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y +10, title);
+
+            for (int i = 35; i < final_panier_vente.size(); i++) {
+                tot_qte = tot_qte + final_panier_vente.get(i).qte;
+                facture_y = facture_y +  20;
+
+                String nc = "", colissage = "", gratuit = "";
+                ///////////////////////////// nbre colis and colissage /////////////////////////////////////////////
+                if (final_panier_vente.get(i).nbr_colis != 0) {
+                    nc = new DecimalFormat("####0.##").format(final_panier_vente.get(i).nbr_colis);
+                    colissage = new DecimalFormat("####0.##").format(final_panier_vente.get(i).colissage);
+                }
+                if (final_panier_vente.get(i).gratuit != 0) {
+                    gratuit = new DecimalFormat("####0.##").format(final_panier_vente.get(i).gratuit);
+                }
+
+                canvas2.drawText(createLine(
+                                String.valueOf(i + 1),
+                                final_panier_vente.get(i).produit,
+                                nc,
+                                colissage,
+                                new DecimalFormat("####0.##").format(final_panier_vente.get(i).qte), gratuit,
+                                new DecimalFormat("####0.00").format(final_panier_vente.get(i).pv_ht)),
+                        mergeleft, facture_y, title);
+
+                canvas2.drawText("------------------------------------------------------------------------------------------------------------------------", mergeleft, facture_y + 10, title);
+            }
+
+            String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
+
+
+            nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_vente.size()));
+            total_ht_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ht);
+            tva_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_tva);
+            timbre_bon_str = new DecimalFormat("####0.00").format(Bon1.timbre);
+            total_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ttc);
+            remise_bon_str = new DecimalFormat("####0.00").format(Bon1.remise);
+            total_a_payer_str = new DecimalFormat("####0.00").format(Bon1.montant_bon);
+
+            ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.solde_ancien);
+            versement_str = new DecimalFormat("####0.00").format(Bon1.verser);
+            nouveau_solde_str = new DecimalFormat("####0.00").format(Bon1.reste);
+
+            canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+            ///////////////////////////// ancien solde /////////////////////////////////////////////////
+            canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+            canvas2.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
+            canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+            if (SOURCE.equals("FROM_SALE")) {
+                ///////////////////////////// montant bon /////////////////////////////////////////////////
+                canvas2.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
+                canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                ///////////////////////////// versement /////////////////////////////////////////////////
+                canvas2.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
+                canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
+
+                ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
+
+                canvas2.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
+                canvas2.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
+            }
+
+
+            canvas2.drawText("Nombre de produit : " + nbr_produit_str + ", Total quantité : " + new DecimalFormat("####0.##").format(Double.valueOf(tot_qte)), mergeleft, facture_y + 120, title);
+
+            facture_y = facture_y + 20;
+
+            if (Bon1.tot_tva != 0 && Bon1.timbre != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
+
+                facture_y = facture_y + 60;
+
+            } else if (Bon1.tot_tva != 0) {
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TVA /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+
+            } else if (Bon1.timbre != 0) {
+
+                //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+                facture_y = facture_y + 40;
+            }
+
+            if (Bon1.remise != 0) {
+
+                //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+                //////////////////////////// REMISE /////////////////////////////////////////////////////
+                canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
+                canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
+
+
+                facture_y = facture_y + 40;
+            }
+
+            ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
+            canvas2.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(Bon1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
+            canvas2.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
+
+            /////////////// QR CODE //////////////
+            // Step 1: Create a QR Code Bitmap
+            String qrCodeContent = "https://example.com";
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            try {
+
+                Bitmap qrCodeBitmap = barcodeEncoder.encodeBitmap(qrCodeContent, BarcodeFormat.QR_CODE, 300, 300);
+
+                // Step 5: Draw QR Code on the PDF canvas
+                Paint paint_qrcode = new Paint();
+                int qrX = (pageWidth - 300); ; // Center the QR code horizontally
+                int qrY = facture_y + 40; // Vertical position for the QR code
+                canvas2.drawBitmap(qrCodeBitmap, qrX, qrY, paint_qrcode);
+
+                // Step 6: Add additional text if needed
+                //paint_qrcode.setTextSize(16);
+                canvas2.drawText("Scan the QR Code above!", qrX, qrY, paint_qrcode);
+
+            }catch (Exception e){
+                Log.e("QR_CODE", e.getMessage());
+            }
+
+            pdfDocument.finishPage(page2);
         }
 
 
-        String nbr_produit_str, total_ht_bon_str, tva_bon_str, timbre_bon_str, total_bon_str, remise_bon_str, total_a_payer_str, ancien_solde_str, versement_str, nouveau_solde_str;
 
 
-        nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(final_panier_vente.size()));
-        total_ht_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ht);
-        tva_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_tva);
-        timbre_bon_str = new DecimalFormat("####0.00").format(Bon1.timbre);
-        total_bon_str = new DecimalFormat("####0.00").format(Bon1.tot_ttc);
-        remise_bon_str = new DecimalFormat("####0.00").format(Bon1.remise);
-        total_a_payer_str = new DecimalFormat("####0.00").format(Bon1.montant_bon);
-
-        ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.solde_ancien);
-        versement_str = new DecimalFormat("####0.00").format(Bon1.verser);
-        nouveau_solde_str = new DecimalFormat("####0.00").format(Bon1.reste);
-
-        canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-        ///////////////////////////// ancien solde /////////////////////////////////////////////////
-        canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-        canvas.drawText("|" + center_value(19, "ANCIEN SOLDE") + "|" + right_value(12, ancien_solde_str) + "|", mergeleft, facture_y + 30, title);
-        canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-
-        if (SOURCE.equals("FROM_SALE")) {
-            ///////////////////////////// montant bon /////////////////////////////////////////////////
-            canvas.drawText("|" + center_value(19, "MONTANT BON") + "|" + right_value(12, total_a_payer_str) + "|", mergeleft, facture_y + 50, title);
-            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 60, title);
-
-            ///////////////////////////// versement /////////////////////////////////////////////////
-            canvas.drawText("|" + center_value(19, "VERSEMENT") + "|" + right_value(12, versement_str) + "|", mergeleft, facture_y + 70, title);
-            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 80, title);
-
-            ///////////////////////////// Nouveau solde /////////////////////////////////////////////////
-
-            canvas.drawText("|" + center_value(19, "NOUVEAU SOLDE") + "|" + right_value(12, nouveau_solde_str) + "|", mergeleft, facture_y + 90, title);
-            canvas.drawText(addCaracter(34, "-"), mergeleft, facture_y + 100, title);
-        }
-
-
-        canvas.drawText("Nombre de produit : " + nbr_produit_str + ", Total quantité : " + new DecimalFormat("####0.##").format(Double.valueOf(tot_qte)), mergeleft, facture_y + 120, title);
-
-        facture_y = facture_y + 20;
-
-        if (Bon1.tot_tva != 0 && Bon1.timbre != 0) {
-            //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-            //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 50, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 60, title);
-
-            facture_y = facture_y + 60;
-
-        } else if (Bon1.tot_tva != 0) {
-            //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// TVA /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TVA") + "|" + right_value(12, tva_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-            facture_y = facture_y + 40;
-
-        } else if (Bon1.timbre != 0) {
-
-            //////////////////////////// TOTAL HT /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL HT") + "|" + right_value(12, total_ht_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// TTIMBRE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TIMBRE") + "|" + right_value(12, timbre_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-            facture_y = facture_y + 40;
-        }
-
-        if (Bon1.remise != 0) {
-
-            //////////////////////////// TOTAL TTC /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "TOTAL TTC") + "|" + right_value(12, total_bon_str) + "|", mergeleft, facture_y + 10, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-            //////////////////////////// REMISE /////////////////////////////////////////////////////
-            canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "REMISE") + "|" + right_value(12, remise_bon_str) + "|", mergeleft, facture_y + 30, title);
-            canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 40, title);
-
-
-            facture_y = facture_y + 40;
-        }
-
-        ///////////////////////////// NET A PAYER /////////////////////////////////////////////////
-        canvas.drawText(addCaracter(86, " ") + "|" + center_value(19, "NET A PAYER") + "|" + right_value(12, new DecimalFormat("####0.00").format(Bon1.montant_bon)) + "|", mergeleft, facture_y + 10, title);
-        canvas.drawText(addCaracter(86, " ") + addCaracter(34, "-"), mergeleft, facture_y + 20, title);
-
-        pdfDocument.finishPage(myPage);
         File file = null;
         if (SOURCE.equals("FROM_SALE")) {
             file = new File(mActivity.getCacheDir(), "BON_VENTE_" + Bon1.num_bon + ".pdf");

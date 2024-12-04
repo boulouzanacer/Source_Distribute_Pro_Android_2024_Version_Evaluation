@@ -10,7 +10,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 35
         versionCode 542
-        versionName "241201"
+        versionName "241204"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)

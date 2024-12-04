@@ -2411,7 +2411,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     values.put("VERSER", 0);
                     values.put("TIMBRE", 0);
                     values.put("REMISE", 0);
-                    values.put("BLOCAGE", "N");
+                    values.put("BLOCAGE", "M");
                     values.put("ANCIEN_SOLDE", bon1.solde_ancien);
                     values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "");
                     db.insert(_table, null, values);
@@ -2461,7 +2461,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("MONTANT_ACHAT", bon1.montant_achat);
                 values.put("ANCIEN_SOLDE", bon1.solde_ancien);
                 values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "");
-                values.put("BLOCAGE", "N");
+                values.put("BLOCAGE", "M");
                 values.put("VERSER", 0);
 
 
@@ -2851,7 +2851,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 //update_bon1
                 ContentValues args1 = new ContentValues();
-                args1.put("BLOCAGE", "N");
+                args1.put("BLOCAGE", "M");
                 args1.put("ANCIEN_SOLDE", "0.00");
                 args1.put("VERSER", "0.00");
                 args1.put("RESTE", "0.00");
@@ -2903,7 +2903,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 //update_bon1
                 ContentValues args1 = new ContentValues();
-                args1.put("BLOCAGE", "N");
+                args1.put("BLOCAGE", "M");
                 String selection1 = "NUM_BON=?";
                 String[] selectionArgs1 = {num_bon};
                 db.update("BON1_TEMP", args1, selection1, selectionArgs1);
@@ -4334,7 +4334,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     values.put("HEURE_INV", inv1.heure_inv);
                     values.put("CODE_DEPOT", inv1.code_depot);
                     values.put("IS_EXPORTED", 0);
-                    values.put("BLOCAGE", "N");
+                    values.put("BLOCAGE", "M");
                     values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
                     db.insert(_table, null, values);
 
@@ -4518,7 +4518,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("HEURE", achat1.heure);
                 values.put("CODE_DEPOT", achat1.code_depot);
                 values.put("NBR_P", 0);
-                values.put("BLOCAGE", "N");
+                values.put("BLOCAGE", "M");
                 values.put("IS_EXPORTED", 0);
                 values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "");
                 db.insert(_table, null, values);
