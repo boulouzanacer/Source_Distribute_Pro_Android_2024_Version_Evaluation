@@ -41,6 +41,10 @@
 
     <include layout="@layout/zpref_scanner" />
 
-    <include layout="@layout/sub_stockmoins" />
+    <include layout="@layout/sub_layout_vente_stock_moins"/>
+
+    <include layout="@layout/sub_layout_show_photo_produit"/>
+
+    <include layout="@layout/sub_layout_prix_vendeur" />
 
 </LinearLayout>

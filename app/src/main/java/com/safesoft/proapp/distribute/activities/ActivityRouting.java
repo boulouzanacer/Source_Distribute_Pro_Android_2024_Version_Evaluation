@@ -1,8 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,28 +13,17 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.client.ActivityClientDetail;
-import com.safesoft.proapp.distribute.activities.client.ActivityClients;
 import com.safesoft.proapp.distribute.activities.client.TSPActivityMaps;
-import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient;
-import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
-import com.safesoft.proapp.distribute.adapters.RecyclerAdapterClients;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterRouting;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectClient;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 
@@ -64,10 +52,13 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
         // Register as a subscriber
         bus.register(this);
 
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Clients à visité");
-
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Clients à visité");
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
     }
 

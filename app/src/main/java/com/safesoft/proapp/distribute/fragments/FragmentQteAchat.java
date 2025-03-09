@@ -154,14 +154,14 @@ public class FragmentQteAchat {
             ly_prix_ttc.setWeightSum(2);
         }
 
-        if (prefs.getBoolean("EDIT_PRICE", false)) {
-            edt_prix_ttc.setEnabled(false);
-            edt_prix_ht.setEnabled(false);
-            edt_tva.setEnabled(false);
-        } else {
+    if (prefs.getBoolean("CAN_EDIT_PRICE", false)) {
             edt_prix_ttc.setEnabled(true);
             edt_prix_ht.setEnabled(true);
             edt_tva.setEnabled(true);
+        } else {
+            edt_prix_ttc.setEnabled(false);
+            edt_prix_ht.setEnabled(false);
+            edt_tva.setEnabled(false);
         }
 
         if (last_price != 0) {
@@ -336,19 +336,6 @@ public class FragmentQteAchat {
         // onMontantRemiseChange();
 
         btn_valider.setOnClickListener(v -> {
-
-            if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_EDIT")) {
-                if (!(prefs.getBoolean("STOCK_MOINS", false))) {
-                    if (val_qte > val_stock_avant) {
-                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention!")
-                                .setContentText("Stock produit insuffisant, insertion impossible! (Pour la désactiver Allez dans Paramètres -> Paramètres divers -> Cochez (Vente avec stock moins)")
-                                .show();
-
-                        return;
-                    }
-                }
-            }
 
             boolean hasError = false;
 

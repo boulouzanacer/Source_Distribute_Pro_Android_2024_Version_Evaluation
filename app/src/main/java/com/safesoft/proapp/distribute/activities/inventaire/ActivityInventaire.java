@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -36,11 +37,8 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierInventaire;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
-import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventInventaire2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
@@ -91,6 +89,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     private ImageButton btn_validate_inv_name;
     private boolean btn_nom_inv_state_isactive = true;
 
+    private boolean show_picture_prod;
     private EventBus bus;
 
     private String NUM_INV;
@@ -132,9 +131,12 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         inv1 = new PostData_Inv1();
         final_panier = new ArrayList<>();
 
-
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
         String date_time_sub_title = null;
         String formattedDate = null;
@@ -142,6 +144,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
 
         initViews();
 
@@ -778,25 +781,32 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
     private void selectProductFromScan(String resultscan) {
         ArrayList<PostData_Produit> produits;
-
         PostData_Inv2 inv2 = new PostData_Inv2();
 
-        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        produits = controller.select_produits_from_database(querry);
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+        ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
 
-        if (produits.size() == 0) {
-            String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + resultscan + "'";
-            String code_barre = controller.select_codebarre_from_database(querry1);
+        String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE != '" + resultscan + "' AND CODE_BARRE_SYN = '" + resultscan + "' ";
+        codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+        if(!codebarres.isEmpty()){
+            resultscan = codebarres.get(0).code_barre;
+        }
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
-            String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        String querry = "";
+        if(show_picture_prod){
+            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
-            produits = controller.select_produits_from_database(querry2);
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
+
+        }else{
+            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
         }
+        produits = controller.select_produits_from_database(querry, show_picture_prod);
 
         if (produits.size() == 1) {
 

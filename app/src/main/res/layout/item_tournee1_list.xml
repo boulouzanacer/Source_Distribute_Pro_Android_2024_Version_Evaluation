@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:orientation="vertical">
+
+        <!-- Track ID and Date Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:gravity="start">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:padding="2dp"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/txtTourneeId_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tournée ID:"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/txtTourneeId_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="12345"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:gravity="end"
+                android:padding="2dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/date_range_24"/>
+
+                <TextView
+                    android:id="@+id/txtDateTournee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2025-02-01"
+                    android:textSize="12sp"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/darker_gray"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <!-- Name Tracking -->
+        <TextView
+            android:id="@+id/txtTourneeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Package Tracking"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="2dp"
+            android:textColor="@android:color/black" />
+
+        <!-- Number of Clients -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/track_clients_64"/>
+
+            <TextView
+                android:id="@+id/txtNbrClient_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clients: "
+                android:layout_gravity="center"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="6dp"/>
+
+            <TextView
+                android:id="@+id/txtNbrClient_Value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:layout_gravity="center"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="6dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

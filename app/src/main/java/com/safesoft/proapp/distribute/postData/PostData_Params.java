@@ -4,11 +4,11 @@ package com.safesoft.proapp.distribute.postData;
  * Created by UK2015 on 24/08/2016.
  */
 public class PostData_Params {
-    public int prix_2;
-    public int prix_3;
-    public int prix_4;
-    public int prix_5;
-    public int prix_6;
+    public int prix_2 = 0;
+    public int prix_3 = 0;
+    public int prix_4 = 0;
+    public int prix_5 = 0;
+    public int prix_6 = 0;
     //============================
     public String pv1_titre = "Prix 1";
     public String pv2_titre = "Prix 2";

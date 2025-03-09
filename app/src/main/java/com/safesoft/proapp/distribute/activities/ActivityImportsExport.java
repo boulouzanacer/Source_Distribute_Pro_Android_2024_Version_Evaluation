@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.exifinterface.media.ExifInterface;
 
 import android.os.Bundle;
@@ -35,7 +36,7 @@ import com.safesoft.proapp.distribute.activities.commande_vente.ActivityEtatC;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrdersClient;
 import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires;
 import com.safesoft.proapp.distribute.activities.vente.ActivityEtatV;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
+import com.safesoft.proapp.distribute.activities.vente.ActivityVentes;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedBonTransfertEvent;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedBonTransfert;
@@ -53,8 +54,6 @@ import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
-import com.safesoft.proapp.distribute.postData.PostData_Transfer1;
-import com.safesoft.proapp.distribute.postData.PostData_Transfer2;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.utils.ImageUtils;
 
@@ -71,6 +70,7 @@ import java.io.IOException;
 import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -115,8 +115,15 @@ public class ActivityImportsExport extends AppCompatActivity {
         setContentView(R.layout.activity_imports_export);
         controller = new DATABASE(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Import/Export");
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Import/Export");
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
+
+
 
         initViews();
 
@@ -394,7 +401,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
             case R.id.rlt_exported_ventes -> {
-                Intent exported_ventes_intent = new Intent(ActivityImportsExport.this, ActivitySales.class);
+                Intent exported_ventes_intent = new Intent(ActivityImportsExport.this, ActivityVentes.class);
                 exported_ventes_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
                 startActivity(exported_ventes_intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -711,8 +718,8 @@ public class ActivityImportsExport extends AppCompatActivity {
     @Subscribe
     public void onBonTransfertSelected(SelectedBonTransfertEvent event) {
 
-        Import_bonTransfer_from_server_task nnn = new Import_bonTransfer_from_server_task(event.getNum_bon());
-        nnn.execute();
+        //Import_bonTransfer_from_server_task nnn = new Import_bonTransfer_from_server_task(event.getNum_bon());
+        //nnn.execute();
     }
 
     public void progressDialogConfig() {
@@ -772,7 +779,7 @@ public class ActivityImportsExport extends AppCompatActivity {
     }
 
     //==================== AsyncTask TO Load produits from server and store them in the local database (sqlite)
-    public class Import_bonTransfer_from_server_task extends AsyncTask<Void, Integer, Integer> {
+    /*public class Import_bonTransfer_from_server_task extends AsyncTask<Void, Integer, Integer> {
 
         Connection con;
         int flag = 0;
@@ -1036,7 +1043,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
 
-/*
+*//*
                 //============================ GET CODEBARRE =======================================
                 String sql4 = "SELECT CODEBARRE.CODE_BARRE, CODEBARRE.CODE_BARRE_SYN FROM CODEBARRE";
                 ResultSet rs4 = stmt.executeQuery(sql4);
@@ -1047,7 +1054,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     codebarre.code_barre_syn = rs4.getString("CODE_BARRE_SYN");
                     codebarres.add(codebarre);
                 }
-                */
+                *//*
 
                 if (executed) {
                     flag = 1;
@@ -1086,7 +1093,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             mProgressDialog.dismiss();
             super.onPostExecute(integer);
         }
-    }
+    }*/
     //===========================================================================================
 
 
@@ -1169,10 +1176,13 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
+            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
+                   mProgressDialog_Free.dismiss();
+               }
+
             if (integer == 1) {
                 SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                editor.putBoolean("APP_AUTONOME", false);
+                editor.putBoolean("APP_SYNCHRONISED_MODE", true);
                 editor.apply();
 
                 // /import/export data vente, commande to the server
@@ -1925,7 +1935,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             }
                             insert_into_bon1 = insert_into_bon1 + ") VALUES ('"
                                     + recordid_numbon + "' ," +
-                                    " '" + NUM_BON + "' , '" + format2.format(dt) + "' ," +
+                                    " '" + NUM_BON + "' , " +
+                                    " '" + format2.format(dt) + "' ," +
                                     " '" + bon1s.get(i).heure + "', " +
                                     " '" + bon1s.get(i).code_client.replace("'", "''") + "' ," +
                                     // " '" + bon1s.get(i).tot_ht + "' ," +
@@ -3262,9 +3273,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "LATITUDE, " +
                         "LONGITUDE , " +
                         "coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT " +
-                        " FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0";
+                        " FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0 ";
 
-                if (!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)) {
+                /*if (!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)) {
 
                     if (code_depot.equals("000000")) {
                         if (code_vendeur.equals("000000")) {
@@ -3277,7 +3288,29 @@ public class ActivityImportsExport extends AppCompatActivity {
                         sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
                         sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
                     }
+                }*/
+
+                if (!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)) {
+
+                    if (!code_depot.equals("000000")) {
+
+                        if (!code_vendeur.equals("000000")) {
+                            sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "' OR CODE_VENDEUR = '" + code_vendeur + "' ";
+                            sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "' OR CODE_VENDEUR = '" + code_vendeur + "' ";
+                        }else{
+                            sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
+                            sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
+                        }
+
+                    } else if (!code_vendeur.equals("000000")) {
+
+                        sql12 = sql12 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
+                        sql0 = sql0 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
+
+                    }
+
                 }
+
 
 
                 ResultSet rs12 = stmt.executeQuery(sql12);
@@ -3476,6 +3509,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         sql3 = sql3 + ", coalesce(PRODUIT.PV4_HT,0) AS PV4_HT " +
                                 ", coalesce(PRODUIT.PV5_HT,0) AS PV5_HT " +
                                 ", coalesce(PRODUIT.PV6_HT,0) AS PV6_HT" +
+                                ", coalesce(PRODUIT.PV_LIMITE,0) AS PV_LIMITE" +
                                 ", PRODUIT.PHOTO ";
                     }
                     sql3 = sql3 + " FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0)=0 ";
@@ -3504,9 +3538,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv4_ht = rs3.getDouble("PV4_HT");
                             produit_update.pv5_ht = rs3.getDouble("PV5_HT");
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
+                            produit_update.pv_limite = rs3.getDouble("PV_LIMITE");
 
                             produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
                         }
+
                         produit_update.description = rs3.getString("DETAILLE");
                         produit_update.famille = rs3.getString("FAMILLE").trim();
                         produit_update.destock_type = rs3.getString("DESTOCK_TYPE");
@@ -3592,6 +3628,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         sql3 = sql3 + ", coalesce(PRODUIT.PV4_HT,0) AS PV4_HT " +
                                 ", coalesce(PRODUIT.PV5_HT,0) AS PV5_HT " +
                                 ", coalesce(PRODUIT.PV6_HT,0) AS PV6_HT" +
+                                ", coalesce(PRODUIT.PV_LIMITE,0) AS PV_LIMITE" +
                                 ", PRODUIT.PHOTO " +
                                 " FROM DEPOT2 " +
                                 " LEFT JOIN PRODUIT ON ( PRODUIT.code_barre = DEPOT2.code_barre ) " +
@@ -3627,8 +3664,8 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv4_ht = rs3.getDouble("PV4_HT");
                             produit_update.pv5_ht = rs3.getDouble("PV5_HT");
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
-                            produit_update.photo = rs3.getBytes("PHOTO");
-
+                            produit_update.pv_limite = rs3.getDouble("PV_LIMITE");
+                            //produit_update.photo = rs3.getBytes("PHOTO");
                             produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
 
                         }
@@ -3704,31 +3741,36 @@ public class ActivityImportsExport extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             mProgressDialog.dismiss();
-            if (result == 1) {
-                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                Date currentDateTime = Calendar.getInstance().getTime();
-                currentDateTimeString = sdf.format(currentDateTime);
-                prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("date_time", currentDateTimeString);
-                editor.apply();
+            try {
+                if (result == 1) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                    Date currentDateTime = Calendar.getInstance().getTime();
+                    currentDateTimeString = sdf.format(currentDateTime);
+                    prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("date_time", currentDateTimeString);
+                    editor.apply();
 
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information. !")
-                        .setContentText("Importation la liste des produits bien terminé")
-                        .show();
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Information. !")
+                            .setContentText("Importation la liste des produits bien terminé")
+                            .show();
 
-            } else if (result == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .show();
-            } else if (result == 3) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
-                        .show();
+                } else if (result == 2) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .show();
+                } else if (result == 3) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                            .show();
+                }
+            }catch (Exception e){
+
             }
+
             super.onPostExecute(result);
 
         }
@@ -4184,17 +4226,18 @@ public class ActivityImportsExport extends AppCompatActivity {
         ArrayList<PostData_Codebarre> postData_codebarres;
 
         //Get product and  Insert it into produit tables
-        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                 "FROM PRODUIT WHERE ISNEW = 1 ORDER BY PRODUIT";
 
-        postData_produits = controller.select_produits_from_database(querry);
+        postData_produits = controller.select_produits_from_database(querry, true);
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
         code_depot = prefs.getString("CODE_DEPOT", "000000");
 
+        PreparedStatement statement = null;
         for (int i = 0; i < postData_produits.size(); i++) {
             //insert produit into server
 
@@ -4202,32 +4245,39 @@ public class ActivityImportsExport extends AppCompatActivity {
                 String insert_into_produit = "";
                 insert_into_produit = "UPDATE OR INSERT INTO PRODUIT (CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, COLISSAGE, PV1_HT, PV2_HT, PV3_HT ";
                 if (TYPE_LOGICIEL.equals("PME PRO")) {
-                    insert_into_produit = insert_into_produit + ", PV4_HT, PV5_HT, PV6_HT ";
+                    insert_into_produit = insert_into_produit + ", PHOTO, PV4_HT, PV5_HT, PV6_HT ";
                 }
-                insert_into_produit = insert_into_produit + ") VALUES (" +
-                        " '" + postData_produits.get(i).code_barre + "' , " +
-                        " '" + postData_produits.get(i).ref_produit + "' ," +
-                        " '" + postData_produits.get(i).produit.replace("'", " ") + "', " +
-                        " " + postData_produits.get(i).pa_ht + " ," +
-                        " " + postData_produits.get(i).tva + " ," +
-                        " " + postData_produits.get(i).colissage + ", " +
-                        " " + postData_produits.get(i).pv1_ht + " ," +
-                        " " + postData_produits.get(i).pv2_ht + " ," +
-                        " " + postData_produits.get(i).pv3_ht + " ";
+                insert_into_produit = insert_into_produit + ") VALUES (? , ? , ?, ? , ? , ?, ? , ? , ? ";
 
                 if (TYPE_LOGICIEL.equals("PME PRO")) {
-                    insert_into_produit = insert_into_produit + ", " +
-                            " " + postData_produits.get(i).pv4_ht + " ," +
-                            " " + postData_produits.get(i).pv5_ht + " ," +
-                            " " + postData_produits.get(i).pv6_ht + " ";
+                    insert_into_produit = insert_into_produit + ", ? , ? , ?, ? ";
                 }
 
                 insert_into_produit = insert_into_produit + ") MATCHING (CODE_BARRE)";
 
-                stmt.addBatch(insert_into_produit);
+                statement = con.prepareStatement(insert_into_produit);
+                statement.setString(1, postData_produits.get(i).code_barre);
+                statement.setString(2, postData_produits.get(i).ref_produit);
+                statement.setString(3, postData_produits.get(i).produit.replace("'", " "));
+                statement.setDouble(4, postData_produits.get(i).pa_ht);
+                statement.setDouble(5, postData_produits.get(i).tva);
+                statement.setDouble(6, postData_produits.get(i).colissage);
+                statement.setDouble(7, postData_produits.get(i).pv1_ht);
+                statement.setDouble(8, postData_produits.get(i).pv2_ht);
+                statement.setDouble(9, postData_produits.get(i).pv3_ht);
 
-                //---------------------------------------------------------------------------------
-                //Get product and  Insert it into produit tables
+                if (TYPE_LOGICIEL.equals("PME PRO")) {
+                    statement.setBytes(10, postData_produits.get(i).photo);
+                    statement.setDouble(11, postData_produits.get(i).pv4_ht);
+                    statement.setDouble(12, postData_produits.get(i).pv5_ht);
+                    statement.setDouble(13, postData_produits.get(i).pv6_ht);
+                }
+
+                // Execute the statement
+                statement.executeUpdate();
+
+                //---------------------------------- CODE BARRE ------------------------------------
+                //Get product and  Insert it into codebarre tables
                 String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE = '" + postData_produits.get(i).code_barre + "'";
                 postData_codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
 
@@ -4243,30 +4293,34 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                     stmt.addBatch(insert_into_codebarre);
                 }
+                //---------------------------------- CODE BARRE ------------------------------------
 
 
-                //---------------------------------------------------------------------------------
 
-                String insert_into_depot2 = "";
-                insert_into_depot2 = "UPDATE OR INSERT INTO DEPOT2 (CODE_DEPOT, CODE_BARRE, STOCK, STOCK_INI) VALUES (";
-                insert_into_depot2 = insert_into_depot2 +
-                        " '" + code_depot + "' ," +
-                        " '" + postData_produits.get(i).code_barre + "' ," +
-                        " " + postData_produits.get(i).stock + " , 0 ";
+                //---------------------------------- CODE DEPOT ------------------------------------
+                if(!code_depot.equals("000000")){
+                    String insert_into_depot2 = "";
+                    insert_into_depot2 = "UPDATE OR INSERT INTO DEPOT2 (CODE_DEPOT, CODE_BARRE, STOCK, STOCK_INI) VALUES (";
+                    insert_into_depot2 = insert_into_depot2 +
+                            " '" + code_depot + "' ," +
+                            " '" + postData_produits.get(i).code_barre + "' ," +
+                            " " + postData_produits.get(i).stock + " , 0 ";
 
-                insert_into_depot2 = insert_into_depot2 + ") MATCHING (CODE_BARRE)";
+                    insert_into_depot2 = insert_into_depot2 + ") MATCHING (CODE_BARRE)";
 
-                stmt.addBatch(insert_into_depot2);
+                    stmt.addBatch(insert_into_depot2);
+                }
+                //---------------------------------- CODE DEPOT ------------------------------------
 
                 stmt.executeBatch();
                 con.commit();
+
+                controller.update_produit_after_export(postData_produits.get(i).code_barre);
 
             } catch (Exception e) {
                 con.rollback();
                 list_produit_not_exported.add(postData_produits.get(i).produit + " / " + e.getMessage());
             }
-
-            controller.update_produit_after_export(postData_produits.get(i).code_barre);
 
         }
 
@@ -4304,6 +4358,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 stmt.executeBatch();
                 con.commit();
+                controller.update_fournisseur_after_export(postData_fournisseurs.get(i).code_frs);
 
             } catch (Exception e) {
                 con.rollback();
@@ -4355,6 +4410,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 stmt.executeBatch();
                 con.commit();
+                controller.update_client_after_export(postData_client.get(i).code_client);
 
             } catch (Exception e) {
                 con.rollback();

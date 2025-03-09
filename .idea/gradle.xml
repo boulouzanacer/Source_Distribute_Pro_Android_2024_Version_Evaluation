@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/victor_library" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

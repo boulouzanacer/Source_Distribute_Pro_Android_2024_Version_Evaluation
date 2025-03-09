@@ -12,6 +12,7 @@ import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
@@ -48,6 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -68,6 +70,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     FragmentNewEditProduct fragmentnewproduct;
     SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
+    private boolean hide_stock_moins = true;
+    private boolean show_picture_prod = false;
+    private boolean is_scan = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +89,14 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
         //toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         // setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("List Produits");
+
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("List Produits");
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
         controller = new DATABASE(this);
         bus = EventBus.getDefault();
@@ -112,6 +123,10 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.dropdown_famille_item, familles);
         famille_dropdown.setAdapter(adapter);
 
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        hide_stock_moins = prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false);
+        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
+
         //SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         //String TYPE_LOGICIEL = prefs.getString("MODE_FAMILLE", "Tous");
         //famille_dropdown.setSelection(adapter.getPosition(TYPE_LOGICIEL));
@@ -133,7 +148,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
             // searchView.setIconified(false);
             // searchView.onActionViewExpanded();
+            is_scan = true;
             searchView.setQuery(text_search, false);
+            is_scan = false;
         }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -168,76 +185,74 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         if(!codebarres.isEmpty()){
             querry_search = codebarres.get(0).code_barre;
         }
-
         ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
-        String querry = "";
-        if (selected_famile.equals("Toutes")) {
+        String[] words = querry_search.split(" ");
+        StringBuilder queryPattern = new StringBuilder();
+
+        for (String word : words) {
+                queryPattern.append(word).append("% "); // Add 3-letter prefix with wildcard
+        }
+
+        // Trim the trailing space and create the LIKE pattern
+        String pattern = queryPattern.toString().trim();
+
+        StringBuilder querry = new StringBuilder();
+
+        if(show_picture_prod){
+            // Initialize StringBuilder for dynamic query construction
+            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT ");
+        }else{
+            // Initialize StringBuilder for dynamic query construction
+            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT ");
+        }
+
+
+        // List to hold query conditions
+        List<String> conditions = new ArrayList<>();
+
+        // Add condition for selected family
+        if (!selected_famile.equals("Toutes")) {
+            conditions.add("FAMILLE = '" + selected_famile + "'");
+        }
+
+        // Add conditions based on hide_stock_moins and isScan
+        if (hide_stock_moins) {
             if (isScan) {
-                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                        "FROM PRODUIT  WHERE CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "'";
-
-                if (produits.isEmpty()) {
-                    String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
-                    String code_barre = controller.select_codebarre_from_database(querry1);
-
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
-                }
+                conditions.add("(CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND STOCK > 0");
+            } else if (!querry_search.isEmpty()) {
+                conditions.add("(PRODUIT LIKE '%" + pattern + "' OR CODE_BARRE LIKE '%" + pattern + "' OR REF_PRODUIT LIKE '%" + pattern + "') AND STOCK > 0");
             } else {
-                if (!querry_search.isEmpty()) {
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI,PHOTO, DETAILLE, ISNEW, FAMILLE,DESTOCK_TYPE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE PRODUIT LIKE \"%" + querry_search + "%\" OR CODE_BARRE LIKE \"%" + querry_search + "%\" OR REF_PRODUIT LIKE \"%" + querry_search + "%\" ORDER BY PRODUIT";
-                } else {
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT ORDER BY PRODUIT";
-                }
+                conditions.add("STOCK > 0");
             }
         } else {
-
             if (isScan) {
-                querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                        "FROM PRODUIT  WHERE (CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "') AND FAMILLE = '" + selected_famile + "'";
-
-                if (produits.isEmpty()) {
-                    String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + querry_search + "'";
-                    String code_barre = controller.select_codebarre_from_database(querry1);
-
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "' AND FAMILLE = '" + selected_famile + "'";
-                }
-            } else {
-                if (!querry_search.isEmpty()) {
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK/Produit.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (Produit.STOCK%Produit.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE (PRODUIT LIKE \"%" + querry_search + "%\" OR CODE_BARRE LIKE \"%" + querry_search + "%\" OR REF_PRODUIT LIKE \"%" + querry_search + "%\") AND FAMILLE = '" + selected_famile + "' ORDER BY PRODUIT";
-                } else {
-                    querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS ,DESTOCK_CODE_BARRE, " +
-                            "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                            "FROM PRODUIT WHERE FAMILLE = '" + selected_famile + "' ORDER BY PRODUIT";
-
-                }
+                conditions.add("(CODE_BARRE = '" + querry_search + "' OR REF_PRODUIT = '" + querry_search + "')");
+            } else if (!querry_search.isEmpty()) {
+                conditions.add("(PRODUIT LIKE '%" + pattern + "' OR CODE_BARRE LIKE '%" + pattern + "' OR REF_PRODUIT LIKE '%" + pattern + "')");
             }
         }
 
-        produits = controller.select_produits_from_database(querry);
+        // Append WHERE clause if there are conditions
+        if (!conditions.isEmpty()) {
+            querry.append(" WHERE ").append(String.join(" AND ", conditions));
+        }
+
+        // Append ORDER BY clause
+        querry.append(" ORDER BY PRODUIT");
+
+        // Execute the constructed query
+        produits = controller.select_produits_from_database(querry.toString(), show_picture_prod);
 
         return produits;
     }
+
 
     @Subscribe
     public void onProductAdded(ProductEvent productEvent) {
@@ -304,7 +319,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
 
-                                FragmentNewEditProduct fragmentnewproduct = new FragmentNewEditProduct();
+                                if (fragmentnewproduct == null)
+                                    fragmentnewproduct = new FragmentNewEditProduct();
+
                                 fragmentnewproduct.showDialogbox(ActivityProduits.this, "EDIT_PRODUCT", produits.get(position));
                                 sDialog.dismiss();
 
@@ -381,10 +398,13 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                setRecycle(newText, false);
+                if(!is_scan){
+                    setRecycle(newText, false);
+                }
 
                 return false;
             }
+
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
@@ -392,7 +412,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
                 Handler handler = new Handler();

@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-
-    <!-- Request legacy Bluetooth permissions on older devices. -->
-    <uses-permission android:name="android.permission.BLUETOOTH"
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /> <!-- Request legacy Bluetooth permissions on older devices. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
         android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -23,22 +22,31 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
         tools:ignore="SelectedPhotoAccess" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-    <!--<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />-->
+    <!--
+<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
-    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
         android:name=".app.BaseApplication"
@@ -46,20 +54,19 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
+        android:usesCleartextTraffic="true"
         tools:node="merge"
+        android:largeHeap="true"
         tools:replace="android:icon">
 
         <activity
             android:name=".activities.ActivityHtmlView"
             android:exported="false" />
-
         <activity
             android:name=".activities.ActivityInfo"
             android:exported="false" />
-
         <activity
             android:name=".activities.ActivityRouting"
             android:exported="false" />
@@ -73,7 +80,6 @@
             android:exported="false"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_tspmaps" />
-
         <activity
             android:name=".activities.pdf.ActivityPDF"
             android:exported="false" />
@@ -83,7 +89,6 @@
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
@@ -105,7 +110,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-
         <activity
             android:name=".activities.splashscreen.splashScreen"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -114,31 +118,34 @@
         <activity android:name=".activation.ActivityActivation" />
 
         <!-- Client classes -->
-        <activity android:name=".activities.client.ActivityClients" />
-        <activity android:name=".activities.client.ActivityClientDetail" />
+        <activity
+            android:name=".activities.client.ActivityClients"
+            android:exported="false"
+
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".activities.client.ActivityClientDetail"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- Produits classes -->
         <activity android:name=".activities.product.ActivityProduits" />
         <activity android:name=".activities.product.ActivityProduitDetail" />
-
-        <!-- Transfer classes -->
-        <activity android:name=".activities.transfert.ActivityTransferts" />
-        <activity android:name=".activities.transfert.ActivityTransfert" />
 
         <!-- Autre classes -->
         <activity android:name=".activities.ActivityImportsExport" />
 
         <activity
             android:name=".activities.ActivitySetting"
-            android:exported="true" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            tools:targetApi="33" />
 
-        <activity android:name=".activities.ActivityInventaireAchat" />
         <!-- login parametres classes -->
-
         <activity
             android:name=".activities.login.ActivityLogin"
             android:theme="@style/AppTheme.Dark" />
-
         <activity
             android:name=".activities.login.ActivityChangePwd"
             android:theme="@style/AppTheme.Dark" />
@@ -164,12 +171,20 @@
         <activity android:name=".activities.achats.ActivityAchat" />
 
         <!-- vente classes -->
-        <activity android:name=".activities.vente.ActivitySale" />
-        <activity android:name=".activities.vente.ActivitySales" />
+        <activity android:name=".activities.vente.ActivityVente" />
+        <activity android:name=".activities.vente.ActivityVentes" />
 
         <!-- Commande classes -->
         <activity android:name=".activities.commande_vente.ActivityOrderClient" />
         <activity android:name=".activities.commande_vente.ActivityOrdersClient" />
+
+        <!-- Tournee classes -->
+        <activity
+            android:name=".activities.tournee_clients.ActivityTourneesClient"
+            android:exported="false"/>
+        <activity
+            android:name=".activities.tournee_clients.ActivityTourneeClient"
+            android:exported="false" />
 
         <!-- Bluetooth classes -->
         <activity android:name=".activities.map.ActivityItenerary" />
@@ -187,7 +202,6 @@
         <!-- Etat -->
         <activity android:name=".activities.vente.ActivityEtatV" />
         <activity android:name=".activities.commande_vente.ActivityEtatC" />
-
     </application>
 
 </manifest>

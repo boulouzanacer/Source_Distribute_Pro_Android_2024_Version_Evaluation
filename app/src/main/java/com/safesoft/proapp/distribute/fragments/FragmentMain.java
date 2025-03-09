@@ -2,16 +2,12 @@ package com.safesoft.proapp.distribute.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +29,7 @@ import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires;
 import com.safesoft.proapp.distribute.activities.login.ActivityLogin;
 import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrdersClient;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
+import com.safesoft.proapp.distribute.activities.vente.ActivityVentes;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -165,7 +161,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
                             .show();
                 } else {
                     BtnVente.startAnimation(fadeIn);
-                    startActivity(ActivitySales.class, 2);
+                    startActivity(ActivityVentes.class, 2);
                 }
             }
             case R.id.btn_commande_client -> {

@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.activities.pdf;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 
 import android.content.Context;
@@ -38,7 +39,6 @@ import java.util.Objects;
 
 public class ActivityPDF extends AppCompatActivity {
 
-
     PDFView pdfView;
     String SOURCE;
     String NUM_BON;
@@ -48,8 +48,14 @@ public class ActivityPDF extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf);
 
-
         initView();
+
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
         if (getIntent() != null) {
 
@@ -66,10 +72,9 @@ public class ActivityPDF extends AppCompatActivity {
                 case "FROM_TICKET" ->
                         Objects.requireNonNull(getSupportActionBar()).setTitle("TICKET PRODUIT ");
             }
-            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             showPdfFromUri(SOURCE, NUM_BON);
+
         } else {
 
         }
@@ -95,7 +100,7 @@ public class ActivityPDF extends AppCompatActivity {
                 pdfView.fromFile(file)
                         .defaultPage(0)
                         // .spacing(10)
-                        //.enableSwipe(true)
+                        .enableSwipe(true)
                         .load();
             }
         });

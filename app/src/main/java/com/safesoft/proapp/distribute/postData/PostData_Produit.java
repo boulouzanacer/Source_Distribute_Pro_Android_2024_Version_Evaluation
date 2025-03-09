@@ -21,6 +21,7 @@ public class PostData_Produit implements Serializable {
     public double pv4_ht;
     public double pv5_ht;
     public double pv6_ht;
+    public double pv_limite;
 
     public double pv1_ttc;
     public double pv2_ttc;

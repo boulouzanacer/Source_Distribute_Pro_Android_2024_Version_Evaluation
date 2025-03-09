@@ -13,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -86,7 +88,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
         CheckAllPermission();
 
-        controller = new DATABASE(this);
+        controller = new DATABASE(getApplicationContext());
         clients = new ArrayList<>();
 
         bus = EventBus.getDefault();
@@ -94,8 +96,13 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         bus.register(this);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("List Clients");
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("List Clients");
+        }
+
 
         initViews();
 
@@ -114,7 +121,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         if(isScan){
             searchView.setQuery(text_search, false);
         }
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterClients(this, getItems(text_search));
         recyclerView.setAdapter(adapter);
@@ -168,7 +175,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         if (v.getId() == R.id.item_root) {
             final CharSequence[] items = {"Modifier", "Supprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -253,18 +260,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
-                setProgressBarIndeterminateVisibility(true);
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        //=======
-                        setProgressBarIndeterminateVisibility(false);
-
-                    }
-                }, 2000);
-
                 return false;
             }
         });
@@ -301,9 +296,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     }
 
     private void startScan() {
-        /**
-         * Build a new MaterialBarcodeScanner
-         */
 
         final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
                 .withActivity(this)
@@ -325,11 +317,10 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
         if (prefs.getBoolean("ENABLE_SOUND", false)) {
             Sound(R.raw.back);
         }
-        super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
@@ -340,8 +331,9 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     protected void onDestroy() {
-        bus.unregister(this);
         super.onDestroy();
+        bus.unregister(this);
+        Log.d("LeakCheck", "ActivityClients is being destroyed");
     }
 
 

@@ -166,14 +166,17 @@
     <string name="INFO_EXPERTINFO4">Email : nouifod@gmail.com</string>
 
     <!--ARC TECH-->
-    <string name="INFO_ARCTECH1"> EXPERT INFORMATIQUE</string>
+    <string name="INFO_ARCTECH1">EXPERT INFORMATIQUE</string>
     <string name="INFO_ARCTECH2">CITE EL NASR BATNA</string>
     <string name="INFO_ARCTECH3">Mobile : 0661 60 48 08 / 0541 42 09 61</string>
     <string name="INFO_ARCTECH4">Email : nouifod@gmail.com</string>
 
     <!--DATA PRO-->
     <string name="INFO_DATAPRO1"> DATA PRO</string>
-
+    <string name="INFO_DATAPRO2" translatable="false"> CITE 1406 BT17 LOC N1 BOUMERDES</string>
+    <string name="INFO_DATAPRO3" translatable="false"> Fax : 024 79 75 66 \n
+                                                       Tele : 0560 59 49 59 / 0560 14 88 07</string>
+    <string name="INFO_DATAPRO4" translatable="false"> khenicheriad@gmail.com</string>
 
     <!--LAGA-->
     <string name="INFO_LAGA1"> GLOBAL INFO LAGA </string>
@@ -295,14 +298,12 @@
     <string name="a_vous_permet_de_r_initialiser_l_appareil_attention_cette_op_ration_va_supprimer_touts_vos_donn_es_sur_l_appareil">ça vous permet de réinitialiser l\'appareil ! Attention cette opération supprimera tous vos données sur l\'appareil</string>
     <string name="r_initialiser">Réinitialiser</string>
     <string name="param_tres_syst_me_objectif">Paramètres système objectif</string>
-    <string name="a_vous_permet_de_definir_une_somme_objective_a_atteindre_ap_res_des_ventes_faites">ça vous permet de definir une somme objective a atteindre apères des ventes faites</string>
     <string name="objectif_montant">Objectif montant</string>
     <string name="valider">Valider</string>
     <string name="modifier">Modifier</string>
-    <string name="a_vous_permet_d_activer_ou_d_sactiver_la_localisation_gps_cette_option_autorise_l_appareil_a_r_cup_rer_sa_postion">ça vous permet d\'activer ou désactiver la localisation GPS, cette option autorise l\'appareil à récupérer votre position Gps.</string>
-    <string name="localisation">Activiter / Désactiver</string>
+    <string name="localisation">Activiter / Désactiver localisation bon</string>
     <string name="a_vous_permet_d_activer_ou_d_sactiver_le_son_de_pda">ça vous permet d\'activer ou désactiver le son de PDA</string>
-    <string name="activer_le_song">Activer le son</string>
+    <string name="activer_le_song">Activer / Désactiver le son</string>
     <string name="vente_avec_stock_moins">vente avec stock moins</string>
     <string name="afficher_les_achats_client">Afficher les achats client</string>
     <string name="afficher_photo_produit_dans_la_vente">Afficher photo produit</string>
@@ -393,7 +394,7 @@
     <string name="activer_l_affichage_ht">Activer/Disactiver le mode HT</string>
     <string name="activer_l_affichage_stock">Masquer les produits stock moins</string>
     <string name="activer_masquer_solde_client">Afficher/Masquer solde client</string>
-    <string name="desactiver_modification_prix">Desactiver la modification de prix vente</string>
+    <string name="desactiver_modification_prix">Autoriser/Empêcher la modification de prix vente / achat</string>
     <string name="mode_famille">Activer / Désactiver le mode famille</string>
     <string name="date_d_exportation">Date d\'exportation</string>
     <string name="nom_inv">nom inv</string>
@@ -430,7 +431,7 @@
     <string name="param_tres_affichage_remise_dans_vente_achat">Paramètres affichage remise dans vente/achat</string>
     <string name="afficher_remise">Afficher remise</string>
     <string name="param_tres_modification_de_bon">Paramètres modification de bon</string>
-    <string name="autoriser_la_modification_de_bon">Autoriser la modification de bon / versement</string>
+    <string name="autoriser_la_modification_de_bon">Autoriser/Empêcher la modification de bon / versement</string>
     <string name="stock_ini">Stock ini</string>
     <string name="model_ticket">Model Ticket</string>
     <string name="wilaya">Wilaya</string>

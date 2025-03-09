@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/backup/baseline_backup_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/date_range/baseline_date_range_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="3d74ff" />
-                            <entry key="outputName" value="baseline_backup_24" />
+                            <entry key="color" value="cacaca" />
+                            <entry key="outputName" value="date_range_24" />
                             <entry key="sourceFile" value="C:\Users\PC\AndroidStudioProjects\Source_Distribute_Pro_Android_2024_Version_Evaluation" />
                           </map>
                         </option>

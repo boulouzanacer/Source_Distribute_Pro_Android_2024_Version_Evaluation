@@ -4,49 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:fitsSystemWindows="true"
     android:weightSum="10"
     android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/myToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:navigationIcon="@drawable/ic_arrow_back_24"
+        tools:titleEnabled="false" />
 
     <LinearLayout
         android:id="@+id/Linear_Layout_Header_bon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myToolbar"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
 
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="10"
-            android:layout_height="wrap_content">
+            android:weightSum="10">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="8"
+                android:layout_gravity="center"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                android:layout_gravity="center"
+                android:layout_weight="8"
                 android:contextClickable="false"
+                android:hint="Nom inventaire"
                 app:errorMessage="@string/error_message_empty"
                 app:errorType="empty"
-                android:hint="Nom inventaire"
                 app:expandedHintEnabled="false"
                 app:helperText="   ">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_nom_inventaire"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:gravity="center"
                     android:inputType="none"
-                    android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:textStyle="bold" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -54,12 +66,12 @@
 
             <ImageButton
                 android:id="@+id/btn_valide_inv_name"
-                android:layout_weight="2"
-                android:backgroundTint="@color/blue"
-                android:background="@drawable/ic_baseline_done_24"
-                android:onClick="onClickEvent"
                 android:layout_width="80dp"
-                android:layout_height="60dp" />
+                android:layout_height="60dp"
+                android:layout_weight="2"
+                android:background="@drawable/ic_baseline_done_24"
+                android:backgroundTint="@color/blue"
+                android:onClick="onClickEvent" />
 
         </LinearLayout>
 
@@ -72,14 +84,14 @@
             tools:ignore="MissingConstraints">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:layout_weight="1"
                 android:id="@+id/btn_scan_produit"
-                android:background="@drawable/button_bg"
-                android:src="@drawable/ic_codebarre_scan"
-                android:layout_marginEnd="3dp"
-                android:onClick="onClickEvent"
                 android:layout_width="0dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_bg"
+                android:onClick="onClickEvent"
+                android:src="@drawable/ic_codebarre_scan" />
 
 
             <Button
@@ -87,12 +99,12 @@
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_marginStart="3dp"
                 android:layout_weight="2"
                 android:background="@drawable/button_bg"
                 android:onClick="onClickEvent"
                 android:text="@string/produit"
-                android:layout_gravity="center"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 app:icon="@drawable/add_product"

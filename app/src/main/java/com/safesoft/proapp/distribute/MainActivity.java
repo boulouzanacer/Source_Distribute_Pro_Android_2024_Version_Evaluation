@@ -30,10 +30,11 @@ import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.safesoft.proapp.distribute.activities.ActivityInfo;
+import com.safesoft.proapp.distribute.activities.tournee_clients.ActivityTourneeClient;
+import com.safesoft.proapp.distribute.activities.tournee_clients.ActivityTourneesClient;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.appUpdate.APKUtils;
 import com.safesoft.proapp.distribute.appUpdate.CheckVerRequestTask;
-import com.safesoft.proapp.distribute.appUpdate.GetServeHashRequestTask;
 import com.safesoft.proapp.distribute.appUpdate.UpdateApp;
 import com.safesoft.proapp.distribute.eventsClasses.CheckVersionEvent;
 import com.safesoft.proapp.distribute.eventsClasses.GetServerHashEvent;
@@ -112,11 +113,11 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     }
 
 
-    public void startActivity(Class clss, int request) {
+   /* public void startActivity(Class clss, int request) {
         Intent intent = new Intent(this, clss);
         intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
         startActivityForResult(intent, request);
-    }
+    }*/
 
     @Override
     public void printerObserverCallback(PrinterInterface printerInterface, int state) {
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
             String revendeur = "";
 
             try {
+
                 PackageManager pm = getPackageManager();
                 String packageName = getPackageName();
                 PackageInfo packageInfo = pm.getPackageInfo(packageName, 0);
@@ -188,18 +190,26 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
                 activation_code = pref.getInt("CODE_ACTIVATION", 0);
                 revendeur = pref.getString("REVENDEUR", "0");
 
+
+                //int dowloaded_version = getLocalVersion(getExternalCacheDir().getPath());
+                new CheckVerRequestTask().execute(Env.URL_CHECK_VERSION, current_version, versionCode, android_unique_id, seriel_number, String.valueOf(activation_code), revendeur);
+
+               *//* if (dowloaded_version > Integer.parseInt(current_version)) {
+                    new GetServeHashRequestTask().execute();
+                } else {
+                    new CheckVerRequestTask().execute(Env.URL_CHECK_VERSION, current_version, versionCode, android_unique_id, seriel_number, String.valueOf(activation_code), revendeur);
+                }*//*
+
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
-            }
-
-            int dowloaded_version = getLocalVersion(getExternalCacheDir().getPath());
-            if (dowloaded_version > Integer.parseInt(current_version)) {
-
-                new GetServeHashRequestTask().execute();
-
-            } else {
-                new CheckVerRequestTask().execute(Env.URL_CHECK_VERSION, current_version, versionCode, android_unique_id, seriel_number, String.valueOf(activation_code), revendeur);
             }*/
+
+
+        }else if (item.getItemId() == R.id.track_client) {
+            Intent tournee_intent = new Intent(this, ActivityTourneesClient.class);
+            tournee_intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
+            startActivity(tournee_intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -207,14 +217,12 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     public void openPlayStoreApp(String packageName) {
         try {
             // Open the app directly in the Play Store
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=" + packageName));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } catch (android.content.ActivityNotFoundException e) {
             // Fallback: Open the Play Store in a browser if the Play Store app is unavailable
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }

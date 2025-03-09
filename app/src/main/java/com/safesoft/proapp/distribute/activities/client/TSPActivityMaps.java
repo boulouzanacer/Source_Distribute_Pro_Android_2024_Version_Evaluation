@@ -177,7 +177,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
         JSONArray client = null;
 
-        if (tsp_clients.size() > 0) {
+        if (!tsp_clients.isEmpty()) {
             try {
 
 

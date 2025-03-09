@@ -297,6 +297,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_EXPERTINFO3);
             inforevenedeur4.setText(R.string.INFO_EXPERTINFO4);
         }
+
         //18
         if (revendeur.equals("ARC TECH")) {
             logo_revendeur.setImageResource(R.drawable.logo_expert_info_500_100);
@@ -305,14 +306,16 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_ARCTECH3);
             inforevenedeur4.setText(R.string.INFO_ARCTECH4);
         }
+
         //19
         if (revendeur.equals("DATA PRO")) {
             logo_revendeur.setImageResource(R.drawable.logo_datapro_500_100);
             inforevenedeur1.setText(R.string.INFO_DATAPRO1);
-            inforevenedeur2.setText(R.string.INFO_DATAPRO1);
-            inforevenedeur3.setText(R.string.INFO_DATAPRO1);
-            inforevenedeur4.setText(R.string.INFO_DATAPRO1);
+            inforevenedeur2.setText(R.string.INFO_DATAPRO2);
+            inforevenedeur3.setText(R.string.INFO_DATAPRO3);
+            inforevenedeur4.setText(R.string.INFO_DATAPRO4);
         }
+
         //20
         if (revendeur.equals("LAGA")) {
             logo_revendeur.setImageResource(R.drawable.logo_laga_500_100);
@@ -321,6 +324,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_LAGA3);
             inforevenedeur4.setText(R.string.INFO_LAGA4);
         }
+
         //21
         if (revendeur.equals("SOFT SPACE")) {
             logo_revendeur.setImageResource(R.drawable.logo_softspace_500_100);
@@ -329,6 +333,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_SOFTSPACE3);
             inforevenedeur4.setText(R.string.INFO_SOFTSPACE4);
         }
+
         //22
         if (revendeur.equals("AFKAR SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_afkarsoft_500_100);
@@ -337,6 +342,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_AFKARSOFT3);
             inforevenedeur4.setText(R.string.INFO_AFKARSOFT4);
         }
+
         //23
         if (revendeur.equals("AZAD ADRAR")) {
             logo_revendeur.setImageResource(R.drawable.logo_azad_500_100);
@@ -345,6 +351,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_AZAD1);
             inforevenedeur4.setText(R.string.INFO_AZAD1);
         }
+
         //24
         if (revendeur.equals("GENERAL IT")) {
             logo_revendeur.setImageResource(R.drawable.logo_general_it_500_100);

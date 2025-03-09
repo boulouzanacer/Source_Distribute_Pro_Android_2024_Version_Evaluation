@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,11 +22,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterInv1;
-import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
@@ -79,9 +76,14 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventaires);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Liste inventaires");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Liste inventaires");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
         controller = new DATABASE(this);
 

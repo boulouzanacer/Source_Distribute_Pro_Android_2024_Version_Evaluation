@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.rt.printerlibrary.enumerate.BarcodeType.CODE128;
 import static com.safesoft.proapp.distribute.MainActivity.getAndroidID;
 
@@ -32,6 +34,7 @@ import android.os.Build;
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
@@ -162,7 +165,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private EditText username_safe_event, password_safe_event;
     private Spinner type_logiciel_dropdown;
     private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, langue_ticket_title, model_ticket_title;
-    private TextInputEditText edt_objectif;
+    private EditText edt_objectif;
     private Button btntest_connection,
             btn_get_all_depot,
             btn_get_all_vendeur,
@@ -189,7 +192,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private FlowRadioGroup rg_connect;
     private FlowRadioGroup rg_type_imprimente;
     private FlowRadioGroup rg_langue_ticket;
-    private FlowRadioGroup rg_model_ticket;
+    private FlowRadioGroup rg_model_latin_ticket;
+    private FlowRadioGroup rg_model_arabe_ticket;
     private TextView tv_device_selected;
     private ProgressBar pb_connect;
 
@@ -240,6 +244,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private TextView txtv_email_cloud, txtv_password_cloud;
     private Button btn_add_update_cloud,btn_delete_cloud;
 
+    private boolean is_app_synchronised_mode = false;
 
     private void CheckAllPermission() {
         NO_PERMISSION.clear();
@@ -262,8 +267,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         CheckAllPermission();
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true); //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Parametres");
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Paramétres");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
         controller = new DATABASE(this);
 
@@ -286,6 +296,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     public void initView() {
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
 
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter() {
@@ -298,7 +309,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     } else {
                         String[] splits = resultingTxt.split("\\.");
                         for (String split : splits) {
-                            if (Integer.parseInt(split) > 254) {
+                            if (Integer.parseInt(split) > 255) {
                                 return "";
                             }
                         }
@@ -316,19 +327,19 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         iconSpinnerItems.add(new IconSpinnerItem("Libre"));
 
-        if (!prefs.getBoolean("APP_AUTONOME", false)) {
+        if (is_app_synchronised_mode) {
             iconSpinnerItems.add(new IconSpinnerItem(params.pv1_titre));
         }else {
             iconSpinnerItems.add(new IconSpinnerItem("Prix 1"));
         }
 
-        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+        if (params.prix_2 == 1 && is_app_synchronised_mode) {
             iconSpinnerItems.add(new IconSpinnerItem(params.pv2_titre));
         }else {
             iconSpinnerItems.add(new IconSpinnerItem("Prix 2"));
         }
 
-        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+        if (params.prix_3 == 1 && is_app_synchronised_mode) {
             iconSpinnerItems.add(new IconSpinnerItem(params.pv3_titre));
         }else {
             iconSpinnerItems.add(new IconSpinnerItem("Prix 3"));
@@ -360,7 +371,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
 
 
-        if (!prefs.getBoolean("APP_AUTONOME", false)) {
+        if (is_app_synchronised_mode) {
             if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Libre")){
                 amazingSpinner.selectItemByIndex(0);
             }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv1_titre)) {
@@ -610,91 +621,88 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         bt1.setOnClickListener(view -> {
 
             if (param_co.isShown())
-                param_co.setVisibility(View.GONE);
+                param_co.setVisibility(GONE);
             else {
-                param_co.setVisibility(View.VISIBLE);
-                param_ftp.setVisibility(View.GONE);
-                param_impr.setVisibility(View.GONE);
-                param_reset.setVisibility(View.GONE);
-                param_backup.setVisibility(View.GONE);
-                param_divers.setVisibility(View.GONE);
+                param_co.setVisibility(VISIBLE);
+                param_ftp.setVisibility(GONE);
+                param_impr.setVisibility(GONE);
+                param_reset.setVisibility(GONE);
+                param_backup.setVisibility(GONE);
+                param_divers.setVisibility(GONE);
             }
         });
 
         bt4.setOnClickListener(view -> {
 
             if (param_ftp.isShown())
-                param_ftp.setVisibility(View.GONE);
+                param_ftp.setVisibility(GONE);
             else {
-                param_co.setVisibility(View.GONE);
-                param_ftp.setVisibility(View.VISIBLE);
-                param_impr.setVisibility(View.GONE);
-                param_reset.setVisibility(View.GONE);
-                param_backup.setVisibility(View.GONE);
-                param_divers.setVisibility(View.GONE);
+                param_co.setVisibility(GONE);
+                param_ftp.setVisibility(VISIBLE);
+                param_impr.setVisibility(GONE);
+                param_reset.setVisibility(GONE);
+                param_backup.setVisibility(GONE);
+                param_divers.setVisibility(GONE);
             }
         });
 
         bt2.setOnClickListener(view -> {
 
             if (param_divers.isShown())
-                param_divers.setVisibility(View.GONE);
+                param_divers.setVisibility(GONE);
             else {
-                param_co.setVisibility(View.GONE);
-                param_ftp.setVisibility(View.GONE);
-                param_impr.setVisibility(View.GONE);
-                param_reset.setVisibility(View.GONE);
-                param_backup.setVisibility(View.GONE);
-                param_divers.setVisibility(View.VISIBLE);
+                param_co.setVisibility(GONE);
+                param_ftp.setVisibility(GONE);
+                param_impr.setVisibility(GONE);
+                param_reset.setVisibility(GONE);
+                param_backup.setVisibility(GONE);
+                param_divers.setVisibility(VISIBLE);
             }
         });
         bt3.setOnClickListener(view -> {
 
             if (param_impr.isShown())
-                param_impr.setVisibility(View.GONE);
+                param_impr.setVisibility(GONE);
             else {
-                param_co.setVisibility(View.GONE);
-                param_ftp.setVisibility(View.GONE);
-                param_impr.setVisibility(View.VISIBLE);
-                param_reset.setVisibility(View.GONE);
-                param_backup.setVisibility(View.GONE);
-                param_divers.setVisibility(View.GONE);
+                param_co.setVisibility(GONE);
+                param_ftp.setVisibility(GONE);
+                param_impr.setVisibility(VISIBLE);
+                param_reset.setVisibility(GONE);
+                param_backup.setVisibility(GONE);
+                param_divers.setVisibility(GONE);
             }
         });
 
         bt10.setOnClickListener(view -> {
 
             if (param_backup.isShown())
-                param_backup.setVisibility(View.GONE);
+                param_backup.setVisibility(GONE);
             else {
-                param_co.setVisibility(View.GONE);
-                param_ftp.setVisibility(View.GONE);
-                param_impr.setVisibility(View.GONE);
-                param_reset.setVisibility(View.GONE);
-                param_backup.setVisibility(View.VISIBLE);
-                param_divers.setVisibility(View.GONE);
+                param_co.setVisibility(GONE);
+                param_ftp.setVisibility(GONE);
+                param_impr.setVisibility(GONE);
+                param_reset.setVisibility(GONE);
+                param_backup.setVisibility(VISIBLE);
+                param_divers.setVisibility(GONE);
             }
         });
 
         bt11.setOnClickListener(view -> {
 
             if (param_reset.isShown())
-                param_reset.setVisibility(View.GONE);
+                param_reset.setVisibility(GONE);
             else {
-                param_co.setVisibility(View.GONE);
-                param_ftp.setVisibility(View.GONE);
-                param_impr.setVisibility(View.GONE);
-                param_reset.setVisibility(View.VISIBLE);
-                param_backup.setVisibility(View.GONE);
-                param_divers.setVisibility(View.GONE);
+                param_co.setVisibility(GONE);
+                param_ftp.setVisibility(GONE);
+                param_impr.setVisibility(GONE);
+                param_reset.setVisibility(VISIBLE);
+                param_backup.setVisibility(GONE);
+                param_divers.setVisibility(GONE);
             }
         });
 
         // Chekbox
         CheckBox chkbx_safe_event = findViewById(R.id.chkbx_safe_event);
-        CheckBox chkbx_stock_moins = findViewById(R.id.chkbx_stock_moins);
-        CheckBox chkbx_produit = findViewById(R.id.chkbx_photo_pr);
-
 
         // checkbox stock moins
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -710,45 +718,23 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();   // editor.commit();
 
             if (isChecked) {
-                username_safe_event_text.setVisibility(View.VISIBLE);
-                password_safe_event_text.setVisibility(View.VISIBLE);
+                username_safe_event_text.setVisibility(VISIBLE);
+                password_safe_event_text.setVisibility(VISIBLE);
             } else {
                 ip.setText("192.168.1.6");
-                username_safe_event_text.setVisibility(View.GONE);
-                password_safe_event_text.setVisibility(View.GONE);
+                username_safe_event_text.setVisibility(GONE);
+                password_safe_event_text.setVisibility(GONE);
             }
 
         });
 
         if (prefs.getBoolean("USE_SAFE_EVENT", false)) {
-            username_safe_event_text.setVisibility(View.VISIBLE);
-            password_safe_event_text.setVisibility(View.VISIBLE);
+            username_safe_event_text.setVisibility(VISIBLE);
+            password_safe_event_text.setVisibility(VISIBLE);
         } else {
-            username_safe_event_text.setVisibility(View.GONE);
-            password_safe_event_text.setVisibility(View.GONE);
+            username_safe_event_text.setVisibility(GONE);
+            password_safe_event_text.setVisibility(GONE);
         }
-
-        chkbx_stock_moins.setChecked(prefs.getBoolean("STOCK_MOINS", false));
-
-        chkbx_stock_moins.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-
-            editor.putBoolean("STOCK_MOINS", isChecked);
-            editor.apply();   // editor.commit();
-        });
-
-
-        // checkbox achats show
-        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-
-        chkbx_produit.setChecked(prefs.getBoolean("SHOW_PROD_PIC", false));
-
-        chkbx_produit.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("SHOW_PROD_PIC", isChecked);
-            editor.apply();
-        });
 
         edt_objectif = findViewById(R.id.edit_objectif);
 
@@ -787,7 +773,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_connect = findViewById(R.id.rg_connect);
         rg_type_imprimente = findViewById(R.id.rg_type_imprimente);
         rg_langue_ticket = findViewById(R.id.rg_langue_ticket);
-        rg_model_ticket = findViewById(R.id.rg_model_ticket);
+        rg_model_latin_ticket = findViewById(R.id.rg_model_latin_ticket);
+        rg_model_arabe_ticket = findViewById(R.id.rg_model_arabe_ticket);
 
         btn_connect_printer = findViewById(R.id.btn_connect_printer);
         btn_disConnect_printer = findViewById(R.id.btn_disConnect_printer);
@@ -827,11 +814,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.putString("SAFE_EVENT_PASS", password_safe_event.getText().toString());
                     editor.apply();   // editor.commit();
 
-                    textView.setVisibility(View.VISIBLE);
+                    textView.setVisibility(VISIBLE);
                     circle.start();
                     sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "TEST_CONNEXION");
                 } else {
-                    textView.setVisibility(View.VISIBLE);
+                    textView.setVisibility(VISIBLE);
                     circle.start();
                     new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, "TEST_CONNEXION").execute();
                 }
@@ -851,11 +838,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.putString("SAFE_EVENT_PASS", password_safe_event.getText().toString());
                     editor.apply();   // editor.commit();
 
-                    textView.setVisibility(View.VISIBLE);
+                    textView.setVisibility(VISIBLE);
                     circle.start();
                     sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "GET_ALL_DEPOT");
                 } else {
-                    textView.setVisibility(View.VISIBLE);
+                    textView.setVisibility(VISIBLE);
                     circle.start();
                     new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, "GET_ALL_DEPOT").execute();
                 }
@@ -875,11 +862,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.putString("SAFE_EVENT_PASS", password_safe_event.getText().toString());
                     editor.apply();   // editor.commit();
 
-                    textView.setVisibility(View.VISIBLE);
+                    textView.setVisibility(VISIBLE);
                     circle.start();
                     sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "GET_ALL_VENDEUR");
                 } else {
-                    textView.setVisibility(View.VISIBLE);
+                    textView.setVisibility(VISIBLE);
                     circle.start();
                     new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, "GET_ALL_VENDEUR").execute();
                 }
@@ -951,7 +938,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         circle.setColor(getResources().getColor(R.color.colorAccent));
         textView.setCompoundDrawables(null, null, circle, null);
-        textView.setVisibility(View.GONE);
+        textView.setVisibility(GONE);
 
 
         ///////////////////
@@ -1026,13 +1013,19 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_son = findViewById(R.id.switch_son);
 
-
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_vente_stock_negatif = findViewById(R.id.switch_vente_stock_negatif);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_show_photo_produit = findViewById(R.id.switch_show_photo_produit);
 
 
         //////////////////////////////// SWITCH ///////////////////////////////////
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
-        switch_son.setChecked(prefs.getBoolean("ENABLE_SOUND", false));
+        switch_module_achat.setChecked(prefs.getBoolean("MODULE_ACHAT", true));
+        switch_module_vente.setChecked(prefs.getBoolean("MODULE_VENTE", true));
+        switch_module_commande.setChecked(prefs.getBoolean("MODULE_COMMANDE", true));
+        switch_module_inventaire.setChecked(prefs.getBoolean("MODULE_INVENTAIRE", true));
+
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
         switch_pa_ht.setChecked(prefs.getBoolean("AFFICHAGE_PA_HT", false));
         switch_sychroniser_client.setChecked(prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false));
@@ -1042,25 +1035,38 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_solde_client.setChecked(prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true));
         switch_remise.setChecked(prefs.getBoolean("AFFICHAGE_REMISE", true));
         switch_modifier_bon.setChecked(prefs.getBoolean("AUTORISE_MODIFY_BON", true));
-        switch_edit_prix.setChecked(prefs.getBoolean("EDIT_PRICE", false));
+        switch_edit_prix.setChecked(prefs.getBoolean("CAN_EDIT_PRICE", false));
         switch_famille.setChecked(prefs.getBoolean("MODE_FAMILLE", false));
         switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
 
-        switch_module_achat.setChecked(prefs.getBoolean("MODULE_ACHAT", true));
-        switch_module_vente.setChecked(prefs.getBoolean("MODULE_VENTE", true));
-        switch_module_commande.setChecked(prefs.getBoolean("MODULE_COMMANDE", true));
-        switch_module_inventaire.setChecked(prefs.getBoolean("MODULE_INVENTAIRE", true));
+        switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
+        switch_son.setChecked(prefs.getBoolean("ENABLE_SOUND", false));
+
+        switch_vente_stock_negatif.setChecked(prefs.getBoolean("STOCK_MOINS", false));
+        switch_show_photo_produit.setChecked(prefs.getBoolean("SHOW_PROD_PIC", false));
 
 
-        switch_gps.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switch_module_achat.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("GPS_LOCALISATION", isChecked);
+            editor.putBoolean("MODULE_ACHAT", isChecked);
             editor.apply();
         });
 
-        switch_son.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switch_module_vente.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("ENABLE_SOUND", isChecked);
+            editor.putBoolean("MODULE_VENTE", isChecked);
+            editor.apply();
+        });
+
+        switch_module_commande.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("MODULE_COMMANDE", isChecked);
+            editor.apply();
+        });
+
+        switch_module_inventaire.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("MODULE_INVENTAIRE", isChecked);
             editor.apply();
         });
 
@@ -1121,7 +1127,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         switch_edit_prix.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("EDIT_PRICE", isChecked);
+            editor.putBoolean("CAN_EDIT_PRICE", isChecked);
             editor.apply();
         });
 
@@ -1137,27 +1143,28 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
-        switch_module_achat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switch_gps.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("MODULE_ACHAT", isChecked);
+            editor.putBoolean("GPS_LOCALISATION", isChecked);
             editor.apply();
         });
 
-        switch_module_vente.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switch_son.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("MODULE_VENTE", isChecked);
+            editor.putBoolean("ENABLE_SOUND", isChecked);
             editor.apply();
         });
 
-        switch_module_commande.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+        switch_vente_stock_negatif.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("MODULE_COMMANDE", isChecked);
+            editor.putBoolean("STOCK_MOINS", isChecked);
             editor.apply();
         });
 
-        switch_module_inventaire.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switch_show_photo_produit.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putBoolean("MODULE_INVENTAIRE", isChecked);
+            editor.putBoolean("SHOW_PROD_PIC", isChecked);
             editor.apply();
         });
 
@@ -1238,14 +1245,24 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
             rg_langue_ticket.check(R.id.rb_langue_latin);
+            rg_model_latin_ticket.setVisibility(VISIBLE);
+            rg_model_arabe_ticket.setVisibility(GONE);
         } else if (Objects.equals(prefs.getString("LANGUE_TICKET", "ARABE"), "ARABE")) {
             rg_langue_ticket.check(R.id.rb_langue_arabe);
+            rg_model_latin_ticket.setVisibility(GONE);
+            rg_model_arabe_ticket.setVisibility(VISIBLE);
         }
 
-        if (Objects.equals(prefs.getString("MODEL_TICKET", "MODEL 1"), "MODEL 1")) {
-            rg_model_ticket.check(R.id.rb_model_1);
-        } else if (Objects.equals(prefs.getString("MODEL_TICKET", "MODEL 1"), "MODEL 2")) {
-            rg_model_ticket.check(R.id.rb_model_2);
+        if (Objects.equals(prefs.getString("MODEL_TICKET_LATIN", "MODEL 1"), "MODEL 1")) {
+            rg_model_latin_ticket.check(R.id.rb_model_latin_1);
+        } else if (Objects.equals(prefs.getString("MODEL_TICKET_LATIN", "MODEL 1"), "MODEL 2")) {
+            rg_model_latin_ticket.check(R.id.rb_model_latin_2);
+        }
+
+        if (Objects.equals(prefs.getString("MODEL_TICKET_ARABE", "MODEL 3"), "MODEL 3")) {
+            rg_model_arabe_ticket.check(R.id.rb_model_arabe_1);
+        } else if (Objects.equals(prefs.getString("MODEL_TICKET_ARABE", "MODEL 3"), "MODEL 4")) {
+            rg_model_arabe_ticket.check(R.id.rb_model_arabe_2);
         }
 
         //EventBus listener
@@ -1278,14 +1295,14 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 switch (i) {
                     case R.id.rb_type_ticket ->//Ticket
                     {
-                        langue_ticket_title.setVisibility(View.VISIBLE);
-                        rg_langue_ticket.setVisibility(View.VISIBLE);
+                        langue_ticket_title.setVisibility(VISIBLE);
+                        rg_langue_ticket.setVisibility(VISIBLE);
                         checkedImpType = BaseEnum.IMP_TYPE_TICKET;
                     }
                     case R.id.rb_type_codebarre ->//codebarre
                     {
-                        langue_ticket_title.setVisibility(View.GONE);
-                        rg_langue_ticket.setVisibility(View.GONE);
+                        langue_ticket_title.setVisibility(GONE);
+                        rg_langue_ticket.setVisibility(GONE);
                         checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
                         checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
                         saveConfigTicketLangue(checkedTicketModel);
@@ -1303,14 +1320,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 switch (i) {
                     case R.id.rb_langue_latin ->//Ticket latin
                     {
-                        model_ticket_title.setVisibility(View.VISIBLE);
-                        rg_model_ticket.setVisibility(View.VISIBLE);
+                        //model_ticket_title.setVisibility(View.VISIBLE);
+                        rg_model_latin_ticket.setVisibility(VISIBLE);
+                        rg_model_arabe_ticket.setVisibility(GONE);
                         checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
                     }
                     case R.id.rb_langue_arabe ->//ticket arabe
                     {
-                        model_ticket_title.setVisibility(View.GONE);
-                        rg_model_ticket.setVisibility(View.GONE);
+                        //model_ticket_title.setVisibility(View.GONE);
+                        rg_model_arabe_ticket.setVisibility(VISIBLE);
+                        rg_model_latin_ticket.setVisibility(GONE);
                         checkedTicketModel = BaseEnum.TICKET_LANGUE_ARABE;
                     }
                 }
@@ -1319,18 +1338,31 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         });
 
 
-        rg_model_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        rg_model_latin_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                 // doDisConnect();
                 switch (i) {
-                    case R.id.rb_model_1 ->//Ticket latin
+                    case R.id.rb_model_latin_1 ->//Ticket latin
                             checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_1;
-                    case R.id.rb_model_2 ->//ticket arabe
+                    case R.id.rb_model_latin_2 ->//ticket arabe
                             checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_2;
                 }
+                saveConfigTicketLangueLatin(checkedTicketModel);
+            }
+        });
 
-                saveConfigTicketModel(checkedTicketModel);
+        rg_model_arabe_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                // doDisConnect();
+                switch (i) {
+                    case R.id.rb_model_arabe_1 ->//Ticket latin
+                            checkedTicketModel = BaseEnum.TICKET_ARABE_MODEL_1;
+                    case R.id.rb_model_arabe_2 ->//ticket arabe
+                            checkedTicketModel = BaseEnum.TICKET_ARABE_MODEL_2;
+                }
+                saveConfigTicketLangueArabe(checkedTicketModel);
             }
         });
     }
@@ -1371,7 +1403,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                pb_connect.setVisibility(View.GONE);
+                pb_connect.setVisibility(GONE);
                 switch (state) {
                     case CommonEnum.CONNECT_STATE_SUCCESS:
                         tv_device_selected.setText(printerInterface.getConfigObject().toString());
@@ -1449,15 +1481,24 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         editor.apply();
     }
 
-    private void saveConfigTicketModel(int ticketModel) {
+    private void saveConfigTicketLangueLatin(int ticketLangueLatin) {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-        switch (ticketModel) {
-            case BaseEnum.TICKET_LATIN_MODEL_1 -> {//ticket model 1
-                editor.putString("MODEL_TICKET", "MODEL 1");
-            }
-            case BaseEnum.TICKET_LATIN_MODEL_2 -> {//ticket model 2
-                editor.putString("MODEL_TICKET", "MODEL 2");
-            }
+        switch (ticketLangueLatin) {
+            case BaseEnum.TICKET_LATIN_MODEL_1 -> //ticket model 1
+                    editor.putString("MODEL_TICKET_LATIN", "MODEL 1");
+            case BaseEnum.TICKET_LATIN_MODEL_2 -> //ticket model 2
+                    editor.putString("MODEL_TICKET_LATIN", "MODEL 2");
+        }
+        editor.apply();
+    }
+
+    private void saveConfigTicketLangueArabe(int ticketLangueArabe) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        switch (ticketLangueArabe) {
+            case BaseEnum.TICKET_ARABE_MODEL_1 -> //ticket model 1
+                    editor.putString("MODEL_TICKET_ARABE", "MODEL 3");
+            case BaseEnum.TICKET_ARABE_MODEL_2 -> //ticket model 2
+                    editor.putString("MODEL_TICKET_ARABE", "MODEL 4");
         }
         editor.apply();
     }
@@ -1539,7 +1580,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             showAlertDialog(getString(R.string.main_pls_choose_device));
             return;
         }
-        pb_connect.setVisibility(View.VISIBLE);
+        pb_connect.setVisibility(VISIBLE);
 
         switch (checkedConType) {
             case BaseEnum.CON_WIFI -> {
@@ -1573,19 +1614,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     BT_VALUE_MAC = device.getAddress();
                     BT_VALUE_NAME = device.getName();
 
-                    if (device != null) {
-                        configObj = new BluetoothEdrConfigBean(device);
-                        BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
-                        connectBluetooth(bluetoothEdrConfigBean);
-                        tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
-                    }
+                    configObj = new BluetoothEdrConfigBean(device);
+                    BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
+                    connectBluetooth(bluetoothEdrConfigBean);
+                    tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
                 }
             }
             case BaseEnum.CON_USB -> {
                 UsbConfigBean usbConfigBean = (UsbConfigBean) configObj;
                 connectUSB(usbConfigBean);
             }
-            default -> pb_connect.setVisibility(View.GONE);
+            default -> pb_connect.setVisibility(GONE);
         }
 
     }
@@ -2025,11 +2064,24 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private void restore_db() {
         //localBackup.performRestore(controller);
-        new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.NORMAL_TYPE)
+        /*new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.NORMAL_TYPE)
                 .setTitleText("Info...")
                 .setContentText("Cette operation necessite l'intervention de l'administrateur, Veuillez contacter le fournisseur !")
-                .show();
-        //new GetFileTask().execute(txtv_email_cloud.getText().toString());
+                .show();*/
+
+        new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Restoration de la base de données")
+                .setContentText("Vous etes responsable de cette opération si il y a des perdes des données, Voulez-vous vraiment restorer vos données ?")
+                .setCancelText("Non")
+                .setConfirmText("Oui")
+                .showCancelButton(true)
+                .setCancelClickListener(Dialog::dismiss)
+                .setConfirmClickListener(sDialog -> {
+
+                    new GetFileTask().execute(txtv_email_cloud.getText().toString());
+                    sDialog.dismiss();
+                }).show();
+
     }
 
 
@@ -2189,7 +2241,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private void terminateProcessing() {
         isRunning = false;
         circle.stop();
-        textView.setVisibility(View.GONE);
+        textView.setVisibility(GONE);
     }
 
     //====================================
@@ -2219,7 +2271,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            textView.setVisibility(View.VISIBLE);
+            textView.setVisibility(VISIBLE);
             circle.start();
         }
 
@@ -2248,7 +2300,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         protected void onPostExecute(Boolean aBoolean) {
             circle.stop();
             isRunning = false;
-            textView.setVisibility(View.GONE);
+            textView.setVisibility(GONE);
             if(_TypeConnection.equals("GET_ALL_DEPOT")){
 
                 if (aBoolean) {
@@ -2740,6 +2792,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

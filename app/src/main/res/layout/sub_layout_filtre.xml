@@ -11,7 +11,7 @@
         style="@style/HeaderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:text="@string/param_tres_filtre_recherche" />
@@ -39,14 +39,10 @@
             android:text="@string/sauvegarder_les_filtres_de_recherche"
             android:textAlignment="textStart"
             android:checked="true"
-            android:textSize="15sp"
+            android:textSize="14sp"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_size"
-        android:background="@color/divider" />
 </LinearLayout>

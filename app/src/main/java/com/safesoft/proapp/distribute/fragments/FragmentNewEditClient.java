@@ -74,6 +74,8 @@ public class FragmentNewEditClient {
     private ArrayList<PostData_commune> communes = new ArrayList<>();
     boolean shouldWork = true;
 
+    private boolean is_app_synchronised_mode = false;
+
     //PopupWindow display method
 
     public void showDialogbox(Activity activity, Context context, String SOURCE_ACTIVITY, PostData_Client old_client) {
@@ -86,6 +88,7 @@ public class FragmentNewEditClient {
         created_client = new PostData_Client();
 
         prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
+        is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -195,7 +198,7 @@ public class FragmentNewEditClient {
         rb6.setVisibility(View.GONE);
 
 
-        if (!prefs.getBoolean("APP_AUTONOME", false)) {
+        if (is_app_synchronised_mode) {
 
             if(prefs.getString("PRIX_REVENDEUR", "Libre").equals("Libre")){
 

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    tools:context="com.safesoft.proapp.distribute.activities.transfert.ActivityTransfert">
+    android:paddingRight="10dp">
 
     <RelativeLayout
         android:id="@+id/rlt_header"

@@ -11,7 +11,7 @@
         style="@style/HeaderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:text="@string/param_tres_affichage_ht_tva" />
@@ -39,13 +39,8 @@
             android:text="@string/activer_l_affichage_ht"
             android:textAlignment="textStart"
             android:checked="false"
-            android:textSize="15sp"
+            android:textSize="14sp"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_size"
-        android:background="@color/divider" />
 </LinearLayout>

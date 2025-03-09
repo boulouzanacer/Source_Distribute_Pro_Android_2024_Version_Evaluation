@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +35,7 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.EtatZSelection_Event;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectUser;
 import com.safesoft.proapp.distribute.postData.PostData_Etatv;
+import com.safesoft.proapp.distribute.printing.Printing;
 import com.victor.loading.book.BookLoading;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,7 +59,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     private EtatZSelection_Event event_selection;
     private BookLoading bookloading;
     private RelativeLayout empty_data;
-    private TextView debut, fin, user;
+    private TextView debut, fin, txtv_user;
     DATABASE controller;
     private MediaPlayer mp;
 
@@ -75,6 +78,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     private String commune;
     private final String PREFS = "ALL_PREFS";
     SharedPreferences prefs;
+    private String errorMessage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +97,15 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
 
         initViews();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Statistiques commandes");
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Statistiques commandes");
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
+
         empty_data.setVisibility(View.VISIBLE);
         retry = findViewById(R.id.retry);
         retry.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +146,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
         //TextView
         debut = findViewById(R.id.debut);
         fin = findViewById(R.id.fin);
-        user = findViewById(R.id.user);
+        txtv_user = findViewById(R.id.user);
     }
 
     public void show_select_etatz() {
@@ -151,9 +162,9 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
         debut.setText("De " + event_selection.getDate_f());
         fin.setText("Vers " + event_selection.getDate_t());
         if (event.getUser().equals("%")) {
-            user.setText("Tous");
+            txtv_user.setText("Tous");
         } else {
-            user.setText(" " + event_selection.getUser());
+            txtv_user.setText(" " + event_selection.getUser());
         }
         client = event_selection.getUser();
         c_client = event_selection.getCode_user();
@@ -229,9 +240,16 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
                         mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant, result_etat_z.get(i).code_parent)));
                 case "-6" -> {
                     mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Conclusion Total : "));
-                    for (int k = i; k < result_etat_z.size() - 1; k++) {
-                        mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                    for (int k = i, b = 1; k < result_etat_z.size() - 1; k++,b++) {
                         i = k;
+                        if(b == 7){
+                            if(prefs.getBoolean("AFFICHAGE_BENIFICE", false)){
+                                mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                            }
+                        }else{
+                            mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                        }
+
                     }
                 }
                 case "-8" -> {
@@ -329,6 +347,11 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
             case R.id.print:
                 if (result_etatzg.size() > 0) {
 
+                    Activity bactivity;
+                    bactivity = ActivityEtatC.this;
+
+                    Printing printer = new Printing();
+                    printer.start_print_etat(bactivity, "ETAT_COMMANDE", result_etatzg, c_client, txtv_user.getText().toString(), from_d, to_d);
                 }
 
                 break;
@@ -361,7 +384,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
                         case 2:
                             new SweetAlertDialog(ActivityEtatC.this, SweetAlertDialog.ERROR_TYPE)
                                     .setTitleText("Oops...")
-                                    .setContentText("Vous avez un problem au niveau de la requette SQL! Contanctez le fournisseur")
+                                    .setContentText("Vous avez un problem au niveau de la requette SQL! : " + errorMessage)
                                     .show();
                             start_select_etatz(3);
                             break;
@@ -415,10 +438,11 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
         int flag = 0;
         try {
 
-      result_etatzg =  controller.select_etatc_from_database( wilaya, commune, c_client,from_d,  to_d,false);
+      result_etatzg =  controller.select_etatc_from_database( wilaya, commune, c_client,from_d,  to_d);
             flag = 1;
-        } catch (Exception sqle) {
-            Log.v("TRACKKK", sqle.getMessage());
+        } catch (Exception e) {
+            Log.v("TRACKKK", e.getMessage());
+            errorMessage = e.getMessage();
             flag = 2;
         }
         return flag;

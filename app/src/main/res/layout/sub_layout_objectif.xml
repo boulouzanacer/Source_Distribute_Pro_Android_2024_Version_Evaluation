@@ -11,7 +11,7 @@
         style="@style/HeaderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:text="@string/param_tres_syst_me_objectif" />
@@ -28,31 +28,21 @@
         android:padding="5dp"
         android:orientation="horizontal">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_height="match_parent"
+
+        <EditText
+            android:id="@+id/edit_objectif"
             android:layout_width="0dp"
-            android:layout_gravity="center"
-            app:errorMessage="@string/error_message_empty"
-            app:errorType="empty"
+            android:layout_height="wrap_content"
             android:layout_weight="2.5"
-            app:expandedHintEnabled="false"
+            android:background="#F5F5F5"
+            android:padding="12dp"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:layout_marginEnd="10dp"
-            app:helperText="  "
-            android:hint="@string/objectif_montant">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_objectif"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
+            android:hint="0"
+            android:inputType="numberDecimal" />
 
         <Button
             android:id="@+id/BtnObjectif"
@@ -60,14 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:layout_gravity="center"
+            android:textSize="10sp"
             android:background="@drawable/button_bg"
             android:text="@string/valider" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_size"
-        android:background="@color/divider" />
 
 </LinearLayout>

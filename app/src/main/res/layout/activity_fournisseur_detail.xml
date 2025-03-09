@@ -5,9 +5,21 @@
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:fitsSystemWindows="true"
     android:weightSum="10"
     android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/myToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:navigationIcon="@drawable/ic_arrow_back_24"
+        tools:titleEnabled="false" />
 
     <LinearLayout
         android:id="@+id/Linear_Layout_Header_bon"
@@ -15,75 +27,75 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:weightSum="2"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myToolbar"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:weightSum="4"
-                android:layout_marginLeft="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical"
+                android:weightSum="4">
 
 
                 <LinearLayout
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:weightSum="5"
-                    android:orientation="horizontal"
+                    android:layout_height="0dp"
                     android:layout_marginTop="10dp"
-                    android:layout_height="0dp">
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
 
                     <LinearLayout
-                        android:layout_weight="5"
                         android:layout_width="0dp"
-                        android:weightSum="7"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:weightSum="7">
 
                         <TextView
-                            android:drawableLeft="@drawable/ic_baseline_calculate_24"
-                            android:text="CODE FOURNIS:"
-                            android:layout_weight="3"
-                            android:textStyle="bold"
-                            android:textSize="15sp"
-                            android:gravity="center"
-                            android:textColor="@color/gray"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="3"
+                            android:drawableLeft="@drawable/ic_baseline_calculate_24"
+                            android:gravity="center"
+                            android:text="CODE FOURNIS:"
+                            android:textColor="@color/gray"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/code_frs"
-                            android:layout_weight="4"
-                            android:text="12551255"
-                            android:gravity="center"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:text="12551255" />
                     </LinearLayout>
 
                 </LinearLayout>
 
 
                 <LinearLayout
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:weightSum="5"
+                    android:layout_height="0dp"
                     android:layout_marginTop="10dp"
-                    android:layout_height="0dp">
+                    android:layout_weight="1"
+                    android:weightSum="5">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
                         android:layout_weight="1"
-                        android:textColor="@color/gray"
                         android:drawableStart="@drawable/ic_baseline_person_24"
+                        android:text="NOM :"
+                        android:textColor="@color/gray"
                         android:textSize="15dp"
-                        android:text="NOM :" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/fournisseur_name"
@@ -94,39 +106,39 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:weightSum="5"
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="0dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
 
                     <TextView
-                        android:text="TEL   :"
-                        android:layout_weight="1"
-                        android:textSize="15dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/gray"
-                        android:drawableStart="@drawable/ic_baseline_local_phone_24"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_baseline_local_phone_24"
+                        android:text="TEL   :"
+                        android:textColor="@color/gray"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tel"
-                        android:text="0552725211"
-                        android:layout_weight="3"
-                        android:typeface="monospace"
-                        android:textStyle="bold"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="0552725211"
+                        android:textStyle="bold"
+                        android:typeface="monospace" />
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         android:id="@+id/btnCall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="onClick"
                         android:gravity="center"
+                        android:onClick="onClick"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
                         fancy:fb_borderColor="#FFFFFF"
@@ -140,28 +152,28 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:weightSum="5"
+                    android:layout_height="0dp"
                     android:layout_marginTop="10dp"
-                    android:layout_height="0dp">
+                    android:layout_weight="1"
+                    android:weightSum="5">
 
                     <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:drawableLeft="@drawable/ic_baseline_home_24"
                         android:text="Adrs :"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textSize="15dp"
                         android:textColor="@color/gray"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/adresse"
-                        android:layout_weight="4"
-                        android:text="10500, Cité les HLM, Oran"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:text="10500, Cité les HLM, Oran" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -169,31 +181,31 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:background="@drawable/client_detail_band"
             android:layout_width="match_parent"
-            android:weightSum="6"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/client_detail_band"
+            android:orientation="horizontal"
+            android:weightSum="6">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="0dp"
-                android:padding="10dp"
-                android:weightSum="2"
+                android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:layout_height="match_parent">
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:weightSum="2">
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/btn_update_pos"
-                    android:layout_weight="1"
-                    android:onClick="onClick"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="10dp"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
                     android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
                     android:paddingTop="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="10dp"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
                     fancy:fb_defaultColor="@color/blue"
@@ -206,16 +218,16 @@
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/btn_itenerary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
                     android:onClick="onClick"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="10dp"
-                    android:layout_gravity="center"
                     android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
                     android:paddingTop="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="10dp"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
                     fancy:fb_defaultColor="@color/blue"
@@ -228,11 +240,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="5dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:padding="5dp">
 
                 <ImageView
                     android:id="@+id/imgv_fournisseur_map"
@@ -249,24 +261,24 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:padding="10dp"
-            android:orientation="horizontal"
-            android:weightSum="2"
+            android:layout_height="match_parent"
             android:background="@drawable/client_detail_band"
-            android:layout_height="match_parent">
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="2">
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btnVerser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:onClick="onClick"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:layout_gravity="center"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="10dp"
                 fancy:fb_borderColor="#FFFFFF"
                 fancy:fb_borderWidth="1dp"
                 fancy:fb_defaultColor="@color/emerald"
@@ -278,16 +290,17 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btnAchat"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:onClick="onClick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
                 android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:onClick="onClick"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="10dp"
+                android:visibility="gone"
                 fancy:fb_borderColor="#FFFFFF"
                 fancy:fb_borderWidth="1dp"
                 fancy:fb_defaultColor="@color/emerald"
@@ -295,7 +308,6 @@
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="5dp"
                 fancy:fb_text="Achat"
-                android:visibility="gone"
                 fancy:fb_textColor="#FFFFFF" />
 
         </LinearLayout>

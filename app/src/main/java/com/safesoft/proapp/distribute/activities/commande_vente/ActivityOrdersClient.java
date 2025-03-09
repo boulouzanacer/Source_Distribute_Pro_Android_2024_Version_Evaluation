@@ -17,15 +17,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.ActivityRouting;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
-import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
@@ -65,11 +64,15 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventes);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Bons de commandes");
-        getSupportActionBar().setSubtitle("Client");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Bons de commandes");
+            getSupportActionBar().setSubtitle("Client");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
+
         controller = new DATABASE(this);
 
         if (getIntent() != null) {

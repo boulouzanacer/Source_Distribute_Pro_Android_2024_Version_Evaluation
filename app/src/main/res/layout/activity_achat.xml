@@ -5,7 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="10"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/myToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:navigationIcon="@drawable/ic_arrow_back_24"
+        tools:titleEnabled="false" />
 
     <LinearLayout
         android:id="@+id/Linear_Layout_Header_bon"
@@ -13,7 +26,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:weightSum="2"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myToolbar"
         tools:ignore="MissingConstraints">
 
         <Button
@@ -23,33 +36,33 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:textAllCaps="false"
-            android:onClick="onClickEvent"
             android:backgroundTint="@color/violet"
-            android:textColor="@color/white"
+            android:onClick="onClickEvent"
             android:text="@string/selection_fournisseur"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             android:textSize="12sp"
             app:icon="@drawable/baseline_edit_24"
             tools:ignore="NestedWeights" />
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal"
             android:padding="5dp"
             android:weightSum="3"
             tools:ignore="MissingConstraints">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:layout_weight="1"
                 android:id="@+id/btn_scan_produit"
-                android:background="@drawable/button_bg"
-                android:src="@drawable/ic_codebarre_scan"
-                android:layout_marginEnd="3dp"
-                android:onClick="onClickEvent"
                 android:layout_width="0dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_bg_scanner"
+                android:onClick="onClickEvent"
+                android:src="@drawable/ic_codebarre_scan" />
 
 
             <Button
@@ -326,49 +339,48 @@
 
             <Button
                 android:id="@+id/valide_facture"
-                style="@style/Widget.Material3.Button.Icon"
                 app:icon="@drawable/ic_baseline_check_24"
                 android:layout_width="0dp"
                 android:layout_marginEnd="5dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_bg"
+                android:background="@drawable/button_bg_valider"
                 android:onClick="onClickEvent"
                 android:text="@string/valider"
                 android:textSize="11sp"
                 android:textColor="@color/white"
-                android:autoSizeTextType="uniform"
+                android:autoSizeTextType="none"
                 tools:targetApi="o" />
+
 
             <Button
                 android:id="@+id/btn_mofifier_bon"
-                style="@style/Widget.Material3.Button.Icon"
                 app:icon="@drawable/baseline_edit_24"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="5dp"
-                android:background="@drawable/button_bg"
+                android:background="@drawable/button_bg_modifier"
                 android:onClick="onClickEvent"
                 android:text="@string/modifier"
                 android:textSize="11sp"
                 android:textColor="@color/white"
-                android:autoSizeTextType="uniform"
+                android:autoSizeTextType="none"
                 tools:targetApi="o" />
+
 
             <Button
                 android:id="@+id/btn_imp_bon"
-                style="@style/Widget.Material3.Button.Icon"
                 app:icon="@drawable/ic_baseline_print_24"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_bg"
+                android:background="@drawable/button_bg_imprimer"
                 android:onClick="onClickEvent"
                 android:text="@string/imprimer"
                 android:textSize="11sp"
                 android:textColor="@color/white"
-                android:autoSizeTextType="uniform"
+                android:autoSizeTextType="none"
                 tools:targetApi="o" />
         </LinearLayout>
 

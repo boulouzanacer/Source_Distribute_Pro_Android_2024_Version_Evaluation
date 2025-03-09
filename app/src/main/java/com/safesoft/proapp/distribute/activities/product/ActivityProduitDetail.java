@@ -8,10 +8,8 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,8 +31,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import cn.nekocode.badge.BadgeDrawable;
-
 public class ActivityProduitDetail extends AppCompatActivity {
 
     private PostData_Produit produit;
@@ -52,6 +48,8 @@ public class ActivityProduitDetail extends AppCompatActivity {
     private DATABASE controller;
     private final String PREFS = "ALL_PREFS";
     private int position_item = 0;
+
+    private boolean is_app_synchronised_mode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +90,14 @@ public class ActivityProduitDetail extends AppCompatActivity {
         produit.d2 = getIntent().getStringExtra("D2");
         produit.pp1_ht = getIntent().getDoubleExtra("PP1_HT", 0);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Détails produit");
 
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Détails produit");
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
         initViews();
 
         // Declare US print format
@@ -147,6 +150,8 @@ public class ActivityProduitDetail extends AppCompatActivity {
     protected void iniData(PostData_Produit produit) {
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
+
         PostData_Params params = new PostData_Params();
         params = controller.select_params_from_database("SELECT * FROM PARAMS");
 
@@ -208,13 +213,13 @@ public class ActivityProduitDetail extends AppCompatActivity {
             Description.setText(produit.description);
         }
 
-        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+        if (params.prix_2 == 1 && is_app_synchronised_mode) {
             Lnr_pv2.setVisibility(View.VISIBLE);
         } else {
             Lnr_pv2.setVisibility(View.GONE);
         }
 
-        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+        if (params.prix_3 == 1 && is_app_synchronised_mode) {
             Lnr_pv3.setVisibility(View.VISIBLE);
         } else {
             Lnr_pv3.setVisibility(View.GONE);

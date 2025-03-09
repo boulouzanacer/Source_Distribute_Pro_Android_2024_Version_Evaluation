@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -54,6 +55,7 @@ import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHe
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.utils.Env;
@@ -95,7 +97,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     private double val_timbre = 0.00;
     private double val_remise = 0.00;
     private double val_total_ttc_remise = 0.00;
-
+    private boolean show_picture_prod;
     private EventBus bus;
     private String NUM_BON;
     private String CODE_DEPOT;
@@ -136,8 +138,12 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         final_panier = new ArrayList<>();
 
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
 
         String date_time_sub_title = null;
@@ -146,6 +152,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+
+        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
 
         initViews();
 
@@ -1013,23 +1021,29 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         ArrayList<PostData_Produit> produits;
         PostData_Achat2 bon2_temp = new PostData_Achat2();
 
-        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        produits = controller.select_produits_from_database(querry);
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+        ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
 
-
-        if (produits.isEmpty()) {
-            String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + resultscan + "'";
-            String code_barre = controller.select_codebarre_from_database(querry1);
-
-            String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE != '" + resultscan + "' AND CODE_BARRE_SYN = '" + resultscan + "' ";
+        codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+        if(!codebarres.isEmpty()){
+            resultscan = codebarres.get(0).code_barre;
+        }
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+        String querry = "";
+        if(show_picture_prod){
+            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
-            produits = controller.select_produits_from_database(querry2);
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
+        }else{
+            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
         }
+
+        produits = controller.select_produits_from_database(querry, show_picture_prod);
 
         if (produits.size() == 1) {
 

@@ -50,7 +50,6 @@ public class ActivityActivation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_activation);
 
         inforevenedeur1 = findViewById(R.id.InfoRevendeur1);
@@ -302,6 +301,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_TECH_POS3);
             inforevenedeur4.setText(R.string.INFO_TECH_POS4);
         }
+
         //12
         if (revendeur.equals("UNIVER SOFT")) {
             inforevenedeur1.setText(R.string.INFO_UNIVERSOFT1);
@@ -309,6 +309,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_UNIVERSOFT3);
             inforevenedeur4.setText(R.string.INFO_UNIVERSOFT4);
         }
+
         //13
         if (revendeur.equals("IBSMAX")) {
             inforevenedeur1.setText(R.string.INFO_IBSMAX1);
@@ -316,6 +317,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_IBSMAX3);
             inforevenedeur4.setText(R.string.INFO_IBSMAX4);
         }
+
         //14
         if (revendeur.equals("MMBOX")) {
             inforevenedeur1.setText(R.string.INFO_MMBOX1);
@@ -323,6 +325,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_MMBOX3);
             inforevenedeur4.setText(R.string.INFO_MMBOX4);
         }
+
         //15
         if (revendeur.equals("DELPHI SOFT")) {
             inforevenedeur1.setText(R.string.INFO_DELPHI1);
@@ -330,6 +333,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_DELPHI3);
             inforevenedeur4.setText(R.string.INFO_DELPHI4);
         }
+
         //16
         if (revendeur.equals("BBS")) {
             inforevenedeur1.setText(R.string.INFO_BBS1);
@@ -337,6 +341,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_BBS3);
             inforevenedeur4.setText(R.string.INFO_BBS4);
         }
+
         //17
         if (revendeur.equals("EXPERT INFO")) {
             inforevenedeur1.setText(R.string.INFO_EXPERTINFO1);
@@ -344,13 +349,23 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_EXPERTINFO3);
             inforevenedeur4.setText(R.string.INFO_EXPERTINFO4);
         }
+
         //18
         if (revendeur.equals("ARC TECH")) {
             inforevenedeur1.setText(R.string.INFO_DATAPRO1);
-            inforevenedeur2.setText(R.string.INFO_DATAPRO1);
-            inforevenedeur3.setText(R.string.INFO_DATAPRO1);
-            inforevenedeur4.setText(R.string.INFO_DATAPRO1);
+            inforevenedeur2.setText(R.string.INFO_ARCTECH2);
+            inforevenedeur3.setText(R.string.INFO_ARCTECH3);
+            inforevenedeur4.setText(R.string.INFO_ARCTECH4);
         }
+
+        //19
+        if (revendeur.equals("DATA PRO")) {
+            inforevenedeur1.setText(R.string.INFO_DATAPRO1);
+            inforevenedeur2.setText(R.string.INFO_DATAPRO2);
+            inforevenedeur3.setText(R.string.INFO_DATAPRO3);
+            inforevenedeur4.setText(R.string.INFO_DATAPRO4);
+        }
+
         //20
         if (revendeur.equals("LAGA")) {
             inforevenedeur1.setText(R.string.INFO_LAGA1);
@@ -358,6 +373,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_LAGA3);
             inforevenedeur4.setText(R.string.INFO_LAGA4);
         }
+
         //21
         if (revendeur.equals("SOFT SPACE")) {
             inforevenedeur1.setText(R.string.INFO_SOFTSPACE1);
@@ -365,6 +381,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_SOFTSPACE3);
             inforevenedeur4.setText(R.string.INFO_SOFTSPACE4);
         }
+
         //22
         if (revendeur.equals("AFKAR SOFT")) {
             inforevenedeur1.setText(R.string.INFO_AFKARSOFT1);
@@ -372,6 +389,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_AFKARSOFT3);
             inforevenedeur4.setText(R.string.INFO_AFKARSOFT4);
         }
+
         //23
         if (revendeur.equals("AZAD ADRAR")) {
             inforevenedeur1.setText(R.string.INFO_AZAD1);
@@ -379,6 +397,7 @@ public class ActivityActivation extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_AZAD1);
             inforevenedeur4.setText(R.string.INFO_AZAD1);
         }
+
         //24
         if (revendeur.equals("GENERAL IT")) {
             inforevenedeur1.setText(R.string.INFO_GENERALIT1);

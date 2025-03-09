@@ -69,6 +69,7 @@ public class ListViewAdapterPanierVente extends ArrayAdapter<PostData_Bon2> {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.layout_panier_vente, parent, false);
+
             viewHolder.produit = convertView.findViewById(R.id.produit);
             viewHolder.nbr_colis = convertView.findViewById(R.id.nbr_colis);
             viewHolder.colissage = convertView.findViewById(R.id.colissage);

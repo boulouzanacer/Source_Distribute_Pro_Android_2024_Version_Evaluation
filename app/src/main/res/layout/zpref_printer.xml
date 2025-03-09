@@ -169,7 +169,7 @@
 
 
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
-            android:id="@+id/rg_model_ticket"
+            android:id="@+id/rg_model_latin_ticket"
             android:weightSum="2"
             android:visibility="visible"
             android:layout_width="match_parent"
@@ -177,20 +177,46 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/rb_model_1"
+                android:id="@+id/rb_model_latin_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Model détailé" />
+                android:text="Model latin 1" />
 
             <RadioButton
-                android:id="@+id/rb_model_2"
+                android:id="@+id/rb_model_latin_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="Model optimisé" />
+                android:text="Model latin 2" />
+
+        </com.safesoft.proapp.distribute.view.FlowRadioGroup>
+
+        <com.safesoft.proapp.distribute.view.FlowRadioGroup
+            android:id="@+id/rg_model_arabe_ticket"
+            android:weightSum="2"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_model_arabe_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Model arabe 1" />
+
+            <RadioButton
+                android:id="@+id/rb_model_arabe_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Model arabe 2" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 

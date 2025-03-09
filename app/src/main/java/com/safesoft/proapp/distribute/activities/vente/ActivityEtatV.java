@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activities.vente;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +37,7 @@ import com.safesoft.proapp.distribute.eventsClasses.EtatZSelection_Event;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectUser;
 import com.safesoft.proapp.distribute.postData.PostData_Etatv;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.printing.Printing;
 import com.victor.loading.book.BookLoading;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,13 +69,14 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     private Handler handler;
     private ArrayList<PostData_Etatv> result_etatzg;
     private final EventBus bus = EventBus.getDefault();
-    private String c_client;
+    private String c_client, client;
     private String from_d;
     private String to_d;
     private String wilaya;
     private String commune;
     private final String PREFS = "ALL_PREFS";
     private SharedPreferences prefs;
+    private String errorMessage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +94,16 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
         initViews();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Statistiques ventes");
+
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Statistiques ventes");
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
+
         empty_data.setVisibility(View.VISIBLE);
         retry = findViewById(R.id.retry);
         retry.setOnClickListener(new View.OnClickListener() {
@@ -163,7 +175,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
             txtv_user.setText(" " + event_selection.getUser());
         }
 
-        String client = event_selection.getUser();
+        client = event_selection.getUser();
         c_client = event_selection.getCode_user();
 
         from_d = event_selection.getDate_f();
@@ -234,9 +246,15 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                         mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(i).produit, result_etat_z.get(i).quantite, result_etat_z.get(i).montant, result_etat_z.get(i).code_parent)));
                 case "-6" -> {
                     mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Conclusion Total : "));
-                    for (int k = i; k < result_etat_z.size() - 1; k++) {
-                        mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                    for (int k = i, b = 1; k < result_etat_z.size() - 1; k++,b++) {
                         i = k;
+                        if(b == 7){
+                            if(prefs.getBoolean("AFFICHAGE_BENIFICE", false)){
+                                mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                            }
+                        }else{
+                            mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
+                        }
                     }
                 }
                 case "-8" -> {
@@ -334,6 +352,11 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
             case R.id.print:
                 if (!result_etatzg.isEmpty()) {
 
+                    Activity bactivity;
+                    bactivity = ActivityEtatV.this;
+
+                    Printing printer = new Printing();
+                    printer.start_print_etat(bactivity, "ETAT_VENTE", result_etatzg, c_client, txtv_user.getText().toString(), from_d, to_d);
                 }
 
                 break;
@@ -366,7 +389,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                         case 2:
                             new SweetAlertDialog(ActivityEtatV.this, SweetAlertDialog.ERROR_TYPE)
                                     .setTitleText("Oops...")
-                                    .setContentText("Vous avez un problem au niveau de la requette SQL! Contanctez le fournisseur")
+                                    .setContentText("Vous avez un problem au niveau de la requette SQL!: " + errorMessage)
                                     .show();
                             start_select_etatz(3);
                             break;
@@ -409,6 +432,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
             } catch (Exception e) {
                 e.printStackTrace();
+                errorMessage = e.getMessage();
                 handler.sendEmptyMessage(3);
             }
         });
@@ -418,12 +442,13 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
     public int getEtatzgs(String c_client, String from_d, String to_d) {
         int flag = 0;
-        try {
 
-            result_etatzg = controller.select_etatv_from_database(wilaya, commune, c_client, from_d, to_d, prefs.getBoolean("AFFICHAGE_BENIFICE", false));
+        try {
+            result_etatzg = controller.select_etatv_from_database(wilaya, commune, c_client, from_d, to_d);
             flag = 1;
-        } catch (Exception sqle) {
-            Log.v("TRACKKK", sqle.getMessage());
+        } catch (Exception e) {
+            Log.v("TRACKKK", e.getMessage());
+            errorMessage = e.getMessage();
             flag = 2;
         }
         return flag;

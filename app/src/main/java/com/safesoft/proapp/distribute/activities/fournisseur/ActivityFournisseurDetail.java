@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -93,19 +94,23 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
     PostData_Carnet_f selected_versement = null;
     private final String PREFS = "ALL_PREFS";
     SharedPreferences prefs;
-
+    private boolean is_app_synchronised_mode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fournisseur_detail);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Situation Fournisseur");
-        // getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.blue)));
 
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Situation Fournisseur");
+        }
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
 
         CODE_FRS = getIntent().getStringExtra("CODE_FRS");
 
@@ -327,11 +332,11 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
                 break;
 
             case R.id.btnVerser:
-                if(!prefs.getBoolean("APP_AUTONOME", false)){
+                if(is_app_synchronised_mode){
+                    Crouton.makeText(ActivityFournisseurDetail.this, "Versement fournisseur disponible seulement en mode Mono-Poste !", Style.ALERT).show();
+                }else {
                     FragmentVersementFournisseur fragmentversementfournisseur = new FragmentVersementFournisseur();
                     fragmentversementfournisseur.showDialogbox(ActivityFournisseurDetail.this, fournisseur.solde_montant, fournisseur.verser_montant, 0, "", fournisseur.code_frs, false, "");
-                }else {
-                    Crouton.makeText(ActivityFournisseurDetail.this, "Versement fournisseur disponible seulement en mode Mono-Poste !", Style.ALERT).show();
                 }
 
                 break;

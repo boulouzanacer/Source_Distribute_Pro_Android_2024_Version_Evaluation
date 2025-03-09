@@ -40,6 +40,7 @@ import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
+import com.safesoft.proapp.distribute.utils.ImageUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -55,10 +56,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class FragmentNewEditProduct {
-
     final String ALLOWED_CHARACTERS_CODEBARRE = "0123456789ABCDEFGHJK";
     final String ALLOWED_CHARACTERS_REFERENCE = "012345678-9RSTUVWXYZ";
-
     double val_colissage, val_stock_ini,
             val_prix_achat_ht, val_tva, val_prix_achat_ttc,
             val_prix1_ht, val_prix1_ttc,
@@ -94,7 +93,6 @@ public class FragmentNewEditProduct {
     Activity activity;
     AlertDialog dialog;
     ImageView img_product;
-    byte[] inputData = null;
     private final String PREFS = "ALL_PREFS";
 
     PostData_Produit created_produit;
@@ -105,6 +103,8 @@ public class FragmentNewEditProduct {
 
     private PostData_Params params;
     SharedPreferences prefs;
+    private boolean is_app_synchronised_mode = false;
+
     //PopupWindow display method
 
     public void showDialogbox(Activity activity, String SOURCE_ACTIVITY, PostData_Produit old_product) {
@@ -121,6 +121,8 @@ public class FragmentNewEditProduct {
         ((DecimalFormat) nq).applyPattern("####0.##");
 
         prefs = activity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
+
         created_produit = new PostData_Produit();
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
@@ -224,6 +226,8 @@ public class FragmentNewEditProduct {
 
         if (SOURCE_ACTIVITY.equals("EDIT_PRODUCT")) {
 
+            created_produit.photo = old_product.photo;
+
             edt_codebarre.setText(old_product.code_barre);
             edt_codebarre.setEnabled(false);
             generate_codebarre.setEnabled(false);
@@ -281,21 +285,7 @@ public class FragmentNewEditProduct {
                 edt_prix_achat_ht.setEnabled(false);
             }
 
-            if (prefs.getBoolean("EDIT_PRICE", false)) {
-                edt_prix1_ttc.setEnabled(false);
-                edt_prix2_ttc.setEnabled(false);
-                edt_prix3_ttc.setEnabled(false);
-                edt_prix4_ttc.setEnabled(false);
-                edt_prix5_ttc.setEnabled(false);
-                edt_prix6_ttc.setEnabled(false);
-
-                edt_prix1_ht.setEnabled(false);
-                edt_prix2_ht.setEnabled(false);
-                edt_prix3_ht.setEnabled(false);
-                edt_prix4_ht.setEnabled(false);
-                edt_prix5_ht.setEnabled(false);
-                edt_prix6_ht.setEnabled(false);
-            }else{
+            if (prefs.getBoolean("CAN_EDIT_PRICE", false)) {
                 edt_prix1_ttc.setEnabled(true);
                 edt_prix2_ttc.setEnabled(true);
                 edt_prix3_ttc.setEnabled(true);
@@ -309,6 +299,20 @@ public class FragmentNewEditProduct {
                 edt_prix4_ht.setEnabled(true);
                 edt_prix5_ht.setEnabled(true);
                 edt_prix6_ht.setEnabled(true);
+            }else{
+                edt_prix1_ttc.setEnabled(false);
+                edt_prix2_ttc.setEnabled(false);
+                edt_prix3_ttc.setEnabled(false);
+                edt_prix4_ttc.setEnabled(false);
+                edt_prix5_ttc.setEnabled(false);
+                edt_prix6_ttc.setEnabled(false);
+
+                edt_prix1_ht.setEnabled(false);
+                edt_prix2_ht.setEnabled(false);
+                edt_prix3_ht.setEnabled(false);
+                edt_prix4_ht.setEnabled(false);
+                edt_prix5_ht.setEnabled(false);
+                edt_prix6_ht.setEnabled(false);
 
             }
 
@@ -335,13 +339,13 @@ public class FragmentNewEditProduct {
         txt_input_prix6_ttc.setHint(params.pv6_titre + " (TTC)");
 
 
-        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+        if (params.prix_2 == 1 && is_app_synchronised_mode) {
             lnr_prix2.setVisibility(View.VISIBLE);
         } else {
             lnr_prix2.setVisibility(View.INVISIBLE);
         }
 
-        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+        if (params.prix_3 == 1 && is_app_synchronised_mode) {
             lnr_prix3.setVisibility(View.VISIBLE);
         } else {
             lnr_prix3.setVisibility(View.INVISIBLE);
@@ -598,7 +602,7 @@ public class FragmentNewEditProduct {
                 created_produit.produit = edt_designation.getText().toString();
                 created_produit.code_barre = edt_codebarre.getText().toString();
                 created_produit.ref_produit = edt_reference.getText().toString();
-                created_produit.photo = inputData;
+
                 created_produit.famille = "";
 
                 created_produit.stock_ini = val_stock_ini;
@@ -613,7 +617,7 @@ public class FragmentNewEditProduct {
                 created_produit.pv1_ht = Double.parseDouble(edt_prix1_ht.getText().toString());
                 created_produit.pv1_ttc = created_produit.pv1_ht + (created_produit.pv1_ht * created_produit.tva / 100);
 
-                if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+                if (params.prix_2 == 1 && is_app_synchronised_mode) {
                     created_produit.pv2_ht = Double.parseDouble(edt_prix2_ht.getText().toString());
                     created_produit.pv2_ttc = created_produit.pv2_ht + (created_produit.pv2_ht * created_produit.tva / 100);
                 } else {
@@ -621,7 +625,7 @@ public class FragmentNewEditProduct {
                     created_produit.pv2_ttc = 0.00;
                 }
 
-                if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+                if (params.prix_3 == 1 && is_app_synchronised_mode) {
                     created_produit.pv3_ht = Double.parseDouble(edt_prix3_ht.getText().toString());
                     created_produit.pv3_ttc = created_produit.pv3_ht + (created_produit.pv3_ht * created_produit.tva / 100);
                 } else {
@@ -1541,15 +1545,19 @@ public class FragmentNewEditProduct {
     }
 
     public void setImageFromActivity(byte[] inputData) {
-        this.inputData = inputData;
-        Bitmap bitmap = BitmapFactory.decodeByteArray(inputData, 0, inputData.length);
+        byte[] inputData_1 = null;
+        inputData_1 = ImageUtils.getInstant().getCompressedBitmap(inputData);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(inputData_1, 0, inputData_1.length);
         img_product.setImageBitmap(bitmap);
+        created_produit.photo = inputData_1;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onByteDataRecieved(ByteDataEvent byteDataEvent) {
-        this.inputData = byteDataEvent.getByteData();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(inputData, 0, inputData.length);
+        byte[] inputData_1 = null;
+        inputData_1 = ImageUtils.getInstant().getCompressedBitmap(byteDataEvent.getByteData());
+        Bitmap bitmap = BitmapFactory.decodeByteArray(inputData_1, 0, inputData_1.length);
         img_product.setImageBitmap(bitmap);
+        created_produit.photo = inputData_1;
     }
 }

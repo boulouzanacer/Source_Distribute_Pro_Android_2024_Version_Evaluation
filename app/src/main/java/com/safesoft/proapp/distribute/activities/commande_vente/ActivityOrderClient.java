@@ -32,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -59,6 +60,7 @@ import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHe
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.printing.Printing;
@@ -110,7 +112,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     private double val_total_achat_ht = 0.00;
 
     private EventBus bus;
-
+    private boolean show_picture_prod;
     private String NUM_BON;
     private String CODE_DEPOT;
     private PostData_Client client_selected;
@@ -138,10 +140,12 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat heure_format;
 
+    private boolean is_app_synchronised_mode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sale);
+        setContentView(R.layout.activity_vente);
 
         if (savedInstanceState != null) {
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
@@ -158,16 +162,23 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         final_panier = new ArrayList<>();
 
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
         String date_time_sub_title = null;
         String formattedDate = null;
 
 
-        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
+
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+
+        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
 
         initViews();
 
@@ -384,7 +395,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             tbr_remise.setVisibility(View.GONE);
         }
 
-        intent_location = new Intent(this, ServiceLocation.class);
+       /* intent_location = new Intent(this, ServiceLocation.class);
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         if (prefs.getBoolean("GPS_LOCALISATION", false)) {
@@ -395,7 +406,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             }
         } else {
             stopService(intent_location);
-        }
+        }*/
 
 
         // Declare US print format
@@ -439,7 +450,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 if (client_selected.mode_tarif.equals("0")) {
 
                     if (btn_mode_tarif.getText().toString().equals("Tarif 1")) {
-                        if (params.prix_2 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+                        if (params.prix_2 == 1 && is_app_synchronised_mode) {
                             bon1_temp.mode_tarif = "2";
                             btn_mode_tarif.setText("Tarif 2");
                         } else {
@@ -447,7 +458,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                             btn_mode_tarif.setText("Tarif 1");
                         }
                     } else if (btn_mode_tarif.getText().toString().equals("Tarif 2")) {
-                        if (params.prix_3 == 1 || prefs.getBoolean("APP_AUTONOME", false)) {
+                        if (params.prix_3 == 1 && is_app_synchronised_mode) {
                             bon1_temp.mode_tarif = "3";
                             btn_mode_tarif.setText("Tarif 3");
                         } else {
@@ -579,8 +590,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                                 .show();
                         return;
                     }
-                    if (bon1_temp.client.length() < 1) {
-
+                    if (bon1_temp.client.isEmpty()) {
                         Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                         return;
                     }
@@ -1029,7 +1039,11 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 mActivity = ActivityOrderClient.this;
 
                 GeneratePDF generate_pdf = new GeneratePDF();
-                generate_pdf.startPDFVente(mActivity, bon1_temp, final_panier, "FROM_ORDER");
+                try {
+                    generate_pdf.startPDFVente(mActivity, bon1_temp, final_panier, "FROM_ORDER");
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -1131,7 +1145,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     protected void onDestroy() {
         // Unregister
         bus.unregister(this);
-        stopService(intent_location);
+        //stopService(intent_location);
         super.onDestroy();
     }
 
@@ -1197,9 +1211,20 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 Sound(R.raw.cashier_quotka);
             }
 
+            if (prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
+                // Initialize activity
+                Activity activity;
+                // define activity of this class//
+                activity = ActivityOrderClient.this;
+                FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
+                fragmentSelectProduct.showDialogbox(activity, getBaseContext(), bon1_temp.mode_tarif, "VENTE");
+            }
+
         } catch (Exception e) {
-            Crouton.makeText(ActivityOrderClient.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();
+            Crouton.makeText(ActivityOrderClient.this, "Erreur : " + e.getMessage(), Style.ALERT).show();
         }
+
+
 
     }
 
@@ -1246,22 +1271,31 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         ArrayList<PostData_Produit> produits;
         PostData_Bon2 bon2_temp = new PostData_Bon2();
 
-        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                "CASE WHEN PTODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        produits = controller.select_produits_from_database(querry);
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+        ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
 
-        if (produits.size() == 0) {
-            String querry1 = "SELECT * FROM CODEBARRE WHERE CODE_BARRE_SYN = '" + resultscan + "'";
-            String code_barre = controller.select_codebarre_from_database(querry1);
-
-            String querry2 = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT WHERE CODE_BARRE = '" + code_barre + "'";
-            produits = controller.select_produits_from_database(querry2);
+        String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE != '" + resultscan + "' AND CODE_BARRE_SYN = '" + resultscan + "' ";
+        codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
+        if(!codebarres.isEmpty()){
+            resultscan = codebarres.get(0).code_barre;
         }
+        ///////////////////////////////////CODE BARRE //////////////////////////////////////
+
+        String querry = "";
+
+        if(show_picture_prod){
+            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN PTODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
+        }else{
+            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
+                    "CASE WHEN PTODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
+                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
+        }
+
+        produits = controller.select_produits_from_database(querry, show_picture_prod);
 
         if (produits.size() == 1) {
             bon2_temp.num_bon = NUM_BON;

@@ -17,19 +17,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySale;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterAchat1;
-import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
-import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.utils.Env;
 
@@ -41,8 +38,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivityAchats extends AppCompatActivity implements RecyclerAdapterAchat1.ItemClick, RecyclerAdapterAchat1.ItemLongClick {
 
@@ -65,10 +60,16 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventes);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Bons d'achats");
-        getSupportActionBar().setSubtitle("Fournisseur");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Bons d'achats");
+            getSupportActionBar().setSubtitle("Fournisseur");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
+
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
@@ -293,7 +294,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                             Intent html_intent = new Intent(this, ActivityHtmlView.class);
                             html_intent.putExtra("TYPE_BON", "ACHAT");
                             html_intent.putExtra("ACHAT1", achat1s.get(position));
-                            html_intent.putExtra("BON2", final_panier);
+                            html_intent.putExtra("ACHAT2", final_panier);
                             startActivity(html_intent);
                         }
 
@@ -318,7 +319,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
 
-                                controller.delete_bon_achat(false, achat1s.get(position));
+                                controller.delete_bon_achat_en_attente(false, achat1s.get(position));
                                 setRecycle("", false);
 
                                 sDialog.dismiss();

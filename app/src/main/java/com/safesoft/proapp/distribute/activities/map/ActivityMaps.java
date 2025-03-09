@@ -94,7 +94,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        mToolbar = findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(mToolbar);
         controller = new DATABASE(this);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -111,6 +111,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         myProgress.show();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("List clients");
+
 
         ConnectionDetector = new ConnectionDetector(getApplicationContext());
 

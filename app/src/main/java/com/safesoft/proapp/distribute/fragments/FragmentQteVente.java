@@ -153,14 +153,14 @@ public class FragmentQteVente {
             ly_prix_ttc.setWeightSum(2);
         }
 
-        if (prefs.getBoolean("EDIT_PRICE", false)) {
-            edt_prix_ttc.setEnabled(false);
-            edt_prix_ht.setEnabled(false);
-            edt_tva.setEnabled(false);
-        } else {
+        if (prefs.getBoolean("CAN_EDIT_PRICE", false)) {
             edt_prix_ttc.setEnabled(true);
             edt_prix_ht.setEnabled(true);
             edt_tva.setEnabled(true);
+        } else {
+            edt_prix_ttc.setEnabled(false);
+            edt_prix_ht.setEnabled(false);
+            edt_tva.setEnabled(false);
         }
 
         if (last_price != 0) {
@@ -365,7 +365,7 @@ public class FragmentQteVente {
 
         btn_valider.setOnClickListener(v -> {
 
-            if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_EDIT")) {
+            if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_EDIT")) {
                 if (!(prefs.getBoolean("STOCK_MOINS", false))) {
                     if (val_qte > val_stock_avant) {
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
@@ -379,6 +379,13 @@ public class FragmentQteVente {
             }
 
             boolean hasError = false;
+
+            if(val_prix_ttc < arrived_bon2.pv_limite){
+                txv_message.setText("Produit avec un prix limit : " + nf.format(arrived_bon2.pv_limite));
+                val_prix_ttc = arrived_bon2.pv_limite;
+                edt_prix_ttc.setText(nf.format(val_prix_ttc));
+                hasError = true;
+            }
 
             if (edt_qte.getText().length() <= 0) {
 
@@ -551,7 +558,7 @@ public class FragmentQteVente {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (!edt_prix_ttc.isFocused()) {
+                if (!edt_prix_ttc.isFocused() && !edt_tva.isFocused()) {
                     try {
                         //Double.valueOf(montant_avant_remise.getEditText().getText())
                         // montant_remise.getEditText().getText(
@@ -583,14 +590,16 @@ public class FragmentQteVente {
             @Override
             public void afterTextChanged(Editable s) {
 
+                if (!edt_prix_ht.isFocused()) {
+                    try {
+                        onPrixHtChange();
 
-                try {
-                    onPrixHtChange();
-
-                } catch (Exception e) {
-                    // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                    // taux_remise.getEditText().getText().clear();
+                    } catch (Exception e) {
+                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
+                        // taux_remise.getEditText().getText().clear();
+                    }
                 }
+
 
             }
         });

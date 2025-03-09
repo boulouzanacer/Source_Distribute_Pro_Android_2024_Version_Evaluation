@@ -41,6 +41,7 @@ public class NetClient {
         try {
             SocketAddress sockaddr = new InetSocketAddress(host, port);
             Socket socket = new Socket();
+            //socket.setSendBufferSize(8192);
             socket.connect(sockaddr, 1500);
 
             //  socket = new Socket(host, port);

@@ -17,14 +17,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrderClient;
-import com.safesoft.proapp.distribute.activities.vente.ActivitySales;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterAchat1;
-import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
@@ -59,10 +58,16 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventes);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Bons de commandes");
-        getSupportActionBar().setSubtitle("Fournisseur");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Bons de commandes");
+            getSupportActionBar().setSubtitle("Fournisseur");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
+
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
