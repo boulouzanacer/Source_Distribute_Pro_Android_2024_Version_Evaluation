@@ -29,7 +29,7 @@ public class PostData_Bon1 implements Serializable {
     public double montant_achat = 0.0;
     public double benifice_par_bon = 0.0;
     ////////////////////
-    public double solde_ancien = 0.00;
+    public double ancien_solde = 0.00;
     public double verser = 0.00;
     public double reste = 0.00;
     ////////////////////

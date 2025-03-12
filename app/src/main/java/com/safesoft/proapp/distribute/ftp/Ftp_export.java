@@ -214,7 +214,7 @@ public class Ftp_export {
 
             F_SQL = F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BON1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,:CODE_CAISSE:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
             F_SQL = F_SQL + "'" + bon1s.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + bon1s.get(i).heure + "','" + bon1s.get(i).mode_rg + "','" + bon1s.get(i).blocage + "','" + bon1s.get(i).mode_tarif + "',";
-            F_SQL = F_SQL + bon1s.get(i).verser + "," + bon1s.get(i).timbre + "," + bon1s.get(i).remise + "," + bon1s.get(i).solde_ancien + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
+            F_SQL = F_SQL + bon1s.get(i).verser + "," + bon1s.get(i).timbre + "," + bon1s.get(i).remise + "," + bon1s.get(i).ancien_solde + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
 
 
             String querry_select = "SELECT " +
@@ -527,7 +527,7 @@ public class Ftp_export {
 
             F_SQL = F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BON1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,:CODE_CAISSE:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
             F_SQL = F_SQL + "'" + bon1s.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + bon1s.get(i).heure + "','" + bon1s.get(i).mode_rg + "','" + bon1s.get(i).blocage + "','" + bon1s.get(i).mode_tarif + "',";
-            F_SQL = F_SQL + bon1s.get(i).verser + "," + bon1s.get(i).timbre + "," + bon1s.get(i).remise + "," + bon1s.get(i).solde_ancien + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
+            F_SQL = F_SQL + bon1s.get(i).verser + "," + bon1s.get(i).timbre + "," + bon1s.get(i).remise + "," + bon1s.get(i).ancien_solde + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
 
 
             String querry_select = "SELECT " +
@@ -842,7 +842,7 @@ public class Ftp_export {
 
             F_SQL = F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BCC1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
             F_SQL = F_SQL + "'" + bon1s_Temp.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + bon1s_Temp.get(i).heure + "','" + bon1s_Temp.get(i).mode_rg + "','" + bon1s_Temp.get(i).blocage + "','" + bon1s_Temp.get(i).mode_tarif + "',";
-            F_SQL = F_SQL + bon1s_Temp.get(i).verser + "," + bon1s_Temp.get(i).timbre + "," + bon1s_Temp.get(i).remise + "," + bon1s_Temp.get(i).solde_ancien + "," + bon1s_Temp.get(i).latitude + "," + bon1s_Temp.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
+            F_SQL = F_SQL + bon1s_Temp.get(i).verser + "," + bon1s_Temp.get(i).timbre + "," + bon1s_Temp.get(i).remise + "," + bon1s_Temp.get(i).ancien_solde + "," + bon1s_Temp.get(i).latitude + "," + bon1s_Temp.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
 
 
             String querry_select = "SELECT " +

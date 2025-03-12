@@ -48,6 +48,7 @@ public class splashScreen extends AppCompatActivity {
     private String deviceId2 = "";
     String deviceId;
     Timer timer;
+    private SweetAlertDialog sweetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +89,30 @@ public class splashScreen extends AppCompatActivity {
             o = o - 1;
         }
         final int codeactivation = i;
+
+        sweetDialog =  new SweetAlertDialog(splashScreen.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Activation")
+                .setContentText("L'application DISTRIBUTE PRO n'est pas encore activé, Voulez-vous l'activer ? ")
+                .setCancelText("Demo")
+                .setConfirmText("Activer")
+                .showCancelButton(true)
+
+                .setCancelClickListener(sDialog -> {
+                    startActivity(new Intent(splashScreen.this, MainActivity.class));
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    finish();
+                })
+
+                .setConfirmClickListener(sDialog -> {
+                    ////// GO TO REVENDEUR SCREEN ////////////////
+                    Intent intent = new Intent(splashScreen.this, ActivityActivation.class);
+                    intent.putExtra(NUM_SERIE, deviceId2);
+                    intent.putExtra(revendeur, revendeur);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    finish();
+                });
+
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -105,31 +130,7 @@ public class splashScreen extends AppCompatActivity {
                     finish();
 
                 } else {
-
-                    runOnUiThread(() -> new SweetAlertDialog(splashScreen.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Activation")
-                            .setContentText("L'application DISTRIBUTE PRO n'est pas encore activé, Voulez-vous l'activer ? ")
-                            .setCancelText("Demo")
-                            .setConfirmText("Activer")
-                            .showCancelButton(true)
-
-                            .setCancelClickListener(sDialog -> {
-                                startActivity(new Intent(splashScreen.this, MainActivity.class));
-                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                finish();
-                            })
-
-                            .setConfirmClickListener(sDialog -> {
-                                ////// GO TO REVENDEUR SCREEN ////////////////
-                                Intent intent = new Intent(splashScreen.this, ActivityActivation.class);
-                                intent.putExtra(NUM_SERIE, deviceId2);
-                                intent.putExtra(revendeur, revendeur);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                finish();
-                            }).show());
-
-
+                    runOnUiThread(() -> sweetDialog.show());
                     saveActivationData(false);
                 }
 
@@ -442,5 +443,13 @@ public class splashScreen extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (sweetDialog != null && sweetDialog.isShowing()) {
+            sweetDialog.dismiss();
+        }
+        super.onDestroy();
     }
 }

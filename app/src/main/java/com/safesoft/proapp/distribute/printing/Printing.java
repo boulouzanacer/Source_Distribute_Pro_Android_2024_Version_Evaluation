@@ -47,8 +47,6 @@ import com.rt.printerlibrary.setting.BarcodeSetting;
 import com.rt.printerlibrary.setting.BitmapSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
-import com.safesoft.proapp.distribute.adapters.model.MyDataObject;
-import com.safesoft.proapp.distribute.adapters.model.WrappedMyDataObject;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
@@ -1157,7 +1155,7 @@ public class Printing {
                     remise_bon = bon1.remise;
                     remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
-                    ancien_solde = bon1.solde_ancien;
+                    ancien_solde = bon1.ancien_solde;
                     ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
                     total_a_payer = bon1.montant_bon;
@@ -1486,7 +1484,7 @@ public class Printing {
                     remise_bon = bon1.remise;
                     remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
-                    ancien_solde = bon1.solde_ancien;
+                    ancien_solde = bon1.ancien_solde;
                     ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
                     total_a_payer = bon1.montant_bon;

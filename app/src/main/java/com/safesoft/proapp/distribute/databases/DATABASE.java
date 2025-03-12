@@ -2343,7 +2343,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.montant_achat= cursor.getDouble(cursor.getColumnIndex("MONTANT_ACHAT"));
                 bon1.benifice_par_bon = cursor.getDouble(cursor.getColumnIndex("BENIFICE_BON"));
                 //////////
-                bon1.solde_ancien = cursor.getDouble(cursor.getColumnIndex("ANCIEN_SOLDE"));
+                bon1.ancien_solde = cursor.getDouble(cursor.getColumnIndex("ANCIEN_SOLDE"));
                 bon1.verser = cursor.getDouble(cursor.getColumnIndex("VERSER"));
                 bon1.reste = cursor.getDouble(cursor.getColumnIndex("RESTE"));
                 //////////
@@ -2420,7 +2420,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.montant_achat= cursor.getDouble(cursor.getColumnIndex("MONTANT_ACHAT"));
 
                 //////////
-                bon1.solde_ancien = cursor.getDouble(cursor.getColumnIndex("ANCIEN_SOLDE"));
+                bon1.ancien_solde = cursor.getDouble(cursor.getColumnIndex("ANCIEN_SOLDE"));
                 bon1.verser = cursor.getDouble(cursor.getColumnIndex("VERSER"));
                 bon1.reste = cursor.getDouble(cursor.getColumnIndex("RESTE"));
                 //////////
@@ -2561,7 +2561,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     values.put("TIMBRE", 0);
                     values.put("REMISE", 0);
                     values.put("BLOCAGE", "M");
-                    values.put("ANCIEN_SOLDE", bon1.solde_ancien);
+                    values.put("ANCIEN_SOLDE", bon1.ancien_solde);
                     values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "");
                     db.insert(_table, null, values);
                 }
@@ -2608,7 +2608,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("LONGITUDE", bon1.longitude);
                 values.put("REMISE", bon1.remise);
                 values.put("MONTANT_ACHAT", bon1.montant_achat);
-                values.put("ANCIEN_SOLDE", bon1.solde_ancien);
+                values.put("ANCIEN_SOLDE", bon1.ancien_solde);
                 values.put("EXPORTATION", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "");
                 values.put("BLOCAGE", "M");
                 values.put("VERSER", 0);
@@ -2907,7 +2907,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 //update_bon1
                 ContentValues args1 = new ContentValues();
                 args1.put("BLOCAGE", "F");
-                args1.put("ANCIEN_SOLDE", bon1.solde_ancien);
+                args1.put("ANCIEN_SOLDE", bon1.ancien_solde);
                 args1.put("VERSER", bon1.verser);
                 if (bon1.verser == 0) {
                     args1.put("MODE_RG", "A TERME");
@@ -3501,7 +3501,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args.put("TIMBRE", bon1.timbre);
                 args.put("MODE_RG", bon1.mode_rg);
                 args.put("CODE_VENDEUR", bon1.code_vendeur);
-                args.put("ANCIEN_SOLDE", bon1.solde_ancien);
+                args.put("ANCIEN_SOLDE", bon1.ancien_solde);
 
                 String selection = "NUM_BON=?";
                 String[] selectionArgs = {num_bon};
@@ -5170,7 +5170,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 ContentValues args = new ContentValues();
 
-                args.put("ANCIEN_SOLDE", bon1.solde_ancien);
+                args.put("ANCIEN_SOLDE", bon1.ancien_solde);
                 args.put("VERSER", bon1.verser);
                 args.put("MODE_RG", bon1.mode_rg);
                 args.put("BLOCAGE", "F");

@@ -930,7 +930,7 @@ public class ActivityHtmlView extends AppCompatActivity {
         remise_bon = bon1.remise;
         remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
-        ancien_solde = bon1.solde_ancien;
+        ancien_solde = bon1.ancien_solde;
         ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
         total_a_payer = bon1.montant_bon;
@@ -1249,7 +1249,7 @@ public class ActivityHtmlView extends AppCompatActivity {
         remise_bon = bon1.remise;
         remise_bon_str = new DecimalFormat("####0.00").format(remise_bon);
 
-        ancien_solde = bon1.solde_ancien;
+        ancien_solde = bon1.ancien_solde;
         ancien_solde_str = new DecimalFormat("####0.00").format(ancien_solde);
 
         total_a_payer = bon1.montant_bon;

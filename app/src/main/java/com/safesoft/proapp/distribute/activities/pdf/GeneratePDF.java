@@ -30,9 +30,6 @@ import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
-import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
-import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
-import com.safesoft.proapp.distribute.postData.PostData_Produit;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -862,7 +859,7 @@ public class GeneratePDF {
             remise_bon_str = new DecimalFormat("####0.00").format(Bon1.remise);
             total_a_payer_str = new DecimalFormat("####0.00").format(Bon1.montant_bon);
 
-            ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.solde_ancien);
+            ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.ancien_solde);
             versement_str = new DecimalFormat("####0.00").format(Bon1.verser);
             nouveau_solde_str = new DecimalFormat("####0.00").format(Bon1.reste);
 
@@ -1035,7 +1032,7 @@ public class GeneratePDF {
             remise_bon_str = new DecimalFormat("####0.00").format(Bon1.remise);
             total_a_payer_str = new DecimalFormat("####0.00").format(Bon1.montant_bon);
 
-            ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.solde_ancien);
+            ancien_solde_str = new DecimalFormat("####0.00").format(Bon1.ancien_solde);
             versement_str = new DecimalFormat("####0.00").format(Bon1.verser);
             nouveau_solde_str = new DecimalFormat("####0.00").format(Bon1.reste);
 

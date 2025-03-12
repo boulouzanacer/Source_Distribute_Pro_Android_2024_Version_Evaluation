@@ -550,7 +550,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                     return;
                 }
                 FragmentValideBon fragmentvalider = new FragmentValideBon();
-                fragmentvalider.showDialogbox(ActivityVente.this, bon1.solde_ancien, bon1.montant_bon, bon1.verser);
+                fragmentvalider.showDialogbox(ActivityVente.this, bon1.ancien_solde, bon1.montant_bon, bon1.verser);
             }
             case R.id.txv_remise_btn -> {
                 if (bon1.blocage.equals("F")) {
@@ -712,7 +712,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
         if (TYPE_ACTIVITY.equals("NEW_SALE") || isUpdate) {
 
-            bon1.solde_ancien = client_selected.solde_montant;  // Modifier le 03/02/2023
+            bon1.ancien_solde = client_selected.solde_montant;  // Modifier le 03/02/2023
             bon1.code_client = client_selected.code_client;
             bon1.client = client_selected.client;
             bon1.adresse = client_selected.adresse;
@@ -1235,7 +1235,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             bon1.mode_rg = "A TERME";
         }
 
-        bon1.reste = bon1.solde_ancien + (bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise) - bon1.verser;
+        bon1.reste = bon1.ancien_solde + (bon1.tot_ht + bon1.tot_tva + bon1.timbre - bon1.remise) - bon1.verser;
 
         Calendar c = Calendar.getInstance();
         bon1.date_f = date_format.format(c.getTime());

@@ -94,7 +94,7 @@ public class ActivityImportsExport extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private ProgressDialog mProgressDialog_Free;
     private RelativeLayout
-            Import_bon, Import_client, Import_produit,
+            Import_bon, Import_client, Import_produit, Import_commande_client,
             Sychroniser_fournisseur, Export_achat, Export_vente, Export_commande, Export_inventaire,
             Export_achat_ftp, Export_vente_ftp, Export_commande_ftp, Export_inventaire_ftp,
             EtatV, EtatC,
@@ -158,6 +158,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             Export_commande.setVisibility(View.GONE);
             Export_commande_ftp.setVisibility(View.GONE);
+            Import_commande_client.setVisibility(View.GONE);
             Exported_Commande.setVisibility(View.GONE);
             EtatC.setVisibility(View.GONE);
         }
@@ -182,6 +183,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             Btn4.setVisibility(View.GONE);
             Export_commande.setVisibility(View.GONE);
             Export_commande_ftp.setVisibility(View.GONE);
+            Import_commande_client.setVisibility(View.GONE);
             Exported_Commande.setVisibility(View.GONE);
             EtatC.setVisibility(View.GONE);
         }
@@ -214,6 +216,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         Export_commande = findViewById(R.id.rlt_export_commandes);
         Export_inventaire = findViewById(R.id.rlt_export_inventaires);
         Export_commande_ftp = findViewById(R.id.rlt_export_commandes_ftp);
+        Import_commande_client = findViewById(R.id.rlt_import_commandes);
         Export_inventaire_ftp = findViewById(R.id.rlt_export_inventaires_ftp);
         //Export_inventaire = (RelativeLayout) findViewById(R.id.rlt_export_inventaires);
         Exported_Achat = findViewById(R.id.rlt_exported_achats);
@@ -348,6 +351,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                 Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_PARAMETRES");
                 check_connection_export_data_achat.execute();
             }
+            case R.id.rlt_import_commandes -> {
+                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_COMMANDE");
+                check_connection_export_data_achat.execute();
+            }
             case R.id.rlt_export_achats -> {
                 Check_connection_export_server check_connection_export_data_vente = new Check_connection_export_server("EXPORT_ACHAT");
                 check_connection_export_data_vente.execute();
@@ -479,7 +486,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
+            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
+                mProgressDialog_Free.dismiss();
+            }
 
             if (integer == 1) {
                 // get all transfert bon of this depot
@@ -584,7 +593,10 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
+            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
+                mProgressDialog_Free.dismiss();
+            }
+
             if (integer == 1) {
                 if (!((Activity) mContext).isFinishing()) {
                     //propose list
@@ -682,7 +694,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
+            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
+                mProgressDialog_Free.dismiss();
+            }
             if (integer == 1) {
                 if (!((Activity) mContext).isFinishing()) {
                     //propose list
@@ -754,6 +768,15 @@ public class ActivityImportsExport extends AppCompatActivity {
     public void progressDialogConfigClient() {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Importation clients...");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.show();
+    }
+
+    public void progressDialogConfigImportCommandeClient() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("Importation bons de commandes clients...");
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(true);
@@ -1178,7 +1201,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onPostExecute(Integer integer) {
             if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
                    mProgressDialog_Free.dismiss();
-               }
+            }
 
             if (integer == 1) {
                 SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1209,6 +1232,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                     case "IMPORT_PARAMETRES" -> {
                         Import_parametre_from_server_task parametres_task = new Import_parametre_from_server_task();
+                        parametres_task.execute();
+                    }
+                    case "IMPORT_COMMANDE" -> {
+                        Import_commande_client_from_server_task parametres_task = new Import_commande_client_from_server_task();
                         parametres_task.execute();
                     }
                     case "EXPORT_VENTE" -> {
@@ -1683,7 +1710,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
             // Problem insert client into database // operation aborded
             if (integer == 1) {
                 String produit_error = "";
@@ -1943,7 +1972,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     //  " '" + bon1s.get(i).tot_tva + "' ," +
                                     " iif('" + bon1s.get(i).timbre + "' = 'null',0,'" + bon1s.get(i).timbre + "')," +
                                     " iif('" + bon1s.get(i).remise + "' = 'null',0,'" + bon1s.get(i).remise + "')," +
-                                    " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).solde_ancien + "'," +
+                                    " '" + bon1s.get(i).verser + "', '" + bon1s.get(i).ancien_solde + "'," +
                                     " iif('" + bon1s.get(i).mode_rg + "' = 'null',null,'" + bon1s.get(i).mode_rg + "') ," +
                                     " 'TERMINAl_MOBILE'," +
                                     " iif('" + bon1s.get(i).mode_tarif + "' = 'null',0,'" + bon1s.get(i).mode_tarif + "')," +
@@ -2232,7 +2261,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
             // Problem insert client into database // operation aborded
             if (integer == 1) {
                 String produit_error = "";
@@ -2246,7 +2277,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                     nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
                 }
-                if (list_num_bon_not_exported.size() > 0) {
+                if (!list_num_bon_not_exported.isEmpty()) {
                     nums_bon_error = "\nProbleme exportation dans les bons : " + nums_bon_error;
                 }
                 for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
@@ -2257,7 +2288,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     versement_error = versement_error + list_recordid_versement_not_exported.get(i);
 
                 }
-                if (list_recordid_versement_not_exported.size() > 0) {
+                if (!list_recordid_versement_not_exported.isEmpty()) {
                     versement_error = "\nProbleme exportation dans les versements : \n" + versement_error;
                 }
                 for (int i = 0; i < list_produit_not_exported.size(); i++) {
@@ -2268,7 +2299,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     produit_error = produit_error + list_produit_not_exported.get(i);
 
                 }
-                if (list_produit_not_exported.size() > 0) {
+                if (!list_produit_not_exported.isEmpty()) {
                     produit_error = "\nProbleme exportation dans les produits : \n" + produit_error;
                 }
                 for (int i = 0; i < list_client_not_exported.size(); i++) {
@@ -2541,7 +2572,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                                     " '" + bon1s_Temp.get(i).code_client.replace("'", "''") + "' ," +
                                     " iif('" + bon1s_Temp.get(i).timbre + "' = 'null',0,'" + bon1s_Temp.get(i).timbre + "')," +
                                     " iif('" + bon1s_Temp.get(i).remise + "' = 'null',0,'" + bon1s_Temp.get(i).remise + "')," +
-                                    " '" + bon1s_Temp.get(i).verser + "', '" + bon1s_Temp.get(i).solde_ancien + "'," +
+                                    " '" + bon1s_Temp.get(i).verser + "', '" + bon1s_Temp.get(i).ancien_solde + "'," +
                                     " iif('" + bon1s_Temp.get(i).mode_rg + "' = 'null',null,'" + bon1s_Temp.get(i).mode_rg + "') ," +
                                     " 'TERMINAl_MOBILE'," +
                                     " iif('" + bon1s_Temp.get(i).mode_tarif + "' = 'null',0,'" + bon1s_Temp.get(i).mode_tarif + "')," +
@@ -2788,7 +2819,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
             // Problem insert client into database // operation aborded
             if (integer == 1) {
                 String produit_error = "";
@@ -2801,7 +2834,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                     nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
                 }
-                if (list_num_bon_not_exported.size() > 0) {
+                if (!list_num_bon_not_exported.isEmpty()) {
                     nums_bon_error = "\nProblem exportation dans les bons de commande : " + nums_bon_error;
                 }
                 for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
@@ -2812,7 +2845,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     versement_error = versement_error + list_recordid_versement_not_exported.get(i);
 
                 }
-                if (list_recordid_versement_not_exported.size() > 0) {
+                if (!list_recordid_versement_not_exported.isEmpty()) {
                     versement_error = "\nProblem exportation dans les versements nums : \n" + versement_error;
                 }
 
@@ -3056,7 +3089,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mProgressDialog_Free.dismiss();
+            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
+                mProgressDialog_Free.dismiss();
+            }
             if (integer == 1) {
                 // get all transfert bon of this depot
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
@@ -3193,7 +3228,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
             if (result == 1) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Information. !")
@@ -3378,7 +3415,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
             if (result == 1) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Information. !")
@@ -3740,7 +3779,9 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
             try {
                 if (result == 1) {
                     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
@@ -3935,6 +3976,210 @@ public class ActivityImportsExport extends AppCompatActivity {
             }
 
             return inSampleSize;
+        }
+    }
+
+
+    //==================== AsyncTask TO Load clients from server and store them in the local database (sqlite)
+    public class Import_commande_client_from_server_task extends AsyncTask<Void, Integer, Integer> {
+
+        Connection con;
+        int flag = 1;
+        int compt = 0;
+        int allrows = 0;
+        int total_client = 0;
+
+        String erreurMessage = "";
+        ArrayList<PostData_Client> list_client;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialogConfigImportCommandeClient();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                ArrayList<PostData_Bon1> bcc1s = new ArrayList<>();
+                //list_client_not_exported = new ArrayList<>();
+
+                System.setProperty("FBAdbLog", "true");
+                DriverManager.setLoginTimeout(5);
+                Class.forName("org.firebirdsql.jdbc.FBDriver");
+                String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
+                con = DriverManager.getConnection(sCon, Username, Password);
+
+                Statement stmt = con.createStatement();
+                //-----------------------------------------
+
+
+                con.setAutoCommit(false);
+                //list_client_not_exported = update_client_into_server(con, stmt);
+                list_client = controller.select_clients_from_database("SELECT * FROM CLIENT");
+
+                if(list_client.size() <= 0 ){
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Information. !")
+                            .setContentText("Aucune client exist dans la liste, veuillez sychroniser la liste client")
+                            .show();
+                    return 0;
+                }
+
+                allrows = list_client.size();
+
+
+                for (int i = 0; i < list_client.size(); i++) {
+                    try {
+                        String sql0 = "SELECT FIRST 1 " +
+                                "NUM_BON, " +
+                                "CODE_CLIENT, " +
+                                "DATE_BON, " +
+                                "HEURE, " +
+                                "NBR_P, " +
+                                "TOT_QTE, " +
+                                "MODE_TARIF, " +
+                                "CODE_DEPOT, " +
+                                "MODE_RG, " +
+                                "CODE_VENDEUR, " +
+                                "HT," +
+                                "TVA, " +
+                                "TIMBRE, " +
+                                "LATITUDE, " +
+                                "LONGITUDE, " +
+                                "MONTANT_ACHAT, " +
+                                "ANCIEN_SOLDE, " +
+                                "BLOCAGE, " +
+                                "VERSER " +
+                                "FROM BCC1 " +
+                                "WHERE CODE_CLIENT = '" + list_client.get(i).code_client +"'"+
+                                "ORDER BY NUM_BON DESC; ";
+
+                        publishProgress(1);
+                        compt++;
+                        publishProgress(compt);
+                        //============================ GET Clients ===========================================
+                        ResultSet rs0 = stmt.executeQuery(sql0);
+                        PostData_Bon1 bcc1;
+                        while (rs0.next()) {
+                            bcc1 = new PostData_Bon1();
+
+                            bcc1.num_bon = rs0.getString("NUM_BON");
+                            bcc1.code_client = rs0.getString("CODE_CLIENT");
+                            bcc1.date_bon = rs0.getString("DATE_BON");
+                            bcc1.heure = rs0.getString("HEURE");
+                            bcc1.nbr_p = rs0.getInt("NBR_P");
+                            bcc1.tot_qte = rs0.getDouble("TOT_QTE");
+                            bcc1.mode_tarif = rs0.getString("MODE_TARIF");
+                            bcc1.code_depot = rs0.getString("CODE_DEPOT");
+                            bcc1.mode_rg = rs0.getString("MODE_RG");
+                            bcc1.code_vendeur = rs0.getString("CODE_VENDEUR");
+
+                            bcc1.tot_ht = rs0.getDouble("HT");
+                            bcc1.tot_tva = rs0.getDouble("TVA");
+                            bcc1.timbre = rs0.getDouble("TIMBRE");
+
+                            bcc1.latitude = rs0.getDouble("LATITUDE");
+                            bcc1.longitude = rs0.getDouble("LONGITUDE");
+
+                            bcc1.montant_achat = rs0.getDouble("MONTANT_ACHAT");
+                            bcc1.ancien_solde = rs0.getDouble("ANCIEN_SOLDE");
+                            bcc1.blocage = rs0.getString("BLOCAGE");
+                            bcc1.verser = rs0.getDouble("VERSER");
+                            bcc1s.add(bcc1);
+                            //======================== récupération détails bon de commandes=====================
+
+                            String sql1 = "SELECT " +
+                                    "NUM_BON, " +
+                                    "CODE_BARRE, " +
+                                    "PRODUIT, " +
+                                    "NBRE_COLIS, " +
+                                    "COLISSAGE, " +
+                                    "QTE, " +
+                                    "QTE_GRAT, " +
+                                    "PV_HT, " +
+                                    "TVA, " +
+                                    "PA_HT, " +
+                                    "CODE_DEPOT " +
+                                    "FROM BCC2 WHERE CODE_CLIENT = '" + bcc1.code_client + "'";
+
+                            ResultSet rs1 = stmt.executeQuery(sql1);
+                            ArrayList<PostData_Bon2> bcc2s = new ArrayList<>();
+                            PostData_Bon2 bcc2;
+                            while (rs1.next()) {
+                                bcc2 = new PostData_Bon2();
+
+                                bcc2.num_bon = rs1.getString("NUM_BON");
+                                bcc2.codebarre = rs1.getString("CODE_BARRE");
+                                bcc2.produit = rs1.getString("PRODUIT");
+                                bcc2.nbr_colis = rs1.getInt("NBRE_COLIS");
+                                bcc2.colissage = rs1.getInt("COLISSAGE");
+                                bcc2.qte = rs1.getDouble("QTE");
+                                bcc2.gratuit = rs1.getInt("QTE_GRAT");
+                                bcc2.pv_ht = rs1.getDouble("PV_HT");
+                                bcc2.tva = rs1.getDouble("TVA");
+                                bcc2.pa_ht = rs1.getDouble("PA_HT");
+                                bcc2.code_depot = rs1.getString("CODE_DEPOT");
+
+                                bcc2s.add(bcc2);
+                            }
+
+
+                        }
+
+                    }catch (Exception e){
+
+                    }
+                }
+
+
+
+                //controller.ExecuteTransactionClient(clients);
+                //----------------------------------------------------------
+                stmt.close();
+                flag = 1;
+
+            } catch (Exception e) {
+                con = null;
+                if (e.getMessage().contains("Unable to complete network request to host")) {
+                    flag = 2;
+                } else {
+                    flag = 3;
+                }
+                erreurMessage = e.getMessage();
+            }
+            return flag;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+            mProgressDialog.setMax(allrows);
+            mProgressDialog.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+            if (result == 1) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Information. !")
+                        .setContentText("Importation bons de commandes clients bien terminé")
+                        .show();
+            } else if (result == 2) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                        .show();
+            } else if (result == 3) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                        .show();
+            }
+            super.onPostExecute(result);
         }
     }
 
@@ -4183,7 +4428,9 @@ public class ActivityImportsExport extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
 
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
 
             inventaire_exist = total_inventaire - inventaire_inserer;
             if (integer == 1) {

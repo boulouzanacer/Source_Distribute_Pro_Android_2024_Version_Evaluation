@@ -723,7 +723,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             bon1_temp.ifiscal = client_selected.ifiscal;
             bon1_temp.ai = client_selected.ai;
             bon1_temp.nis = client_selected.nis;
-            bon1_temp.solde_ancien = client_selected.solde_montant;  // Modifier le 03/02/2023
+            bon1_temp.ancien_solde = client_selected.solde_montant;  // Modifier le 03/02/2023
 
             bon1_temp.mode_tarif = "1";
             btn_mode_tarif.setText("Tarif 1");
@@ -1235,7 +1235,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         bon1_temp.verser = 0.0;
         bon1_temp.mode_rg = "A TERME";
 
-        bon1_temp.reste = bon1_temp.solde_ancien + (bon1_temp.tot_ht + bon1_temp.tot_tva + bon1_temp.timbre - bon1_temp.remise) - bon1_temp.verser;
+        bon1_temp.reste = bon1_temp.ancien_solde + (bon1_temp.tot_ht + bon1_temp.tot_tva + bon1_temp.timbre - bon1_temp.remise) - bon1_temp.verser;
 
         Calendar c = Calendar.getInstance();
         bon1_temp.date_f = date_format.format(c.getTime());
