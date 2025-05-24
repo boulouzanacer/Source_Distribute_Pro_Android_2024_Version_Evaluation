@@ -63,14 +63,14 @@ public class Ftp_export {
     private ArrayList<PostData_Carnet_c> all_versement_client;
     private DATABASE controller;
     private final String PREFS = "ALL_PREFS";
-    String serverIp, serverPort, username, password, ftp_imp, ftp_imp_def, ftp_exp, code_depot, nom_depot, code_vendeur, nom_vendeur;
-    Map<String, String> F_SQL_LIST_ACHAT;
-    Map<String, String> F_SQL_LIST_VENTE;
-    Map<String, String> F_SQL_LIST_COMMAND;
-    Map<String, String> F_SQL_LIST_INVENTAIRE;
-    Map<String, String> F_SQL_LIST_SITUATION;
-    String file_name = null;
-    FTPClient con = null;
+    private String serverIp, serverPort, username, password, ftp_imp, ftp_imp_def, ftp_exp, code_depot, nom_depot, code_vendeur, nom_vendeur;
+    private Map<String, String> F_SQL_LIST_ACHAT;
+    private Map<String, String> F_SQL_LIST_VENTE;
+    private Map<String, String> F_SQL_LIST_COMMAND;
+    private Map<String, String> F_SQL_LIST_INVENTAIRE;
+    private Map<String, String> F_SQL_LIST_SITUATION;
+    private String file_name = null;
+    private FTPClient con = null;
 
     public void start(Activity activity, String SOURCE, String nom_bon) throws ParseException {
 
@@ -233,8 +233,16 @@ public class Ftp_export {
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
+
                     "PRODUIT.ISNEW, " +
-                    "PRODUIT.STOCK " +
+                    "PRODUIT.PV_LIMITE, " +
+                    "PRODUIT.STOCK, " +
+                    "PRODUIT.PROMO, " +
+                    "PRODUIT.QTE_PROMO, " +
+                    "PRODUIT.D1, " +
+                    "PRODUIT.D2, " +
+                    "PRODUIT.PP1_HT " +
+
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                     "WHERE BON2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
 
@@ -246,8 +254,9 @@ public class Ftp_export {
             for (int j = 0; j < bon2s.size(); j++) {
 
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
-                PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                new PostData_Produit();
+                PostData_Produit postData_produit;
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + bon2s.get(j).codebarre + "'";
@@ -477,6 +486,10 @@ public class Ftp_export {
                 "BON1.LATITUDE, " +
                 "BON1.LONGITUDE, " +
 
+                "BON1.LIVRER, " +
+                "BON1.DATE_LIV, " +
+                "BON1.IS_IMPORTED, " +
+
                 "BON1.CODE_DEPOT, " +
                 "BON1.CODE_VENDEUR, " +
                 "BON1.EXPORTATION, " +
@@ -546,8 +559,16 @@ public class Ftp_export {
                     "BON2.DESTOCK_TYPE, " +
                     "BON2.DESTOCK_CODE_BARRE, " +
                     "BON2.DESTOCK_QTE, " +
+
                     "PRODUIT.ISNEW, " +
-                    "PRODUIT.STOCK " +
+                    "PRODUIT.PV_LIMITE, " +
+                    "PRODUIT.STOCK, " +
+                    "PRODUIT.PROMO, " +
+                    "PRODUIT.QTE_PROMO, " +
+                    "PRODUIT.D1, " +
+                    "PRODUIT.D2, " +
+                    "PRODUIT.PP1_HT " +
+
                     "FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                     "WHERE BON2.NUM_BON = '" + bon1s.get(i).num_bon + "'";
 
@@ -559,8 +580,9 @@ public class Ftp_export {
             for (int j = 0; j < bon2s.size(); j++) {
 
                 ///////////////////////////////////PRODUIT ///////////////////////////////////////
-                PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                new PostData_Produit();
+                PostData_Produit postData_produit;
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + bon2s.get(j).codebarre + "'";
@@ -583,7 +605,7 @@ public class Ftp_export {
 
 
                 ///////////////////////////////////CODE BARRE //////////////////////////////////////
-                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+                /*ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
 
                 String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN " +
                         "FROM CODEBARRE WHERE CODE_BARRE = '" + bon2s.get(j).codebarre + "'";
@@ -595,7 +617,7 @@ public class Ftp_export {
                     F_SQL = F_SQL + "UPDATE OR INSERT INTO CODEBARRE (CODE_BARRE, CODE_BARRE_SYN) VALUES (";
                     F_SQL = F_SQL + " '" + codebarres.get(k).code_barre + "' , '" + codebarres.get(k).code_barre_syn + "' ";
                     F_SQL = F_SQL + ") MATCHING (CODE_BARRE);";
-                }
+                }*/
 
                 ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
@@ -793,6 +815,10 @@ public class Ftp_export {
                 "BON1_TEMP.LATITUDE, " +
                 "BON1_TEMP.LONGITUDE, " +
 
+                "BON1_TEMP.LIVRER, " +
+                "BON1_TEMP.DATE_LIV, " +
+                "BON1_TEMP.IS_IMPORTED, " +
+
                 "BON1_TEMP.CODE_DEPOT, " +
                 "BON1_TEMP.CODE_VENDEUR, " +
                 "BON1_TEMP.EXPORTATION, " +
@@ -861,8 +887,16 @@ public class Ftp_export {
                     "BON2_TEMP.DESTOCK_TYPE, " +
                     "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                     "BON2_TEMP.DESTOCK_QTE, " +
+
                     "PRODUIT.ISNEW, " +
-                    "PRODUIT.STOCK " +
+                    "PRODUIT.PV_LIMITE, " +
+                    "PRODUIT.STOCK, " +
+                    "PRODUIT.PROMO, " +
+                    "PRODUIT.QTE_PROMO, " +
+                    "PRODUIT.D1, " +
+                    "PRODUIT.D2, " +
+                    "PRODUIT.PP1_HT " +
+
                     "FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                     "WHERE BON2_TEMP.NUM_BON = '" + bon1s_Temp.get(i).num_bon + "'";
 
@@ -874,8 +908,9 @@ public class Ftp_export {
             for (int j = 0; j < bon2s_Temp.size(); j++) {
 
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
-                PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                new PostData_Produit();
+                PostData_Produit postData_produit;
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + bon2s_Temp.get(j).codebarre + "'";
@@ -898,10 +933,9 @@ public class Ftp_export {
 
 
                 ///////////////////////////////////CODE BARRE //////////////////////////////////////
-                ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+                /*ArrayList<PostData_Codebarre> codebarres;
 
-                String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN " +
-                        "FROM CODEBARRE WHERE CODE_BARRE = '" + bon2s_Temp.get(j).codebarre + "'";
+                String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE = '" + bon2s_Temp.get(j).codebarre + "'";
 
                 codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
 
@@ -910,7 +944,7 @@ public class Ftp_export {
                     F_SQL = F_SQL + "UPDATE OR INSERT INTO CODEBARRE (CODE_BARRE, CODE_BARRE_SYN) VALUES (";
                     F_SQL = F_SQL + " '" + codebarres.get(k).code_barre + "' , '" + codebarres.get(k).code_barre_syn + "' ";
                     F_SQL = F_SQL + ") MATCHING (CODE_BARRE);";
-                }
+                }*/
 
                 ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
@@ -1106,8 +1140,9 @@ public class Ftp_export {
             for (int j = 0; j < Inv2s.size(); j++) {
 
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
-                PostData_Produit postData_produit = new PostData_Produit();
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                new PostData_Produit();
+                PostData_Produit postData_produit;
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + Inv2s.get(j).codebarre + "'";
@@ -1228,6 +1263,7 @@ public class Ftp_export {
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
             mProgressDialog.show();
+
         }
 
         @Override

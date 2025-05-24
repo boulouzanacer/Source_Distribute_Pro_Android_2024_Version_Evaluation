@@ -1,20 +1,24 @@
 package com.safesoft.proapp.distribute.activities.achats;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -58,16 +62,26 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ventes);
 
-        Toolbar toolbar = findViewById(R.id.myToolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+          //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        }
 
+        Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Bons d'achats");
             getSupportActionBar().setSubtitle("Fournisseur");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
@@ -81,6 +95,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
+        editor.remove("FILTRE_SEARCH_FAMILLE");
         editor.apply();
 
         //Reset last item selected in list product
@@ -173,8 +188,8 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         editIntent.putExtra("NUM_BON", achat1s.get(position).num_bon);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ACHAT");
         editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-        startActivity(editIntent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        Bundle options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left).toBundle();
+        startActivity(editIntent, options);
     }
 
 
@@ -184,7 +199,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         if (achat1s.get(position).blocage.equals("F")) {
             final CharSequence[] items = {"Supprimer", "Imprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -305,7 +320,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         } else {
             final CharSequence[] items = {"Supprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -336,7 +351,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_sales_client, menu);
+            inflater.inflate(R.menu.menu_ventes_not_exported, menu);
         }
         searchView = new SearchView(getSupportActionBar().getThemedContext());
         searchView.setQueryHint("Rechercher");
@@ -400,8 +415,8 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                 Intent editIntent = new Intent(ActivityAchats.this, ActivityAchat.class);
                 editIntent.putExtra("TYPE_ACTIVITY", "NEW_ACHAT");
                 editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
-                startActivity(editIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                Bundle options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left).toBundle();
+                startActivity(editIntent,options);
             }
 
         }
@@ -415,7 +430,6 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
 

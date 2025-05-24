@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/font_black"
+    android:padding="7dp">
+
+    <!-- LIGNE 1 -->
+    <LinearLayout
+        android:id="@+id/lnr_vente_commande"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/lnr_achat"
+        app:layout_constraintHeight_percent="0.25">
+
+        <ImageButton
+            android:id="@+id/btn_clients"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/green_white_1"
+            android:onClick="onClick"
+            android:src="@mipmap/client"
+            android:contentDescription="client" />
+
+        <ImageButton
+            android:id="@+id/btn_ventes"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/green_white_2"
+            android:onClick="onClick"
+            android:src="@mipmap/vente"
+            android:layout_weight="1"
+            android:contentDescription="vente" />
+
+        <ImageButton
+            android:id="@+id/btn_commande_client"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/green_white_3"
+            android:onClick="onClick"
+            android:src="@mipmap/commande"
+            android:layout_weight="1"
+            android:contentDescription="commande" />
+    </LinearLayout>
+
+    <!-- LIGNE 2 -->
+    <LinearLayout
+        android:id="@+id/lnr_achat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/lnr_vente_commande"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/group3"
+        app:layout_constraintHeight_percent="0.25">
+
+        <ImageButton
+            android:id="@+id/btn_commande_fournisseur"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/blue_white_3"
+            android:onClick="onClick"
+            android:src="@mipmap/commande"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btn_achat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/blue_white_1"
+            android:onClick="onClick"
+            android:src="@mipmap/achats"
+            android:contentDescription="achat" />
+
+        <ImageButton
+            android:id="@+id/btn_fournisseur"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/blue_white_2"
+            android:onClick="onClick"
+            android:src="@mipmap/fournisseurs"
+            android:contentDescription="fournisseur" />
+    </LinearLayout>
+
+    <!-- LIGNE 3 -->
+    <LinearLayout
+        android:id="@+id/group3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/lnr_achat"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/group4"
+        app:layout_constraintHeight_percent="0.25">
+
+        <ImageButton
+            android:id="@+id/btn_produits"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/rouge"
+            android:onClick="onClick"
+            android:src="@mipmap/produit"
+            android:contentDescription="produit" />
+
+        <ImageButton
+            android:id="@+id/btn_inventaire"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/gray"
+            android:onClick="onClick"
+            android:src="@mipmap/inventaire"
+            android:contentDescription="inventaire" />
+
+        <ImageButton
+            android:id="@+id/btn_tournee"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/jaune"
+            android:onClick="onClick"
+            android:src="@mipmap/tournee"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:contentDescription="tournee" />
+    </LinearLayout>
+
+    <!-- LIGNE 5 -->
+    <LinearLayout
+        android:id="@+id/group4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/group3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.25">
+
+        <ImageButton
+            android:id="@+id/btn_import_export"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/violet"
+            android:onClick="onClick"
+            android:src="@mipmap/import_export"
+            android:contentDescription="import/export" />
+
+        <ImageButton
+            android:id="@+id/btn_parametres"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/imagebutton_rounded"
+            android:backgroundTint="@color/colorAccent"
+            android:onClick="onClick"
+            android:src="@mipmap/parametre"
+            android:contentDescription="parametre" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

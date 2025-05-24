@@ -36,6 +36,10 @@ public class PostData_Bon1 implements Serializable {
     public double latitude;
     public double longitude;
 
+    public int livrer;
+    public String date_liv;
+    public int is_imported = 0;
+
     //////client///////
     public String code_client;
     public String client;

@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activities.client;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -47,7 +48,6 @@ import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.utils.ConnectionDetector;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.databinding.ActivityTspmapsBinding;
@@ -77,7 +77,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
     private static final String MYTAG = "MYTAG";
     private GoogleMap mMap;
     ArrayList<PostData_Client> temp_clients;
-    ArrayList<PostData_Client> tsp_clients;
+    ArrayList<PostData_Client> visite_clients;
     DATABASE controller;
     static final String SERVER_IP = "105.96.9.62"; // The SERVER_IP must be the same in server and client
     static final int PORT = 7575; // You can put any arbitrary PORT value
@@ -94,16 +94,35 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityTspmapsBinding.inflate(getLayoutInflater());
+        EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_SHOW_BARS_BY_SWIPE);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }*/
 
         controller = new DATABASE(this);
         temp_clients = new ArrayList<>();
-        tsp_clients = new ArrayList<>();
-        String querry = "SELECT * FROM ROUTING ORDER BY RECORDID";
-        // querry = "SELECT * FROM Events";
-        tsp_clients = controller.select_routing_from_database(querry);
+        visite_clients = new ArrayList<>();
+        String querry = "SELECT DISTINCT " +
+                "CLIENT.CLIENT, " +
+                "CLIENT.CODE_CLIENT, " +
+                "CLIENT.LATITUDE, " +
+                "CLIENT.LONGITUDE,  " +
+                "BON1_TEMP.BLOCAGE " +
+                "FROM CLIENT " +
+                "JOIN BON1_TEMP ON CLIENT.CODE_CLIENT = BON1_TEMP.CODE_CLIENT " +
+                "WHERE CLIENT.LATITUDE <> 0 AND CLIENT.LONGITUDE <> 0 " +
+                "ORDER BY strftime('%Y-%m-%d', BON1_TEMP.DATE_BON) ASC, strftime('%H:%M:%S', BON1_TEMP.HEURE) ASC ";
+
+        visite_clients = controller.select_visite_client_from_database(querry);
 
         dialog = new Dialog(TSPActivityMaps.this);
         dialog.setContentView(R.layout.progress_dialog_get_path);
@@ -157,15 +176,8 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
             }
         });
 
-
-        LatLng origine = new LatLng(36.734841, 3.175281);
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origine, 9));
-        mMap.setMyLocationEnabled(true);
-        if (getPathValue()) {
-            showPathOnMap();
-        }
+        showPathOnMap();
+        //mMap.setMyLocationEnabled(true);
 
     }
 
@@ -177,7 +189,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
         JSONArray client = null;
 
-        if (!tsp_clients.isEmpty()) {
+        if (!visite_clients.isEmpty()) {
             try {
 
 
@@ -200,26 +212,26 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
                     client.put(obj_detail);
 
                     //Creating list with position
-                    for (int i = 0; i < tsp_clients.size(); i++) {
-                        if (!tsp_clients.get(i).code_client.equals("000_ORIGIN_000")) {
+                    for (int i = 0; i < visite_clients.size(); i++) {
+                        if (!visite_clients.get(i).code_client.equals("000_ORIGIN_000")) {
                             JSONObject obj_detail1 = new JSONObject();
-                            obj_detail1.put("CODE_CLIENT", tsp_clients.get(i).code_client);
-                            obj_detail1.put("LATITUDE", tsp_clients.get(i).latitude);
-                            obj_detail1.put("LONGITUDE", tsp_clients.get(i).longitude);
+                            obj_detail1.put("CODE_CLIENT", visite_clients.get(i).code_client);
+                            obj_detail1.put("LATITUDE", visite_clients.get(i).latitude);
+                            obj_detail1.put("LONGITUDE", visite_clients.get(i).longitude);
                             client.put(obj_detail1);
-                            temp_clients.add(tsp_clients.get(i));
+                            temp_clients.add(visite_clients.get(i));
                         }
                     }
                 } else {
 
                     //Creating list with position
-                    for (int i = 0; i < tsp_clients.size(); i++) {
+                    for (int i = 0; i < visite_clients.size(); i++) {
                         JSONObject obj_detail1 = new JSONObject();
-                        obj_detail1.put("CODE_CLIENT", tsp_clients.get(i).code_client);
-                        obj_detail1.put("LATITUDE", tsp_clients.get(i).latitude);
-                        obj_detail1.put("LONGITUDE", tsp_clients.get(i).longitude);
+                        obj_detail1.put("CODE_CLIENT", visite_clients.get(i).code_client);
+                        obj_detail1.put("LATITUDE", visite_clients.get(i).latitude);
+                        obj_detail1.put("LONGITUDE", visite_clients.get(i).longitude);
                         client.put(obj_detail1);
-                        temp_clients.add(tsp_clients.get(i));
+                        temp_clients.add(visite_clients.get(i));
                     }
                 }
 
@@ -287,7 +299,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
                 }
             }
         } catch (Exception ex) {
-            Log.e("ERROR", Objects.requireNonNull(ex.getLocalizedMessage()));
+            Log.e("ERROR", Objects.requireNonNull(ex.getMessage()));
         }
 
         //Draw the polyline
@@ -300,29 +312,14 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
     }
 
     public void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                //  TODO: Prompt with explanation!
-
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 //Prompt the user once explanation has been shown
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
     }
@@ -355,6 +352,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
     // Call this method only when you have the permissions to view a user's location.
     private void showMyLocation(Location myLocation) {
+
         LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 9));
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -362,8 +360,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
                 .zoom(9)                   // Sets the zoom
                 .build();                   // Creates a CameraPosition from the builder
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Démmarage")
-                .icon(BitmapFromVector(getApplicationContext(), R.drawable.baseline_location_on_24)));
+       // mMap.addMarker(new MarkerOptions().position(latLng).title("Démmarage").icon(BitmapFromVector(getApplicationContext(), R.drawable.baseline_location_red_24)));
 
     }
 
@@ -414,13 +411,13 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
                     String replace1 = replace.replace("]", "");
                     List<String> myList = new ArrayList<>(Arrays.asList(replace1.split(",")));
 
-                    tsp_clients.clear();
+                    visite_clients.clear();
 
                     for (int i = 0; i < myList.size(); i++) {
-                        tsp_clients.add(temp_clients.get(Integer.parseInt(myList.get(i))));
+                        visite_clients.add(temp_clients.get(Integer.parseInt(myList.get(i))));
                     }
 
-                    controller.ExecuteTransactionInsertIntoRouting(tsp_clients);
+                    controller.ExecuteTransactionInsertIntoRouting(visite_clients);
                     showPathOnMap();
 
                     setPathValue();
@@ -450,18 +447,25 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
 
     private void showPathOnMap() {
 
-        for (int i = 0; i < tsp_clients.size(); i++) {
-            LatLng ddd = new LatLng(tsp_clients.get(i).latitude, tsp_clients.get(i).longitude);
+        PostData_Client last_client_visited = new PostData_Client();
+        PostData_Client next_client_to_visite = new PostData_Client();
+        for (int i = 0; i < visite_clients.size(); i++) {
 
-            if (i == 0) {
-                mMap.addMarker(new MarkerOptions().position(ddd).title("Démmarage").icon(BitmapFromVector(getApplicationContext(), R.drawable.baseline_location_on_24)));
-            } else {
-                mMap.addMarker(new MarkerOptions().position(ddd).title(tsp_clients.get(i).client));
+            LatLng ddd = new LatLng(visite_clients.get(i).latitude, visite_clients.get(i).longitude);
+            if(visite_clients.get(i).blocage.equals("T")){
+                mMap.addMarker(new MarkerOptions().position(ddd).title(visite_clients.get(i).client).icon(BitmapFromVector(getApplicationContext(), R.drawable.baseline_location_green_24)));
+                last_client_visited = visite_clients.get(i);
+                next_client_to_visite = visite_clients.get(i + 1);
+            }else{
+                mMap.addMarker(new MarkerOptions().position(ddd).title(visite_clients.get(i).client).icon(BitmapFromVector(getApplicationContext(), R.drawable.baseline_location_red_24)));
             }
-            if (i != tsp_clients.size() - 1) {
-                traceRouteBetween2Point(contextApi, tsp_clients.get(i).latitude + "," + tsp_clients.get(i).longitude, tsp_clients.get(i + 1).latitude + "," + tsp_clients.get(i + 1).longitude);
-            }
+
+            /*if (i != visite_clients.size() - 1) {
+                traceRouteBetween2Point(contextApi, visite_clients.get(i).latitude + "," + visite_clients.get(i).longitude, visite_clients.get(i + 1).latitude + "," + visite_clients.get(i + 1).longitude);
+            }*/
         }
+        traceRouteBetween2Point(contextApi, last_client_visited.latitude + "," + last_client_visited.longitude, next_client_to_visite.latitude + "," + next_client_to_visite.longitude);
+
     }
 
     private void setPathValue() {

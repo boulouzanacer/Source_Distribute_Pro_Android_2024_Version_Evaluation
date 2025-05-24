@@ -64,11 +64,13 @@ public class FragmentQteVente {
 
     //PopupWindow display method
 
+    private boolean isUpdating = false;
+
     public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Bon2 bon2, double last_price) throws ParseException {
 
         mContext = context;
         this.activity = activity;
-        arrived_bon2 = bon2;
+        this.arrived_bon2 = bon2;
         this.SOURCE_LOCAL = SOURCE;
         this.last_price = last_price;
         this.controller = new DATABASE(mContext);
@@ -199,8 +201,11 @@ public class FragmentQteVente {
                             "BON2.PA_HT, " +
                             "BON2.TVA, " +
                             "BON2.CODE_DEPOT, " +
-                            "PRODUIT.STOCK FROM BON2 LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                            " WHERE BON2.NUM_BON = '" + arrived_bon2.num_bon + "' AND BON2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
+                            "PRODUIT.PV_LIMITE, " +
+                            "PRODUIT.STOCK " +
+                            "FROM BON2 " +
+                            "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                            "WHERE BON2.NUM_BON = '" + arrived_bon2.num_bon + "' AND BON2.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
 
                     checked_bon2 = controller.check_if_bon2_exist(querry);
                     SOURCE_LOCAL = "BON2_EDIT";
@@ -219,8 +224,11 @@ public class FragmentQteVente {
                             "BON2_TEMP.PA_HT, " +
                             "BON2_TEMP.TVA, " +
                             "BON2_TEMP.CODE_DEPOT, " +
-                            "PRODUIT.STOCK FROM BON2_TEMP LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                            " WHERE BON2_TEMP.NUM_BON = '" + arrived_bon2.num_bon + "' AND BON2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
+                            "PRODUIT.PV_LIMITE, " +
+                            "PRODUIT.STOCK " +
+                            "FROM BON2_TEMP " +
+                            "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                            "WHERE BON2_TEMP.NUM_BON = '" + arrived_bon2.num_bon + "' AND BON2_TEMP.CODE_BARRE = '" + arrived_bon2.codebarre + "'";
                     checked_bon2 = controller.check_if_bon2_exist(querry);
                     SOURCE_LOCAL = "BON2_TEMP_INSERT";
                 }
@@ -242,35 +250,8 @@ public class FragmentQteVente {
             val_stock_avant_colis = (int) (val_stock_avant / val_colissage);
         }
 
-        if (bon2.promo == 1) {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            Date d1 = format.parse(bon2.d1);
-            Date d2 = format.parse(bon2.d2);
-            Date today = Calendar.getInstance().getTime();
-            assert d1 != null;
-            assert d2 != null;
-            if (d1.getTime() == d2.getTime()) {
-                if (d1.before(today)) {
-                    val_prix_ht = arrived_bon2.pp1_ht;
-                    txv_promotion.setText("Produit en promotion");
-                    startBlinkanimation(txv_promotion);
-                } else {
-                    val_prix_ht = arrived_bon2.pv_ht;
-                    txv_promotion.setText("");
-                }
-            } else if (d1.getTime() <= today.getTime() && today.getTime() <= d2.getTime()) {
-                val_prix_ht = arrived_bon2.pp1_ht;
-                txv_promotion.setText("Produit en promotion");
-                startBlinkanimation(txv_promotion);
-            } else {
-                val_prix_ht = arrived_bon2.pv_ht;
-                txv_promotion.setText("");
-            }
+        val_prix_ht = arrived_bon2.pv_ht;
 
-        } else {
-            val_prix_ht = arrived_bon2.pv_ht;
-            txv_promotion.setText("");
-        }
 
         val_tva = arrived_bon2.tva;
         val_prix_ttc = val_prix_ht * (1 + (bon2.tva / 100));
@@ -426,218 +407,99 @@ public class FragmentQteVente {
         });
 
 
-        edt_nbr_colis.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
+        edt_nbr_colis.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-
                 if (!edt_qte.isFocused()) {
                     try {
-
                         onNbrColisChange();
-
                     } catch (Exception e) {
-                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        // taux_remise.getEditText().getText().clear();
+                        e.printStackTrace();
                     }
                 }
-
             }
         });
 
-        edt_colissage.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
+        edt_colissage.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-
                 if (!edt_qte.isFocused()) {
                     try {
-
                         onColissageChange();
-
                     } catch (Exception e) {
-                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        // taux_remise.getEditText().getText().clear();
+                        e.printStackTrace();
                     }
                 }
-
             }
         });
 
-        edt_qte.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
+        edt_qte.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-
                 if (!edt_nbr_colis.isFocused() && !edt_colissage.isFocused()) {
                     try {
-
                         onQteChange();
-
                     } catch (Exception e) {
-                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        // taux_remise.getEditText().getText().clear();
+                        e.printStackTrace();
                     }
                 }
-
             }
         });
 
-        edt_gratuit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
+        edt_gratuit.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-
-
                 try {
-
                     onGratuitChange();
-
                 } catch (Exception e) {
-                    // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                    // taux_remise.getEditText().getText().clear();
+                    e.printStackTrace();
                 }
-
-
             }
         });
 
-
-        edt_prix_ht.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
+        edt_prix_ht.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-
                 if (!edt_prix_ttc.isFocused() && !edt_tva.isFocused()) {
                     try {
-                        //Double.valueOf(montant_avant_remise.getEditText().getText())
-                        // montant_remise.getEditText().getText(
-                        //  100-((M-R)/M*100),
                         onPrixHtChange();
-
                     } catch (Exception e) {
-                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        // taux_remise.getEditText().getText().clear();
+                        e.printStackTrace();
                     }
                 }
-
             }
         });
 
-
-        edt_tva.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
+        edt_tva.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-
                 if (!edt_prix_ht.isFocused()) {
                     try {
                         onPrixHtChange();
-
                     } catch (Exception e) {
-                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        // taux_remise.getEditText().getText().clear();
+                        e.printStackTrace();
                     }
                 }
-
-
             }
         });
 
-
-        edt_prix_ttc.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
+        edt_prix_ttc.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-
                 if (!edt_prix_ht.isFocused() && !edt_tva.isFocused()) {
                     try {
-                        //Double.valueOf(montant_avant_remise.getEditText().getText())
-                        // montant_remise.getEditText().getText(
-                        //  100-((M-R)/M*100),
                         onPrixTtcChange();
-
                     } catch (Exception e) {
-                        // montant_apres_remise.getEditText().setText(nf.format(montant_avant_remise.getEditText().getText().toString()));
-                        // taux_remise.getEditText().getText().clear();
+                        e.printStackTrace();
                     }
                 }
-
             }
         });
+
     }
 
     void onNbrColisChange() {
+
         if (edt_nbr_colis.getText().toString().isEmpty()) {
             val_nbr_colis = 0.00;
         } else {
@@ -658,14 +520,16 @@ public class FragmentQteVente {
             edt_qte.setText(nq.format(val_qte));
         }
 
-        if (SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")) {
+        check_promo(arrived_bon2);
+
+        if (SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_EDIT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT")) {
             val_stock_apres = val_stock_avant - val_qte - val_gratuit;
             if (val_colissage == 0) {
                 val_stock_apres_colis = 0.0;
             } else {
                 val_stock_apres_colis = (int) (val_stock_apres / val_colissage);
             }
-        } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")) {
+        } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_EDIT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")) {
             val_stock_apres = val_stock_avant + val_qte + val_gratuit;
             if (val_colissage == 0) {
                 val_stock_apres_colis = 0.0;
@@ -676,6 +540,7 @@ public class FragmentQteVente {
 
         edt_stock_apres.setText(nq.format(val_stock_apres));
         edt_stock_apres_colis.setText(nq.format(val_stock_apres_colis));
+
     }
 
     void onColissageChange() {
@@ -699,7 +564,10 @@ public class FragmentQteVente {
             val_qte = val_nbr_colis * val_colissage;
             edt_qte.setText(nq.format(val_qte));
         }
-        if (SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")) {
+
+        check_promo(arrived_bon2);
+
+        if (SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_EDIT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT")) {
             val_stock_apres = val_stock_avant - val_qte - val_gratuit;
             if (val_colissage == 0.0) {
                 val_stock_avant_colis = 0.0;
@@ -712,7 +580,7 @@ public class FragmentQteVente {
                 stockavantLayout_colis.setVisibility(View.VISIBLE);
                 stockapresLayout_colis.setVisibility(View.VISIBLE);
             }
-        } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")) {
+        } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_EDIT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")) {
             val_stock_apres = val_stock_avant + val_qte + val_gratuit;
             if (val_colissage == 0.0) {
                 val_stock_avant_colis = 0.0;
@@ -731,6 +599,7 @@ public class FragmentQteVente {
         edt_stock_apres.setText(nq.format(val_stock_apres));
         edt_stock_avant_colis.setText(nq.format(val_stock_avant_colis));
         edt_stock_apres_colis.setText(nq.format(val_stock_apres_colis));
+
     }
 
     void onQteChange() {
@@ -757,9 +626,11 @@ public class FragmentQteVente {
         edt_stock_avant_colis.setText("");
         edt_stock_apres_colis.setText("");
 
-        if (SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")) {
+        check_promo(arrived_bon2);
+
+        if (SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_INSERT")|| SOURCE_LOCAL.equals("BON2_TEMP_EDIT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT")) {
             val_stock_apres = val_stock_avant - val_qte - val_gratuit;
-        } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")) {
+        } else if (SOURCE_LOCAL.equals("ACHAT2_EDIT") || SOURCE_LOCAL.equals("ACHAT2_INSERT")|| SOURCE_LOCAL.equals("ACHAT2_TEMP_EDIT") || SOURCE_LOCAL.equals("ACHAT2_TEMP_INSERT")) {
             val_stock_apres = val_stock_avant + val_qte + val_gratuit;
         }
 
@@ -791,36 +662,63 @@ public class FragmentQteVente {
     }
 
     void onPrixHtChange() {
-        if (edt_tva.getText().toString().isEmpty()) {
-            val_tva = 0.00;
-        } else {
-            val_tva = Double.parseDouble(edt_tva.getText().toString());
+        if (isUpdating) return;
+
+        isUpdating = true;
+
+        try {
+
+            if (edt_tva.getText().toString().isEmpty()) {
+                val_tva = 0.00;
+            } else {
+                val_tva = Double.parseDouble(edt_tva.getText().toString());
+            }
+
+            if (edt_prix_ht.getText().toString().isEmpty()) {
+                val_prix_ht = 0.00;
+            } else {
+                val_prix_ht = Double.parseDouble(edt_prix_ht.getText().toString());
+            }
+            val_prix_ttc = val_prix_ht * (1 + (val_tva / 100));
+            edt_prix_ttc.setText(nf.format(val_prix_ttc));
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            isUpdating = false;
         }
 
-        if (edt_prix_ht.getText().toString().isEmpty()) {
-            val_prix_ht = 0.00;
-        } else {
-            val_prix_ht = Double.parseDouble(edt_prix_ht.getText().toString());
-        }
-        val_prix_ttc = val_prix_ht * (1 + (val_tva / 100));
-        edt_prix_ttc.setText(nf.format(val_prix_ttc));
     }
 
 
     void onPrixTtcChange() {
-        if (edt_tva.getText().toString().isEmpty()) {
-            val_tva = 0.00;
-        } else {
-            val_tva = Double.parseDouble(edt_tva.getText().toString());
+
+        if (isUpdating) return;
+
+        isUpdating = true;
+
+        try {
+
+            if (edt_tva.getText().toString().isEmpty()) {
+                val_tva = 0.00;
+            } else {
+                val_tva = Double.parseDouble(edt_tva.getText().toString());
+            }
+
+            if (edt_prix_ttc.getText().toString().isEmpty()) {
+                val_prix_ttc = 0.00;
+            } else {
+                val_prix_ttc = Double.parseDouble(edt_prix_ttc.getText().toString());
+            }
+            val_prix_ht = val_prix_ttc / (1 + (val_tva / 100));
+            edt_prix_ht.setText(nf.format(val_prix_ht));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            isUpdating = false;
         }
 
-        if (edt_prix_ttc.getText().toString().isEmpty()) {
-            val_prix_ttc = 0.00;
-        } else {
-            val_prix_ttc = Double.parseDouble(edt_prix_ttc.getText().toString());
-        }
-        val_prix_ht = val_prix_ttc / (1 + (val_tva / 100));
-        edt_prix_ht.setText(nf.format(val_prix_ht));
     }
 
 
@@ -832,4 +730,56 @@ public class FragmentQteVente {
         anim.setRepeatCount(Animation.INFINITE);
         view.startAnimation(anim);
     }
+
+
+    private void check_promo(PostData_Bon2 bon2){
+
+        try {
+
+            if (bon2.promo == 1 && (val_qte >= bon2.qte_promo)) {
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                Date d1 = format.parse(bon2.d1);
+                Date d2 = format.parse(bon2.d2);
+                Date today = Calendar.getInstance().getTime();
+                assert d1 != null;
+                assert d2 != null;
+                if (d1.getTime() == d2.getTime()) {
+                    if (d1.before(today)) {
+                        val_prix_ht = arrived_bon2.pp1_ht;
+                        txv_promotion.setText("Produit en promotion");
+                        startBlinkanimation(txv_promotion);
+                    } else {
+                        val_prix_ht = arrived_bon2.pv_ht;
+                        txv_promotion.setText("");
+                    }
+                } else if (d1.getTime() <= today.getTime() && today.getTime() <= d2.getTime()) {
+                    val_prix_ht = arrived_bon2.pp1_ht;
+                    txv_promotion.setText("Produit en promotion");
+                    startBlinkanimation(txv_promotion);
+                } else {
+                    val_prix_ht = arrived_bon2.pv_ht;
+                    txv_promotion.setText("");
+                }
+
+            } else {
+                val_prix_ht = arrived_bon2.pv_ht;
+                txv_promotion.setText("");
+            }
+
+            edt_prix_ht.setText(nf.format(val_prix_ht));
+
+
+        }catch (Exception e ){
+
+        }
+
+
+    }
+}
+
+abstract class SimpleTextWatcher implements TextWatcher {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) { }
 }

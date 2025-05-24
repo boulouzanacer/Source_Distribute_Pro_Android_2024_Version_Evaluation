@@ -31,11 +31,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
@@ -51,6 +53,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -147,6 +150,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -263,7 +267,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_setting);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         CheckAllPermission();
 
@@ -272,7 +287,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Paramétres");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         controller = new DATABASE(this);
@@ -2254,7 +2269,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         String _Username;
         String _Password;
         String _TypeConnection;
-        Connection con = null;
+        Connection con;
         String errorMessage;
 
         public TestConnection_Setting(String server, String database, String username, String password, String typeConnection) {
@@ -2289,9 +2304,23 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 executed = true;
 
             } catch (Exception ex) {
-                con = null;
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
                 Log.e("TRACKKK", "FAILED TO CONNECT WITH SERVER " + ex.getMessage());
                 errorMessage = ex.getMessage();
+            }finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
             return executed;
         }
@@ -2443,6 +2472,14 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     flag = 3;
                 }
                 messageError = e.getMessage();
+            }finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
 
             return flag;
@@ -2537,8 +2574,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 flag = 1;
 
             } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
                 if (e.getMessage().contains("Unable to complete network request to host")) {
                     flag = 2;
                     Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
@@ -2549,6 +2591,14 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     flag = 3;
                 }
                 messageError = e.getMessage();
+            }finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
 
             return flag;
@@ -2808,7 +2858,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

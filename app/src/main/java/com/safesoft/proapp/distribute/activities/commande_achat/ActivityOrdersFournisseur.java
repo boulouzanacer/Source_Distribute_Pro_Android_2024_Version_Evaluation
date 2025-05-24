@@ -6,18 +6,22 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,14 +31,12 @@ import com.safesoft.proapp.distribute.adapters.RecyclerAdapterAchat1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
-import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.utils.Env;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -56,7 +58,18 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ventes);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
 
@@ -65,7 +78,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
             getSupportActionBar().setTitle("Bons de commandes");
             getSupportActionBar().setSubtitle("Fournisseur");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
@@ -79,6 +92,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
 
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
+        editor.remove("FILTRE_SEARCH_FAMILLE");
         editor.apply();
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -176,7 +190,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         if (achat1s_com.get(position).blocage.equals("F")) {
             final CharSequence[] items = {"Modifier", "Supprimer", "Imprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -260,18 +274,20 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                                 "BON2_TEMP.DESTOCK_TYPE, " +
                                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                 "BON2_TEMP.DESTOCK_QTE, " +
+
                                 "PRODUIT.ISNEW, " +
-                                "PRODUIT.STOCK " +
+                                "PRODUIT.PV_LIMITE, " +
+                                "PRODUIT.STOCK, " +
+                                "PRODUIT.PROMO, " +
+                                "PRODUIT.QTE_PROMO, " +
+                                "PRODUIT.D1, " +
+                                "PRODUIT.D2, " +
+                                "PRODUIT.PP1_HT " +
+
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2_TEMP.NUM_BON = '" + achat1s_com.get(position).num_bon + "'");
-                        Printing printer = new Printing();
 
-                       /* try {
-                            printer.start_print_order_bon(bactivity, final_panier, bon1s_temp.get(position));
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }*/
 
                         break;
                 }
@@ -280,7 +296,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         } else {
             final CharSequence[] items = {"Supprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -313,7 +329,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_sales_client, menu);
+            inflater.inflate(R.menu.menu_ventes_not_exported, menu);
         }
         searchView = new SearchView(getSupportActionBar().getThemedContext());
         searchView.setQueryHint("Rechercher");
@@ -390,7 +406,6 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -22,18 +23,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
@@ -42,12 +46,10 @@ import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierAchat;
-import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierVente;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventAchat2;
-import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.RemiseEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedFournisseurEvent;
@@ -63,7 +65,6 @@ import com.safesoft.proapp.distribute.gps.ServiceLocation;
 import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
-import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
@@ -136,7 +137,26 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_achat);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
+
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+        }
 
         if (savedInstanceState != null) {
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
@@ -153,12 +173,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         final_panier = new ArrayList<>();
 
 
-        Toolbar toolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
-        }
+
 
         String date_time_sub_title = null;
         String formattedDate = null;
@@ -829,7 +844,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         int id = item.getItemId();
 
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+                onBackPressed();
         }
         if (id == R.id.generate_pdf) {
 
@@ -888,7 +903,6 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int resid) {
@@ -1081,7 +1095,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
 
         }else{
-            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";

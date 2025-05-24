@@ -7,7 +7,6 @@
     android:background="@drawable/font_black"
     android:weightSum="20"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
     tools:context="com.safesoft.proapp.distribute.activities.client.ActivityClients">
 
     <androidx.appcompat.widget.Toolbar

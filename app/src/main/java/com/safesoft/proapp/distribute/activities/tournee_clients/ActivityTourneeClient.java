@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,9 +31,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.PassageEvent;
-import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditLocation;
-import com.safesoft.proapp.distribute.fragments.FragmentNewEditProduct;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Tournee1;
 import com.safesoft.proapp.distribute.postData.PostData_Tournee2;
@@ -42,7 +41,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Objects;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -65,6 +63,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tournee_client);
 
         controller = new DATABASE(this);
@@ -74,7 +73,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Passage clients");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         initViews();
@@ -300,7 +299,6 @@ public class ActivityTourneeClient extends AppCompatActivity {
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

@@ -33,6 +33,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class FragmentSelectClient {
 
 
@@ -174,12 +176,24 @@ public class FragmentSelectClient {
     }
 
     private void setListview(String text_search, Boolean isScan) {
-        if (isScan) {
-            editsearch.setText(text_search);
+        try {
+
+            if (isScan) {
+                editsearch.setText(text_search);
+            }
+            adapter = new ListViewAdapterListClient(mcontext, getItems(text_search, isScan), dialog, SOURCE);
+            listview.setAdapter(adapter);
+            //bus.register(adapter);
+
+        }catch (Exception e){
+
+            new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Erreur. !")
+                    .setContentText("" + e.getMessage())
+                    .show();
         }
-        adapter = new ListViewAdapterListClient(mcontext, getItems(text_search, isScan), dialog, SOURCE);
-        listview.setAdapter(adapter);
-        //bus.register(adapter);
+
+
 
     }
 

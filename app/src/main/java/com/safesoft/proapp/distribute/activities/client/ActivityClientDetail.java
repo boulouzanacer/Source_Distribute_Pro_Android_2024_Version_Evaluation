@@ -9,12 +9,14 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -22,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,22 +35,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter_Situation_client;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import com.safesoft.proapp.distribute.fragments.FragmentVersementClient;
-import com.safesoft.proapp.distribute.gps.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.printing.Printing;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.InputStream;
@@ -64,8 +69,6 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 public class ActivityClientDetail extends AppCompatActivity implements RecyclerAdapter_Situation_client.ItemClick {
 
-
-    Boolean printer_mode_integrate = true;
     private NumberFormat nf;
 
     private PostData_Client client;
@@ -75,13 +78,12 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
     private MediaPlayer mp;
 
-    private final EventBus bus = EventBus.getDefault();
-
     private static final int ACCES_FINE_LOCATION = 2;
     private static final int BLUETOOTH_CONNECT = 3;
     private Boolean checkPermission = false;
 
     private Intent intent_location;
+    private FusedLocationProviderClient fusedLocationClient;
 
     private ProgressDialog progress;
 
@@ -102,10 +104,18 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_client_detail);
 
-
-        // getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.blue)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
@@ -115,6 +125,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         }
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // client.client = getIntent().getStringExtra("CLIENT");
         CODE_CLIENT = getIntent().getStringExtra("CODE_CLIENT");
@@ -139,14 +151,6 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
         requestPermission();
 
-        // Register as a subscriber
-        bus.register(this);
-
-        intent_location = new Intent(this, ServiceLocation.class);
-        if (checkPermission) {
-            //  startService(intent_location);
-        }
-
         setStaticMap(client.latitude, client.longitude);
     }
 
@@ -154,7 +158,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     private void setStaticMap(double latitude, double longitude) {
         int zoom = 15;
         String label = "P";
-        url_static_map = "https://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=" + zoom + "&size=1200x300&markers=color:red%7Clabel:" + label + "%7C" + latitude + "," + longitude + "&key=AIzaSyAzMUqTnhsnrXuog5ZjSrnSYMPM-XShfRA";
+        url_static_map = "https://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=" + zoom + "&size=1200x300&markers=color:red%7Clabel:" + label + "%7C" + latitude + "," + longitude + "&key=AIzaSyA--Ft2q8jz-WkLuGWFtGeGtl_9BsTReZU";
         if (latitude != 0 && longitude != 0) {
             new DownloadImageTask(imgv_client_map).execute();
         }
@@ -167,14 +171,6 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         iniData(client);
     }
 
-    @Override
-    protected void onStart() {
-
-        SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
-        printer_mode_integrate = prefs1.getString("PRINTER_CONX", "INTEGRATE").equals("INTEGRATE");
-
-        super.onStart();
-    }
 
     @Override
     protected void onResume() {
@@ -382,14 +378,11 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
             case R.id.btn_update_pos:
 
-                startService(intent_location);
-
-                progress = new ProgressDialog(ActivityClientDetail.this);
-                progress.setTitle("Position");
-                progress.setMessage("Recherche position...");
-                progress.setIndeterminate(true);
-                progress.setCancelable(true);
-                progress.show();
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    getCurrentLocation();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
 
                 break;
             case R.id.btn_itenerary:
@@ -438,7 +431,6 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
             Sound();
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
 
@@ -481,26 +473,51 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == ACCES_FINE_LOCATION) {
-            startService(new Intent(this, ServiceLocation.class));
-        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation();
+        } else {
+            Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
+        }
     }
 
+    private void getCurrentLocation() {
+        progress = new ProgressDialog(ActivityClientDetail.this);
+        progress.setTitle("Position");
+        progress.setMessage("Recherche position...");
+        progress.setIndeterminate(true);
+        progress.setCancelable(true);
+        progress.show();
 
-    @Subscribe
-    public void onEvent(LocationEvent event) {
-        Log.e("TRACKKK", "Recieved location : " + event.getLocationData().getLatitude() + "  //  " + event.getLocationData().getLongitude());
-        client.latitude = event.getLocationData().getLatitude();
-        client.longitude = event.getLocationData().getLongitude();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-        controller.update_position_client(client.latitude, client.longitude, client.code_client);
-        if (progress != null) {
-            progress.dismiss();
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+
+
+                        client.latitude = location.getLatitude();
+                        client.longitude = location.getLongitude();
+                        Toast.makeText(ActivityClientDetail.this, "Lat: " + client.latitude + ", Lng: " + client.longitude, Toast.LENGTH_LONG).show();
+
+                        controller.update_position_client(client.latitude, client.longitude, client.code_client);
+                        if (progress != null) {
+                            progress.dismiss();
+                        }
+
+                        setStaticMap(location.getLatitude(), location.getLongitude());
+
+                    } else {
+
+                        Toast.makeText(ActivityClientDetail.this, "Location not available", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
-
-        setStaticMap(event.getLocationData().getLatitude(), event.getLocationData().getLongitude());
-
     }
 
 
@@ -649,9 +666,6 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
     @Override
     protected void onDestroy() {
-
-        bus.unregister(this);
-        stopService(intent_location);
 
         super.onDestroy();
     }

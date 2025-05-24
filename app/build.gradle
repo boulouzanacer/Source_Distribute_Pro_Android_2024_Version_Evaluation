@@ -9,8 +9,8 @@ android {
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
         targetSdkVersion 35
-        versionCode 556
-        versionName "080325"
+        versionCode 565
+        versionName "110525"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)
@@ -76,7 +76,7 @@ allprojects {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.exifinterface:exifinterface:1.4.0'
+    implementation 'androidx.exifinterface:exifinterface:1.4.1'
     implementation 'androidx.activity:activity:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.6.1', {
@@ -96,7 +96,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.3.1'
     //implementation 'com.labo.kaji:swipeawaydialog:0.1.0'
     //implementation 'com.emmasuzuki:easyform:1.1.0'
-    implementation 'com.google.android.gms:play-services-maps:19.1.0'
+    implementation 'com.google.android.gms:play-services-maps:19.2.0'
     implementation 'com.google.maps:google-maps-services:2.2.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
@@ -118,7 +118,7 @@ dependencies {
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 
 
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'androidx.gridlayout:gridlayout:1.1.0'
     implementation 'com.github.aabhasr1:OtpView:v1.1.2'
 
     //Date time pickr
@@ -133,9 +133,9 @@ dependencies {
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    
+
     //détecter si une fuites mémoires est disponible
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
     // externel librery
     implementation project(':folding-cell')
@@ -166,4 +166,8 @@ dependencies {
         transitive = false
     }
 
+    //Commande pour afficher les warrning en details c tt
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+    }
 }

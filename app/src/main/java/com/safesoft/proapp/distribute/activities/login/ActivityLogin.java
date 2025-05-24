@@ -1,22 +1,34 @@
 package com.safesoft.proapp.distribute.activities.login;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.activities.ActivitySetting;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.activities.client.ActivityClients;
+import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
+import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 
 public class ActivityLogin extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
@@ -28,7 +40,25 @@ public class ActivityLogin extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
+
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Connexion paramètres");
+        }
 
         _passwordText = findViewById(R.id.input_password);
         _loginButton = findViewById(R.id.btn_login);
@@ -122,5 +152,12 @@ public class ActivityLogin extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

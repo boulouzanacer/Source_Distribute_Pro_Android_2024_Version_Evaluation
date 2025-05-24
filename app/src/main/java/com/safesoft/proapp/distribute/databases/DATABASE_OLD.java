@@ -13,26 +13,6 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.safesoft.proapp.distribute.postData.PostData_Achat1;
-import com.safesoft.proapp.distribute.postData.PostData_Achat2;
-import com.safesoft.proapp.distribute.postData.PostData_Bon1;
-import com.safesoft.proapp.distribute.postData.PostData_Bon2;
-import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
-import com.safesoft.proapp.distribute.postData.PostData_Carnet_f;
-import com.safesoft.proapp.distribute.postData.PostData_Client;
-import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
-import com.safesoft.proapp.distribute.postData.PostData_Etatv;
-import com.safesoft.proapp.distribute.postData.PostData_Famille;
-import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
-import com.safesoft.proapp.distribute.postData.PostData_Inv1;
-import com.safesoft.proapp.distribute.postData.PostData_Inv2;
-import com.safesoft.proapp.distribute.postData.PostData_Params;
-import com.safesoft.proapp.distribute.postData.PostData_Produit;
-import com.safesoft.proapp.distribute.postData.PostData_Tournee1;
-import com.safesoft.proapp.distribute.postData.PostData_Tournee2;
-import com.safesoft.proapp.distribute.postData.PostData_commune;
-import com.safesoft.proapp.distribute.postData.PostData_wilaya;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,25 +24,46 @@ import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import com.safesoft.proapp.distribute.postData.PostData_Achat2;
+import com.safesoft.proapp.distribute.postData.PostData_Carnet_f;
+import com.safesoft.proapp.distribute.postData.PostData_Famille;
+import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
+import com.safesoft.proapp.distribute.postData.PostData_Tournee1;
+import com.safesoft.proapp.distribute.postData.PostData_Tournee2;
+import com.safesoft.proapp.distribute.postData.PostData_Achat1;
+import com.safesoft.proapp.distribute.postData.PostData_Bon1;
+import com.safesoft.proapp.distribute.postData.PostData_Bon2;
+import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
+import com.safesoft.proapp.distribute.postData.PostData_Client;
+import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
+import com.safesoft.proapp.distribute.postData.PostData_Etatv;
+import com.safesoft.proapp.distribute.postData.PostData_Inv1;
+import com.safesoft.proapp.distribute.postData.PostData_Inv2;
+import com.safesoft.proapp.distribute.postData.PostData_Produit;
+import com.safesoft.proapp.distribute.postData.PostData_commune;
+import com.safesoft.proapp.distribute.postData.PostData_wilaya;
+
+import java.util.ArrayList;
+
 /**
  * Created by UK2015 on 21/08/2016.
  */
-public class DATABASE extends SQLiteOpenHelper {
+public class DATABASE_OLD extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 16; // Database version
+    private static final int DATABASE_VERSION = 14; // Database version
     public static final String DATABASE_NAME = "safe_distribute_pro"; //Database name
     private final Context mContext;
 
     private final String PREFS = "ALL_PREFS";
 
     //Constructor DATABASE
-    public DATABASE(Context context) {
+    public DATABASE_OLD(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         // TODO Auto-generated constructor stub
 
@@ -81,8 +82,6 @@ public class DATABASE extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
         Log.v("TRACKKK", "================>  ONCREATE EXECUTED");
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS FAMILLES(FAMILLE_ID INTEGER PRIMARY KEY AUTOINCREMENT, FAMILLE VARCHAR)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PRODUIT(PRODUIT_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "CODE_BARRE VARCHAR UNIQUE, " +
@@ -112,9 +111,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 "D2 VARCHAR, " +
                 "PP1_HT DOUBLE, " +
                 "QTE_PROMO DOUBLE, " +
-                "ISNEW INTEGER " +
-                ")"
-        );
+                "ISNEW INTEGER," +
+                "CONSTRAINT UNIQUE_CODE_REF UNIQUE (CODE_BARRE, REF_PRODUIT))");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS CODEBARRE(CODEBARRE_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR, CODE_BARRE_SYN VARCHAR)");
@@ -122,27 +120,6 @@ public class DATABASE extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS COMPOSANT(COMPOSANT_ID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR, CODE_BARRE2 VARCHAR, QTE DOUBLE)");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS CLIENT(" +
-                "CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "CODE_CLIENT VARCHAR, " +
-                "CLIENT VARCHAR , " +
-                "TEL VARCHAR, " +
-                "ADRESSE VARCHAR, " +
-                "WILAYA VARCHAR, " +
-                "COMMUNE VARCHAR, " +
-                "MODE_TARIF VARCHAR, " +
-                "LATITUDE REAL DEFAULT 0.0, " +
-                "LONGITUDE REAL DEFAULT 0.0, " +
-                "ACHATS DOUBLE DEFAULT 0.0, " +
-                "VERSER DOUBLE DEFAULT 0.0, " +
-                "SOLDE DOUBLE DEFAULT 0.0, " +
-                "RC VARCHAR, " +
-                "IFISCAL VARCHAR, " +
-                "AI VARCHAR,  " +
-                "NIS VARCHAR, " +
-                "ISNEW INTEGER, " +
-                "CREDIT_LIMIT DOUBLE DEFAULT 0.0, " +
-                "SOLDE_INI DOUBLE DEFAULT 0.0)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS BON1(" +
                 "RECORDID INTEGER, " +
@@ -173,7 +150,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "LIVRER INTEGER DEFAULT 0, " +
                 "DATE_LIV VARCHAR, " +
                 "IS_IMPORTED INTEGER DEFAULT 0, " +
-                "IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0 " +
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0 "+
                 ")"
         );
 
@@ -192,12 +169,30 @@ public class DATABASE extends SQLiteOpenHelper {
                 "DESTOCK_CODE_BARRE VARCHAR, " +
                 "DESTOCK_QTE DOUBLE, " +
                 "TVA DOUBLE, " +
-                "CODE_DEPOT VARCHAR"+
-                ")"
-        );
+                "CODE_DEPOT VARCHAR )");
 
 
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS CLIENT(" +
+                "CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "CODE_CLIENT VARCHAR, " +
+                "CLIENT VARCHAR , " +
+                "TEL VARCHAR, " +
+                "ADRESSE VARCHAR, " +
+                "WILAYA VARCHAR, " +
+                "COMMUNE VARCHAR, " +
+                "MODE_TARIF VARCHAR, " +
+                "LATITUDE REAL DEFAULT 0.0, " +
+                "LONGITUDE REAL DEFAULT 0.0, " +
+                "ACHATS DOUBLE DEFAULT 0.0, " +
+                "VERSER DOUBLE DEFAULT 0.0, " +
+                "SOLDE DOUBLE DEFAULT 0.0, " +
+                "RC VARCHAR, " +
+                "IFISCAL VARCHAR, " +
+                "AI VARCHAR,  " +
+                "NIS VARCHAR, " +
+                "ISNEW INTEGER, " +
+                "CREDIT_LIMIT DOUBLE DEFAULT 0.0, " +
+                "SOLDE_INI DOUBLE DEFAULT 0.0)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS BON1_TEMP(" +
@@ -229,9 +224,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "LIVRER INTEGER DEFAULT 0, " +
                 "DATE_LIV VARCHAR, " +
                 "IS_IMPORTED INTEGER DEFAULT 0, " +
-                "IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0 " +
-                ")"
-        );
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS BON2_TEMP(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT , " +
@@ -248,9 +241,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "DESTOCK_CODE_BARRE VARCHAR, " +
                 "DESTOCK_QTE DOUBLE, " +
                 "TVA DOUBLE, " +
-                "CODE_DEPOT VARCHAR " +
-                ")"
-        );
+                "CODE_DEPOT VARCHAR)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS CARNET_C(RECORDID INTEGER PRIMARY KEY, " +
@@ -286,6 +277,10 @@ public class DATABASE extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS INV2(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR , NUM_INV VARCHAR, PRODUIT VARCHAR, NBRE_COLIS DOUBLE, COLISSAGE DOUBLE, PA_HT DOUBLE, QTE DOUBLE, QTE_TMP DOUBLE, QTE_NEW DOUBLE, TVA DOUBLE, VRAC VARCHAR, CODE_DEPOT VARCHAR )");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS POSITION(POSITION_ID INTEGER PRIMARY KEY AUTOINCREMENT, LAT DOUBLE, LONGI DOUBLE, ADRESS VARCHAR, COLOR boolean CHECK (COLOR IN (0,1)), CLIENT VARCHAR, NUM_BON VARCHAR)");
+
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS FAMILLES(FAMILLE_ID INTEGER PRIMARY KEY AUTOINCREMENT, FAMILLE VARCHAR)");
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS FOURNIS(FOURNIS_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "CODE_FRS VARCHAR, " +
@@ -323,9 +318,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "EXPORTATION VARCHAR, " +
                 "BLOCAGE VARCHAR, " +
                 "CODE_DEPOT VARCHAR, " +
-                "IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0 " +
-                ")"
-        );
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT2(" +
@@ -339,9 +332,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "QTE_GRAT DOUBLE, " +
                 "PA_HT DOUBLE, " +
                 "TVA DOUBLE, " +
-                "CODE_DEPOT VARCHAR " +
-                ")"
-        );
+                "CODE_DEPOT VARCHAR)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT1_TEMP(" +
@@ -363,9 +354,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "EXPORTATION VARCHAR, " +
                 "BLOCAGE VARCHAR, " +
                 "CODE_DEPOT VARCHAR, " +
-                "IS_EXPORTED BOOLEAN CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0 " +
-                ")"
-        );
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS ACHAT2_TEMP(" +
@@ -379,10 +368,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "QTE_GRAT DOUBLE, " +
                 "PA_HT DOUBLE, " +
                 "TVA DOUBLE, " +
-                "CODE_DEPOT VARCHAR " +
-                ")"
-
-        );
+                "CODE_DEPOT VARCHAR)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS ROUTING(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_CLIENT VARCHAR UNIQUE, CLIENT VARCHAR , TEL VARCHAR, ADRESSE VARCHAR, LATITUDE REAL, LONGITUDE REAL, STATE INTEGER DEFAULT 0)");
@@ -431,9 +417,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 "LATITUDE REAL DEFAULT 0.0, " +
                 "LONGITUDE REAL DEFAULT 0.0, " +
                 "OBSERVATION VARCHAR, " +
-                "IS_NEW INTEGER " +
-                ")"
-        );
+                "IS_NEW INTEGER , " +
+                "FOREIGN KEY(CODE_CLIENT) REFERENCES CLIENT (CODE_CLIENT) ON DELETE CASCADE, " +
+                "FOREIGN KEY(NUM_TOURNEE) REFERENCES TOURNEE1 (NUM_TOURNEE) ON DELETE CASCADE)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS WILAYAS (ID INTEGER NOT NULL PRIMARY KEY, NAME VARCHAR NOT NULL, LATITUDE numeric NOT NULL, LONGITUDE numeric NOT NULL )");
@@ -449,13 +435,13 @@ public class DATABASE extends SQLiteOpenHelper {
 
         Log.v("TRACKKK", "================>  ON UPGRADE EXECUTED");
 
-        String[] list_requet = new String[17];
+        String[] list_requet = new String[9];
 
-        list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0";
-        list_requet[1] = "ALTER TABLE CLIENT ADD COLUMN WILAYA VARCHAR ";
-        list_requet[2] = "ALTER TABLE CLIENT ADD COLUMN COMMUNE VARCHAR ";
+        list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0, " +
+                " WILAYA VARCHAR, " +
+                " COMMUNE VARCHAR";
 
-        list_requet[3] = "CREATE TABLE IF NOT EXISTS CARNET_F(RECORDID INTEGER PRIMARY KEY, " +
+        list_requet[1] = "CREATE TABLE IF NOT EXISTS CARNET_F(RECORDID INTEGER PRIMARY KEY, " +
                 "CODE_FRS VARCHAR, " +
                 "DATE_CARNET VARCHAR , " +
                 "HEURE VARCHAR , " +
@@ -469,28 +455,22 @@ public class DATABASE extends SQLiteOpenHelper {
                 "UTILISATEUR VARCHAR, " +
                 "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)";
 
-        list_requet[4] = "ALTER TABLE PRODUIT ADD COLUMN STOCK_INI DOUBLE DEFAULT 0 ";
+        list_requet[2] = "ALTER TABLE PRODUIT ADD COLUMN STOCK_INI DOUBLE DEFAULT 0, " +
+                " PV_LIMITE DOUBLE DEFAULT 0, " +
+                " QTE_PROMO DOUBLE";
 
-        list_requet[5] = "ALTER TABLE PRODUIT ADD COLUMN PV_LIMITE DOUBLE DEFAULT 0 ";
+        list_requet[3] = "DROP TABLE IF EXISTS TOURNEE1";
+        list_requet[4] = "DROP TABLE IF EXISTS TOURNEE2";
 
-        list_requet[6] = "ALTER TABLE PRODUIT ADD COLUMN QTE_PROMO DOUBLE";
+        list_requet[5]  = "ALTER TABLE BON1 ADD COLUMN LIVRER INTEGER DEFAULT 0, " +
+                " DATE_LIV VARCHAR, " +
+                " IS_IMPORTED INTEGER DEFAULT 0";
 
-        list_requet[7] = "DROP TABLE IF EXISTS TOURNEE1";
-        list_requet[8] = "DROP TABLE IF EXISTS TOURNEE2";
+        list_requet[6] = "ALTER TABLE BON1_TEMP ADD COLUMN LIVRER INTEGER DEFAULT 0, " +
+                " DATE_LIV VARCHAR, " +
+                " IS_IMPORTED INTEGER DEFAULT 0";
 
-        list_requet[9]  = "ALTER TABLE BON1 ADD COLUMN LIVRER INTEGER DEFAULT 0 ";
-
-        list_requet[10]  = "ALTER TABLE BON1 ADD COLUMN DATE_LIV VARCHAR ";
-
-        list_requet[11]  = "ALTER TABLE BON1 ADD COLUMN IS_IMPORTED INTEGER DEFAULT 0";
-
-        list_requet[12] = "ALTER TABLE BON1_TEMP ADD COLUMN LIVRER INTEGER DEFAULT 0 ";
-
-        list_requet[13] = "ALTER TABLE BON1_TEMP ADD COLUMN DATE_LIV VARCHAR ";
-
-        list_requet[14] = "ALTER TABLE BON1_TEMP ADD COLUMN IS_IMPORTED INTEGER DEFAULT 0";
-
-        list_requet[15] = "CREATE TABLE IF NOT EXISTS TOURNEE1(" +
+        list_requet[7] = "CREATE TABLE IF NOT EXISTS TOURNEE1(" +
                 "RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "NUM_TOURNEE VARCHAR ," +
                 "DATE_TOURNEE VARCHAR ," +
@@ -501,7 +481,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "NBR_CLIENT INTEGER," +
                 "IS_EXPORTED INTEGER DEFAULT 0.0)";
 
-        list_requet[16] = "CREATE TABLE IF NOT EXISTS TOURNEE2(" +
+        list_requet[8] = "CREATE TABLE IF NOT EXISTS TOURNEE2(" +
                 "RECORDID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "NUM_TOURNEE INTEGER,"+
                 "DATE_PASSAGE VARCHAR ," +
@@ -3184,16 +3164,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon2.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
                 bon2.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
                 bon2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
-
                 bon2.stock_produit = cursor.getDouble(cursor.getColumnIndex("STOCK"));
                 bon2.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
                 bon2.pv_limite = cursor.getInt(cursor.getColumnIndex("PV_LIMITE"));
-                bon2.promo = cursor.getInt(cursor.getColumnIndex("PROMO"));
-                bon2.d1 = cursor.getString(cursor.getColumnIndex("D1"));
-                bon2.d2 = cursor.getString(cursor.getColumnIndex("D2"));
-                bon2.pp1_ht = cursor.getDouble(cursor.getColumnIndex("PP1_HT"));
-                bon2.qte_promo = cursor.getDouble(cursor.getColumnIndex("QTE_PROMO"));
-
                 bon2.destock_type = cursor.getString(cursor.getColumnIndex("DESTOCK_TYPE"));
                 bon2.destock_code_barre = cursor.getString(cursor.getColumnIndex("DESTOCK_CODE_BARRE"));
                 bon2.destock_qte = cursor.getDouble(cursor.getColumnIndex("DESTOCK_QTE"));
@@ -3540,17 +3513,10 @@ public class DATABASE extends SQLiteOpenHelper {
                             "BON2.DESTOCK_TYPE, " +
                             "BON2.DESTOCK_CODE_BARRE, " +
                             "BON2.DESTOCK_QTE, " +
-
                             "PRODUIT.ISNEW, " +
                             "PRODUIT.PV_LIMITE, " +
-                            "PRODUIT.STOCK, " +
-                            "PRODUIT.PROMO, " +
-                            "PRODUIT.QTE_PROMO, " +
-                            "PRODUIT.D1, " +
-                            "PRODUIT.D2, " +
-                            "PRODUIT.PP1_HT " +
-
-                            "FROM BON2 " +
+                            "PRODUIT.STOCK " +
+                            "FROM Bon2 " +
                             "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                             "WHERE BON2.NUM_BON = '" + bon1.num_bon + "'");
 
@@ -3638,16 +3604,9 @@ public class DATABASE extends SQLiteOpenHelper {
                             "BON2.DESTOCK_TYPE, " +
                             "BON2.DESTOCK_CODE_BARRE, " +
                             "BON2.DESTOCK_QTE, " +
-
                             "PRODUIT.ISNEW, " +
                             "PRODUIT.PV_LIMITE, " +
-                            "PRODUIT.STOCK, " +
-                            "PRODUIT.PROMO, " +
-                            "PRODUIT.QTE_PROMO, " +
-                            "PRODUIT.D1, " +
-                            "PRODUIT.D2, " +
-                            "PRODUIT.PP1_HT " +
-
+                            "PRODUIT.STOCK " +
                             "FROM BON2 " +
                             "LEFT JOIN  PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                             "WHERE BON2.NUM_BON = '" + num_bon + "'");

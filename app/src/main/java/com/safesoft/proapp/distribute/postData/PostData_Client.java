@@ -26,4 +26,6 @@ public class PostData_Client {
     public double credit_limit = 0.00;
     public int isNew = 1;
 
+    public String blocage;
+
 }

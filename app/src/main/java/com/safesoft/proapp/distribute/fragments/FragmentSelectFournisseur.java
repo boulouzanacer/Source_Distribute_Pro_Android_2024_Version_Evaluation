@@ -22,11 +22,8 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.fournisseur.ActivityFournisseurs;
-import com.safesoft.proapp.distribute.adapters.ListViewAdapterListClient;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterListFournisseur;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 
 import org.greenrobot.eventbus.EventBus;

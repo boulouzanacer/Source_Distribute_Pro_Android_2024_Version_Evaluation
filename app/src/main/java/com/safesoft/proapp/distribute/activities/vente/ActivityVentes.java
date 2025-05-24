@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -61,7 +65,18 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ventes);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         initViews();
 
@@ -71,7 +86,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
             getSupportActionBar().setTitle("Bons de livraison");
             getSupportActionBar().setSubtitle("Client");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
@@ -83,6 +98,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
 
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
+        editor.remove("FILTRE_SEARCH_FAMILLE");
         editor.apply();
 
     }
@@ -163,6 +179,10 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                 "BON1.LATITUDE, " +
                 "BON1.LONGITUDE, " +
 
+                "BON1.LIVRER, " +
+                "BON1.DATE_LIV, " +
+                "BON1.IS_IMPORTED, " +
+
                 "BON1.CODE_DEPOT, " +
                 "BON1.CODE_VENDEUR, " +
                 "BON1.EXPORTATION, " +
@@ -208,7 +228,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         if (bon1s.get(position).blocage.equals("F")) {
             final CharSequence[] items = {"Supprimer", "Imprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -300,8 +320,16 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                                 "BON2.DESTOCK_TYPE, " +
                                 "BON2.DESTOCK_CODE_BARRE, " +
                                 "BON2.DESTOCK_QTE, " +
+
                                 "PRODUIT.ISNEW, " +
-                                "PRODUIT.STOCK " +
+                                "PRODUIT.PV_LIMITE, " +
+                                "PRODUIT.STOCK, " +
+                                "PRODUIT.PROMO, " +
+                                "PRODUIT.QTE_PROMO, " +
+                                "PRODUIT.D1, " +
+                                "PRODUIT.D2, " +
+                                "PRODUIT.PP1_HT " +
+
                                 "FROM BON2 " +
                                 "LEFT JOIN PRODUIT ON (BON2.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2.NUM_BON = '" + bon1s.get(position).num_bon + "'");
@@ -332,7 +360,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         } else {
             final CharSequence[] items = {"Supprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -363,9 +391,11 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_sales_client, menu);
+            inflater.inflate(R.menu.menu_ventes_not_exported, menu);
+        }else{
+            inflater.inflate(R.menu.menu_ventes_exported, menu);
         }
 
         searchView = new SearchView(getSupportActionBar().getThemedContext());
@@ -433,7 +463,11 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
 
+        }else if(item.getItemId() == R.id.delete_all_bon){
+            controller.delete_all_bon(true);
+            setRecycle("", false);
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -443,7 +477,6 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

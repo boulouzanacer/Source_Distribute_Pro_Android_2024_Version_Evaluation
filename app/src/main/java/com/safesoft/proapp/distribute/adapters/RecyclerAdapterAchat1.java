@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
-import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 import com.safesoft.proapp.distribute.utils.MyCardView2;
 

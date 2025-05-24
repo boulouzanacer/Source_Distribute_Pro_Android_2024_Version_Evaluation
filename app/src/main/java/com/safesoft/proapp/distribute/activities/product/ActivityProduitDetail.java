@@ -5,21 +5,24 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ceylonlabs.imageviewpopup.ImagePopup;
-import com.safesoft.proapp.distribute.activities.achats.ActivityAchat;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
@@ -54,7 +57,18 @@ public class ActivityProduitDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_produit_detail);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         controller = new DATABASE(this);
         produit = new PostData_Produit();
@@ -82,13 +96,19 @@ public class ActivityProduitDetail extends AppCompatActivity {
         produit.stock = getIntent().getDoubleExtra("STOCK", 0);
         produit.colissage = getIntent().getDoubleExtra("COLISSAGE", 0);
         produit.stock_ini = getIntent().getDoubleExtra("STOCK_INI", 0);
-        produit.photo = ActivityProduits.produits.get(position_item).photo;
-        produit.description = getIntent().getStringExtra("DESCRIPTION");
 
+        try{
+            produit.photo = ActivityProduits.produits.get(position_item).photo;
+        }catch (Exception e){
+            produit.photo = null;
+        }
+
+        produit.description = getIntent().getStringExtra("DESCRIPTION");
         produit.promo = getIntent().getIntExtra("PROMO", 0);
         produit.d1 = getIntent().getStringExtra("D1");
         produit.d2 = getIntent().getStringExtra("D2");
         produit.pp1_ht = getIntent().getDoubleExtra("PP1_HT", 0);
+        produit.qte_promo = getIntent().getDoubleExtra("QTE_PROMO", 0);
 
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
@@ -96,7 +116,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Détails produit");
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
         initViews();
 
@@ -213,42 +233,54 @@ public class ActivityProduitDetail extends AppCompatActivity {
             Description.setText(produit.description);
         }
 
-        if (params.prix_2 == 1 && is_app_synchronised_mode) {
-            Lnr_pv2.setVisibility(View.VISIBLE);
-        } else {
-            Lnr_pv2.setVisibility(View.GONE);
-        }
 
-        if (params.prix_3 == 1 && is_app_synchronised_mode) {
-            Lnr_pv3.setVisibility(View.VISIBLE);
-        } else {
-            Lnr_pv3.setVisibility(View.GONE);
-        }
+        String selectedTitle = prefs.getString("PRIX_REVENDEUR", "Libre");
 
-        if (params.prix_4 == 1) {
-            Lnr_pv4.setVisibility(View.VISIBLE);
-        } else {
-            Lnr_pv4.setVisibility(View.GONE);
-        }
+        if (selectedTitle.equals("Libre")) {
+            // Show Lnr_pvX if conditions are met
+            Lnr_pv1.setVisibility(View.VISIBLE); // Always visible in Libre mode
 
-        if (params.prix_5 == 1) {
-            Lnr_pv5.setVisibility(View.VISIBLE);
-        } else {
-            Lnr_pv5.setVisibility(View.GONE);
-        }
-
-        if (params.prix_6 == 1) {
-            Lnr_pv6.setVisibility(View.VISIBLE);
-        } else {
-            Lnr_pv6.setVisibility(View.GONE);
-        }
-
-        ImgProduit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imagePopup.viewPopup();
+            if (params.prix_2 == 1 && is_app_synchronised_mode) {
+                Lnr_pv2.setVisibility(View.VISIBLE);
+            } else {
+                Lnr_pv2.setVisibility(View.GONE);
             }
-        });
+
+            if (params.prix_3 == 1 && is_app_synchronised_mode) {
+                Lnr_pv3.setVisibility(View.VISIBLE);
+            } else {
+                Lnr_pv3.setVisibility(View.GONE);
+            }
+
+            if (params.prix_4 == 1) {
+                Lnr_pv4.setVisibility(View.VISIBLE);
+            } else {
+                Lnr_pv4.setVisibility(View.GONE);
+            }
+
+            if (params.prix_5 == 1) {
+                Lnr_pv5.setVisibility(View.VISIBLE);
+            } else {
+                Lnr_pv5.setVisibility(View.GONE);
+            }
+
+            if (params.prix_6 == 1) {
+                Lnr_pv6.setVisibility(View.VISIBLE);
+            } else {
+                Lnr_pv6.setVisibility(View.GONE);
+            }
+
+        } else {
+            // Show only the matched pvX_titre
+            Lnr_pv1.setVisibility(selectedTitle.equals(params.pv1_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv2.setVisibility(selectedTitle.equals(params.pv2_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv3.setVisibility(selectedTitle.equals(params.pv3_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv4.setVisibility(selectedTitle.equals(params.pv4_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv5.setVisibility(selectedTitle.equals(params.pv5_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv6.setVisibility(selectedTitle.equals(params.pv6_titre) ? View.VISIBLE : View.GONE);
+        }
+
+        ImgProduit.setOnClickListener(v -> imagePopup.viewPopup());
     }
 
 
@@ -294,7 +326,6 @@ public class ActivityProduitDetail extends AppCompatActivity {
             Sound();
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound() {

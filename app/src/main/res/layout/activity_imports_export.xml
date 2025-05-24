@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
     tools:context="com.safesoft.proapp.distribute.activities.ActivityImportsExport">
 
     <androidx.appcompat.widget.Toolbar
@@ -79,6 +78,17 @@
                 android:textStyle="italic" />
 
             <include layout="@layout/import_export_inventaire" />
+
+            <Button
+                android:id="@+id/bt6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/parametre_rounded"
+                android:text="TOURNEE"
+                android:textColor="@color/accent"
+                android:textStyle="italic" />
+
+            <include layout="@layout/import_export_tournee" />
 
         </LinearLayout>
 

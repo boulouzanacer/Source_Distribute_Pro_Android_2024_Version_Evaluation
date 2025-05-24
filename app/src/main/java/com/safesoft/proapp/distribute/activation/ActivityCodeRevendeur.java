@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activation;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -22,6 +23,7 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_code_revendeur);
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);

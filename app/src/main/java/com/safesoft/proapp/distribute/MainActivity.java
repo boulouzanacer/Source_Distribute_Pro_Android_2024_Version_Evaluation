@@ -8,9 +8,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.core.content.FileProvider;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowInsetsController;
 import android.widget.Toast;
 
 import com.rt.printerlibrary.connect.PrinterInterface;
@@ -30,8 +34,6 @@ import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.safesoft.proapp.distribute.activities.ActivityInfo;
-import com.safesoft.proapp.distribute.activities.tournee_clients.ActivityTourneeClient;
-import com.safesoft.proapp.distribute.activities.tournee_clients.ActivityTourneesClient;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.appUpdate.APKUtils;
 import com.safesoft.proapp.distribute.appUpdate.CheckVerRequestTask;
@@ -66,9 +68,20 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbardrawer);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
+
+        Toolbar toolbar = findViewById(R.id.toolbardrawer);
         pref = getSharedPreferences(PREFS, 0);
         if (pref.getBoolean("APP_ACTIVATED", false)) {
             toolbar.setSubtitle(Env.APP_VERION_LABEL);
@@ -164,8 +177,15 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
             Intent info_intent = new Intent(this, ActivityInfo.class);
             startActivity(info_intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if(item.getItemId() == R.id.show_seriel_number){
+            //DATABASE_OLD controller = new DATABASE_OLD(this);
+            //controller.ResetPda();
+            //controller.hasUniqueConstraint("PRODUIT");
 
+        } else if(item.getItemId() == R.id.show_seriel_number){
+            new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Numéro de série")
+                    .setContentText(pref.getString("NUM_SERIE", "0"))
+                    .show();
         } else if (item.getItemId() == R.id.update) {
 
             openPlayStoreApp("com.safesoft.proapp.distribute");
@@ -205,11 +225,6 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
             }*/
 
 
-        }else if (item.getItemId() == R.id.track_client) {
-            Intent tournee_intent = new Intent(this, ActivityTourneesClient.class);
-            tournee_intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
-            startActivity(tournee_intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
         return super.onOptionsItemSelected(item);
     }

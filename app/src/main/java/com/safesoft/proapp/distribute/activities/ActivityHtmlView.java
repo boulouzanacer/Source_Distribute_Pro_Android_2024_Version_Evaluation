@@ -1,18 +1,22 @@
 package com.safesoft.proapp.distribute.activities;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View.MeasureSpec;
+import android.view.WindowInsetsController;
 import android.webkit.WebView;
 
 import com.safesoft.proapp.distribute.R;
@@ -47,7 +51,18 @@ public class ActivityHtmlView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //https://stackoverflow.com/questions/26919262/android-4-4-print-to-pdf-without-user-involvement
         WebView.enableSlowWholeDocumentDraw();
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_html_view);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
@@ -55,7 +70,7 @@ public class ActivityHtmlView extends AppCompatActivity {
             getSupportActionBar().setTitle("Bons de livraison");
             getSupportActionBar().setSubtitle("Client");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         bon1 = new PostData_Bon1();

@@ -1,29 +1,39 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
-import com.safesoft.proapp.distribute.activities.ActivityRouting;
+import com.safesoft.proapp.distribute.activities.client.TSPActivityMaps;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
@@ -31,14 +41,17 @@ import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.utils.Env;
 
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivityOrdersClient extends AppCompatActivity implements RecyclerAdapterBon1.ItemClick, RecyclerAdapterBon1.ItemLongClick {
 
@@ -58,11 +71,26 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     private SearchView searchView;
 
     private String CODE_DEPOT;
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat date_format;
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat heure_format;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ventes);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
@@ -70,7 +98,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             getSupportActionBar().setTitle("Bons de commandes");
             getSupportActionBar().setSubtitle("Client");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         controller = new DATABASE(this);
@@ -81,8 +109,12 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
         initViews();
 
+        date_format = new SimpleDateFormat("dd/MM/yyyy");
+        heure_format = new SimpleDateFormat("HH:mm:ss");
+
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
+        editor.remove("FILTRE_SEARCH_FAMILLE");
         editor.apply();
 
         //Reset last item selected in list product
@@ -170,6 +202,10 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 "BON1_TEMP.LATITUDE, " +
                 "BON1_TEMP.LONGITUDE, " +
 
+                "BON1_TEMP.LIVRER, " +
+                "BON1_TEMP.DATE_LIV, " +
+                "BON1_TEMP.IS_IMPORTED, " +
+
                 "BON1_TEMP.CODE_DEPOT, " +
                 "BON1_TEMP.CODE_VENDEUR, " +
                 "BON1_TEMP.EXPORTATION, " +
@@ -179,9 +215,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
 
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            querry = querry + " WHERE IS_EXPORTED = 0 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1_TEMP.DATE_BON, 7, 4) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 4, 2) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 1, 2)) DESC ";
+            querry = querry + " WHERE IS_EXPORTED = 0 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', substr(DATE_BON, 7, 4) || '-' || substr(DATE_BON, 4, 2) || '-' || substr(DATE_BON, 1, 2)) ASC, strftime('%H:%M:%S', BON1_TEMP.HEURE) ASC ";
         } else {
-            querry = querry + " WHERE IS_EXPORTED = 1 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1_TEMP.DATE_BON, 7, 4) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 4, 2) || '-' || SUBSTR(BON1_TEMP.DATE_BON, 1, 2)) DESC ";
+            querry = querry + " WHERE IS_EXPORTED = 1 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', substr(DATE_BON, 7, 4) || '-' || substr(DATE_BON, 4, 2) || '-' || substr(DATE_BON, 1, 2)) ASC, strftime('%H:%M:%S', BON1_TEMP.HEURE) ASC ";
         }
 
         bon1s_temp = controller.select_all_bon1_from_database(querry);
@@ -210,9 +246,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     public void onLongClick(View v, final int position) {
 
         if (bon1s_temp.get(position).blocage.equals("F")) {
-            final CharSequence[] items = {"Supprimer", "Imprimer", "Transferer vers bon vente"};
+            final CharSequence[] items = {"Supprimer", "Imprimer", "Transferer vers bon vente", "Itineraire client"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -288,8 +324,16 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "BON2_TEMP.DESTOCK_TYPE, " +
                                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                 "BON2_TEMP.DESTOCK_QTE, " +
+
                                 "PRODUIT.ISNEW, " +
-                                "PRODUIT.STOCK " +
+                                "PRODUIT.PV_LIMITE, " +
+                                "PRODUIT.STOCK, " +
+                                "PRODUIT.PROMO, " +
+                                "PRODUIT.QTE_PROMO, " +
+                                "PRODUIT.D1, " +
+                                "PRODUIT.D2, " +
+                                "PRODUIT.PP1_HT " +
+
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
@@ -302,8 +346,16 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
                             try {
                                 printer.start_print_bon_vente(bactivity, "ORDER", final_panier, bon1s_temp.get(position));
-                            } catch (UnsupportedEncodingException e) {
+                            } catch (Exception e) {
+
                                 e.printStackTrace();
+
+                                if(e.getMessage().contains("android.bluetooth.BluetoothAdapter.getBondedDevices()")){
+                                    new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
+                                            .setTitleText("Erreur")
+                                            .setContentText("Le bluetooth n'est pas disponible.")
+                                            .show();
+                                }
                             }
                         } else {
                             Intent html_intent = new Intent(this, ActivityHtmlView.class);
@@ -334,23 +386,52 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "BON2_TEMP.DESTOCK_TYPE, " +
                                 "BON2_TEMP.DESTOCK_CODE_BARRE, " +
                                 "BON2_TEMP.DESTOCK_QTE, " +
+
                                 "PRODUIT.ISNEW, " +
-                                "PRODUIT.STOCK " +
+                                "PRODUIT.PV_LIMITE, " +
+                                "PRODUIT.STOCK, " +
+                                "PRODUIT.PROMO, " +
+                                "PRODUIT.QTE_PROMO, " +
+                                "PRODUIT.D1, " +
+                                "PRODUIT.D2, " +
+                                "PRODUIT.PP1_HT " +
+
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
 
-                        if (controller.ExCommande_Export_to_ventes(bon1s_temp.get(position), final_panier, CODE_DEPOT, NUM_BON_BON1 )) {
+                        // get date and time
+                        Calendar c = Calendar.getInstance();
+                        String formattedDate_Show = date_format.format(c.getTime());
+                        String currentTime = heure_format.format(c.getTime());
+
+                        bon1s_temp.get(position).date_bon = formattedDate_Show;
+                        bon1s_temp.get(position).heure = currentTime;
+
+                        if (controller.Export_commande_to_ventes(bon1s_temp.get(position), final_panier, CODE_DEPOT, NUM_BON_BON1 )) {
                             setRecycle("", false);
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.SUCCESS_TYPE)
                                     .setTitleText("Information!")
-                                    .setContentText("Votre a été exporté avec succès")
+                                    .setContentText("Bon de commande transféré avec succès")
                                     .show();
                         }else{
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Probleme d'exportation de bon de commande, Exportation annulé !")
+                                    .setTitleText("Erreur!")
+                                    .setContentText("Probleme de transfère de bon de commande, Transfère annulé !")
                                     .show();
+                        }
+
+                    }
+                    case 3 -> {
+                        try {
+
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + bon1s_temp.get(position).latitude_client + "," + bon1s_temp.get(position).longitude_client);
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+
+                        }catch (Exception e){
+                            Crouton.makeText(ActivityOrdersClient.this, "Erreur de navigation : Position client non disponible", Style.ALERT).show();
                         }
 
                     }
@@ -360,7 +441,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         } else {
             final CharSequence[] items = {"Supprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -390,9 +471,12 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_orders_client, menu);
+            inflater.inflate(R.menu.menu_ventes_not_exported, menu);
+        }else{
+            inflater.inflate(R.menu.menu_ventes_exported, menu);
         }
         searchView = new SearchView(getSupportActionBar().getThemedContext());
         searchView.setQueryHint("Rechercher");
@@ -461,9 +545,36 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             }
 
         } else if (item.getItemId() == R.id.routing) {
-            //  https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
-            Intent nnn = new Intent(ActivityOrdersClient.this, ActivityRouting.class);
-            startActivity(nnn);
+            /*//  https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
+            Intent nnn = new Intent(ActivityOrdersClient.this, ActivityMaps.class);
+            startActivity(nnn);*/
+
+            if ((ContextCompat.checkSelfPermission(ActivityOrdersClient.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) || ContextCompat.checkSelfPermission(ActivityOrdersClient.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ActivityOrdersClient.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3232);
+                ActivityCompat.requestPermissions(ActivityOrdersClient.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 3232);
+            } else {
+                //https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
+                Intent tsp_intent = new Intent(ActivityOrdersClient.this, TSPActivityMaps.class);
+                startActivity(tsp_intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        }else if(item.getItemId() == R.id.delete_all_bon){
+            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Suppression")
+                    .setContentText("Voulez-vous vraiment supprimer tous les bon exportés ?!")
+                    .setCancelText("Anuuler")
+                    .setConfirmText("Supprimer")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
+
+                        controller.delete_all_bon(true);
+                        setRecycle("", false);
+
+                        sDialog.dismiss();
+                    })
+                    .show();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -474,7 +585,6 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

@@ -1,19 +1,14 @@
 package com.safesoft.proapp.distribute.cloud;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.utils.Env;
 
-import org.json.JSONArray;
-
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;

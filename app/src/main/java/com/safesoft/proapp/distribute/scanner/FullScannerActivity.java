@@ -7,6 +7,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.view.MenuItemCompat;
@@ -51,7 +52,7 @@ public class FullScannerActivity extends BaseScannerActivity implements MessageD
             mSelectedIndices = null;
             mCameraId = -1;
         }
-
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_full_scanner);
         setupToolbar();
         ViewGroup contentFrame = findViewById(R.id.content_frame);

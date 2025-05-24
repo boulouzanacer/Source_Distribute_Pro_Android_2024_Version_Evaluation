@@ -7,12 +7,15 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
@@ -21,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -77,7 +81,18 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_produits);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         if (savedInstanceState != null) {
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
@@ -95,7 +110,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("List Produits");
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         controller = new DATABASE(this);
@@ -104,7 +119,8 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         bus.register(this);
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-
+        hide_stock_moins = prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false);
+        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
         initViews();
 
         setRecycle("", false);
@@ -123,10 +139,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.dropdown_famille_item, familles);
         famille_dropdown.setAdapter(adapter);
 
-        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        hide_stock_moins = prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false);
-        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
-
         //SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         //String TYPE_LOGICIEL = prefs.getString("MODE_FAMILLE", "Tous");
         //famille_dropdown.setSelection(adapter.getPosition(TYPE_LOGICIEL));
@@ -144,25 +156,35 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     }
 
     private void setRecycle(String text_search, boolean isscan) {
-        if (isscan) {
+        try {
 
-            // searchView.setIconified(false);
-            // searchView.onActionViewExpanded();
-            is_scan = true;
-            searchView.setQuery(text_search, false);
-            is_scan = false;
+            if (isscan) {
+
+                // searchView.setIconified(false);
+                // searchView.onActionViewExpanded();
+                is_scan = true;
+                searchView.setQuery(text_search, false);
+                is_scan = false;
+            }
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+            adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan));
+            recyclerView.setAdapter(adapter);
+            total_prix.setText("Total achats : " + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
+            nbr_produit.setText("Nombre de produit : " + produits.size());
+            if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
+                total_prix.setVisibility(View.VISIBLE);
+            } else {
+                total_prix.setVisibility(View.GONE);
+            }
+
+        }catch (Exception e){
+            new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Erreur. !")
+                    .setContentText("" + e.getMessage())
+                    .show();
         }
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan));
-        recyclerView.setAdapter(adapter);
-        total_prix.setText("Total achats : " + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
-        nbr_produit.setText("Nombre de produit : " + produits.size());
-        if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
-            total_prix.setVisibility(View.VISIBLE);
-        } else {
-            total_prix.setVisibility(View.GONE);
-        }
+
     }
 
     private double calcule_total() {
@@ -201,13 +223,13 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
 
         if(show_picture_prod){
             // Initialize StringBuilder for dynamic query construction
-            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT ");
         }else{
             // Initialize StringBuilder for dynamic query construction
-            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT ");
@@ -290,6 +312,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         intent.putExtra("D1", produits.get(position).d1);
         intent.putExtra("D2", produits.get(position).d2);
         intent.putExtra("PP1_HT", produits.get(position).pp1_ht);
+        intent.putExtra("QTE_PROMO", produits.get(position).qte_promo);
         intent.putExtra("POSITION_ITEM", position);
 
 
@@ -303,7 +326,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     public void onLongClick(View v, int position) {
         final CharSequence[] items = {"Modifier", "Supprimer"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
         builder.setTitle("Choisissez une action");
         builder.setItems(items, (dialog, item) -> {
@@ -483,7 +506,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

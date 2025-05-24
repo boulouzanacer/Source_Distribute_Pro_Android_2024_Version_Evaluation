@@ -6,13 +6,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,15 +22,9 @@ import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 import com.safesoft.proapp.distribute.utils.MyCardView2;
 import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by UK2016 on 02/01/2017.
@@ -94,6 +86,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     }
 
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = new MyCardView2(parent.getContext(), R.layout.item_product_select);

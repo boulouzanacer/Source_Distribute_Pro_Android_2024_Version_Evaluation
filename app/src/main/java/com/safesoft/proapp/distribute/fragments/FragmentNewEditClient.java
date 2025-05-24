@@ -1,29 +1,22 @@
 package com.safesoft.proapp.distribute.fragments;
 
-import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
-import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.rilixtech.materialfancybutton.MaterialFancyButton;
-import com.rt.printerlibrary.driver.usb.rw.Pos;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.AdapterCommune;
 import com.safesoft.proapp.distribute.adapters.AdapterWilaya;
@@ -37,7 +30,6 @@ import com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +40,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class FragmentNewEditClient {
 
-    MaterialFancyButton btn_valider, btn_cancel;
+    Button btn_valider, btn_cancel;
     TextInputEditText edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
     Spinner wilayaSpinner, communeSpinner;
     ToggleButtonGroupTableLayout radioGroup_mode_tarif;
@@ -107,20 +99,8 @@ public class FragmentNewEditClient {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = dialogview.findViewById(R.id.btn_remise);
-        btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
-        btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
-        btn_valider.setTextSize(15);
-        btn_valider.setIconPosition(POSITION_LEFT);
-        btn_valider.setFontIconSize(30);
-
+        btn_valider = dialogview.findViewById(R.id.btn_valider);
         btn_cancel = dialogview.findViewById(R.id.btn_cancel);
-        btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
-        btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
-        btn_cancel.setTextSize(15);
-        btn_cancel.setIconPosition(POSITION_LEFT);
-        btn_cancel.setFontIconSize(30);
-
 
         edt_client_name = dialogview.findViewById(R.id.edt_client_name);
         wilayaSpinner = dialogview.findViewById(R.id.wilaya_spinner);

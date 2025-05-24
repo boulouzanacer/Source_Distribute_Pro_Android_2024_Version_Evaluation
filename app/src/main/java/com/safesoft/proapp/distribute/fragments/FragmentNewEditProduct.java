@@ -12,8 +12,6 @@ import android.graphics.Color;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -32,11 +30,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
-import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
@@ -49,6 +45,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -545,7 +542,7 @@ public class FragmentNewEditProduct {
 
             if (prefs.getBoolean("AFFICHAGE_HT", false)) {
 
-                if (edt_prix_achat_ht.getText().length() <= 0) {
+                if (Objects.requireNonNull(edt_prix_achat_ht.getText()).length() <= 0) {
                     edt_prix_achat_ht.setError("Prix achat HT est obligatoire!!");
                     hasError = true;
                 }
@@ -555,41 +552,41 @@ public class FragmentNewEditProduct {
                     hasError = true;
                 }*/
 
-                if (edt_prix1_ht.getText().length() <= 0) {
+                if (Objects.requireNonNull(edt_prix1_ht.getText()).length() <= 0) {
                     edt_prix1_ht.setError("Prix 1 HT est obligatoire!!");
                     hasError = true;
                 }
 
                 if (params.prix_2 == 1) {
-                    if (edt_prix2_ht.getText().length() <= 0) {
+                    if (Objects.requireNonNull(edt_prix2_ht.getText()).length() <= 0) {
                         edt_prix2_ht.setError("Prix 2 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_3 == 1) {
-                    if (edt_prix3_ht.getText().length() <= 0) {
+                    if (Objects.requireNonNull(edt_prix3_ht.getText()).length() <= 0) {
                         edt_prix3_ht.setError("Prix 3 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_4 == 1) {
-                    if (edt_prix4_ht.getText().length() <= 0) {
+                    if (Objects.requireNonNull(edt_prix4_ht.getText()).length() <= 0) {
                         edt_prix4_ht.setError("Prix 4 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_5 == 1) {
-                    if (edt_prix5_ht.getText().length() <= 0) {
+                    if (Objects.requireNonNull(edt_prix5_ht.getText()).length() <= 0) {
                         edt_prix5_ht.setError("Prix 5 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_6 == 1) {
-                    if (edt_prix6_ht.getText().length() <= 0) {
+                    if (Objects.requireNonNull(edt_prix6_ht.getText()).length() <= 0) {
                         edt_prix6_ht.setError("Prix 6 HT est obligatoire!!");
                         hasError = true;
                     }
@@ -608,17 +605,17 @@ public class FragmentNewEditProduct {
                 created_produit.stock_ini = val_stock_ini;
                 created_produit.colissage = val_colissage;
 
-                created_produit.pa_ht = Double.parseDouble(edt_prix_achat_ht.getText().toString());
-                created_produit.tva = Double.parseDouble(edt_tva.getText().toString());
+                created_produit.pa_ht = Double.parseDouble(Objects.requireNonNull(edt_prix_achat_ht.getText()).toString());
+                created_produit.tva = Double.parseDouble(Objects.requireNonNull(edt_tva.getText()).toString());
                 created_produit.pa_ttc = Double.parseDouble(edt_tva.getText().toString());
 
                 created_produit.isNew = 1;
 
-                created_produit.pv1_ht = Double.parseDouble(edt_prix1_ht.getText().toString());
+                created_produit.pv1_ht = Double.parseDouble(Objects.requireNonNull(edt_prix1_ht.getText()).toString());
                 created_produit.pv1_ttc = created_produit.pv1_ht + (created_produit.pv1_ht * created_produit.tva / 100);
 
                 if (params.prix_2 == 1 && is_app_synchronised_mode) {
-                    created_produit.pv2_ht = Double.parseDouble(edt_prix2_ht.getText().toString());
+                    created_produit.pv2_ht = Double.parseDouble(Objects.requireNonNull(edt_prix2_ht.getText()).toString());
                     created_produit.pv2_ttc = created_produit.pv2_ht + (created_produit.pv2_ht * created_produit.tva / 100);
                 } else {
                     created_produit.pv2_ht = 0.00;
@@ -669,30 +666,23 @@ public class FragmentNewEditProduct {
                         bus.post(added_product_event);
 
                         dialog.dismiss();
+
                     }catch (Exception e){
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Attention. !")
                                 .setContentText("Problème mise à jour produit : " + e.getMessage())
                                 .show();
                     }
+
                 } else {
+
                     created_produit.stock = val_stock_ini;
+
                     try {
                         PostData_Codebarre created_codebarre = new PostData_Codebarre();
                         created_codebarre.code_barre = created_produit.code_barre;
                         created_codebarre.code_barre_syn = created_produit.code_barre;
-                        //check if product already exist with codebarre
-                       // String querry = "SELECT * FROM PRODUIT WHERE CODE_BARRE = '" + created_produit.code_barre + "'";
-                        /*if(controller.check_product_if_exist(querry)){
-                            //check if has same description
-                            PostData_Produit existed_product = new PostData_Produit();
-                            String querry_get_product = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
-                                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
-                                    "FROM PRODUIT WHERE CODE_BARRE = '" + created_produit.code_barre + "'";
-                            existed_product = controller.select_one_produit_from_database(querry_get_product);
-                            if(cr)
-                        }*/
+
                         //update client into database,
                         //controller.insert_into_produit(created_produit);
                         controller.ExecuteTransaction_product_codebarre(created_produit, created_codebarre);

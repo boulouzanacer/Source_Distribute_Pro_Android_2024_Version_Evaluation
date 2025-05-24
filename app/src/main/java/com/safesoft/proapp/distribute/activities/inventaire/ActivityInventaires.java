@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.R;
@@ -33,6 +37,7 @@ import com.safesoft.proapp.distribute.utils.Env;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -74,15 +79,25 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inventaires);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Liste inventaires");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         controller = new DATABASE(this);
@@ -179,7 +194,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
         final CharSequence[] items = {"Supprimer", "Exporter"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
         builder.setTitle("Choisissez une action");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -304,7 +319,6 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {
@@ -350,8 +364,13 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
                 flag = 1;
 
             } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
                 if (e.getMessage().contains("Unable to complete network request to host")) {
                     flag = 2;
                     Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
@@ -359,6 +378,14 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
                 } else {
                     //not executed with problem in the sql statement
                     flag = 3;
+                }
+            }finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
 
@@ -542,6 +569,14 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
                     flag = 3;
                 }
                 erreurMessage = ex.getMessage();
+            }finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
 
             return flag;

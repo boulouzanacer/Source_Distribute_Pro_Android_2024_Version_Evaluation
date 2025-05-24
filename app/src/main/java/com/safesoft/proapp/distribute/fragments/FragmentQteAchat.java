@@ -25,21 +25,14 @@ import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventAchat2;
-import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventBon2;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
-import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class FragmentQteAchat {
 

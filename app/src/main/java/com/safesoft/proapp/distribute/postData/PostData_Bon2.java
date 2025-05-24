@@ -30,5 +30,6 @@ public class PostData_Bon2 implements Serializable {
     public String d1;
     public String d2;
     public double pp1_ht;
+    public double qte_promo;
 
 }

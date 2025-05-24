@@ -10,6 +10,7 @@ import android.database.MatrixCursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -38,6 +39,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -45,11 +47,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuItemCompat;
+import androidx.core.view.WindowCompat;
 
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowInsetsController;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CameraPosition;
@@ -70,9 +74,10 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     private MediaPlayer mp;
     private DATABASE controller;
     private ArrayList<PostData_Client> clients;
-    com.safesoft.proapp.distribute.utils.ConnectionDetector ConnectionDetector;
+    private ConnectionDetector ConnectionDetector;
 
     LocationManager locationManager;
+
     // Millisecond
     final long MIN_TIME_BW_UPDATES = 1000;
     // Met
@@ -92,19 +97,31 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_maps);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         mToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(mToolbar);
         controller = new DATABASE(this);
+
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         getItems();
 
 
         // Create Progress Bar.
         myProgress = new ProgressDialog(this);
-        myProgress.setTitle("Map chargement ...");
-        myProgress.setMessage("Attendez svp...");
+        myProgress.setTitle("Map");
+        myProgress.setMessage("Chargement...Attendez svp.");
         myProgress.setCancelable(false);
 
         // Display Progress Bar.
@@ -140,10 +157,11 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 myProgress.dismiss();
             }
         });
+
         myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         myMap.getUiSettings().setZoomControlsEnabled(true);
         myMap.setMyLocationEnabled(true);
-        showMyLocation();
+
         showClientsOnMap();
     }
 
@@ -153,24 +171,14 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                //  TODO: Prompt with explanation!
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 //Prompt the user once explanation has been shown
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
 
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
     }
@@ -268,7 +276,14 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
         BitmapDescriptor iconr = BitmapDescriptorFactory.fromResource(R.mipmap.rouge);
 
-        if (clients.size() > 0) {
+        if (!clients.isEmpty()) {
+            LatLng latLng = new LatLng(clients.get(0).latitude, clients.get(0).longitude);
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(latLng)
+                    .zoom(11)                   // Sets the zoom
+                    .build();                   // Creates a CameraPosition from the builder
+            myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
             for (int i = 0; i < clients.size(); i++) {
                 latlongi = new LatLng(clients.get(i).latitude, clients.get(i).longitude);
                 MarkerOptions option = new MarkerOptions();
@@ -280,6 +295,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 assert currentMarker != null;
                 //currentMarker.showInfoWindow();
             }
+        }else {
+            showMyLocation();
         }
 
     }
@@ -331,7 +348,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

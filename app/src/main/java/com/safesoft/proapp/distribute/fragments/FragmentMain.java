@@ -29,6 +29,7 @@ import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaires;
 import com.safesoft.proapp.distribute.activities.login.ActivityLogin;
 import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
 import com.safesoft.proapp.distribute.activities.commande_vente.ActivityOrdersClient;
+import com.safesoft.proapp.distribute.activities.tournee_clients.ActivityTourneesClient;
 import com.safesoft.proapp.distribute.activities.vente.ActivityVentes;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 
@@ -42,7 +43,17 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
     View v;
     LinearLayout lnr_achat, lnr_vente_commande;
     DATABASE controller;
-    private ImageButton BtnClient, BtnVente, BtnCommandeClient, BtnFournisseur, BtnAchat, BtnCommandeFournisseur, BtnProduit, BtnInventaire, BtnImportExport, BtnParametre;
+    private ImageButton BtnClient,
+            BtnVente,
+            BtnCommandeClient,
+            BtnFournisseur,
+            BtnAchat,
+            BtnCommandeFournisseur,
+            BtnProduit,
+            BtnInventaire,
+            BtnTournee,
+            BtnImportExport,
+            BtnParametre;
 
     public FragmentMain() {
 
@@ -51,7 +62,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.activity_main__distribute, container, false);
+        v = inflater.inflate(R.layout.activity_main_distribute, container, false);
 
         initView(v);
 
@@ -65,6 +76,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
         BtnProduit.setOnClickListener(this);
         BtnInventaire.setOnClickListener(this);
+        BtnTournee.setOnClickListener(this);
 
         BtnImportExport.setOnClickListener(this);
         BtnParametre.setOnClickListener(this);
@@ -87,6 +99,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
         BtnProduit = v.findViewById(R.id.btn_produits);
         BtnInventaire = v.findViewById(R.id.btn_inventaire);
+        BtnTournee = v.findViewById(R.id.btn_tournee);
 
         BtnImportExport = v.findViewById(R.id.btn_import_export);
         BtnParametre = v.findViewById(R.id.btn_parametres);
@@ -149,10 +162,12 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
 
         switch (v.getId()) {
+
             case R.id.btn_clients -> {
                 BtnClient.startAnimation(fadeIn);
                 startActivity(ActivityClients.class, 1);
             }
+
             case R.id.btn_ventes -> {
                 if (CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")) {
                     new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
@@ -164,6 +179,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
                     startActivity(ActivityVentes.class, 2);
                 }
             }
+
             case R.id.btn_commande_client -> {
                 if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
                     new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
@@ -175,14 +191,17 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
                     startActivity(ActivityOrdersClient.class, 3);
                 }
             }
+
             case R.id.btn_fournisseur -> {
                 BtnFournisseur.startAnimation(fadeIn);
                 startActivity(ActivityFournisseurs.class, 4);
             }
+
             case R.id.btn_achat -> {
                 BtnAchat.startAnimation(fadeIn);
                 startActivity(ActivityAchats.class, 5);
             }
+
             case R.id.btn_commande_fournisseur -> {
                 BtnCommandeFournisseur.startAnimation(fadeIn);
                 startActivity(ActivityOrdersFournisseur.class, 6);
@@ -191,14 +210,22 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
                 BtnProduit.startAnimation(fadeIn);
                 startActivity(ActivityProduits.class, 7);
             }
+
             case R.id.btn_inventaire -> {
                 BtnInventaire.startAnimation(fadeIn);
                 startActivity(ActivityInventaires.class, 8);
             }
+
+            case R.id.btn_tournee -> {
+                BtnTournee.startAnimation(fadeIn);
+                startActivity(ActivityTourneesClient.class, 8);
+            }
+
             case R.id.btn_import_export -> {
                 BtnImportExport.startAnimation(fadeIn);
                 startActivity(ActivityImportsExport.class, 9);
             }
+
             case R.id.btn_parametres -> {
                 BtnParametre.startAnimation(fadeIn);
                 startActivity(ActivityLogin.class, 10);
@@ -218,5 +245,4 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
         startActivityForResult(intent, request);
         requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-
 }

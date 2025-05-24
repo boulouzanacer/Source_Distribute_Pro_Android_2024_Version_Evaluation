@@ -7,19 +7,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,7 +67,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                 NO_PERMISSION.add(s);
             }
         }
-        if (NO_PERMISSION.size() == 0) {
+        if (NO_PERMISSION.isEmpty()) {
 
         } else {
             requestPermissions(NO_PERMISSION.toArray(new String[0]), 3232);
@@ -73,7 +77,18 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_clients);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         CheckAllPermission();
 
@@ -90,6 +105,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
             getSupportActionBar().setTitle("List Fournisseurs");
         }
 
+        initViews();
     }
 
     private void initViews() {
@@ -99,13 +115,11 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     }
 
     @Override
-    protected void onStart() {
-
-        initViews();
+    protected void onResume() {
 
         setRecycle("");
 
-        super.onStart();
+        super.onResume();
     }
 
     private void setRecycle(String text_search) {
@@ -162,7 +176,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         if (v.getId() == R.id.item_root) {
             final CharSequence[] items = {"Modifier", "Supprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -284,7 +298,6 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

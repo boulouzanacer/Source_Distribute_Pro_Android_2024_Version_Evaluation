@@ -116,80 +116,77 @@ public class FragmentVersementFournisseur {
 
         btn_valider.setOnClickListener(v -> {
 
-            if (Objects.requireNonNull(edt_versement.getText()).length() > 0) {
-                PostData_Carnet_f carnet_f = new PostData_Carnet_f();
+            try {
+
+                if (Objects.requireNonNull(edt_versement.getText()).length() > 0) {
+                    PostData_Carnet_f carnet_f = new PostData_Carnet_f();
 
 
-                // get date and time
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df_show = new SimpleDateFormat("dd/MM/yyyy");
-                // SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                String formattedDate = df_show.format(c.getTime());
-                String currentTime = sdf.format(c.getTime());
+                    // get date and time
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat df_show = new SimpleDateFormat("dd/MM/yyyy");
+                    // SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                    String formattedDate = df_show.format(c.getTime());
+                    String currentTime = sdf.format(c.getTime());
 
-                carnet_f.carnet_date = formattedDate;
-                carnet_f.carnet_heure = currentTime;
-                carnet_f.recordid = recordid;
-                carnet_f.carnet_num_bon = NUM_BON_CARNET_F;
-                carnet_f.code_frs = CODE_FRS;
-                carnet_f.carnet_achats = val_solde_actuel;
-                carnet_f.carnet_versement = val_versement;
-                carnet_f.carnet_remarque = edt_observation.getText().toString();
+                    carnet_f.carnet_date = formattedDate;
+                    carnet_f.carnet_heure = currentTime;
+                    carnet_f.recordid = recordid;
+                    carnet_f.carnet_num_bon = NUM_BON_CARNET_F;
+                    carnet_f.code_frs = CODE_FRS;
+                    carnet_f.carnet_achats = val_solde_actuel;
+                    carnet_f.carnet_versement = val_versement;
+                    carnet_f.carnet_remarque = edt_observation.getText().toString();
 
-                if (!IS_EDIT) {
-                    if (controller.insert_into_carnet_f(carnet_f, val_nouveau_solde, val_nouveau_versement)) {
+                    if (!IS_EDIT) {
+                        if (controller.insert_into_carnet_f(carnet_f, val_nouveau_solde, val_nouveau_versement)) {
 
-                        new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Success!")
-                                .setContentText(" Versement Ajouté! ")
-                                .show();
+                            new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
+                                    .setTitleText("Success!")
+                                    .setContentText(" Versement Ajouté! ")
+                                    .show();
 
-                        ((ActivityFournisseurDetail) activity).Update_fournisseur_details();
+                            ((ActivityFournisseurDetail) activity).Update_fournisseur_details();
 
+                        } else {
+                            // message erreur
+                            new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Opss!")
+                                    .setContentText(" Erreur d'insertion versement! ")
+                                    .show();
+                        }
                     } else {
-                        // message erreur
-                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Opss!")
-                                .setContentText(" Erreur d'insertion versement! ")
-                                .show();
+
+                        if (controller.update_versement_fournisseur(carnet_f, val_nouveau_solde, val_nouveau_versement)) {
+
+                            new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
+                                    .setTitleText("Success!")
+                                    .setContentText(" Versement Modifié! ")
+                                    .show();
+
+                            ((ActivityClientDetail) activity).Update_client_details();
+
+                        } else {
+                            // message erreur
+                            new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Opss!")
+                                    .setContentText(" Erreur modification versement! ")
+                                    .show();
+                        }
                     }
+
+                    dialog.dismiss();
                 } else {
-
-                    if (controller.update_versement_fournisseur(carnet_f, val_nouveau_solde, val_nouveau_versement)) {
-
-                        new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Success!")
-                                .setContentText(" Versement Modifié! ")
-                                .show();
-
-                        ((ActivityClientDetail) activity).Update_client_details();
-
-                    } else {
-                        // message erreur
-                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Opss!")
-                                .setContentText(" Erreur modification versement! ")
-                                .show();
-                    }
+                    edt_versement.setError("Montant obligatoire!!");
                 }
 
-                dialog.dismiss();
-            } else {
-                edt_versement.setError("Montant obligatoire!!");
+            }catch (Exception e){
+                new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Erreur. !")
+                        .setContentText("" + e.getMessage())
+                        .show();
             }
-            /*if(edt_versement.getText().length() > 0){
-
-               // RemiseEventRemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
-                ValidateFactureEvent Valider_bon_versement = new ValidateFactureEvent( val_versement);
-                // Post the event
-                bus.post(Valider_bon_versement);
-
-                dialog.dismiss();
-
-            }else {
-                edt_versement.setError("Montant versement obligatoire!!");
-            }*/
         });
 
         btn_cancel.setOnClickListener(v -> {

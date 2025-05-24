@@ -1,13 +1,16 @@
 package com.safesoft.proapp.distribute.activities;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.WindowInsetsController;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,14 +21,25 @@ public class ActivityInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_info);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Info mise à jour");
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         TextView txtv_update = findViewById(R.id.txtv_update);
@@ -33,18 +47,33 @@ public class ActivityInfo extends AppCompatActivity {
 
         String content = "<h3>Historique des versions</h3><br>" +
                 "<pre>" +
-                "    <h6>version v30.3.24 (30-03-2024)<br></h6>" +
-                "    <p style=color:black;>[AJOUTER] Mode évaluation ( pour les test )</p>" +
-                "    <p style=color:red;>[MAJ] Rubrique produit</p>" +
-                "        &ensp;1- [MAJ] Nouveau produit avec 3 mode de tarif par defaut <br>" +
-                "    <h6>version v07.2.24 (04-02-2024)<br></h6>" +
-                "    <p style=color:teal;>[MAJ] Rubrique vente</p>" +
-                "        &ensp;1- Ajouter le dernier prix d'un produit vendu pour un client <br>" +
-                "    <p style=color:green;>[MAJ] Rubrique client</p>" +
-                "        &ensp;1- [MAJ] Nouveau client - Ajouter solde initial<br>" +
-                "    <p style=color:red;>[MAJ] Rubrique produit</p>" +
-                "        &ensp;1- [MAJ] Modifier détails produit <br>" +
+                "    <h6><p style=color:red;>Version v2.4.25 (02-04-2025)<br></p></h6>" +
+                "    <p style=color:black;>1 - Ajouter button 'Importation bon de commandes' pour importer les bons de commandes depuis le serveur</p>" +
+                "    <p style=color:black;>2 - Ajouter une carte pour afficher les clients ayant des bons de commande et suivre leurs validations à travers des marqueurs.</p>" +
+                "    <p style=color:black;>3 - Imprimer Etat de vente et commande</p>" +
+                "    <p style=color:black;>4 - Exportation PDF en plusieurs pages</p>" +
+                "    <p style=color:black;>5 - Ajouter 2 model impression pour la langue latin et 2 pour la langue arabe</p>" +
+                "    <p style=color:black;>6 - Ajouter prix limite</p>" +
+                "    <p style=color:black;>7 - Possibilité de synchroniser les nouveau clients, fournisseurs, produits et leurs details (prix, photos ...) vers le serveur</p>" +
                 "    <br>" +
+
+                "    <h6><p style=color:red;>Version v30.3.24 (30-03-2024)<br></p></h6>" +
+                "    <p style=color:black;>1 - Ajouter Mode évaluation ( pour les tests )</p>" +
+                "    <p style=color:black;>2 - Nouveau produit avec 3 mode de tarif par defaut</p>" +
+                "    <p style=color:black;>3 - Afficher le dernier prix vendu d'un produit pour un client</p>" +
+                "    <p style=color:black;>4 - Ajouter solde initial client</p>" +
+                "    <p style=color:black;>5 - Paramètres : Autoriser / Empêcher la modification du prix de vente</p>" +
+                "    <p style=color:black;>6 - Paramètres : Autoriser / Empêcher la modification du bon de vente, commande et achat</p>" +
+                "    <p style=color:black;>7 - Paramètres : Sychroniser tous les clients</p>" +
+                "    <p style=color:black;>8 - Paramètres : Afficher / cacher les photos des produits</p>" +
+                "    <p style=color:black;>9 - Paramètres : Activer / desactiver le son</p>" +
+                "    <p style=color:black;>10 - Paramètres : sauvegarder les filtres de recherche</p>" +
+                "    <p style=color:black;>11 - Paramètres : afficher / cacher le remise</p>" +
+                "    <p style=color:black;>12 - Paramètres : Afficher / masquer les produits stock 0 ou moins</p>" +
+                "    <p style=color:black;>13 - Paramètres : Afficher / masquer le benifice pour chaque bon de vente</p>" +
+                "    <p style=color:black;>14 - Paramètres : Afficher / masquer les modules ( vente, achat, commande, inventaire)</p>" +
+                "    <br>" +
+
                 "    <h6>version v21.1.24 (21-01-2024)<br></h6>" +
                 "    <p style=color:olive;>[MAJ] Rubrique Paramètres</p>" +
                 "        &ensp;4- [MAJ][Paramètres imprimantes]<br>" +
@@ -82,16 +111,24 @@ public class ActivityInfo extends AppCompatActivity {
                 "        &ensp;2- Ajouter fournisseur<br>" +
                 "        &ensp;3- Supprimer fournisseur<br>" +
                 "        &ensp;4- Modifier fournisseur<br>" +
+                "        &ensp;5- Details fournisseur<br>" +
+                "        &ensp;6- Versement fournisseur (Mode mono-poste)<br>" +
+                "        &ensp;7- Imprimer Versement fournisseur (Mode mono-poste)<br>" +
+
                 "    <p style=color:navy;>[AJOUTER] Rubrique achat</p>" +
                 "        &ensp;1- List bon achats<br>" +
                 "        &ensp;2- Ajouter nouveau bon<br>" +
                 "        &ensp;3- Supprimer bon achat<br>" +
                 "        &ensp;4- Modifier bon achat<br>" +
                 "        &ensp;5- Imprimer bon achat<br>" +
+                "        &ensp;6- Exporter bon d'achat vers format PDF<br>" +
+
                 "    <p style=color:green;>[MAJ] Rubrique client</p>" +
                 "        &ensp;1- [AJOUTER] Supprimer client<br>" +
                 "        &ensp;2- [AJOUTER] Modifier client<br>" +
                 "        &ensp;3- [AJOUTER] Maps location clients<br>" +
+                "        &ensp;4- [AJOUTER] details client<br>" +
+                "        &ensp;5- [AJOUTER] Imprimer versement client<br>" +
                 "    <p style=color:purple;>[MAJ] Rubrique Import/export</p>" +
                 "        &ensp;1- [AJOUTER] Synchroniser les fournisseur (LOCAL et INTERNET)<br>" +
                 "        &ensp;2- [AJOUTER] Synchronisation des paramètres PME PRO / HYPER PRO (LOCAL et INTERNET)<br>" +
@@ -178,11 +215,5 @@ public class ActivityInfo extends AppCompatActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

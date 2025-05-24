@@ -23,12 +23,5 @@
         android:icon="@drawable/baseline_info_24"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/track_client"
-        android:orderInCategory="100"
-        android:title="Suivi client"
-        android:visible="true"
-        android:icon="@drawable/track_clients_64"
-        app:showAsAction="always" />
 
 </menu>

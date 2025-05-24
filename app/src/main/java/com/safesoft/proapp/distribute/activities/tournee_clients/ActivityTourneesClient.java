@@ -15,14 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.inventaire.ActivityInventaire;
-import com.safesoft.proapp.distribute.adapters.RecyclerAdapterInv1;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterTournee1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
@@ -33,6 +32,7 @@ import com.safesoft.proapp.distribute.utils.Env;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -67,6 +67,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tournees_client);
 
 
@@ -75,7 +76,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Liste tournées");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         controller = new DATABASE(this);
@@ -147,15 +148,18 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
     @Override
     public void onClick(View v, int position) {
+
         if (prefs.getBoolean("ENABLE_SOUND", false)) {
             Sound(R.raw.beep);
         }
+
         Intent editIntent = new Intent(ActivityTourneesClient.this, ActivityTourneeClient.class);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_TOURNEE");
         editIntent.putExtra("NUM_TOURNEE", tournee1s.get(position).num_tournee);
         editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
         startActivity(editIntent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
     }
 
 
@@ -164,7 +168,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
         final CharSequence[] items = {"Supprimer", "Exporter"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
         builder.setTitle("Choisissez une action");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -289,7 +293,6 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
             Sound(R.raw.back);
         }
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {
@@ -335,8 +338,13 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
                 flag = 1;
 
             } catch (Exception e) {
-                e.printStackTrace();
-                con = null;
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
                 if (e.getMessage().contains("Unable to complete network request to host")) {
                     flag = 2;
                     Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD");
@@ -344,6 +352,14 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
                 } else {
                     //not executed with problem in the sql statement
                     flag = 3;
+                }
+            }finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
 

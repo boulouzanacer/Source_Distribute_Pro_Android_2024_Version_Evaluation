@@ -94,7 +94,7 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         PostData_Produit item = produitList.get(position);
 
         prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
@@ -166,18 +166,15 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
                 color = generator.getColor(produitList.get(position).produit);
         }
 
-        if (prefs.getBoolean("SHOW_PROD_PIC", false)) {
-            if (item.photo != null) {
-                holder.image.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
 
-            } else {
-                TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), ContextCompat.getColor(mContext, R.color.blue));
-                holder.image.setImageDrawable(drawable);
-            }
+        if (item.photo != null) {
+            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
+
         } else {
             TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), ContextCompat.getColor(mContext, R.color.blue));
             holder.image.setImageDrawable(drawable);
         }
+
 
     }
 

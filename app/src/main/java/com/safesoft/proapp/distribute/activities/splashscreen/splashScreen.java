@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.provider.Settings;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -53,6 +55,7 @@ public class splashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
 
         imagesplash = findViewById(R.id.ImageSplash);
@@ -90,6 +93,8 @@ public class splashScreen extends AppCompatActivity {
         }
         final int codeactivation = i;
 
+        saveData();
+
         sweetDialog =  new SweetAlertDialog(splashScreen.this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Activation")
                 .setContentText("L'application DISTRIBUTE PRO n'est pas encore activé, Voulez-vous l'activer ? ")
@@ -121,24 +126,38 @@ public class splashScreen extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
                 code_activation = prefs.getInt("CODE_ACTIVATION", 0);
 
+                try {
 
-                if (codeactivation == code_activation) {
+                    if (codeactivation == code_activation) {
 
-                    saveActivationData(true);
-                    startActivity(new Intent(splashScreen.this, MainActivity.class));
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                    finish();
+                        saveActivationData(true);
+                        startActivity(new Intent(splashScreen.this, MainActivity.class));
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        finish();
 
-                } else {
-                    runOnUiThread(() -> sweetDialog.show());
-                    saveActivationData(false);
+                    } else {
+                        runOnUiThread(() -> sweetDialog.show());
+                        saveActivationData(false);
+                    }
+
+                }catch (Exception e){
+                    Log.v("Erreur ", e.getMessage());
                 }
+
+
 
 
             }
         }, 2000);
 
 
+    }
+
+    public void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("NUM_SERIE", deviceId2);
+        editor.apply();
     }
 
     public void saveActivationData(boolean is_activated) {

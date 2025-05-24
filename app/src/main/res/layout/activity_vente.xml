@@ -65,6 +65,7 @@
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 tools:ignore="NestedWeights" />
+
         </LinearLayout>
 
         <LinearLayout

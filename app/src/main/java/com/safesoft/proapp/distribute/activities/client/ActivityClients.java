@@ -7,8 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
-import android.os.Handler;
+import android.os.Build;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
@@ -25,9 +27,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
@@ -84,7 +86,25 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_clients);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
+
+        Toolbar toolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("List Clients");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         CheckAllPermission();
 
@@ -96,18 +116,16 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         bus.register(this);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        Toolbar toolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("List Clients");
-        }
-
-
         initViews();
+
+    }
+
+    @Override
+    protected void onResume() {
 
         setRecycle("", false);
 
+        super.onResume();
     }
 
     private void initViews() {
@@ -172,10 +190,11 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
     @Override
     public void onLongClick(View v, int position) {
+
         if (v.getId() == R.id.item_root) {
             final CharSequence[] items = {"Modifier", "Supprimer"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
             builder.setTitle("Choisissez une action");
             builder.setItems(items, (dialog, item) -> {
@@ -219,7 +238,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                                     }).show();
 
                         }
-
                     }
                 }
             });
@@ -321,7 +339,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         if (prefs.getBoolean("ENABLE_SOUND", false)) {
             Sound(R.raw.back);
         }
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void Sound(int SourceSound) {

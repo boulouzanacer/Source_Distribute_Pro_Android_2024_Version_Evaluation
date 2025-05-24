@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
@@ -139,7 +138,7 @@
             android:gravity="center"
             android:padding="15dp"
             android:textSize="22dp"
-            android:text="Cette rubrique vous pemet de consulter le dtail des ventes entre deux dates données, et par clients "
+            android:text="Cette rubrique vous permet de consulter le détail des ventes entre deux dates données et par client."
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

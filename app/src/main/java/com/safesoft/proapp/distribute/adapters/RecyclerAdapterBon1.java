@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
@@ -27,7 +26,6 @@ import com.safesoft.proapp.distribute.utils.MyCardView2;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

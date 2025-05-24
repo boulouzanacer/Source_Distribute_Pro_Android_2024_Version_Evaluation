@@ -1,6 +1,5 @@
 package com.safesoft.proapp.distribute.fragments;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
@@ -10,7 +9,6 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.RadioButton;
 
 import androidx.appcompat.app.AlertDialog;
 

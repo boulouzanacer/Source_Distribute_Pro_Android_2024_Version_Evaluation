@@ -73,7 +73,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyApHcITtdXKD0hGcZhcN1MppH3pCyoqJ1s" />
+            android:value="AIzaSyA--Ft2q8jz-WkLuGWFtGeGtl_9BsTReZU" />
 
         <activity
             android:name=".activities.client.TSPActivityMaps"
@@ -108,11 +108,10 @@
         <!-- Main classes -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:exported="true" />
+
         <activity
-            android:name=".activities.splashscreen.splashScreen"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".activities.splashscreen.splashScreen" />
 
         <!-- Activation classes -->
         <activity android:name=".activation.ActivityActivation" />
@@ -121,7 +120,6 @@
         <activity
             android:name=".activities.client.ActivityClients"
             android:exported="false"
-
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
@@ -144,11 +142,10 @@
 
         <!-- login parametres classes -->
         <activity
-            android:name=".activities.login.ActivityLogin"
-            android:theme="@style/AppTheme.Dark" />
+            android:name=".activities.login.ActivityLogin" />
+
         <activity
-            android:name=".activities.login.ActivityChangePwd"
-            android:theme="@style/AppTheme.Dark" />
+            android:name=".activities.login.ActivityChangePwd"/>
 
         <!-- Achat classes -->
         <activity android:name=".activities.commande_achat.ActivityOrdersFournisseur" />
@@ -162,8 +159,8 @@
 
         <!-- Scanner classes -->
         <activity
-            android:name=".scanner.FullScannerActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".scanner.FullScannerActivity"/>
+
         <activity android:name=".scanner.BaseScannerActivity" />
 
         <!-- achat classes -->
@@ -196,8 +193,7 @@
         <activity
             android:name=".activities.map.ActivityMaps"
             android:hardwareAccelerated="true"
-            android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_maps" />
 
         <!-- Etat -->
         <activity android:name=".activities.vente.ActivityEtatV" />
