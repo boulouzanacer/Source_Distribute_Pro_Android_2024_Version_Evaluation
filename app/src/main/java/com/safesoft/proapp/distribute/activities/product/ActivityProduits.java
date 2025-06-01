@@ -40,6 +40,7 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditProduct;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.utils.ImageUtils;
@@ -60,19 +61,19 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ActivityProduits extends AppCompatActivity implements RecyclerAdapterProduits.ItemClick, RecyclerAdapterProduits.ItemLongClick {
 
-    RecyclerView recyclerView;
-    RecyclerAdapterProduits adapter;
+    private RecyclerView recyclerView;
+    private RecyclerAdapterProduits adapter;
     public static ArrayList<PostData_Produit> produits;
-    DATABASE controller;
+    private DATABASE controller;
     private MediaPlayer mp;
     public static final String BARCODE_KEY = "BARCODE";
     private SearchView searchView;
     private TextView nbr_produit, total_prix;
-    AutoCompleteTextView famille_dropdown;
+    private AutoCompleteTextView famille_dropdown;
     private String selected_famile = "Toutes";
     private EventBus bus;
-    FragmentNewEditProduct fragmentnewproduct;
-    SharedPreferences prefs;
+    private FragmentNewEditProduct fragmentnewproduct;
+    private SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
     private boolean hide_stock_moins = true;
     private boolean show_picture_prod = false;
@@ -110,7 +111,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("List Produits");
-            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         controller = new DATABASE(this);
@@ -139,10 +139,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.dropdown_famille_item, familles);
         famille_dropdown.setAdapter(adapter);
 
-        //SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        //String TYPE_LOGICIEL = prefs.getString("MODE_FAMILLE", "Tous");
-        //famille_dropdown.setSelection(adapter.getPosition(TYPE_LOGICIEL));
-
         famille_dropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -158,21 +154,24 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     private void setRecycle(String text_search, boolean isscan) {
         try {
 
-            if (isscan) {
+            PostData_Params params;
+            params = controller.select_params_from_database("SELECT * FROM PARAMS");
+            String prix_revendeur = prefs.getString("PRIX_REVENDEUR", "Libre");
 
-                // searchView.setIconified(false);
-                // searchView.onActionViewExpanded();
+            if (isscan) {
                 is_scan = true;
                 searchView.setQuery(text_search, false);
                 is_scan = false;
             }
+
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
-            adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan));
+            adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan), params, prix_revendeur);
             recyclerView.setAdapter(adapter);
-            total_prix.setText("Total achats : " + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
+
             nbr_produit.setText("Nombre de produit : " + produits.size());
             if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
+                total_prix.setText("Total achats : " + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
                 total_prix.setVisibility(View.VISIBLE);
             } else {
                 total_prix.setVisibility(View.GONE);

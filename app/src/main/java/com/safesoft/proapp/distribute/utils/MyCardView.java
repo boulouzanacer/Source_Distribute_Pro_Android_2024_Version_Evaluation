@@ -29,7 +29,7 @@ public class MyCardView extends RelativeLayout {
     public static final int DURATION = 150;
 
 
-    public MyCardView(Context context) {
+    public MyCardView(Context context, int item_product_select) {
         super(context);
         initialize(context);
         EventBus.getDefault().register(this);

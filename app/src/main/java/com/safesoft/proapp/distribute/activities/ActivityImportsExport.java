@@ -1291,6 +1291,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         List<String> list_client_not_exported;
         List<String> list_num_bon_not_exported;
         List<String> list_recordid_versement_not_exported;
+        List<String> list_command_not_updated;
 
         String messageError = "";
 
@@ -1299,6 +1300,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         }
 
         private void progressDialogExportation() {
+
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Exportation des données...");
 
@@ -1311,6 +1313,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             mProgressDialog_Free = builder.create();
             mProgressDialog_Free.show();
+
         }
 
         @Override
@@ -1329,10 +1332,12 @@ public class ActivityImportsExport extends AppCompatActivity {
                 ArrayList<PostData_Bon1> bon1s;
                 ArrayList<PostData_Bon2> bon2s;
                 PostData_Client client;
+
                 list_produit_not_exported = new ArrayList<>();
                 list_client_not_exported = new ArrayList<>();
                 list_num_bon_not_exported = new ArrayList<>();
                 list_recordid_versement_not_exported = new ArrayList<>();
+                list_command_not_updated = new ArrayList<>();
 
                 System.setProperty("FBAdbLog", "true");
                 DriverManager.setLoginTimeout(5);
@@ -1340,9 +1345,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                 String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
-                Statement stmt = con.createStatement();
 
                 con.setAutoCommit(false);
+                Statement stmt = con.createStatement();
+
+                list_command_not_updated = update_command_into_server(con, stmt);
 
                 int recordid_numbon = 0;
 
@@ -3013,21 +3020,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT " +
                         " FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0 ";
 
-                /*if (!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)) {
-
-                    if (code_depot.equals("000000")) {
-                        if (code_vendeur.equals("000000")) {
-
-                        } else {
-                            sql12 = sql12 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
-                            sql0 = sql0 + " AND CODE_VENDEUR = '" + code_vendeur + "'";
-                        }
-                    } else {
-                        sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
-                        sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
-                    }
-                }*/
-
                 if (!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)) {
 
                     if (!code_depot.equals("000000")) {
@@ -3233,9 +3225,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                 con.setAutoCommit(false);
                 list_produit_not_exported = update_produit_into_server(con, stmt);
 
-                String sql12;
-                if (code_depot.equals("000000")) {
-                    sql12 = "SELECT  COUNT(*) FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0) = 0  ";
+                boolean is_syc_all_clients = prefs.getBoolean("SYCHRONISER_TOUS_PRODUIT", false);
+
+                if (code_depot.equals("000000") || is_syc_all_clients) {
+                    String sql12 = "SELECT  COUNT(*) FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0) = 0  ";
                     if (TYPE_LOGICIEL.equals("PME PRO")) {
                         sql12 = sql12 + " AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 )";
                     }
@@ -3357,7 +3350,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 } else {
 
-                    sql12 = "SELECT  COUNT(*) FROM DEPOT2  LEFT JOIN produit ON ( PRODUIT.code_barre = DEPOT2.code_barre )  WHERE DEPOT2.CODE_DEPOT = '" + code_depot + "' AND Coalesce(PRODUIT.SUP,0)=0  ";
+                    String sql12 = "SELECT  COUNT(*) FROM DEPOT2  LEFT JOIN produit ON ( PRODUIT.code_barre = DEPOT2.code_barre )  WHERE DEPOT2.CODE_DEPOT = '" + code_depot + "' AND Coalesce(PRODUIT.SUP,0)=0  ";
                     if (TYPE_LOGICIEL.equals("PME PRO")) {
                         sql12 = sql12 + " AND DEPOT2.CODE_LOT IS NULL AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 )";
                     }
@@ -3764,11 +3757,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                 String sCon = "jdbc:firebirdsql:" + Server + ":" + Path + ".FDB?encoding=WIN1256";
                 con = DriverManager.getConnection(sCon, Username, Password);
 
-                con.setAutoCommit(false);
-                Statement stmt = con.createStatement();
-                update_command_into_server(con, stmt);
-                stmt.close();
-
                 list_client = controller.select_clients_from_database("SELECT * FROM CLIENT");
 
                 if (list_client.size() <= 0) {
@@ -3782,6 +3770,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 controller.ResetTableCommandClient();
 
                 for (int i = 0; i < list_client.size(); i++) {
+
                     try {
 
                         String sql0 = "SELECT NUM_BON, CODE_CLIENT, DATE_BON, HEURE, NBR_P, TOT_QTE, " +
@@ -4001,103 +3990,101 @@ public class ActivityImportsExport extends AppCompatActivity {
                 //update_command_into_server(con, stmt);
                 //stmt.close();
 
-
-
-
                 //controller.ResetTableCommandClient();
-                    Statement stmt = con.createStatement();
-                    String sql0 = "SELECT  COUNT(*) FROM TOURNEE1 WHERE CODE_VENDEUR = '" + code_vendeur + "' AND EXPORTATION IS NULL";
-                    ResultSet rs0 = stmt.executeQuery(sql0);
-                    while (rs0.next()) {
-                        allrows = rs0.getInt("COUNT");
-                    }
-                    stmt.close();
+                Statement stmt = con.createStatement();
+                String sql0 = "SELECT  COUNT(*) FROM TOURNEE1 WHERE CODE_VENDEUR = '" + code_vendeur + "' AND EXPORTATION IS NULL";
+                ResultSet rs0 = stmt.executeQuery(sql0);
 
-                    publishProgress(compt);
+                while (rs0.next()) {
+                    allrows = rs0.getInt("COUNT");
+                }
+                stmt.close();
 
-                    String sql1 = "SELECT " +
+                publishProgress(compt);
+
+                String sql1 = "SELECT " +
+                        "RECORDID, " +
+                        "NUM_TOURNEE, " +
+                        "DATE_TOURNEE, " +
+                        "CODE_VENDEUR, " +
+                        "CODE_DEPOT, " +
+                        "EXPORTATION, " +
+                        "NBR_CLIENT, " +
+                        "OBSERVATION FROM TOURNEE1 WHERE CODE_VENDEUR = ? AND EXPORTATION IS NULL ";
+
+                PreparedStatement stmt0 = con.prepareStatement(sql1);
+                stmt0.setString(1, code_vendeur);
+
+
+                ResultSet rs1 = stmt0.executeQuery();
+
+                ArrayList<PostData_Tournee1> tournee1s = new ArrayList<>();
+                PostData_Tournee1 tournee1;
+
+                while (rs1.next()) {  // `if` au lieu de `while` car FIRST 1 retourne un seul résultat
+
+                    tournee1 = new PostData_Tournee1();
+
+                    tournee1.recordid = rs1.getInt("RECORDID");
+                    tournee1.num_tournee = rs1.getString("NUM_TOURNEE");
+                    tournee1.date_tournee = convertDateFormat(rs1.getString("DATE_TOURNEE"));
+                    tournee1.code_vendeur = rs1.getString("CODE_VENDEUR");
+                    tournee1.code_depot = rs1.getString("CODE_DEPOT");
+                    tournee1.exportation = rs1.getString("EXPORTATION");
+                    tournee1.nbr_client = rs1.getInt("NBR_CLIENT");
+                    tournee1.observation = rs1.getString("OBSERVATION");
+
+                    tournee1s.add(tournee1);
+
+
+                    // ========== Deuxième requête avec un `PreparedStatement` séparé ==========
+                    String sql2 = "SELECT " +
                             "RECORDID, " +
                             "NUM_TOURNEE, " +
-                            "DATE_TOURNEE, " +
-                            "CODE_VENDEUR, " +
-                            "CODE_DEPOT, " +
-                            "EXPORTATION, " +
-                            "NBR_CLIENT, " +
-                            "OBSERVATION FROM TOURNEE1 WHERE CODE_VENDEUR = ? AND EXPORTATION IS NULL ";
+                            "DATE_PASSAGE, " +
+                            "HEURE_PASSAGE, " +
+                            "CODE_CLIENT, " +
+                            "STATUS, " +
+                            "LATITUDE, " +
+                            "LONGITUDE, " +
+                            "OBSERVATION, " +
+                            "IS_NEW " +
+                            "FROM TOURNEE2 WHERE NUM_TOURNEE = ?";
 
-                    PreparedStatement stmt0 = con.prepareStatement(sql1);
-                    stmt0.setString(1, code_vendeur);
+                    PreparedStatement stmt1 = con.prepareStatement(sql2);
+                    stmt1.setString(1, tournee1s.get(compt).num_tournee);
 
+                    ResultSet rs2 = stmt1.executeQuery();
+                    ArrayList<PostData_Tournee2> tournee2s = new ArrayList<>();
+                    while (rs2.next()) {
+                        PostData_Tournee2 tournee2 = new PostData_Tournee2();
 
-                    ResultSet rs1 = stmt0.executeQuery();
+                        tournee2.recordid = rs2.getInt("RECORDID");
+                        tournee2.num_tournee = rs2.getString("NUM_TOURNEE");
+                        tournee2.date_passage = rs2.getString("DATE_PASSAGE");
+                        tournee2.heure_passage = rs2.getString("HEURE_PASSAGE");
+                        tournee2.code_client = rs2.getString("CODE_CLIENT");
+                        tournee2.status = rs2.getString("STATUS");
+                        tournee2.latitude = rs2.getDouble("LATITUDE");
+                        tournee2.longitude = rs2.getDouble("LONGITUDE");
+                        tournee2.observation = rs2.getString("OBSERVATION");
+                        tournee2.is_new = rs2.getInt("IS_NEW");
 
-                    ArrayList<PostData_Tournee1> tournee1s = new ArrayList<>();
-                    PostData_Tournee1 tournee1;
-
-                    while (rs1.next()) {  // `if` au lieu de `while` car FIRST 1 retourne un seul résultat
-
-                        tournee1 = new PostData_Tournee1();
-
-                        tournee1.recordid = rs1.getInt("RECORDID");
-                        tournee1.num_tournee = rs1.getString("NUM_TOURNEE");
-                        tournee1.date_tournee = convertDateFormat(rs1.getString("DATE_TOURNEE"));
-                        tournee1.code_vendeur = rs1.getString("CODE_VENDEUR");
-                        tournee1.code_depot = rs1.getString("CODE_DEPOT");
-                        tournee1.exportation = rs1.getString("EXPORTATION");
-                        tournee1.nbr_client = rs1.getInt("NBR_CLIENT");
-                        tournee1.observation = rs1.getString("OBSERVATION");
-
-                        tournee1s.add(tournee1);
-
-
-                        // ========== Deuxième requête avec un `PreparedStatement` séparé ==========
-                        String sql2 = "SELECT " +
-                                "RECORDID, " +
-                                "NUM_TOURNEE, " +
-                                "DATE_PASSAGE, " +
-                                "HEURE_PASSAGE, " +
-                                "CODE_CLIENT, " +
-                                "STATUS, " +
-                                "LATITUDE, " +
-                                "LONGITUDE, " +
-                                "OBSERVATION, " +
-                                "IS_NEW " +
-                                "FROM TOURNEE2 WHERE NUM_TOURNEE = ?";
-
-                        PreparedStatement stmt1 = con.prepareStatement(sql2);
-                        stmt1.setString(1, tournee1s.get(compt).num_tournee);
-
-                        ResultSet rs2 = stmt1.executeQuery();
-                        ArrayList<PostData_Tournee2> tournee2s = new ArrayList<>();
-                        while (rs2.next()) {
-                            PostData_Tournee2 tournee2 = new PostData_Tournee2();
-
-                            tournee2.recordid = rs2.getInt("RECORDID");
-                            tournee2.num_tournee = rs2.getString("NUM_TOURNEE");
-                            tournee2.date_passage = rs2.getString("DATE_PASSAGE");
-                            tournee2.heure_passage = rs2.getString("HEURE_PASSAGE");
-                            tournee2.code_client = rs2.getString("CODE_CLIENT");
-                            tournee2.status = rs2.getString("STATUS");
-                            tournee2.latitude = rs2.getDouble("LATITUDE");
-                            tournee2.longitude = rs2.getDouble("LONGITUDE");
-                            tournee2.observation = rs2.getString("OBSERVATION");
-                            tournee2.is_new = rs2.getInt("IS_NEW");
-
-                            tournee2s.add(tournee2);
-                        }
-
-                        controller.TransactionInsertTourneeClient(tournee1s, tournee2s);
-
-                        compt++;
-                        publishProgress(compt);
-
-                        // Fermeture des `ResultSet` et `PreparedStatement`
-                        rs2.close();
-                        stmt1.close();
+                        tournee2s.add(tournee2);
                     }
 
-                    rs1.close();
-                    stmt0.close();
+                    controller.TransactionInsertTourneeClient(tournee1s, tournee2s);
+
+                    compt++;
+                    publishProgress(compt);
+
+                    // Fermeture des `ResultSet` et `PreparedStatement`
+                    rs2.close();
+                    stmt1.close();
+                }
+
+                rs1.close();
+                stmt0.close();
 
 
                 flag = 1;
@@ -4687,86 +4674,98 @@ public class ActivityImportsExport extends AppCompatActivity {
         return list_client_not_exported;
     }
 
-    private List<String> update_command_into_server(Connection con, Statement stmt) throws SQLException {
-        List<String> list_command_not_exported = new ArrayList<>();
+    private List<String> update_command_into_server(Connection con, Statement stmt){
+
+        List<String> list_command_not_updated = new ArrayList<>();
         ArrayList<PostData_Bon1> bon1s_temp;
 
-        String querry = "SELECT " +
-                "BON1_TEMP.RECORDID, " +
-                "BON1_TEMP.NUM_BON, " +
-                "BON1_TEMP.DATE_BON, " +
-                "BON1_TEMP.HEURE, " +
-                "BON1_TEMP.DATE_F, " +
-                "BON1_TEMP.HEURE_F, " +
-                "BON1_TEMP.MODE_RG, " +
-                "BON1_TEMP.MODE_TARIF, " +
+        try {
 
-                "BON1_TEMP.NBR_P, " +
-                "BON1_TEMP.TOT_QTE, " +
+            String querry = "SELECT " +
+                    "BON1_TEMP.RECORDID, " +
+                    "BON1_TEMP.NUM_BON, " +
+                    "BON1_TEMP.DATE_BON, " +
+                    "BON1_TEMP.HEURE, " +
+                    "BON1_TEMP.DATE_F, " +
+                    "BON1_TEMP.HEURE_F, " +
+                    "BON1_TEMP.MODE_RG, " +
+                    "BON1_TEMP.MODE_TARIF, " +
 
-                "BON1_TEMP.TOT_HT, " +
-                "BON1_TEMP.TOT_TVA, " +
-                "BON1_TEMP.TIMBRE, " +
-                "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE AS TOT_TTC, " +
-                "BON1_TEMP.REMISE, " +
-                "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE AS MONTANT_BON, " +
-                "BON1_TEMP.MONTANT_ACHAT, " +
-                "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE - BON1_TEMP.MONTANT_ACHAT AS BENIFICE_BON, " +
+                    "BON1_TEMP.NBR_P, " +
+                    "BON1_TEMP.TOT_QTE, " +
 
-                "BON1_TEMP.ANCIEN_SOLDE, " +
-                "BON1_TEMP.VERSER, " +
-                "BON1_TEMP.ANCIEN_SOLDE + (BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE) - BON1_TEMP.VERSER AS RESTE, " +
+                    "BON1_TEMP.TOT_HT, " +
+                    "BON1_TEMP.TOT_TVA, " +
+                    "BON1_TEMP.TIMBRE, " +
+                    "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE AS TOT_TTC, " +
+                    "BON1_TEMP.REMISE, " +
+                    "BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE AS MONTANT_BON, " +
+                    "BON1_TEMP.MONTANT_ACHAT, " +
+                    "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE - BON1_TEMP.MONTANT_ACHAT AS BENIFICE_BON, " +
 
-                "BON1_TEMP.CODE_CLIENT, " +
-                "CLIENT.CLIENT, " +
-                "CLIENT.ADRESSE, " +
-                "CLIENT.WILAYA, " +
-                "CLIENT.COMMUNE, " +
-                "CLIENT.TEL, " +
-                "CLIENT.RC, " +
-                "CLIENT.IFISCAL, " +
-                "CLIENT.AI, " +
-                "CLIENT.NIS, " +
+                    "BON1_TEMP.ANCIEN_SOLDE, " +
+                    "BON1_TEMP.VERSER, " +
+                    "BON1_TEMP.ANCIEN_SOLDE + (BON1_TEMP.TOT_HT + BON1_TEMP.TOT_TVA + BON1_TEMP.TIMBRE - BON1_TEMP.REMISE) - BON1_TEMP.VERSER AS RESTE, " +
 
-                "CLIENT.LATITUDE as LATITUDE_CLIENT, " +
-                "CLIENT.LONGITUDE as LONGITUDE_CLIENT, " +
+                    "BON1_TEMP.CODE_CLIENT, " +
+                    "CLIENT.CLIENT, " +
+                    "CLIENT.ADRESSE, " +
+                    "CLIENT.WILAYA, " +
+                    "CLIENT.COMMUNE, " +
+                    "CLIENT.TEL, " +
+                    "CLIENT.RC, " +
+                    "CLIENT.IFISCAL, " +
+                    "CLIENT.AI, " +
+                    "CLIENT.NIS, " +
 
-                "CLIENT.SOLDE AS SOLDE_CLIENT, " +
-                "CLIENT.CREDIT_LIMIT, " +
+                    "CLIENT.LATITUDE as LATITUDE_CLIENT, " +
+                    "CLIENT.LONGITUDE as LONGITUDE_CLIENT, " +
 
-                "BON1_TEMP.LATITUDE, " +
-                "BON1_TEMP.LONGITUDE, " +
+                    "CLIENT.SOLDE AS SOLDE_CLIENT, " +
+                    "CLIENT.CREDIT_LIMIT, " +
 
-                "BON1_TEMP.LIVRER, " +
-                "BON1_TEMP.DATE_LIV, " +
-                "BON1_TEMP.IS_IMPORTED, " +
+                    "BON1_TEMP.LATITUDE, " +
+                    "BON1_TEMP.LONGITUDE, " +
 
-                "BON1_TEMP.CODE_DEPOT, " +
-                "BON1_TEMP.CODE_VENDEUR, " +
-                "BON1_TEMP.EXPORTATION, " +
-                "BON1_TEMP.BLOCAGE " +
-                "FROM BON1_TEMP " +
-                "LEFT JOIN CLIENT ON BON1_TEMP.CODE_CLIENT = CLIENT.CODE_CLIENT " +
-                "WHERE BLOCAGE = 'T' ORDER BY BON1_TEMP.NUM_BON";
+                    "BON1_TEMP.LIVRER, " +
+                    "BON1_TEMP.DATE_LIV, " +
+                    "BON1_TEMP.IS_IMPORTED, " +
 
-        bon1s_temp = controller.select_all_bon1_from_database(querry);
+                    "BON1_TEMP.CODE_DEPOT, " +
+                    "BON1_TEMP.CODE_VENDEUR, " +
+                    "BON1_TEMP.EXPORTATION, " +
+                    "BON1_TEMP.BLOCAGE " +
+                    "FROM BON1_TEMP " +
+                    "LEFT JOIN CLIENT ON BON1_TEMP.CODE_CLIENT = CLIENT.CODE_CLIENT " +
+                    "WHERE BLOCAGE = 'T' ORDER BY BON1_TEMP.NUM_BON";
 
-        for (int i = 0; i < bon1s_temp.size(); i++) {
+            bon1s_temp = controller.select_all_bon1_from_database(querry);
 
-            try {
-                String insert_into_fournis;
-                insert_into_fournis = "UPDATE BCC1 SET  LIVRER = 1 , DATE_LIV = '2025-03-26 16:20:25' WHERE NUM_BON = '" + bon1s_temp.get(i).num_bon + "'";
-                stmt.addBatch(insert_into_fournis);
+            for (int i = 0; i < bon1s_temp.size(); i++) {
 
-                stmt.executeBatch();
-                con.commit();
-                //controller.update_client_after_export(bon1s_temp.get(i).code_client);
+                try {
 
-            } catch (Exception e) {
-                con.rollback();
-                list_command_not_exported.add(bon1s_temp.get(i).num_bon + " / "+bon1s_temp.get(i).client +  " | " + e.getMessage());
+                    // Construire la requête
+                    String insert_into_fournis = "UPDATE BCC1 SET LIVRER = 1, DATE_LIV = '" + bon1s_temp.get(i).date_liv + "' WHERE NUM_BON = '" + bon1s_temp.get(i).num_bon + "'";
+                    stmt.addBatch(insert_into_fournis);
+
+                    stmt.executeBatch();
+                    con.commit();
+                    //controller.update_client_after_export(bon1s_temp.get(i).code_client);
+                    controller.update_transfered_commande(bon1s_temp.get(i).num_bon);
+
+                } catch (Exception e) {
+                    con.rollback();
+                    list_command_not_updated.add(bon1s_temp.get(i).num_bon + " / "+bon1s_temp.get(i).client +  " | " + e.getMessage() + "\n");
+                }
             }
+
+
+
+        }catch (Exception e){
+            list_command_not_updated.add("Erreur 1012: " + e.getMessage() + "\n");
         }
-        return list_command_not_exported;
+
+        return list_command_not_updated;
     }
 }

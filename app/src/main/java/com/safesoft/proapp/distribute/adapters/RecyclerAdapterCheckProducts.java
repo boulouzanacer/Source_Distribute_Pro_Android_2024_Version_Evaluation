@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
+import com.safesoft.proapp.distribute.utils.MyCardView;
 import com.safesoft.proapp.distribute.utils.MyCardView2;
 import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
 

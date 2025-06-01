@@ -551,6 +551,33 @@ public class DATABASE extends SQLiteOpenHelper {
         return executed;
     }
 
+
+    public boolean update_transfered_commande(String num_bon) {
+        boolean executed = false;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            try {
+
+                // Update Bon1_temp or Bon2_temp
+                String selection1 = "NUM_BON=?";
+                String[] selectionArgs1 = {num_bon};
+
+                db.delete("BON1_TEMP", selection1, selectionArgs1);
+                db.delete("BON2_TEMP", selection1, selectionArgs1);
+
+                db.setTransactionSuccessful();
+                executed = true;
+            } finally {
+                db.endTransaction();
+            }
+        } catch (SQLiteDatabaseLockedException sqlilock) {
+            Log.v("TRACKKK", sqlilock.getMessage());
+        }
+        return executed;
+
+    }
+
     //============================== FUNCTION UPDATE table produit =================================
     public boolean ExecuteTransactionCommandClient(ArrayList<PostData_Bon1> command1s, ArrayList<PostData_Bon2> command2s) {
         boolean executed = false;

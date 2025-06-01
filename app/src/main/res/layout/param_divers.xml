@@ -19,6 +19,8 @@
 
     <include layout="@layout/sub_layout_sychronisation_client" />
 
+    <include layout="@layout/sub_layout_sychronisation_produit" />
+
     <include layout="@layout/sub_layout_benifice" />
 
     <include layout="@layout/sub_layout_stock_moins" />

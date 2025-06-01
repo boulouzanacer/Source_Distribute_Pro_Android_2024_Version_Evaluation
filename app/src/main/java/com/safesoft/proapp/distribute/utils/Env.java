@@ -10,8 +10,8 @@ public class Env {
     public static final String URL_GET_FILES = URL_BASE +"backup_cloud/get_bdd_list.php";
     public static final String URL_DOWNLOAD_FILES = URL_BASE +"backup_cloud/download_backup.php";
     public static final String hashAlgorithm = "SHA-256";  // Hash algorithm to use
-    public static final String APP_VERION = "110525";
-    public static final String APP_VERION_LABEL = "V : 11.05.25";
+    public static final String APP_VERION = "290525";
+    public static final String APP_VERION_LABEL = "V : 29.05.25";
 
     public static final String MESSAGE_DEMANDE_ACTIVITATION = "Vous êtes en mode évaluation, veuillez activer l'application";
 }

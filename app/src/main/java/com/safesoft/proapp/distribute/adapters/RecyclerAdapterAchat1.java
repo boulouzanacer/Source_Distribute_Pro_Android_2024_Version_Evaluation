@@ -19,6 +19,7 @@ import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
+import com.safesoft.proapp.distribute.utils.MyCardView;
 import com.safesoft.proapp.distribute.utils.MyCardView2;
 
 import java.text.DecimalFormat;

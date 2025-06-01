@@ -81,18 +81,21 @@ public class ActivityProduitDetail extends AppCompatActivity {
         produit.pa_ht = getIntent().getDoubleExtra("PA_HT", 0);
         produit.pamp = getIntent().getDoubleExtra("PAMP", 0);
         produit.tva = getIntent().getDoubleExtra("TVA", 0);
+
         produit.pv1_ht = getIntent().getDoubleExtra("PV1_HT", 0);
         produit.pv2_ht = getIntent().getDoubleExtra("PV2_HT", 0);
         produit.pv3_ht = getIntent().getDoubleExtra("PV3_HT", 0);
         produit.pv4_ht = getIntent().getDoubleExtra("PV4_HT", 0);
         produit.pv5_ht = getIntent().getDoubleExtra("PV5_HT", 0);
         produit.pv6_ht = getIntent().getDoubleExtra("PV6_HT", 0);
+
         produit.pv1_ttc = produit.pv1_ht * (1 + produit.tva / 100);
         produit.pv2_ttc = produit.pv2_ht * (1 + produit.tva / 100);
         produit.pv3_ttc = produit.pv3_ht * (1 + produit.tva / 100);
         produit.pv4_ttc = produit.pv4_ht * (1 + produit.tva / 100);
         produit.pv5_ttc = produit.pv5_ht * (1 + produit.tva / 100);
         produit.pv6_ttc = produit.pv6_ht * (1 + produit.tva / 100);
+
         produit.stock = getIntent().getDoubleExtra("STOCK", 0);
         produit.colissage = getIntent().getDoubleExtra("COLISSAGE", 0);
         produit.stock_ini = getIntent().getDoubleExtra("STOCK_INI", 0);
@@ -172,7 +175,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
 
-        PostData_Params params = new PostData_Params();
+        PostData_Params params;
         params = controller.select_params_from_database("SELECT * FROM PARAMS");
 
 
@@ -234,9 +237,9 @@ public class ActivityProduitDetail extends AppCompatActivity {
         }
 
 
-        String selectedTitle = prefs.getString("PRIX_REVENDEUR", "Libre");
+        String prix_revendeur = prefs.getString("PRIX_REVENDEUR", "Libre");
 
-        if (selectedTitle.equals("Libre")) {
+        if (prix_revendeur.equals("Libre")) {
             // Show Lnr_pvX if conditions are met
             Lnr_pv1.setVisibility(View.VISIBLE); // Always visible in Libre mode
 
@@ -272,12 +275,12 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
         } else {
             // Show only the matched pvX_titre
-            Lnr_pv1.setVisibility(selectedTitle.equals(params.pv1_titre) ? View.VISIBLE : View.GONE);
-            Lnr_pv2.setVisibility(selectedTitle.equals(params.pv2_titre) ? View.VISIBLE : View.GONE);
-            Lnr_pv3.setVisibility(selectedTitle.equals(params.pv3_titre) ? View.VISIBLE : View.GONE);
-            Lnr_pv4.setVisibility(selectedTitle.equals(params.pv4_titre) ? View.VISIBLE : View.GONE);
-            Lnr_pv5.setVisibility(selectedTitle.equals(params.pv5_titre) ? View.VISIBLE : View.GONE);
-            Lnr_pv6.setVisibility(selectedTitle.equals(params.pv6_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv1.setVisibility(prix_revendeur.equals(params.pv1_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv2.setVisibility(prix_revendeur.equals(params.pv2_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv3.setVisibility(prix_revendeur.equals(params.pv3_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv4.setVisibility(prix_revendeur.equals(params.pv4_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv5.setVisibility(prix_revendeur.equals(params.pv5_titre) ? View.VISIBLE : View.GONE);
+            Lnr_pv6.setVisibility(prix_revendeur.equals(params.pv6_titre) ? View.VISIBLE : View.GONE);
         }
 
         ImgProduit.setOnClickListener(v -> imagePopup.viewPopup());

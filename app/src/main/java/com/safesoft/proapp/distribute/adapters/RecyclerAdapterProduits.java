@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
@@ -32,13 +33,15 @@ import java.util.List;
 public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapterProduits.MyViewHolder> {
 
     private final List<PostData_Produit> produitList;
+    private final PostData_Params params;
     private int color = 0;
     private ItemClick itemClick;
     private ItemLongClick itemLongClick;
     private ColorGeneratorModified generator;
     private final Context mContext;
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
+    private String prix_revendeur;
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -51,8 +54,6 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
         TextView stock_colis, colis_title;
         TextView stock_vrac, vrac_title;
         TextView prix_unit;
-        LinearLayout ly_colissage, ly_stock_colis;
-
 
         MyViewHolder(View view) {
             super(view);
@@ -68,23 +69,23 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
             colissage_title = view.findViewById(R.id.colissage_title);
             colis_title = view.findViewById(R.id.colis_title);
             vrac_title = view.findViewById(R.id.vrac_title);
-            //ly_colissage = (LinearLayout) view.findViewById(R.id.layout_colissage);
-            //ly_stock_colis = (LinearLayout) view.findViewById(R.id.layout_stock_colis);
 
         }
     }
 
 
-    public RecyclerAdapterProduits(Context context, List<PostData_Produit> itemList) {
+    public RecyclerAdapterProduits(Context context, List<PostData_Produit> itemList, PostData_Params params, String prix_revendeur) {
         this.produitList = itemList;
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
         mContext = context;
+        this.params = params;
+        this.prix_revendeur = prix_revendeur;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = new MyCardView(parent.getContext());
+        View v = new MyCardView(parent.getContext(), R.layout.item_product_select);
 
         itemClick = (ItemClick) parent.getContext();
         itemLongClick = (ItemLongClick) parent.getContext();
@@ -131,7 +132,31 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
             holder.stock_vrac.setText(" " + new DecimalFormat("##,##0.##").format(item.stock_vrac));
         }
         holder.stock.setText(" " + new DecimalFormat("##,##0.##").format(item.stock));
-        holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv1_ht));
+
+
+
+
+        if (prix_revendeur.equals("Libre")) {
+            // Show Lnr_pvX if conditions are met
+            holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv1_ht));
+
+        } else {
+            if((prix_revendeur.equals(params.pv1_titre))){
+                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv1_ht));
+            }else if(prix_revendeur.equals(params.pv2_titre)){
+                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv2_ht));
+            }else if(prix_revendeur.equals(params.pv3_titre)){
+                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv3_ht));
+            }else if(prix_revendeur.equals(params.pv4_titre)){
+                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv4_ht));
+            }else if(prix_revendeur.equals(params.pv5_titre)){
+                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv5_ht));
+            }else if(prix_revendeur.equals(params.pv6_titre)){
+                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv6_ht));
+            }
+        }
+
+
 
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {

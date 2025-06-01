@@ -15,7 +15,7 @@ import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Tournee1;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
-import com.safesoft.proapp.distribute.utils.MyCardView2;
+import com.safesoft.proapp.distribute.utils.MyCardView;
 
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class RecyclerAdapterTournee1 extends RecyclerView.Adapter<RecyclerAdapte
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = new MyCardView2(parent.getContext(), R.layout.item_tournee1_list);
+        View v = new MyCardView(parent.getContext(), R.layout.item_tournee1_list);
 
         itemClick = (ItemClick) parent.getContext();
 

@@ -437,5 +437,6 @@
     <string name="wilaya">Wilaya</string>
     <string name="commune">Commune</string>
     <string name="afficher_cacher_achats_client">Afficher / Cacher achats client</string>
+    <string name="sychroniser_tous_les_produits">Sychroniser tous les produits</string>
 
 </resources>

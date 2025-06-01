@@ -236,12 +236,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private Object configObj;
     private final ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
 
-
     private final List<String> NO_PERMISSION = new ArrayList<>();
     private static final int REQUEST_CAMERA = 0;
     private DATABASE controller;
-    private PostData_Params params;
-
     private PowerSpinnerView amazingSpinner;
     private IconSpinnerItem selected_prix_revendeur;
 
@@ -291,12 +288,11 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
 
         controller = new DATABASE(this);
-
-        params = new PostData_Params();
+        PostData_Params params = new PostData_Params();
         try {
             params = controller.select_params_from_database("SELECT * FROM PARAMS");
         } catch (Exception e) {
-
+            Log.v("DATABASE_ERROR", e.getMessage());
         }
 
         mContext = this;
@@ -1005,6 +1001,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_sychroniser_client = findViewById(R.id.switch_sychroniser_client);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_sychroniser_produit = findViewById(R.id.switch_sychroniser_produit);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_achat_client = findViewById(R.id.switch_achat_client);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_benifice = findViewById(R.id.switch_benifice);
@@ -1044,6 +1042,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_ht.setChecked(prefs.getBoolean("AFFICHAGE_HT", false));
         switch_pa_ht.setChecked(prefs.getBoolean("AFFICHAGE_PA_HT", false));
         switch_sychroniser_client.setChecked(prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false));
+        switch_sychroniser_produit.setChecked(prefs.getBoolean("SYCHRONISER_TOUS_PRODUIT", false));
         switch_achat_client.setChecked(prefs.getBoolean("SHOW_ACHAT_CLIENT", false));
         switch_benifice.setChecked(prefs.getBoolean("AFFICHAGE_BENIFICE", false));
         switch_stock_moins.setChecked(prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false));
@@ -1101,6 +1100,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_sychroniser_client.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("SYCHRONISER_TOUS_CLIENT", isChecked);
+            editor.apply();
+        });
+
+        switch_sychroniser_produit.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("SYCHRONISER_TOUS_PRODUIT", isChecked);
             editor.apply();
         });
 

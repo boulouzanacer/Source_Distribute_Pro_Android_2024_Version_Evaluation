@@ -17,6 +17,7 @@ import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
+import com.safesoft.proapp.distribute.utils.MyCardView;
 import com.safesoft.proapp.distribute.utils.MyCardView2;
 
 import java.util.List;
