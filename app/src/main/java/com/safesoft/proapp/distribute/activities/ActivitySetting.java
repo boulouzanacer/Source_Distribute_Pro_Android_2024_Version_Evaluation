@@ -9,6 +9,7 @@ import android.Manifest;
 //import android.content.Context;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -33,15 +34,21 @@ import android.os.Build;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -115,15 +122,20 @@ import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.dialog.BluetoothDeviceChooseDialog;
 import com.safesoft.proapp.distribute.dialog.UsbDeviceChooseDialog;
 import com.safesoft.proapp.distribute.eventsClasses.AddedEmailEvent;
+import com.safesoft.proapp.distribute.eventsClasses.ConnectedCloudEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedBackupEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedDepotEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedVendeurEvent;
-import com.safesoft.proapp.distribute.fragments.FragmentCloudAccount;
+import com.safesoft.proapp.distribute.eventsClasses.SendLocationEvent;
+import com.safesoft.proapp.distribute.fragments.FragmentLoginAccount;
+import com.safesoft.proapp.distribute.fragments.FragmentSignUpCloudAccount;
 import com.safesoft.proapp.distribute.fragments.FragmentListDatabases;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedDepot;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedVendeur;
 import com.safesoft.proapp.distribute.fragments.PasswordResetDialogFragment;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.gps.services.LocationServerConnect;
+import com.safesoft.proapp.distribute.gps.services.ServiceSenderLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Depot;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Vendeur;
@@ -204,10 +216,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private RadioButton rdb_scanner_integrete;
     private RadioButton rdb_scanner_camera;
 
-    private LinearLayout param_co, param_ftp, param_impr, param_backup, param_reset, param_divers;
-    private LinearLayout lnr_back_up;
+    private LinearLayout param_co, param_ftp, param_impr, param_backup, param_reset, param_divers, sub_track_phone;
+    private LinearLayout lnr_back_up, lnr_restore;
 
-    Button bt1, bt2, bt3, bt4, bt10, bt11;
+    Button bt1, bt2, bt3, bt4, bt10, bt11, bt12;
     RelativeLayout param_pda;
     private ProgressDialog mProgressDialog_Free;
     private Context mContext;
@@ -243,9 +255,24 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private IconSpinnerItem selected_prix_revendeur;
 
     private TextView txtv_email_cloud, txtv_password_cloud;
-    private Button btn_add_update_cloud,btn_delete_cloud;
+    private Button btn_signup_cloud, btn_login_cloud, btn_deconecte_cloud;
 
     private boolean is_app_synchronised_mode = false;
+    private String numero_serie;
+
+    //-------------------- GPS Sender  ---------------
+    private static final int REQUEST_LOCATION_PERMISSION = 100;
+    private Intent intent_location;
+    private String deviceId = "123456789";
+    private String device_name = "";
+    private String user_email = "";
+    private String user_password = "";
+    ImageView statusIcon;
+    private TextView device_id_txtv, locationStatus ;
+    private EditText edt_device_name, edt_email, edt_password;
+    private Button start_server_btn;
+    private Button stop_server_btn;
+    //-------------------------------------------------
 
     private void CheckAllPermission() {
         NO_PERMISSION.clear();
@@ -276,6 +303,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }else {
             WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.setting_main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         CheckAllPermission();
 
@@ -308,6 +341,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
+        numero_serie = prefs.getString("NUM_SERIE", "0");
 
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter() {
@@ -373,6 +407,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         //amazingSpinner.setSpinnerAdapter(adapter_prix_revendeurs);
 
         lnr_back_up = findViewById(R.id.backup);
+        lnr_restore = findViewById(R.id.restore);
 
         IconSpinnerAdapter iconSpinnerAdapter = new IconSpinnerAdapter(amazingSpinner);
         amazingSpinner.setSpinnerAdapter(iconSpinnerAdapter);
@@ -425,29 +460,49 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         txtv_email_cloud = findViewById(R.id.txtv_email_cloud);
         txtv_password_cloud = findViewById(R.id.txtv_password_cloud);
-        btn_add_update_cloud = findViewById(R.id.btn_add_update_cloud);
-        btn_delete_cloud = findViewById(R.id.btn_delete_cloud);
+        btn_signup_cloud = findViewById(R.id.btn_signup_cloud);
+        btn_login_cloud = findViewById(R.id.btn_login_cloud);
+        btn_deconecte_cloud = findViewById(R.id.btn_deconecte_cloud);
 
-        txtv_email_cloud.setText(prefs.getString("EMAIL_COMPTE_CLOUD", ""));
-        txtv_password_cloud.setText(prefs.getString("PASSWORD_COMPTE_CLOUD", ""));
-        if(txtv_email_cloud.getText().equals("")){
+        txtv_email_cloud.setText(prefs.getString("EMAIL_CLOUD", ""));
+        txtv_password_cloud.setText(prefs.getString("PASSWORD_CLOUD", ""));
+        if(!txtv_email_cloud.getText().equals("") || !txtv_password_cloud.getText().equals("")){
+            btn_signup_cloud.setEnabled(false);
+            btn_login_cloud.setEnabled(false);
+            btn_deconecte_cloud.setEnabled(true);
+            lnr_back_up.setEnabled(true);
+            lnr_restore.setEnabled(true);
+        }else{
+            btn_signup_cloud.setEnabled(true);
+            btn_login_cloud.setEnabled(true);
+            btn_deconecte_cloud.setEnabled(false);
             lnr_back_up.setEnabled(false);
+            lnr_restore.setEnabled(false);
         }
-        btn_add_update_cloud.setOnClickListener(new View.OnClickListener() {
+
+        btn_signup_cloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentCloudAccount fragmentCloudAccount = new FragmentCloudAccount();
-                fragmentCloudAccount.showDialogbox(ActivitySetting.this, txtv_email_cloud.getText().toString(), txtv_password_cloud.getText().toString());
+                FragmentSignUpCloudAccount fragmentSignUpCloudAccount = new FragmentSignUpCloudAccount();
+                fragmentSignUpCloudAccount.showDialogbox(ActivitySetting.this);
             }
         });
 
-        btn_delete_cloud.setOnClickListener(new View.OnClickListener() {
+        btn_login_cloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentLoginAccount fragmentLoginAccount = new FragmentLoginAccount();
+                fragmentLoginAccount.showDialogbox(ActivitySetting.this, txtv_email_cloud.getText().toString(), txtv_password_cloud.getText().toString());
+            }
+        });
+
+        btn_deconecte_cloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Compte cloud")
-                        .setContentText("Voulez-vous vraiment supprimer le compte cloud maintenant ?")
+                        .setContentText("Voulez-vous vraiment déconecté le compte cloud maintenant ?")
                         .setCancelText("Non")
                         .setConfirmText("Oui")
                         .showCancelButton(true)
@@ -455,14 +510,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         .setConfirmClickListener(sDialog -> {
 
                             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                            editor.putString("EMAIL_COMPTE_CLOUD", "");
-                            editor.putString("PASSWORD_COMPTE_CLOUD", "");
+                            editor.putString("EMAIL_CLOUD", "");
+                            editor.putString("PASSWORD_CLOUD", "");
                             editor.apply();
 
                             txtv_email_cloud.setText("");
                             txtv_password_cloud.setText("");
+                            btn_login_cloud.setEnabled(true);
+                            btn_signup_cloud.setEnabled(true);
+                            btn_deconecte_cloud.setEnabled(false);
 
                             lnr_back_up.setEnabled(false);
+                            lnr_restore.setEnabled(false);
 
                             sDialog.dismiss();
                         })
@@ -493,6 +552,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         bt10 = findViewById(R.id.bt10);
         bt11 = findViewById(R.id.bt11);
+        bt12 = findViewById(R.id.bt12);
 
 
         company_logo = findViewById(R.id.comapny_logo);
@@ -546,6 +606,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
             }
         });
+
         adresse.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -564,6 +625,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
             }
         });
+
         tel.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -582,6 +644,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
             }
         });
+
         footer.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -607,7 +670,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         param_pda = findViewById(R.id.param_pda);
         param_backup = findViewById(R.id.param_backup);
         param_reset = findViewById(R.id.param_reset);
-        param_divers = findViewById(R.id.param_divers);
+        param_divers = findViewById(R.id.sub_divers);
+        sub_track_phone = findViewById(R.id.sub_track_phone);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_logiciel_list, android.R.layout.simple_spinner_dropdown_item);
         type_logiciel_dropdown.setAdapter(adapter);
@@ -640,6 +704,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_reset.setVisibility(GONE);
                 param_backup.setVisibility(GONE);
                 param_divers.setVisibility(GONE);
+                sub_track_phone.setVisibility(GONE);
             }
         });
 
@@ -654,6 +719,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_reset.setVisibility(GONE);
                 param_backup.setVisibility(GONE);
                 param_divers.setVisibility(GONE);
+                sub_track_phone.setVisibility(GONE);
             }
         });
 
@@ -668,8 +734,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_reset.setVisibility(GONE);
                 param_backup.setVisibility(GONE);
                 param_divers.setVisibility(VISIBLE);
+                sub_track_phone.setVisibility(GONE);
             }
         });
+
         bt3.setOnClickListener(view -> {
 
             if (param_impr.isShown())
@@ -681,6 +749,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_reset.setVisibility(GONE);
                 param_backup.setVisibility(GONE);
                 param_divers.setVisibility(GONE);
+                sub_track_phone.setVisibility(GONE);
             }
         });
 
@@ -695,6 +764,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_reset.setVisibility(GONE);
                 param_backup.setVisibility(VISIBLE);
                 param_divers.setVisibility(GONE);
+                sub_track_phone.setVisibility(GONE);
             }
         });
 
@@ -709,6 +779,22 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 param_reset.setVisibility(VISIBLE);
                 param_backup.setVisibility(GONE);
                 param_divers.setVisibility(GONE);
+                sub_track_phone.setVisibility(GONE);
+            }
+        });
+
+        bt12.setOnClickListener(view -> {
+
+            if (sub_track_phone.isShown())
+                sub_track_phone.setVisibility(GONE);
+            else {
+                param_co.setVisibility(GONE);
+                param_ftp.setVisibility(GONE);
+                param_impr.setVisibility(GONE);
+                param_reset.setVisibility(GONE);
+                param_backup.setVisibility(GONE);
+                param_divers.setVisibility(GONE);
+                sub_track_phone.setVisibility(VISIBLE);
             }
         });
 
@@ -767,14 +853,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         ch_imp_ftp = findViewById(R.id.imp_ftp);
 
 
-        if (params != null) {
-            nom_serveur_ftp.setText(params.ftp_server);
-            num_port_ftp.setText(params.ftp_port);
-            nom_utilisateur_ftp.setText(params.ftp_user);
-            password_ftp.setText(params.ftp_pass);
-            ch_exp_ftp.setText(params.ftp_imp);
-            ch_imp_ftp.setText(params.ftp_exp);
-        }
+        nom_serveur_ftp.setText(params.ftp_server);
+        num_port_ftp.setText(params.ftp_port);
+        nom_utilisateur_ftp.setText(params.ftp_user);
+        password_ftp.setText(params.ftp_pass);
+        ch_exp_ftp.setText(params.ftp_imp);
+        ch_imp_ftp.setText(params.ftp_exp);
 
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -827,7 +911,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                     textView.setVisibility(VISIBLE);
                     circle.start();
-                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "TEST_CONNEXION");
+                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), numero_serie,"TEST_CONNEXION");
                 } else {
                     textView.setVisibility(VISIBLE);
                     circle.start();
@@ -851,7 +935,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                     textView.setVisibility(VISIBLE);
                     circle.start();
-                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "GET_ALL_DEPOT");
+                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), numero_serie,"GET_ALL_DEPOT");
                 } else {
                     textView.setVisibility(VISIBLE);
                     circle.start();
@@ -875,7 +959,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                     textView.setVisibility(VISIBLE);
                     circle.start();
-                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), "GET_ALL_VENDEUR");
+                    sendRequest(username_safe_event.getText().toString(), password_safe_event.getText().toString(), numero_serie,"GET_ALL_VENDEUR");
                 } else {
                     textView.setVisibility(VISIBLE);
                     circle.start();
@@ -1017,6 +1101,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_edit_prix = findViewById(R.id.switch_edit_prix);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_edit_stock_ini = findViewById(R.id.switch_edit_stock_ini);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_famille = findViewById(R.id.switch_famille);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_filtre_recherche = findViewById(R.id.switch_filtre_recherche);
@@ -1050,6 +1136,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_remise.setChecked(prefs.getBoolean("AFFICHAGE_REMISE", true));
         switch_modifier_bon.setChecked(prefs.getBoolean("AUTORISE_MODIFY_BON", true));
         switch_edit_prix.setChecked(prefs.getBoolean("CAN_EDIT_PRICE", false));
+        switch_edit_stock_ini.setChecked(prefs.getBoolean("CAN_EDIT_STOCK_INI", false));
         switch_famille.setChecked(prefs.getBoolean("MODE_FAMILLE", false));
         switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
 
@@ -1151,6 +1238,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
+        switch_edit_stock_ini.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("CAN_EDIT_STOCK_INI", isChecked);
+            editor.apply();
+        });
+
         switch_famille.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("MODE_FAMILLE", isChecked);
@@ -1202,8 +1295,102 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             company_logo.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
             // company_logo.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length) );
         }
+
+
+        //--------------GPS Sender -----------------------
+        device_id_txtv = findViewById(R.id.device_id);
+        edt_device_name = findViewById(R.id.edt_device_name);
+        edt_email = findViewById(R.id.edt_email);
+        edt_password = findViewById(R.id.edt_password);
+        statusIcon = findViewById(R.id.status_icon);
+        locationStatus = findViewById(R.id.location_status_message);
+
+        start_server_btn = findViewById(R.id.start_btn);
+        stop_server_btn = findViewById(R.id.stop_btn);
+
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        device_name = prefs.getString("DEVICE_NAME", "");
+        user_email = prefs.getString("USER_EMAIL", "");
+        user_password = prefs.getString("USER_PASSWORD", "");
+
+        if(device_name.equals("")){
+            device_name = deviceId;
+        }
+
+        device_id_txtv.setText(deviceId);
+        edt_device_name.setText(device_name);
+        edt_email.setText(user_email);
+        edt_password.setText(user_password);
+
+
+        intent_location = new Intent(this, ServiceSenderLocation.class);
+
+        //checkAndRequestPermissions();
+
+        start_server_btn.setOnClickListener(v -> {
+
+            deviceId = device_id_txtv.getText().toString();
+            device_name = edt_device_name.getText().toString();
+            user_email = edt_email.getText().toString();
+            user_password = edt_password.getText().toString();
+
+            prefs.edit()
+                    .putString("DEVICE_ID", deviceId)
+                    .putString("DEVICE_NAME", device_name)
+                    .putString("USER_EMAIL", user_email)
+                    .putString("USER_PASSWORD", user_password)
+                    .apply();
+
+            checkAndRequestPermissions();
+
+        });
+
+        stop_server_btn.setOnClickListener(v -> {
+            if (isServiceRunning(ServiceSenderLocation.class)) {
+                stopService(new Intent(this, ServiceSenderLocation.class));
+                Crouton.makeText(ActivitySetting.this, "Service Localisation est arrêter !", Style.ALERT).show();
+
+                edt_device_name.setEnabled(true);
+                edt_email.setEnabled(true);
+                edt_password.setEnabled(true);
+                start_server_btn.setEnabled(true);
+                stop_server_btn.setEnabled(false);
+                statusIcon.setImageResource(R.drawable.ic_status_disconnected);
+
+            } else {
+                Crouton.makeText(this, "Service is not running", Style.ALERT).show();
+            }
+        });
+        //------------------------------------------
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void ConnectedCloudEvent(ConnectedCloudEvent event) {
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("EMAIL_CLOUD", event.getEmail());
+        editor.putString("PASSWORD_CLOUD", event.getPassword());
+        editor.apply();
+
+        txtv_email_cloud.setText(event.getEmail());
+        txtv_password_cloud.setText(event.getPassword());
+
+        new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Connecté.!!")
+                .setContentText("Vous êtes désormais connecté au service cloud de SAFESOFT !")
+                .show();
+
+        btn_login_cloud.setEnabled(false);
+        btn_signup_cloud.setEnabled(false);
+        btn_deconecte_cloud.setEnabled(true);
+        lnr_back_up.setEnabled(true);
+        lnr_restore.setEnabled(true);
+
+    }
 
     public void init() {
 
@@ -1386,7 +1573,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }
         });
     }
-
 
     @Override
     public void onClick(View view) {
@@ -1624,11 +1810,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     connectBluetooth(bluetoothEdrConfigBean);
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-                            return;
-                        }
+                    if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                        return;
                     }
                     BluetoothDevice device = getDevice();
                     BT_VALUE_MAC = device.getAddress();
@@ -1651,11 +1835,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private BluetoothDevice getDevice() {
         BluetoothDevice device = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-                return null;
-            }
+        if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+            return null;
         }
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -1697,7 +1879,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
 
-
     private void textPrint() throws UnsupportedEncodingException, SdkException {
         switch (checkedImpType) {
             case BaseEnum.IMP_TYPE_TICKET -> {
@@ -1710,7 +1891,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }
         }
     }
-
 
     private void tscPrintBarCode(String barcodeContent) {
 
@@ -1798,53 +1978,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         } else {
 
         }
- /*
-        try {
-            String fileName = Environment.getExternalStorageDirectory().getPath()+"/webview_capture1.jpg";
-            bitmap = BitmapFactory.decodeFile(fileName);
-
-        } catch (Exception e) {
-            Log.e("eeeeee", e.getMessage());
-        }
-
-
-      new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                showProgressDialog("Loading...");
-
-                CmdFactory cmdFactory = new EscFactory();
-                Cmd cmd = cmdFactory.create();
-                cmd.append(cmd.getHeaderCmd());
-
-                CommonSetting commonSetting = new CommonSetting();
-                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                cmd.append(cmd.getCommonSettingCmd(commonSetting));
-
-                BitmapSetting bitmapSetting = new BitmapSetting();
-
-                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
-//                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
-
-                //bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
-                try {
-                    cmd.append(cmd.getBitmapCmd(bitmapSetting, bitmap));
-                } catch (SdkException e) {
-                    e.printStackTrace();
-                }
-                cmd.append(cmd.getLFCRCmd());
-                cmd.append(cmd.getLFCRCmd());
-                if (rtPrinter != null) {
-                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
-                }
-
-                hideProgressDialog();
-            }
-        }).start();*/
 
     }
-
 
     private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
         PIFactory piFactory = new BluetoothFactory();
@@ -1896,11 +2031,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             @Override
             public void onDeviceItemClick(BluetoothDevice device) {
                 //doDisConnect();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-                        return;
-                    }
+                if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                    return;
                 }
                 if (TextUtils.isEmpty(device.getName())) {
                     tv_device_selected.setText(device.getAddress());
@@ -1939,7 +2072,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         usbDeviceChooseDialog.show(getFragmentManager(), null);
     }
 
-
     private void setPrintEnable(boolean isEnable) {
         btn_connect_printer.setEnabled(!isEnable);
         btn_disConnect_printer.setEnabled(isEnable);
@@ -1964,7 +2096,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
         return isInList;
     }
-
 
     @SuppressLint("NonConstantResourceId")
     public void onClickListener(View v) throws IOException {
@@ -2051,7 +2182,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
 
-
     private void ResetDialog() {
         FragmentManager fm = getSupportFragmentManager();
         PasswordResetDialogFragment editNameDialogFragment = PasswordResetDialogFragment.newInstance("Reinitialiser");
@@ -2104,7 +2234,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     }
 
-
     private class GetFileTask extends AsyncTask<String, Integer, JSONArray> {
 
         ProgressDialog mProgressDialog;
@@ -2156,7 +2285,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
 
-
     private class GetDownloadTask extends AsyncTask<String, Integer, Boolean> {
 
         ProgressDialog mProgressDialog;
@@ -2203,8 +2331,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
 
-
-    public void sendRequest(String username_safe_event, String password_safe_event, String typeConnection) {
+    public void sendRequest(String username_safe_event, String password_safe_event, String numero_serie, String typeConnection) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -2213,27 +2340,103 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                     NetClient nc = new NetClient("105.96.9.62", 1209); // ip adress and port
 
-                    String message_online = username_safe_event + ":" + password_safe_event + ":" + ":" + "cccc";
+                    String message_online = "DISTRIBUTE_EVENT:" + username_safe_event + ":" + password_safe_event + ":" + ":" + "cccc" + ":" + numero_serie;
                     nc.sendDataWithString(message_online);
                     String token = nc.receiveDataFromServer();
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (token.length() <= 15) {
-                                ip.setText(token);
-                                new TestConnection_Setting(ip.getText().toString(), pathdatabase.getText().toString(), username, password, typeConnection).execute();
-                            } else {
-
-                                terminateProcessing();
-
+                            if (token == null || token.isEmpty()) {
                                 new Toaster.Builder(ActivitySetting.this)
-                                        .setTitle("Attention")
-                                        .setDescription(token)
+                                        .setTitle("Server Response")
+                                        .setDescription("Réponse vide !!")
                                         .setDuration(Toaster.LENGTH_LONG)
                                         .setStatus(Toaster.Status.WARNING)
                                         .show();
+                                terminateProcessing();
+                                return;
                             }
+
+                            String[] parts = token.split("\\|", 3); // Correct: split on pipe character, max 3 parts
+
+                            if (parts.length < 2) {
+                                new Toaster.Builder(ActivitySetting.this)
+                                        .setTitle("Server Response")
+                                        .setDescription("Invalid format: " + token)
+                                        .setDuration(Toaster.LENGTH_LONG)
+                                        .setStatus(Toaster.Status.WARNING)
+                                        .show();
+                                terminateProcessing();
+                                return;
+                            }
+
+                            int type;
+                            try {
+                                type = Integer.parseInt(parts[0]);
+                            } catch (NumberFormatException e) {
+                                new Toaster.Builder(ActivitySetting.this)
+                                        .setTitle("Server Response")
+                                        .setDescription("Invalid type format: " + parts[0])
+                                        .setDuration(Toaster.LENGTH_LONG)
+                                        .setStatus(Toaster.Status.WARNING)
+                                        .show();
+                                terminateProcessing();
+                                return;
+                            }
+
+                            switch (type) {
+                                case 1:
+                                    // Expecting exactly 3 parts: type, ip, path
+                                    if (parts.length == 3) {
+                                        String ipAddress = parts[1];
+                                        String path = parts[2];
+
+                                        ip.setText(ipAddress);
+                                        pathdatabase.setText(path.trim());
+
+                                        // Now test the connection with received IP/path
+                                        new TestConnection_Setting(
+                                                ip.getText().toString(),
+                                                pathdatabase.getText().toString(),
+                                                username,
+                                                password,
+                                                typeConnection
+                                        ).execute();
+                                    } else {
+                                        new Toaster.Builder(ActivitySetting.this)
+                                                .setTitle("Server Response")
+                                                .setDescription("Invalid Type 1 format")
+                                                .setDuration(Toaster.LENGTH_LONG)
+                                                .setStatus(Toaster.Status.WARNING)
+                                                .show();
+                                        terminateProcessing();
+                                    }
+                                    break;
+
+                                case 2:
+                                    // Message response
+                                    String message = parts[1];
+                                    new Toaster.Builder(ActivitySetting.this)
+                                            .setTitle("Server Response")
+                                            .setDescription(message)
+                                            .setDuration(Toaster.LENGTH_LONG)
+                                            .setStatus(Toaster.Status.WARNING)
+                                            .show();
+                                    terminateProcessing();
+                                    break;
+
+                                default:
+                                    new Toaster.Builder(ActivitySetting.this)
+                                            .setTitle("Server Response")
+                                            .setDescription("Unknown response type: " + type)
+                                            .setDuration(Toaster.LENGTH_LONG)
+                                            .setStatus(Toaster.Status.WARNING)
+                                            .show();
+                                    terminateProcessing();
+                                    break;
+                            }
+
 
                         }
                     });
@@ -2287,7 +2490,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             _Password = password;
             _TypeConnection = typeConnection;
         }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -2399,8 +2601,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
     //==================================================
-
-
     public class getAllDepotFromserver extends AsyncTask<Void, Integer, Integer> {
 
         Connection con;
@@ -2513,8 +2713,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             super.onPostExecute(integer);
         }
     }
-
-
     public class getAllVendeurFromserver extends AsyncTask<Void, Integer, Integer> {
 
         Connection con;
@@ -2632,7 +2830,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             super.onPostExecute(integer);
         }
     }
-
     protected void showListDepot(ArrayList<PostData_Depot> depots, String title) {
         android.app.FragmentManager fm = getFragmentManager();
         DialogFragment dialog = new FragmentSelectedDepot(); // creating new object
@@ -2643,7 +2840,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         dialog.show(fm, "dialog");
 
     }
-
     protected void showListVendeur(ArrayList<PostData_Vendeur> vendeurs, String title) {
         android.app.FragmentManager fm = getFragmentManager();
         DialogFragment dialog = new FragmentSelectedVendeur(); // creating new object
@@ -2654,7 +2850,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         dialog.show(fm, "dialog");
 
     }
-
     protected void showListBackup(ArrayList<String> backups, String title) {
         android.app.FragmentManager fm = getFragmentManager();
         DialogFragment dialog = new FragmentListDatabases(); // creating new object
@@ -2665,7 +2860,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         dialog.show(fm, "dialog");
 
     }
-
     @Subscribe
     public void onDepotSelected(SelectedDepotEvent event){
         code_depot.setText(event.getCode_depot());
@@ -2701,8 +2895,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         if(event.getIsAdded()){
 
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putString("EMAIL_COMPTE_CLOUD", event.getEmailCloud());
-            editor.putString("PASSWORD_COMPTE_CLOUD", event.getPaswordCloud());
+            editor.putString("EMAIL_CLOUD", event.getEmailCloud());
+            editor.putString("PASSWORD_CLOUD", event.getPaswordCloud());
             editor.apply();
 
             txtv_email_cloud.setText(event.getEmailCloud());
@@ -2743,7 +2937,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     .setCancelClickListener(Dialog::dismiss)
                     .show();
 
+            btn_deconecte_cloud.setEnabled(true);
+            btn_signup_cloud.setEnabled(false);
+            btn_login_cloud.setEnabled(false);
+
             lnr_back_up.setEnabled(true);
+            lnr_restore.setEnabled(true);
 
         }else{
             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
@@ -2751,9 +2950,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     .setContentText("Erreur lors de l'ajout du compte cloud : " + event.getMessage())
                     .show();
         }
-
     }
-
 
     private class UploadFileTask extends AsyncTask<String, Integer, String> {
 
@@ -2875,5 +3072,146 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         PrinterObserverManager.getInstance().remove(this);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    private void checkAndRequestPermissions() {
+        boolean fineLocationGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean foregroundServiceGranted = true;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14+
+            foregroundServiceGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        if (!fineLocationGranted || !foregroundServiceGranted) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.FOREGROUND_SERVICE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        } else {
+            LocationServerConnect.ConnectServer(deviceId, device_name, user_email, user_password, new LocationServerConnect.Callback() {
+                        @Override
+                        public void onResult(int responseCode, String responseMessage) {
+                            runOnUiThread(() -> {
+                                // Update UI here
+                                Log.e("LocationServer", "Success: " + responseCode + " - " + responseMessage);
+
+
+                                if(responseCode == 200){
+
+                                    Crouton.makeText(ActivitySetting.this, "Service localisation connecté", Style.CONFIRM).show();
+                                    edt_device_name.setEnabled(false);
+                                    edt_email.setEnabled(false);
+                                    edt_password.setEnabled(false);
+                                    start_server_btn.setEnabled(false);
+                                    stop_server_btn.setEnabled(true);
+
+                                    restartLocationService();
+                                    statusIcon.setImageResource(R.drawable.ic_status_connected);
+                                }else if (responseCode == 401){
+                                    Crouton.makeText(ActivitySetting.this, "Compte n'exist pas ou mot de passe incorrect!", Style.ALERT).show();
+                                    statusIcon.setImageResource(R.drawable.ic_status_warning);
+                                }else if (responseCode == 403){
+                                    Crouton.makeText(ActivitySetting.this, "Ce téléphone est associé à un autre utilisateur.", Style.ALERT).show();
+                                    statusIcon.setImageResource(R.drawable.ic_status_warning);
+                                }else{
+                                    Crouton.makeText(ActivitySetting.this, "Problème de lancement du service localisation!", Style.ALERT).show();
+                                    statusIcon.setImageResource(R.drawable.ic_status_warning);
+                                }
+
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> {
+                                Log.e("LocationServer", "Error", e);
+                                Crouton.makeText(ActivitySetting.this, "Error: " + e.getMessage(), Style.ALERT).show();
+                                statusIcon.setImageResource(R.drawable.ic_status_disconnected);
+                            });
+                        }
+                    }
+            );
+            //restartLocationService();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            boolean permissionGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    permissionGranted = false;
+                    break;
+                }
+            }
+
+            if (permissionGranted) {
+                LocationServerConnect.ConnectServer(deviceId, device_name, user_email, user_password, new LocationServerConnect.Callback() {
+                            @Override
+                            public void onResult(int responseCode, String responseMessage) {
+                                runOnUiThread(() -> {
+                                    // Update UI here
+                                    Log.d("LocationServer", "Success: " + responseCode + " - " + responseMessage);
+
+                                    if(responseCode == 200){
+                                        edt_device_name.setEnabled(false);
+                                        edt_email.setEnabled(false);
+                                        edt_password.setEnabled(false);
+                                        start_server_btn.setEnabled(false);
+                                        stop_server_btn.setEnabled(true);
+
+                                        restartLocationService();
+                                        Crouton.makeText(ActivitySetting.this, "Service localisation connecté", Style.CONFIRM).show();
+                                        statusIcon.setImageResource(R.drawable.ic_status_connected);
+                                    }else{
+                                        Crouton.makeText(ActivitySetting.this, "Problème de lancement du service localisation!", Style.ALERT).show();
+                                        statusIcon.setImageResource(R.drawable.ic_status_warning);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                runOnUiThread(() -> {
+                                    Log.e("LocationServer", "Error", e);
+                                    Crouton.makeText(ActivitySetting.this, "Error: " + e.getMessage(), Style.ALERT).show();
+                                    statusIcon.setImageResource(R.drawable.ic_status_disconnected);
+                                });
+                            }
+                        }
+                );
+                //restartLocationService();
+            } else {
+                Log.e("PERMISSION", "Location or foreground service permission denied");
+            }
+        }
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void restartLocationService() {
+        if (isServiceRunning(ServiceSenderLocation.class)) {
+            Intent stopIntent = new Intent(this, ServiceSenderLocation.class);
+            stopIntent.setAction("RESTART_SERVICE");
+            startForegroundService(stopIntent);
+        } else {
+            startForegroundService(intent_location);
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLocationSendMessageReceived(SendLocationEvent event) {
+        if(event.getResponseCode() == 200){
+
+        }
     }
 }

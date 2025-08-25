@@ -1222,20 +1222,13 @@ public class DATABASE extends SQLiteOpenHelper {
     }
 
 
-    public boolean check_client_if_exist(String code_client) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        boolean exist = false;
-
-        String querry = "SELECT * FROM CLIENT WHERE CODE_CLIENT = '" + code_client + "'";
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                exist = true;
-            } while (cursor.moveToNext());
-        }
+    public boolean checkClientExists(String codeClient) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT 1 FROM CLIENT WHERE CODE_CLIENT = ? LIMIT 1";
+        Cursor cursor = db.rawQuery(query, new String[]{codeClient});
+        boolean exists = cursor.moveToFirst();
         cursor.close();
-        return exist;
+        return exists;
     }
 
 
@@ -3398,7 +3391,7 @@ public class DATABASE extends SQLiteOpenHelper {
         return executed;
     }
 
-    public boolean update_client(PostData_Client client) {
+    public boolean update_client(PostData_Client client, String old_code_client) {
         boolean executed = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -3406,6 +3399,7 @@ public class DATABASE extends SQLiteOpenHelper {
             try {
 
                 ContentValues args = new ContentValues();
+                //args.put("CODE_CLIENT", client.code_client);
                 args.put("CLIENT", client.client);
                 args.put("TEL", client.tel);
                 args.put("WILAYA", client.wilaya);
@@ -3419,7 +3413,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args.put("NIS", client.nis);
                 //args.put("ISNEW", 1);
                 String selection = "CODE_CLIENT=?";
-                String[] selectionArgs = {client.code_client};
+                String[] selectionArgs = {old_code_client};
                 db.update("CLIENT", args, selection, selectionArgs);
 
                 db.setTransactionSuccessful();

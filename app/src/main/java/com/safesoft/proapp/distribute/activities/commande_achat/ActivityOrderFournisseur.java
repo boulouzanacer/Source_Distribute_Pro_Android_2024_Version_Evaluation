@@ -52,7 +52,7 @@ import com.safesoft.proapp.distribute.fragments.FragmentQteAchat;
 import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectFournisseur;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
-import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
 import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;

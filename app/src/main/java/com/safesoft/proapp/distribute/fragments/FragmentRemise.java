@@ -5,25 +5,14 @@ import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEF
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 
-import com.emmasuzuki.easyform.EasyTextInputLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
@@ -82,7 +71,7 @@ public class FragmentRemise {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_remise = dialogview.findViewById(R.id.btn_remise);
+        btn_remise = dialogview.findViewById(R.id.btn_connect);
         btn_remise.setBackgroundColor(Color.parseColor("#3498db"));
         btn_remise.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_remise.setTextSize(15);

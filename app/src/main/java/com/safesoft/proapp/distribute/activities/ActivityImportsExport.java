@@ -3024,13 +3024,16 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                     if (!code_depot.equals("000000")) {
 
-                        if (!code_vendeur.equals("000000")) {
+                        /*if (!code_vendeur.equals("000000")) {
                             sql12 = sql12 + " AND ( CODE_DEPOT = '" + code_depot + "' AND CODE_VENDEUR = '" + code_vendeur + "') ";
                             sql0 = sql0 + " AND (CODE_DEPOT = '" + code_depot + "' AND CODE_VENDEUR = '" + code_vendeur + "') ";
                         }else{
                             sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
                             sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
-                        }
+                        }*/
+
+                        sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
+                        sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
 
                     } else if (!code_vendeur.equals("000000")) {
 
@@ -3040,8 +3043,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
 
                 }
-
-
+                
 
                 ResultSet rs12 = stmt.executeQuery(sql12);
 
@@ -3721,6 +3723,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int allrows = 0;
         String erreurMessage = "";
         ArrayList<PostData_Client> list_client;
+        ArrayList<String> not_imported_client;
 
         public Import_commande_client_from_server_task(Context context) {
             this.context = context;
@@ -3758,6 +3761,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 con = DriverManager.getConnection(sCon, Username, Password);
 
                 list_client = controller.select_clients_from_database("SELECT * FROM CLIENT");
+                not_imported_client = new ArrayList<>();
 
                 if (list_client.size() <= 0) {
                     flag = 4;
@@ -3769,30 +3773,36 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 controller.ResetTableCommandClient();
 
+                String sql0 = "SELECT NUM_BON, CODE_CLIENT, DATE_BON, HEURE, NBR_P, TOT_QTE, " +
+                        "MODE_TARIF, CODE_DEPOT, MODE_RG, CODE_VENDEUR, HT, TVA, TIMBRE, LATITUDE, " +
+                        "LONGITUDE, MONTANT_ACHAT, ANCIEN_SOLDE, BLOCAGE, VERSER " +
+                        "FROM BCC1 WHERE CODE_CLIENT = ? AND BLOCAGE = ? AND COALESCE(LIVRER,0) <> ? ORDER BY NUM_BON DESC";
+
+                // ========== Deuxième requête avec un `PreparedStatement` séparé ==========
+                String sql1 = "SELECT NUM_BON, CODE_BARRE, PRODUIT, NBRE_COLIS, COLISSAGE, QTE, " +
+                        "QTE_GRAT, PV_HT, TVA, PA_HT, CODE_DEPOT FROM BCC2 WHERE NUM_BON = ?";
+
+                PreparedStatement stmt0 = con.prepareStatement(sql0);
+                PreparedStatement stmt1 = con.prepareStatement(sql1);
+
                 for (int i = 0; i < list_client.size(); i++) {
+
+                    ArrayList<PostData_Bon1> bcc1s = new ArrayList<>();
+                    ArrayList<PostData_Bon2> bcc2s_total = new ArrayList<>();
 
                     try {
 
-                        String sql0 = "SELECT NUM_BON, CODE_CLIENT, DATE_BON, HEURE, NBR_P, TOT_QTE, " +
-                                "MODE_TARIF, CODE_DEPOT, MODE_RG, CODE_VENDEUR, HT, TVA, TIMBRE, LATITUDE, " +
-                                "LONGITUDE, MONTANT_ACHAT, ANCIEN_SOLDE, BLOCAGE, VERSER " +
-                                "FROM BCC1 WHERE CODE_CLIENT = ? AND BLOCAGE = ? AND COALESCE(LIVRER,0) <> ? ORDER BY NUM_BON DESC";
-
-                        PreparedStatement stmt0 = con.prepareStatement(sql0);
+                        stmt0.clearParameters();
                         stmt0.setString(1, list_client.get(i).code_client);
                         stmt0.setString(2, "F");
                         stmt0.setInt(3, 1);
 
-
                         compt++;
                         publishProgress(compt);
-
                         ResultSet rs0 = stmt0.executeQuery();
-
-                        ArrayList<PostData_Bon1> bcc1s = new ArrayList<>();
                         PostData_Bon1 bcc1;
 
-                        while (rs0.next()) {  // `if` au lieu de `while` car FIRST 1 retourne un seul résultat
+                        if(rs0.next()) {  // `if` au lieu de `while` car FIRST 1 retourne un seul résultat
 
                             bcc1 = new PostData_Bon1();
 
@@ -3824,15 +3834,10 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                             bcc1s.add(bcc1);
 
-                            // ========== Deuxième requête avec un `PreparedStatement` séparé ==========
-                            String sql1 = "SELECT NUM_BON, CODE_BARRE, PRODUIT, NBRE_COLIS, COLISSAGE, QTE, " +
-                                    "QTE_GRAT, PV_HT, TVA, PA_HT, CODE_DEPOT FROM BCC2 WHERE NUM_BON = ?";
 
-                            PreparedStatement stmt1 = con.prepareStatement(sql1);
                             stmt1.setString(1, bcc1.num_bon);
-
                             ResultSet rs1 = stmt1.executeQuery();
-                            ArrayList<PostData_Bon2> bcc2s = new ArrayList<>();
+
                             while (rs1.next()) {
                                 PostData_Bon2 bcc2 = new PostData_Bon2();
 
@@ -3848,24 +3853,24 @@ public class ActivityImportsExport extends AppCompatActivity {
                                 bcc2.pa_ht = rs1.getDouble("PA_HT");
                                 bcc2.code_depot = rs1.getString("CODE_DEPOT");
 
-                                bcc2s.add(bcc2);
+                                bcc2s_total.add(bcc2);
                             }
-
-                            controller.ExecuteTransactionCommandClient(bcc1s, bcc2s);
 
                             // Fermeture des `ResultSet` et `PreparedStatement`
                             rs1.close();
-                            stmt1.close();
                         }
 
+                        controller.ExecuteTransactionCommandClient(bcc1s, bcc2s_total);
                         rs0.close();
-                        stmt0.close();
 
                     } catch (SQLException e) {
                         Log.e("ERROR COMMANDE", "Error : " + e.getMessage());
+                        not_imported_client.add(list_client.get(i).client + " / " + e.getMessage());
                     }
                 }
 
+                stmt0.close();
+                stmt1.close();
                 flag = 1;
 
             } catch (Exception e) {
@@ -3917,10 +3922,13 @@ public class ActivityImportsExport extends AppCompatActivity {
             }
 
             int alertType = (result == 1) ? SweetAlertDialog.SUCCESS_TYPE : SweetAlertDialog.WARNING_TYPE;
+            String message_not_exported = "";
+            for(int i = 0; not_imported_client.size() > i; i++){
+                message_not_exported = message_not_exported + "\n"+ not_imported_client.get(i);
+            }
             String message = switch (result) {
-                case 1 -> "Importation terminée avec succès.";
-                case 2 ->
-                        "Connexion perdue, vérifiez votre connexion au serveur : " + erreurMessage;
+                case 1 -> "Importation terminée avec succès.\n" + message_not_exported;
+                case 2 -> "Connexion perdue, vérifiez votre connexion au serveur : " + erreurMessage;
                 case 3 -> "Problème avec la requête SQL : " + erreurMessage;
                 case 4 -> "Aucun client trouvé, veuillez synchroniser la liste des clients.";
                 default -> "";
@@ -4561,7 +4569,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                             " " + postData_produits.get(i).stock + " ," +
                             " " + postData_produits.get(i).stock_ini + " ";
 
-                    insert_into_depot2 = insert_into_depot2 + ") MATCHING (CODE_BARRE)";
+                    insert_into_depot2 = insert_into_depot2 + ") MATCHING (CODE_DEPOT,CODE_BARRE)";
 
                     stmt.addBatch(insert_into_depot2);
                 }

@@ -48,7 +48,7 @@ import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventInventaire
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentQteInventaire;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
-import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
 import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;

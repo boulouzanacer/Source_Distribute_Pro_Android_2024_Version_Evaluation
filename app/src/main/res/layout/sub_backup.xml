@@ -105,32 +105,42 @@
 
 
     <LinearLayout
-        android:weightSum="2"
+        android:weightSum="3"
         android:layout_marginTop="15dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/btn_delete_cloud"
+            android:id="@+id/btn_deconecte_cloud"
             style="@style/dialog_blue_button"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:text="Vider le compte" />
+            android:layout_marginEnd="5dp"
+            android:text="Déconnexion" />
 
 
         <Button
-            android:id="@+id/btn_add_update_cloud"
+            android:id="@+id/btn_login_cloud"
             style="@style/dialog_blue_button"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginStart="15dp"
-            android:text="Créer/Maj cloud" />
+            android:layout_marginStart="5dp"
+            android:text="Connexion" />
+
+        <Button
+            android:id="@+id/btn_signup_cloud"
+            style="@style/dialog_blue_button"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginStart="5dp"
+            android:text="Inscription" />
 
     </LinearLayout>
 

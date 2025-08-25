@@ -43,7 +43,7 @@ import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedFournisseurEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditFournisseur;
 import com.safesoft.proapp.distribute.fragments.FragmentVersementFournisseur;
-import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_f;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.printing.Printing;

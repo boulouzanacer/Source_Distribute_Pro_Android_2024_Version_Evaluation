@@ -2,11 +2,11 @@ apply plugin: 'com.android.library'
 
 android {
     namespace 'com.emmasuzuki.pdf_viewer_library'
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion 36
     }
     buildTypes {
         android {
@@ -21,5 +21,5 @@ android {
 
 dependencies {
     api 'com.github.barteksc:pdfium-android:1.9.0'
-    implementation 'androidx.core:core:1.15.0'
+    implementation 'androidx.core:core:1.16.0'
 }

@@ -136,7 +136,7 @@
 
     <!--IBSMAX-->
     <string name="INFO_IBSMAX1">IBS MAX Informatique, Bureautique &amp; Software</string>
-    <string name="INFO_IBSMAX2"> N 8, Rue Ben Chaabane Mouloud, Draria - Alger</string>
+    <string name="INFO_IBSMAX2"> Lotissement C N° 25, Draria - ALGER</string>
     <string name="INFO_IBSMAX3">Mobile : 0561 65 10 23</string>
     <string name="INFO_IBSMAX4">Email / Site web : contact@ibsmax.com / www.ibsmax.com</string>
 
@@ -257,6 +257,12 @@
     <string name="INFO_BRSOFT2"> - </string>
     <string name="INFO_BRSOFT3"> Rachid    :0560 9374 84 \n Ali    : 0550 06 80 68</string>
     <string name="INFO_BRSOFT4"> - </string>
+
+    <!--INFO MICRO DRIEF-->
+    <string name="INFO_INFO_MICRO1">INFO MICRO DRIEF</string>
+    <string name="INFO_INFO_MICRO2"> Relizane </string>
+    <string name="INFO_INFO_MICRO3">Nouredine  : 0770331069</string>
+    <string name="INFO_INFO_MICRO4"> - </string>
 
 
     <string name="LAB_SERIAL" translatable="false">Numéro de serie</string>
@@ -389,6 +395,7 @@
     <string name="param_tres_affichage_stock_moins">Paramètres affichage stock moins</string>
     <string name="param_tres_affichage_solde_client">Paramètres affichage solde client</string>
     <string name="param_tres_edit_price">Paramètres modification prix vente</string>
+    <string name="param_tres_edit_stock_ini">Paramètres modification stock initial</string>
     <string name="param_tres_famille">Paramètres mode famille</string>
     <string name="param_tres_affichage_ht_tva">Paramètres affichage HT, TVA</string>
     <string name="activer_l_affichage_ht">Activer/Disactiver le mode HT</string>
@@ -438,5 +445,7 @@
     <string name="commune">Commune</string>
     <string name="afficher_cacher_achats_client">Afficher / Cacher achats client</string>
     <string name="sychroniser_tous_les_produits">Sychroniser tous les produits</string>
+    <string name="code_client">CODE CLIENT</string>
+    <string name="suivi_de_t_l_phone">Suivi de téléphone</string>
 
 </resources>

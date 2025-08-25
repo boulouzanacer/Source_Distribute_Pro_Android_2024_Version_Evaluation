@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:weightSum="12"
+        android:weightSum="13"
         android:orientation="vertical"
         android:layout_margin="5dp"
         android:background="@color/white"
@@ -20,6 +20,7 @@
             android:layout_height="0dp">
 
             <TextView
+                android:id="@+id/title_client"
                 android:text="Nouveau client"
                 android:textColor="@color/white"
                 android:gravity="center"
@@ -29,15 +30,59 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_weight="11"
+            android:layout_weight="12"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
             <LinearLayout
-                android:weightSum="11"
+                android:weightSum="12"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
+
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:weightSum="7"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_gravity="center"
+                        app:errorMessage="@string/error_message_empty"
+                        app:errorType="empty"
+                        android:layout_weight="6"
+                        android:hint="@string/code_client"
+                        app:expandedHintEnabled="false"
+                        app:helperText="  "
+                        android:layout_margin="5dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_client_code"
+                            android:gravity="center"
+                            android:inputType="text"
+                            android:textStyle="bold"
+                            android:enabled="false"
+                            android:textColor="@color/black"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/scan_codeclient"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_codebarre_white_24"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_weight="1"

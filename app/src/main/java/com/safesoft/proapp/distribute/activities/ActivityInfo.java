@@ -47,6 +47,13 @@ public class ActivityInfo extends AppCompatActivity {
 
         String content = "<h3>Historique des versions</h3><br>" +
                 "<pre>" +
+
+                "    <h6><p style=color:red;>Version v03.08.25 (03-08-2025)<br></p></h6>" +
+                "    <p style=color:black;>1 - Intégrer un bouton permettant à l'utilisateur de tapez directement le montant du bon au moment de sa validation, afin de garantir une facilité maximale lors du validation.</p>" +
+                "    <p style=color:black;>2 - Mettre en place un compteur affichant le nombre total de bons dans les listes des bons de commande et des bons de vente, pour une meilleure visibilité et un suivi facilité..</p>" +
+                "    <p style=color:black;>3 - Identifier et corriger les dysfonctionnements actuels de l'application afin d'assurer une stabilité optimale et une expérience utilisateur fluide.</p>" +
+                "    <br>" +
+
                 "    <h6><p style=color:red;>Version v2.4.25 (02-04-2025)<br></p></h6>" +
                 "    <p style=color:black;>1 - Ajouter button 'Importation bon de commandes' pour importer les bons de commandes depuis le serveur</p>" +
                 "    <p style=color:black;>2 - Ajouter une carte pour afficher les clients ayant des bons de commande et suivre leurs validations à travers des marqueurs.</p>" +

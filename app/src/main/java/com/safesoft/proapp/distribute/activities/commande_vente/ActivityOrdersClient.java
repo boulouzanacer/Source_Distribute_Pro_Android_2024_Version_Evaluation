@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -61,20 +62,19 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     ArrayList<PostData_Bon1> bon1s_temp;
     ArrayList<PostData_Bon2> final_panier;
     DATABASE controller;
-
+    private TextView list_bon_total;
     private final String PREFS = "ALL_PREFS";
-    SharedPreferences prefs;
-    Boolean printer_mode_integrate = true;
-
+    private SharedPreferences prefs;
     private String SOURCE_EXPORT = "";
     private NumberFormat nf;
     private SearchView searchView;
-
     private String CODE_DEPOT;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat date_format;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat heure_format;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +127,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     private void initViews() {
 
         recyclerView = findViewById(R.id.recycler_view_vente);
+        list_bon_total = findViewById(R.id.list_bon_total);
 
     }
 
@@ -136,7 +137,6 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         setRecycle("", false);
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        printer_mode_integrate = Objects.equals(prefs.getString("PRINTER_CONX", "INTEGRATE"), "INTEGRATE");
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
@@ -150,6 +150,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterBon1(this, getItems(text_search, isSearch), "ORDER");
         recyclerView.setAdapter(adapter);
+
+        list_bon_total.setText("Total bon : " + bon1s_temp.size());
     }
 
 

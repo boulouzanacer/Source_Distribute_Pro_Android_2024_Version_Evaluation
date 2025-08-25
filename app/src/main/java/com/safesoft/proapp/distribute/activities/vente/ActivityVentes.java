@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
@@ -55,7 +56,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
     ArrayList<PostData_Bon1> bon1s;
     ArrayList<PostData_Bon2> final_panier;
     DATABASE controller;
-
+    private TextView list_bon_total;
     private final String PREFS = "ALL_PREFS";
     private String SOURCE_EXPORT = "";
     private SharedPreferences prefs;
@@ -106,6 +107,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
     private void initViews() {
 
         recyclerView = findViewById(R.id.recycler_view_vente);
+        list_bon_total = findViewById(R.id.list_bon_total);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         prefs.edit().putInt("LAST_CLICKED_POSITION", 0).apply();
     }
@@ -125,8 +127,9 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterBon1(this, getItems(text_search, isSearch), "SALE");
-
         recyclerView.setAdapter(adapter);
+
+        list_bon_total.setText("Total bon : " + bon1s.size());
     }
 
 
@@ -464,8 +467,22 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
             }
 
         }else if(item.getItemId() == R.id.delete_all_bon){
-            controller.delete_all_bon(true);
-            setRecycle("", false);
+            new SweetAlertDialog(ActivityVentes.this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Suppression")
+                    .setContentText("Voulez-vous vraiment supprimer tous les bon déjà exportés ?!")
+                    .setCancelText("Anuuler")
+                    .setConfirmText("Supprimer")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
+
+                        controller.delete_all_bon(false);
+                        setRecycle("", false);
+
+                        sDialog.dismiss();
+                    })
+                    .show();
+
         }
 
         return super.onOptionsItemSelected(item);

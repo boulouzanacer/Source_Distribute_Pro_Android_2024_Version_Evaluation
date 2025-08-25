@@ -64,7 +64,7 @@ public class CheckEmailExist extends AsyncTask<String, Void, String> {
                 jsonObject.put("code", 202);
                 jsonObject.put("is_e_sent", false);
                 jsonObject.put("is_exist", false);
-                jsonObject.put("message", "Probleme de connexion avec le serveur");
+                jsonObject.put("message", "Problème de lecture des données depuis le serveur.");
                 jsonObject.put("generated_code", "48464615648456145489");
 
                 // Convert JSON object to string and log it
@@ -78,7 +78,7 @@ public class CheckEmailExist extends AsyncTask<String, Void, String> {
                 jsonObject.put("code", 204);
                 jsonObject.put("is_exist", false);
                 jsonObject.put("is_e_sent", false);
-                jsonObject.put("message", "Failed to connect to server");
+                jsonObject.put("message", "Problème de connexion avec le serveur");
                 jsonObject.put("generated_code", "48464615648456145489");
                 String jsonString = jsonObject.toString();
                 e.printStackTrace();

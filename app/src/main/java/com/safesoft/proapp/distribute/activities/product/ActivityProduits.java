@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activities.product;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -43,6 +44,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
+import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.utils.ImageUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -461,11 +463,30 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         } else if (item.getItemId() == R.id.scan) {
 
             startScan();
+
         } else if (item.getItemId() == R.id.new_product) {
             if (fragmentnewproduct == null)
                 fragmentnewproduct = new FragmentNewEditProduct();
 
             fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT", null);
+        }else if (item.getItemId() == R.id.print_stock) {
+            new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Impression")
+                    .setContentText("Voulez-vous vraiment imprimer le stock de la séléction ?!")
+                    .setCancelText("Anuuler")
+                    .setConfirmText("Imprimer")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
+
+                        Activity bactivity;
+                        bactivity = ActivityProduits.this;
+                        Printing printer = new Printing();
+                        printer.start_print_stock(bactivity, "STOCK", produits, selected_famile);
+
+                        sDialog.dismiss();
+
+                    }).show();
         }
         return super.onOptionsItemSelected(item);
     }

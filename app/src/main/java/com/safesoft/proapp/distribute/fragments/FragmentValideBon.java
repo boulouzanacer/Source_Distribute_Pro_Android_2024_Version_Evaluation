@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -29,7 +30,7 @@ public class FragmentValideBon {
     MaterialFancyButton btn_valider, btn_cancel;
     private TextInputEditText edt_ancien_sold, edt_montant_bon, edt_solde_actuel, edt_versement, edt_nouveau_solde;
     private double val_ancien_sold = 0.0, val_montant_bon = 0.0, val_solde_actuel = 0.0, val_versement = 0.0, val_nouveau_solde = 0.0;
-
+    private TextView charge_montant_bon;
     private final EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
@@ -60,7 +61,7 @@ public class FragmentValideBon {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = dialogview.findViewById(R.id.btn_remise);
+        btn_valider = dialogview.findViewById(R.id.btn_connect);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
@@ -74,6 +75,8 @@ public class FragmentValideBon {
         btn_cancel.setIconPosition(POSITION_LEFT);
         btn_cancel.setFontIconSize(30);
 
+
+        charge_montant_bon = dialogview.findViewById(R.id.charge_montant_bon);
 
         edt_ancien_sold = dialogview.findViewById(R.id.ancien_sold);
         edt_montant_bon = dialogview.findViewById(R.id.montant_bon_actuel);
@@ -115,6 +118,13 @@ public class FragmentValideBon {
             dialog.dismiss();
         });
 
+
+        charge_montant_bon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edt_versement.setText(edt_montant_bon.getText().toString());
+            }
+        });
 
         edt_versement.addTextChangedListener(new TextWatcher() {
             @Override

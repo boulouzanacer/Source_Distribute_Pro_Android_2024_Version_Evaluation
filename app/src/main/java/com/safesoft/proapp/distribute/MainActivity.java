@@ -140,12 +140,14 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
                 switch (state) {
                     case CommonEnum.CONNECT_STATE_SUCCESS -> {
                         Toast.makeText(MainActivity.this, printerInterface.getConfigObject().toString() + " Connecté", Toast.LENGTH_SHORT).show();
+                        //Crouton.makeText(MainActivity.this, "Connecté", Style.CONFIRM).show();
                         BaseApplication.getInstance().setIsConnected(true);
                         rtPrinter.setPrinterInterface(printerInterface);
                         BaseApplication.getInstance().setRtPrinter(rtPrinter);
                     }
                     case CommonEnum.CONNECT_STATE_INTERRUPTED -> {
                         Toast.makeText(MainActivity.this, getString(R.string._main_disconnect), Toast.LENGTH_SHORT).show();
+                        //Crouton.makeText(MainActivity.this, getString(R.string._main_disconnect), Style.ALERT).show();
                         BaseApplication.getInstance().setIsConnected(false);
                     }
                     //BaseApplication.getInstance().setRtPrinter(null);

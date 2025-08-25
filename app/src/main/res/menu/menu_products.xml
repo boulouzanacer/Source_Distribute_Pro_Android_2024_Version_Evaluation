@@ -9,6 +9,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/print_stock"
+        android:title="Imprimer stock"
+        android:icon="@drawable/ic_outline_print_24"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/new_product"
         android:title="@string/produit"
         android:icon="@drawable/ic_add_black_24dp"

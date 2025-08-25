@@ -914,7 +914,12 @@ public class ActivityHtmlView extends AppCompatActivity {
             data.append("</div>");
             // price value
             data.append("<div class='prix_u_value'>");
-            data.append(new DecimalFormat("####0.00").format(final_panier_client.get(i).pv_ht));
+            if (prefs.getBoolean("AFFICHAGE_HT", false)) {
+                data.append(new DecimalFormat("####0.00").format(final_panier_client.get(i).pv_ht));
+            }else{
+                data.append(new DecimalFormat("####0.00").format(final_panier_client.get(i).pv_ht * (1 + (final_panier_client.get(i).tva/100))));
+            }
+
             data.append("</div>");
             data.append("</div>");
 
@@ -1228,7 +1233,11 @@ public class ActivityHtmlView extends AppCompatActivity {
             //data.append("</div>");
             // price value
             data.append("<div class='prix_u_value_model2'>");
-            data.append(new DecimalFormat("####0.00").format(final_panier_client.get(i).pv_ht));
+            if (prefs.getBoolean("AFFICHAGE_HT", false)) {
+                data.append(new DecimalFormat("####0.00").format(final_panier_client.get(i).pv_ht));
+            }else{
+                data.append(new DecimalFormat("####0.00").format(final_panier_client.get(i).pv_ht * (1 + (final_panier_client.get(i).tva/100))));
+            }
             data.append("</div>");
 
             // total by product value

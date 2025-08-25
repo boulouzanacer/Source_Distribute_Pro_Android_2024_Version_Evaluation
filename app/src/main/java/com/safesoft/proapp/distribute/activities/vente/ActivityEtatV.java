@@ -263,7 +263,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                     mRecyclerAdapter.addItem(WrappedMyDataObject.initHeaderItemTotal("Conclusion Total : "));
                     for (int k = i, b = 1; k < result_etat_z.size() - 1; k++,b++) {
                         i = k;
-                        if(b == 7){
+                        if(b == 6){
                             if(prefs.getBoolean("AFFICHAGE_BENIFICE", false)){
                                 mRecyclerAdapter.addItem(WrappedMyDataObject.initDataItem(new MyDataObject(result_etat_z.get(k).produit, result_etat_z.get(k).quantite, result_etat_z.get(k).montant, result_etat_z.get(i).code_parent)));
                             }

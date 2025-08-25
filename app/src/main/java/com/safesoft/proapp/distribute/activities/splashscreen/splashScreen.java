@@ -168,6 +168,7 @@ public class splashScreen extends AppCompatActivity {
     }
 
     public void info_revendeur1() {
+
         inforevenedeur1 = findViewById(R.id.InfoRevendeur1);
         inforevenedeur2 = findViewById(R.id.InfoRevendeur2);
         inforevenedeur3 = findViewById(R.id.InfoRevendeur3);
@@ -181,6 +182,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_SAFE_SOFT3);
             inforevenedeur4.setText(R.string.INFO_SAFE_SOFT4);
         }
+
         //01
         if (revendeur.equals("COMPOS SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_compos_500_100);
@@ -189,6 +191,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_COMPOS3);
             inforevenedeur4.setText(R.string.INFO_COMPOS4);
         }
+
         //02
         if (revendeur.equals("TIEMPO SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_tiempo_soft_500_100);
@@ -197,6 +200,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_TIEMPO_SOFT3);
             inforevenedeur4.setText(R.string.INFO_TIEMPO_SOFT4);
         }
+
         //03
         if (revendeur.equals("CHERRATA SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_cherrata_soft_500_100);
@@ -205,6 +209,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_CHERRATA_SOFT3);
             inforevenedeur4.setText(R.string.INFO_CHERRATA_SOFT4);
         }
+
         //04
         if (revendeur.equals("EASY SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_easy_soft_500_100);
@@ -213,6 +218,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_EASY_SOFT3);
             inforevenedeur4.setText(R.string.INFO_EASY_SOFT4);
         }
+
         //05
         if (revendeur.equals("MOON SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_moon_soft_500_100);
@@ -221,6 +227,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_MOON_SOFT3);
             inforevenedeur4.setText(R.string.INFO_MOON_SOFT4);
         }
+
         //06
         if (revendeur.equals("GLOBAL TECH")) {
             logo_revendeur.setImageResource(R.drawable.logo_global_500_100);
@@ -229,14 +236,16 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_GLOBAL_TECH3);
             inforevenedeur4.setText(R.string.INFO_GLOBAL_TECH4);
         }
+
         //07
-        if (revendeur.equals("POLYRAW")) {
+        if (revendeur.equals("DSX SYSTEME")) {
             logo_revendeur.setImageResource(R.drawable.logo_poliraw_500_100);
             inforevenedeur1.setText(R.string.INFO_POLYRAW1);
             inforevenedeur2.setText(R.string.INFO_POLYRAW2);
             inforevenedeur3.setText(R.string.INFO_POLYRAW3);
             inforevenedeur4.setText(R.string.INFO_POLYRAW4);
         }
+
         //08
         if (revendeur.equals("PRO SOLUTION")) {
             logo_revendeur.setImageResource(R.drawable.logo_pro_solution_500_100);
@@ -245,107 +254,8 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_PROSOLUTION3);
             inforevenedeur4.setText(R.string.INFO_PROSOLUTION4);
         }
+
         //09
-        if (revendeur.equals("ACIDOM TECH")) {
-            logo_revendeur.setImageResource(R.drawable.logo_acidomtech_500_100);
-            inforevenedeur1.setText(R.string.INFO_ACIDOMTECH1);
-            inforevenedeur2.setText(R.string.INFO_ACIDOMTECH2);
-            inforevenedeur3.setText(R.string.INFO_ACIDOMTECH3);
-            inforevenedeur4.setText(R.string.INFO_ACIDOMTECH4);
-        }
-        //10
-        if (revendeur.equals("NDHL")) {
-            logo_revendeur.setImageResource(R.drawable.logo_ndhl_500_100);
-            inforevenedeur1.setText(R.string.INFO_NDHL1);
-            inforevenedeur2.setText(R.string.INFO_NDHL2);
-            inforevenedeur3.setText(R.string.INFO_NDHL3);
-            inforevenedeur4.setText(R.string.INFO_NDHL4);
-        }
-        //11
-        if (revendeur.equals("TECH POS")) {
-            logo_revendeur.setImageResource(R.drawable.logo_techpos_500_100);
-            inforevenedeur1.setText(R.string.INFO_TECH_POS1);
-            inforevenedeur2.setText(R.string.INFO_TECH_POS2);
-            inforevenedeur3.setText(R.string.INFO_TECH_POS3);
-            inforevenedeur4.setText(R.string.INFO_TECH_POS4);
-        }
-        //12
-        if (revendeur.equals("UNIVER SOFT")) {
-            logo_revendeur.setImageResource(R.drawable.logo_universoft_500_100);
-            inforevenedeur1.setText(R.string.INFO_UNIVERSOFT1);
-            inforevenedeur2.setText(R.string.INFO_UNIVERSOFT2);
-            inforevenedeur3.setText(R.string.INFO_UNIVERSOFT3);
-            inforevenedeur4.setText(R.string.INFO_UNIVERSOFT4);
-        }
-        //13
-        if (revendeur.equals("IBSMAX")) {
-            logo_revendeur.setImageResource(R.drawable.logo_ibsmax_500_100);
-            inforevenedeur1.setText(R.string.INFO_IBSMAX1);
-            inforevenedeur2.setText(R.string.INFO_IBSMAX2);
-            inforevenedeur3.setText(R.string.INFO_IBSMAX3);
-            inforevenedeur4.setText(R.string.INFO_IBSMAX4);
-        }
-        //14
-        if (revendeur.equals("MMBOX")) {
-            logo_revendeur.setImageResource(R.drawable.logo_mmbox_500_100);
-            inforevenedeur1.setText(R.string.INFO_MMBOX1);
-            inforevenedeur2.setText(R.string.INFO_MMBOX2);
-            inforevenedeur3.setText(R.string.INFO_MMBOX3);
-            inforevenedeur4.setText(R.string.INFO_MMBOX4);
-        }
-        //15
-        if (revendeur.equals("DELPHI SOFT")) {
-            logo_revendeur.setImageResource(R.drawable.logo_delphi_soft_500_100);
-            inforevenedeur1.setText(R.string.INFO_DELPHI1);
-            inforevenedeur2.setText(R.string.INFO_DELPHI2);
-            inforevenedeur3.setText(R.string.INFO_DELPHI3);
-            inforevenedeur4.setText(R.string.INFO_DELPHI4);
-        }
-        //16
-        if (revendeur.equals("BBS")) {
-            logo_revendeur.setImageResource(R.drawable.logo_bbs_500_100);
-            inforevenedeur1.setText(R.string.INFO_BBS1);
-            inforevenedeur2.setText(R.string.INFO_BBS2);
-            inforevenedeur3.setText(R.string.INFO_BBS3);
-            inforevenedeur4.setText(R.string.INFO_BBS4);
-        }
-        //17
-        if (revendeur.equals("EXPERT INFO")) {
-            logo_revendeur.setImageResource(R.drawable.logo_expert_info_500_100);
-            inforevenedeur1.setText(R.string.INFO_EXPERTINFO1);
-            inforevenedeur2.setText(R.string.INFO_EXPERTINFO2);
-            inforevenedeur3.setText(R.string.INFO_EXPERTINFO3);
-            inforevenedeur4.setText(R.string.INFO_EXPERTINFO4);
-        }
-
-        //18
-        if (revendeur.equals("ARC TECH")) {
-            logo_revendeur.setImageResource(R.drawable.logo_expert_info_500_100);
-            inforevenedeur1.setText(R.string.INFO_ARCTECH1);
-            inforevenedeur2.setText(R.string.INFO_ARCTECH2);
-            inforevenedeur3.setText(R.string.INFO_ARCTECH3);
-            inforevenedeur4.setText(R.string.INFO_ARCTECH4);
-        }
-
-        //19
-        if (revendeur.equals("DATA PRO")) {
-            logo_revendeur.setImageResource(R.drawable.logo_datapro_500_100);
-            inforevenedeur1.setText(R.string.INFO_DATAPRO1);
-            inforevenedeur2.setText(R.string.INFO_DATAPRO2);
-            inforevenedeur3.setText(R.string.INFO_DATAPRO3);
-            inforevenedeur4.setText(R.string.INFO_DATAPRO4);
-        }
-
-        //20
-        if (revendeur.equals("LAGA")) {
-            logo_revendeur.setImageResource(R.drawable.logo_laga_500_100);
-            inforevenedeur1.setText(R.string.INFO_LAGA1);
-            inforevenedeur2.setText(R.string.INFO_LAGA2);
-            inforevenedeur3.setText(R.string.INFO_LAGA3);
-            inforevenedeur4.setText(R.string.INFO_LAGA4);
-        }
-
-        //21
         if (revendeur.equals("SOFT SPACE")) {
             logo_revendeur.setImageResource(R.drawable.logo_softspace_500_100);
             inforevenedeur1.setText(R.string.INFO_SOFTSPACE1);
@@ -354,7 +264,124 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur4.setText(R.string.INFO_SOFTSPACE4);
         }
 
-        //22
+        //10
+        if (revendeur.equals("TECH POS")) {
+            logo_revendeur.setImageResource(R.drawable.logo_techpos_500_100);
+            inforevenedeur1.setText(R.string.INFO_TECH_POS1);
+            inforevenedeur2.setText(R.string.INFO_TECH_POS2);
+            inforevenedeur3.setText(R.string.INFO_TECH_POS3);
+            inforevenedeur4.setText(R.string.INFO_TECH_POS4);
+        }
+
+        //11
+        if (revendeur.equals("NDHL")) {
+            logo_revendeur.setImageResource(R.drawable.logo_ndhl_500_100);
+            inforevenedeur1.setText(R.string.INFO_NDHL1);
+            inforevenedeur2.setText(R.string.INFO_NDHL2);
+            inforevenedeur3.setText(R.string.INFO_NDHL3);
+            inforevenedeur4.setText(R.string.INFO_NDHL4);
+        }
+
+        //12
+        if (revendeur.equals("IBSMAX")) {
+            logo_revendeur.setImageResource(R.drawable.logo_ibsmax_500_100);
+            inforevenedeur1.setText(R.string.INFO_IBSMAX1);
+            inforevenedeur2.setText(R.string.INFO_IBSMAX2);
+            inforevenedeur3.setText(R.string.INFO_IBSMAX3);
+            inforevenedeur4.setText(R.string.INFO_IBSMAX4);
+        }
+
+        //13
+        if (revendeur.equals("MMBOX")) {
+            logo_revendeur.setImageResource(R.drawable.logo_mmbox_500_100);
+            inforevenedeur1.setText(R.string.INFO_MMBOX1);
+            inforevenedeur2.setText(R.string.INFO_MMBOX2);
+            inforevenedeur3.setText(R.string.INFO_MMBOX3);
+            inforevenedeur4.setText(R.string.INFO_MMBOX4);
+        }
+
+        //14
+        if (revendeur.equals("LAGA")) {
+            logo_revendeur.setImageResource(R.drawable.logo_laga_500_100);
+            inforevenedeur1.setText(R.string.INFO_LAGA1);
+            inforevenedeur2.setText(R.string.INFO_LAGA2);
+            inforevenedeur3.setText(R.string.INFO_LAGA3);
+            inforevenedeur4.setText(R.string.INFO_LAGA4);
+        }
+
+        //15
+        if (revendeur.equals("DELPHI SOFT")) {
+            logo_revendeur.setImageResource(R.drawable.logo_delphi_soft_500_100);
+            inforevenedeur1.setText(R.string.INFO_DELPHI1);
+            inforevenedeur2.setText(R.string.INFO_DELPHI2);
+            inforevenedeur3.setText(R.string.INFO_DELPHI3);
+            inforevenedeur4.setText(R.string.INFO_DELPHI4);
+        }
+
+        //16
+        if (revendeur.equals("ACIDOM TECH")) {
+            logo_revendeur.setImageResource(R.drawable.logo_acidomtech_500_100);
+            inforevenedeur1.setText(R.string.INFO_ACIDOMTECH1);
+            inforevenedeur2.setText(R.string.INFO_ACIDOMTECH2);
+            inforevenedeur3.setText(R.string.INFO_ACIDOMTECH3);
+            inforevenedeur4.setText(R.string.INFO_ACIDOMTECH4);
+        }
+
+        //17
+        if (revendeur.equals("EL KHALIL SOFT")) {
+            logo_revendeur.setImageResource(R.drawable.logo_universoft_500_100);
+            inforevenedeur1.setText(R.string.INFO_UNIVERSOFT1);
+            inforevenedeur2.setText(R.string.INFO_UNIVERSOFT2);
+            inforevenedeur3.setText(R.string.INFO_UNIVERSOFT3);
+            inforevenedeur4.setText(R.string.INFO_UNIVERSOFT4);
+        }
+
+        //18
+        if (revendeur.equals("BBS")) {
+            logo_revendeur.setImageResource(R.drawable.logo_bbs_500_100);
+            inforevenedeur1.setText(R.string.INFO_BBS1);
+            inforevenedeur2.setText(R.string.INFO_BBS2);
+            inforevenedeur3.setText(R.string.INFO_BBS3);
+            inforevenedeur4.setText(R.string.INFO_BBS4);
+        }
+
+        //20
+        if (revendeur.equals("GENERAL IT")) {
+            logo_revendeur.setImageResource(R.drawable.logo_general_it_500_100);
+            inforevenedeur1.setText(R.string.INFO_GENERALIT1);
+            inforevenedeur2.setText(R.string.INFO_GENERALIT2);
+            inforevenedeur3.setText(R.string.INFO_GENERALIT3);
+            inforevenedeur4.setText(R.string.INFO_GENERALIT4);
+        }
+
+        //21
+        if (revendeur.equals("TIFAWT TECHNOLOGIE")) {
+            logo_revendeur.setImageResource(R.drawable.logo_tifawt_500_100);
+            inforevenedeur1.setText(R.string.INFO_TIFAWT_TECHNOLOGIE1);
+            inforevenedeur2.setText(R.string.INFO_TIFAWT_TECHNOLOGIE2);
+            inforevenedeur3.setText(R.string.INFO_TIFAWT_TECHNOLOGIE3);
+            inforevenedeur4.setText(R.string.INFO_TIFAWT_TECHNOLOGIE4);
+        }
+
+        //26
+        if (revendeur.equals("DARIA COMPUTER")) {
+            logo_revendeur.setImageResource(R.drawable.logo_daria_500_100);
+            inforevenedeur1.setText(R.string.INFO_DARIASOFT1);
+            inforevenedeur2.setText(R.string.INFO_DARIASOFT1);
+            inforevenedeur3.setText(R.string.INFO_DARIASOFT1);
+            inforevenedeur4.setText(R.string.INFO_DARIASOFT1);
+        }
+
+        //30
+        if (revendeur.equals("DATA PRO")) {
+            logo_revendeur.setImageResource(R.drawable.logo_datapro_500_100);
+            inforevenedeur1.setText(R.string.INFO_DATAPRO1);
+            inforevenedeur2.setText(R.string.INFO_DATAPRO2);
+            inforevenedeur3.setText(R.string.INFO_DATAPRO3);
+            inforevenedeur4.setText(R.string.INFO_DATAPRO4);
+        }
+
+        //31
         if (revendeur.equals("AFKAR SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_afkarsoft_500_100);
             inforevenedeur1.setText(R.string.INFO_AFKARSOFT1);
@@ -363,7 +390,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur4.setText(R.string.INFO_AFKARSOFT4);
         }
 
-        //23
+        //32
         if (revendeur.equals("AZAD ADRAR")) {
             logo_revendeur.setImageResource(R.drawable.logo_azad_500_100);
             inforevenedeur1.setText(R.string.INFO_AZAD1);
@@ -372,15 +399,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur4.setText(R.string.INFO_AZAD1);
         }
 
-        //24
-        if (revendeur.equals("GENERAL IT")) {
-            logo_revendeur.setImageResource(R.drawable.logo_general_it_500_100);
-            inforevenedeur1.setText(R.string.INFO_GENERALIT1);
-            inforevenedeur2.setText(R.string.INFO_GENERALIT2);
-            inforevenedeur3.setText(R.string.INFO_GENERALIT3);
-            inforevenedeur4.setText(R.string.INFO_GENERALIT4);
-        }
-        //25
+        //33
         if (revendeur.equals("VAST SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_vastsoft_500_100);
             inforevenedeur1.setText(R.string.INFO_VASTSOFT1);
@@ -388,15 +407,8 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_VASTSOFT1);
             inforevenedeur4.setText(R.string.INFO_VASTSOFT1);
         }
-        //26
-        if (revendeur.equals("CAM PLUS")) {
-            logo_revendeur.setImageResource(R.drawable.logo_cam_plus_500_100);
-            inforevenedeur1.setText(R.string.INFO_CAM_PLUS1);
-            inforevenedeur2.setText(R.string.INFO_CAM_PLUS2);
-            inforevenedeur3.setText(R.string.INFO_CAM_PLUS3);
-            inforevenedeur4.setText(R.string.INFO_CAM_PLUS4);
-        }
-        //27
+
+        //34
         if (revendeur.equals("EASY SOLUTION")) {
             logo_revendeur.setImageResource(R.drawable.logo_easysolution_500_100);
             inforevenedeur1.setText(R.string.INFO_EASYSOLUTION1);
@@ -404,39 +416,28 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_EASYSOLUTION3);
             inforevenedeur4.setText(R.string.INFO_EASYSOLUTION4);
         }
-        //28
-        if (revendeur.equals("TIFAWT TECHNOLOGIE")) {
-            logo_revendeur.setImageResource(R.drawable.logo_tifawt_500_100);
-            inforevenedeur1.setText(R.string.INFO_TIFAWT_TECHNOLOGIE1);
-            inforevenedeur2.setText(R.string.INFO_TIFAWT_TECHNOLOGIE2);
-            inforevenedeur3.setText(R.string.INFO_TIFAWT_TECHNOLOGIE3);
-            inforevenedeur4.setText(R.string.INFO_TIFAWT_TECHNOLOGIE4);
+
+        //35
+        if (revendeur.equals("CAM PLUS")) {
+            logo_revendeur.setImageResource(R.drawable.logo_cam_plus_500_100);
+            inforevenedeur1.setText(R.string.INFO_CAM_PLUS1);
+            inforevenedeur2.setText(R.string.INFO_CAM_PLUS2);
+            inforevenedeur3.setText(R.string.INFO_CAM_PLUS3);
+            inforevenedeur4.setText(R.string.INFO_CAM_PLUS4);
         }
-        //31
-        if (revendeur.equals("DARIA COMPUTER")) {
-            logo_revendeur.setImageResource(R.drawable.logo_daria_500_100);
-            inforevenedeur1.setText(R.string.INFO_DARIASOFT1);
-            inforevenedeur2.setText(R.string.INFO_DARIASOFT1);
-            inforevenedeur3.setText(R.string.INFO_DARIASOFT1);
-            inforevenedeur4.setText(R.string.INFO_DARIASOFT1);
+
+        //37
+        if (revendeur.equals("EXPERT INFO")) {
+            logo_revendeur.setImageResource(R.drawable.logo_expert_info_500_100);
+            inforevenedeur1.setText(R.string.INFO_EXPERTINFO1);
+            inforevenedeur2.setText(R.string.INFO_EXPERTINFO2);
+            inforevenedeur3.setText(R.string.INFO_EXPERTINFO3);
+            inforevenedeur4.setText(R.string.INFO_EXPERTINFO4);
         }
-        //32
-        if (revendeur.equals("MATEN AFKAR")) {
-            logo_revendeur.setImageResource(R.drawable.logo_maten_500_100);
-            inforevenedeur1.setText(R.string.INFO_MATENAFKAR1);
-            inforevenedeur2.setText(R.string.INFO_MATENAFKAR1);
-            inforevenedeur3.setText(R.string.INFO_MATENAFKAR1);
-            inforevenedeur4.setText(R.string.INFO_MATENAFKAR1);
-        }
-        //33
-        if (revendeur.equals("NOUH BARIKA")) {
-            logo_revendeur.setImageResource(R.drawable.logo_nouhbarika_500_100);
-            inforevenedeur1.setText(R.string.INFO_NOUHBARIKA1);
-            inforevenedeur2.setText(R.string.INFO_NOUHBARIKA2);
-            inforevenedeur3.setText(R.string.INFO_NOUHBARIKA3);
-            inforevenedeur4.setText(R.string.INFO_NOUHBARIKA4);
-        }
-        //34
+
+        //40 ATLANTIC SOLUTION
+
+        //42
         if (revendeur.equals("KATIA QUEEN SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_queensoft_500_100);
             inforevenedeur1.setText(R.string.INFO_QUEENSOFT1);
@@ -444,7 +445,17 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_QUEENSOFT3);
             inforevenedeur4.setText(R.string.INFO_QUEENSOFT4);
         }
-        //35
+
+        //43
+        if (revendeur.equals("NOUH BARIKA")) {
+            logo_revendeur.setImageResource(R.drawable.logo_nouhbarika_500_100);
+            inforevenedeur1.setText(R.string.INFO_NOUHBARIKA1);
+            inforevenedeur2.setText(R.string.INFO_NOUHBARIKA2);
+            inforevenedeur3.setText(R.string.INFO_NOUHBARIKA3);
+            inforevenedeur4.setText(R.string.INFO_NOUHBARIKA4);
+        }
+
+        //44
         if (revendeur.equals("OA TECH")) {
             logo_revendeur.setImageResource(R.drawable.logo_oatech_500_100);
             inforevenedeur1.setText(R.string.INFO_OATECH1);
@@ -452,7 +463,28 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_OATECH3);
             inforevenedeur4.setText(R.string.INFO_OATECH4);
         }
-        //36
+
+        //45
+        if (revendeur.equals("MATEN AFKAR")) {
+            logo_revendeur.setImageResource(R.drawable.logo_maten_500_100);
+            inforevenedeur1.setText(R.string.INFO_MATENAFKAR1);
+            inforevenedeur2.setText(R.string.INFO_MATENAFKAR1);
+            inforevenedeur3.setText(R.string.INFO_MATENAFKAR1);
+            inforevenedeur4.setText(R.string.INFO_MATENAFKAR1);
+        }
+
+        //46 APEX
+
+        //47 INFO_MICRO_DRIEF
+        if (revendeur.equals("INFO MICRO DRIEF")) {
+            logo_revendeur.setImageResource(R.drawable.logo_brsoft_500_100);
+            inforevenedeur1.setText(R.string.INFO_INFO_MICRO1);
+            inforevenedeur2.setText(R.string.INFO_INFO_MICRO2);
+            inforevenedeur3.setText(R.string.INFO_INFO_MICRO3);
+            inforevenedeur4.setText(R.string.INFO_INFO_MICRO4);
+        }
+
+        //48
         if (revendeur.equals("BR SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_brsoft_500_100);
             inforevenedeur1.setText(R.string.INFO_BRSOFT1);
@@ -460,6 +492,15 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur3.setText(R.string.INFO_BRSOFT3);
             inforevenedeur4.setText(R.string.INFO_BRSOFT4);
         }
+
+
+
+
+        //49 TECHNO_INFODZ
+
+        //50 SSG_SERVICES
+
+
 
 
     }

@@ -139,7 +139,7 @@ public class FragmentNewEditProduct {
         dialog.getWindow().setAttributes(layoutParams);
 
 
-        btn_valider = dialogview.findViewById(R.id.btn_remise);
+        btn_valider = dialogview.findViewById(R.id.btn_connect);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
@@ -311,6 +311,12 @@ public class FragmentNewEditProduct {
                 edt_prix5_ht.setEnabled(false);
                 edt_prix6_ht.setEnabled(false);
 
+            }
+
+            if (prefs.getBoolean("CAN_EDIT_STOCK_INI", false)) {
+                edt_stock_ini.setEnabled(true);
+            } else {
+                edt_stock_ini.setEnabled(false);
             }
 
         }

@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.view.View.GONE;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,11 +12,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
+import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.AdapterCommune;
@@ -41,10 +47,13 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class FragmentNewEditClient {
 
     Button btn_valider, btn_cancel;
-    TextInputEditText edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
+    TextInputEditText edt_client_code, edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
     Spinner wilayaSpinner, communeSpinner;
+    private TextView title_client;
+    ImageButton scan_codeclient;
     ToggleButtonGroupTableLayout radioGroup_mode_tarif;
     private Context mContext;
+    private Barcode barcodeResult;
 
     EventBus bus = EventBus.getDefault();
     Activity activity;
@@ -54,19 +63,19 @@ public class FragmentNewEditClient {
     private SharedPreferences prefs;
     private String CODE_DEPOT, CODE_VENDEUR;
 
-    PostData_Client created_client;
+    private PostData_Client created_client;
     private DATABASE controller;
     private PostData_Client old_client;
-    AdapterWilaya adapterwilaya;
-    AdapterCommune adaptercommune;
+    private AdapterWilaya adapterwilaya;
+    private AdapterCommune adaptercommune;
 
-    Resources res;
+    private Resources res;
     private ArrayList<PostData_wilaya> wilayas = new ArrayList<>();
     private ArrayList<PostData_wilaya> wilayas_temp = new ArrayList<>();
     private ArrayList<PostData_commune> communes = new ArrayList<>();
     boolean shouldWork = true;
-
     private boolean is_app_synchronised_mode = false;
+    private String old_code_client;
 
     //PopupWindow display method
 
@@ -81,6 +90,8 @@ public class FragmentNewEditClient {
 
         prefs = mContext.getSharedPreferences(PREFS, MODE_PRIVATE);
         is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
+        CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+        CODE_VENDEUR = prefs.getString("CODE_VENDEUR", "000000");
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -102,9 +113,14 @@ public class FragmentNewEditClient {
         btn_valider = dialogview.findViewById(R.id.btn_valider);
         btn_cancel = dialogview.findViewById(R.id.btn_cancel);
 
+        edt_client_code = dialogview.findViewById(R.id.edt_client_code);
         edt_client_name = dialogview.findViewById(R.id.edt_client_name);
         wilayaSpinner = dialogview.findViewById(R.id.wilaya_spinner);
         communeSpinner = dialogview.findViewById(R.id.commune_spinner);
+
+        title_client = dialogview.findViewById(R.id.title_client);
+
+        scan_codeclient = dialogview.findViewById(R.id.scan_codeclient);
 
         edt_client_adress = dialogview.findViewById(R.id.edt_client_adress);
         edt_client_telephone = dialogview.findViewById(R.id.edt_client_telephone);
@@ -159,6 +175,13 @@ public class FragmentNewEditClient {
             }
         });
 
+        scan_codeclient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startScan(view);
+            }
+        });
+
         PostData_Params params = new PostData_Params();
         params = controller.select_params_from_database("SELECT * FROM PARAMS");
 
@@ -169,13 +192,13 @@ public class FragmentNewEditClient {
         rb5.setText(params.pv5_titre);
         rb6.setText(params.pv6_titre);
 
-        rb0.setVisibility(View.GONE);
-        rb1.setVisibility(View.GONE);
-        rb2.setVisibility(View.GONE);
-        rb3.setVisibility(View.GONE);
-        rb4.setVisibility(View.GONE);
-        rb5.setVisibility(View.GONE);
-        rb6.setVisibility(View.GONE);
+        rb0.setVisibility(GONE);
+        rb1.setVisibility(GONE);
+        rb2.setVisibility(GONE);
+        rb3.setVisibility(GONE);
+        rb4.setVisibility(GONE);
+        rb5.setVisibility(GONE);
+        rb6.setVisibility(GONE);
 
 
         if (is_app_synchronised_mode) {
@@ -189,31 +212,31 @@ public class FragmentNewEditClient {
                 if (params.prix_2 == 1) {
                     rb2.setVisibility(View.VISIBLE);
                 } else {
-                    rb2.setVisibility(View.GONE);
+                    rb2.setVisibility(GONE);
                 }
 
                 if (params.prix_3 == 1) {
                     rb3.setVisibility(View.VISIBLE);
                 } else {
-                    rb3.setVisibility(View.GONE);
+                    rb3.setVisibility(GONE);
                 }
 
                 if (params.prix_4 == 1) {
                     rb4.setVisibility(View.VISIBLE);
                 } else {
-                    rb4.setVisibility(View.GONE);
+                    rb4.setVisibility(GONE);
                 }
 
                 if (params.prix_5 == 1) {
                     rb5.setVisibility(View.VISIBLE);
                 } else {
-                    rb5.setVisibility(View.GONE);
+                    rb5.setVisibility(GONE);
                 }
 
                 if (params.prix_6 == 1) {
                     rb6.setVisibility(View.VISIBLE);
                 } else {
-                    rb6.setVisibility(View.GONE);
+                    rb6.setVisibility(GONE);
                 }
 
             }else if(prefs.getString("PRIX_REVENDEUR", "Libre").equals(params.pv1_titre)) {
@@ -256,16 +279,33 @@ public class FragmentNewEditClient {
             }
         }
 
+        if(SOURCE_ACTIVITY.equals("NEW_CLIENT")){
 
+            title_client.setText("Nouveau client");
+            created_client.solde_montant = created_client.solde_ini;
+            if (CODE_DEPOT.equals("000000")) {
+                created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_VENDEUR;
 
-        if (SOURCE_ACTIVITY.equals("EDIT_CLIENT")) {
+            } else {
+                created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_DEPOT;
+            }
+
+            edt_client_code.setText(created_client.code_client);
+
+        }else {
+
+            title_client.setText("Modifier client");
 
             edt_client_name.setText(old_client.client);
             edt_client_adress.setText(old_client.adresse);
+            scan_codeclient.setVisibility(GONE);
             created_client.wilaya = old_client.wilaya;
             created_client.commune = old_client.commune;
+            old_code_client = old_client.code_client;
+            created_client.code_client = old_client.code_client;
 
             wilayas_temp = controller.select_wilayas_from_database("SELECT * FROM WILAYAS WHERE NAME = '" + old_client.wilaya + "' ORDER BY ID");
+
             if (wilayas_temp.size() > 1) {
                 shouldWork = false;
                 wilayaSpinner.setSelection(wilayas_temp.get(1).id);
@@ -287,6 +327,8 @@ public class FragmentNewEditClient {
             edt_client_nif.setText(old_client.ifiscal);
             edt_client_nis.setText(old_client.nis);
             edt_client_ai.setText(old_client.ai);
+            edt_client_code.setText(old_client.code_client);
+
             //edt_client_solde_init.setText(new DecimalFormat("####0.00").format(old_client.solde_ini));
             edt_client_solde_init.setText(String.valueOf(old_client.solde_ini));
             edt_client_solde_init.setEnabled(false);
@@ -380,18 +422,13 @@ public class FragmentNewEditClient {
                     }
                 }
 
-                SharedPreferences prefs2 = activity.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-                CODE_DEPOT = prefs2.getString("CODE_DEPOT", "000000");
-                CODE_VENDEUR = prefs2.getString("CODE_VENDEUR", "000000");
-
 
                 if (SOURCE_ACTIVITY.equals("EDIT_CLIENT")) {
 
-                    created_client.code_client = old_client.code_client;
-
                     try {
 
-                        controller.update_client(created_client);
+                        created_client.code_client = edt_client_code.getEditableText().toString();
+                        controller.update_client(created_client, old_code_client);
                         Crouton.makeText(activity, "Client bien modifier", Style.INFO).show();
                         SelectedClientEvent added_client = new SelectedClientEvent(created_client);
                         bus.post(added_client);
@@ -406,16 +443,22 @@ public class FragmentNewEditClient {
                     //Insert client into database,
 
                 } else {
-                    created_client.solde_montant = created_client.solde_ini;
-                    if (CODE_DEPOT.equals("000000")) {
-                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_VENDEUR;
 
-                    } else {
-                        created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_DEPOT;
-                    }
+                    created_client.solde_montant = created_client.solde_ini;
 
                     try {
-                        //update client into database,
+
+                        created_client.code_client = edt_client_code.getEditableText().toString();
+
+                         // Check if client exist in database
+                         if(controller.checkClientExists(created_client.code_client)){
+                             new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention. !")
+                                    .setContentText("Ce client existe déjà")
+                                    .show();
+                             return;
+                         }
+                         //Insert client into database,
                          controller.insert_into_client(created_client);
                          Crouton.makeText(activity, "Client bien ajouté", Style.INFO).show();
                          SelectedClientEvent added_client = new SelectedClientEvent(created_client);
@@ -438,6 +481,30 @@ public class FragmentNewEditClient {
         btn_cancel.setOnClickListener(v -> {
             dialog.dismiss();
         });
+    }
+
+    private void startScan(View view) {
+
+        final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
+                .withActivity(activity)
+                .withEnableAutoFocus(true)
+                .withBleepEnabled(true)
+                .withBackfacingCamera()
+                .withCenterTracker()
+                .withText("Scanning...")
+                .withResultListener(barcode -> {
+                    barcodeResult = barcode;
+
+                    if (view.getId() == R.id.scan_codeclient) {
+                        // check if barcode is exist in database
+                        edt_client_code.setText(barcodeResult.rawValue);
+                        created_client.code_client = barcodeResult.rawValue;
+
+                    }
+
+                })
+                .build();
+        materialBarcodeScanner.startScan();
     }
 
     public void setRecyleCommune(Resources res, int wilaya_id) {

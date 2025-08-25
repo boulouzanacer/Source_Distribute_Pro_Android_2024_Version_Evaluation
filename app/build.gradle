@@ -3,14 +3,14 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
 android {
-    compileSdk 35
+    compileSdk 36
     defaultConfig {
 
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
-        targetSdkVersion 35
-        versionCode 569
-        versionName "290525"
+        targetSdkVersion 36
+        versionCode 581
+        versionName "250825"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)
@@ -41,6 +41,7 @@ android {
             }
         }
     }
+
     packagingOptions {
         resources {
             excludes += ['META-INF/DEPENDENCIES.txt', 'META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/DEPENDENCIES', 'META-INF/notice.txt', 'META-INF/license.txt', 'META-INF/dependencies.txt', 'META-INF/LGPL2.1']
@@ -78,7 +79,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.exifinterface:exifinterface:1.4.1'
     implementation 'androidx.activity:activity:1.10.1'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.6.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -88,7 +89,7 @@ dependencies {
     }
 
     //implementation 'com.haozhang.libary:android-slanted-textview:1.2'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
@@ -108,7 +109,7 @@ dependencies {
 
     //implementation 'com.jzxiang.pickerview:TimePickerDialog:1.0.1'
     implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
+    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
     implementation 'com.github.mhadikz:toaster:1.0.0'
 
     //Button
@@ -131,9 +132,10 @@ dependencies {
     implementation "com.github.skydoves:powerspinner:1.2.7"
     //implementation 'cn.pedant.sweetalert:library:1.3'
     implementation 'com.github.f0ris.sweetalert:library:1.6.2'
+    //implementation 'com.ibm.icu:icu4j:77.1'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
 
     //détecter si une fuites mémoires est disponible
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'

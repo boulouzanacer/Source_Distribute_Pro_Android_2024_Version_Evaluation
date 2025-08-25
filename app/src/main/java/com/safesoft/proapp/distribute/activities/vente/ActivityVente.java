@@ -69,7 +69,7 @@ import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectClient;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.fragments.FragmentValideBon;
-import com.safesoft.proapp.distribute.gps.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
@@ -1052,11 +1052,14 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
         if (checkBox_timbre.isChecked()) {
             val_total_ttc = (val_total_ht) + val_tva;
-            if ((val_total_ttc * 0.01) >= 2500) {
-                val_timbre = 2500.00;
-            } else {
-                //float nnn = (val_total_ttc * (1/100));
+            if (val_total_ttc  <= 300) {
+                val_timbre = 0.00;
+            } else if(val_total_ttc > 300 && val_total_ttc <= 30000) {
                 val_timbre = (val_total_ttc * 0.01);
+            }else if(val_total_ttc > 3000 && val_total_ttc <= 100000){
+                val_timbre = (val_total_ttc * 0.015);
+            }else if(val_total_ttc > 100000){
+                val_timbre = (val_total_ttc * 0.02);
             }
         } else {
             val_timbre = 0.0;
@@ -1194,6 +1197,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             startService(new Intent(this, ServiceLocation.class));
         }
     }
+
 
     @Override
     public void onBackPressed() {

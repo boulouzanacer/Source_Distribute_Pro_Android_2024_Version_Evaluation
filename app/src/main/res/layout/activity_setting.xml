@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/setting_main"
     tools:context="com.safesoft.proapp.distribute.activities.ActivitySetting"
     tools:ignore="NewApi">
 
@@ -89,6 +90,17 @@
 
             <Button
                 android:layout_width="match_parent"
+                android:id="@+id/bt12"
+                android:textStyle="italic"
+                android:textColor="@color/accent"
+                android:background="@drawable/parametre_rounded"
+                android:text="@string/suivi_de_t_l_phone"
+                android:layout_height="match_parent" />
+
+            <include layout="@layout/sub_track_phone" />
+
+            <Button
+                android:layout_width="match_parent"
                 android:id="@+id/bt2"
                 android:textStyle="italic"
 
@@ -97,7 +109,7 @@
                 android:text="@string/parametre_divers"
                 android:layout_height="match_parent" />
 
-            <include layout="@layout/param_divers" />
+            <include layout="@layout/sub_divers" />
 
 
         </LinearLayout>
