@@ -72,8 +72,6 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
     private ImageView imgv_fournisseur_map;
     private FancyButton Btn_itenerary, Btn_Call, Btn_update_position, BtnVerser, BtnAchat;
 
-    private MediaPlayer mp;
-
     private final EventBus bus = EventBus.getDefault();
 
     private static final int ACCES_FINE_LOCATION = 2;
@@ -410,17 +408,11 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound();
-        }
         super.onBackPressed();
     }
 
 
-    public void Sound() {
-        mp = MediaPlayer.create(this, R.raw.back);
-        mp.start();
-    }
+
 
 
     public void requestPermission() {

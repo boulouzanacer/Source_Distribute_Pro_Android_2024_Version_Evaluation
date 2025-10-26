@@ -41,22 +41,17 @@ public class FragmentQteInventaire {
     Double val_nbr_colis, val_colissage, val_qte_physique, val_vrac, val_stock_avant, val_stock_avant_colis, val_ecart, val_ecart_colis;
 
     private Context mContext;
-
     EventBus bus = EventBus.getDefault();
-
     Activity activity;
     AlertDialog dialog;
     NumberFormat nf, nq;
-
     PostData_Inv2 arrived_inv2;
-
-    private final String PREFS = "ALL_PREFS";
     String SOURCE_LOCAL;
     boolean if_inv2_exist = false;
 
     //PopupWindow display method
 
-    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Inv2 inv2) {
+    public void showDialogbox(String SOURCE, Activity activity, Context context, PostData_Inv2 inv2, PostData_Inv2 checked_result_inv2) {
 
         mContext = context;
         this.activity = activity;
@@ -125,32 +120,11 @@ public class FragmentQteInventaire {
 
         //********************************************************************
         if (SOURCE_LOCAL.equals("INV2_INSERT")) {
-            PostData_Inv2 checked_inv2 = new PostData_Inv2();
-            String querry = "SELECT " +
-                    "INV2.RECORDID, " +
-                    "INV2.CODE_BARRE, " +
-                    "INV2.NUM_INV, " +
-                    "INV2.PRODUIT, " +
-                    "INV2.NBRE_COLIS, " +
-                    "INV2.COLISSAGE, " +
-                    "INV2.PA_HT, " +
-                    "INV2.QTE, " +
-                    "INV2.QTE_TMP, " +
-                    "INV2.QTE_NEW, " +
-                    "INV2.TVA, " +
-                    "INV2.VRAC, " +
-                    "INV2.CODE_DEPOT " +
-                    "FROM INV2 " +
-                    "WHERE INV2.NUM_INV = '" + arrived_inv2.num_inv + "' AND INV2.CODE_BARRE = '" + arrived_inv2.codebarre + "'";
-            checked_inv2 = controller.check_if_inv2_exist(querry);
-            SOURCE_LOCAL = "BON2_EDIT";
-
-            if (checked_inv2 != null) {
-                txv_message.setText("Produit déja inseré avec une quantité : " + checked_inv2.qte_physique);
+            if (checked_result_inv2 != null) {
+                txv_message.setText("Produit déja inseré avec une quantité : " + checked_result_inv2.qte_physique);
                 if_inv2_exist = true;
-                arrived_inv2 = checked_inv2;
+                arrived_inv2 = checked_result_inv2;
             }
-
         }
 
         val_stock_avant = arrived_inv2.qte_theorique;

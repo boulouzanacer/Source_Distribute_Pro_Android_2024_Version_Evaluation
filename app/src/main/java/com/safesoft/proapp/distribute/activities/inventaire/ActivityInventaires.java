@@ -57,8 +57,6 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     ArrayList<PostData_Inv1> inv1s;
     DATABASE controller;
 
-    private MediaPlayer mp;
-
     private String Server;
     private String Username, Password;
     private String Path;
@@ -126,6 +124,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
         ///////////////////
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
+        prefs.edit().putInt("LAST_CLICKED_POSITION", 0).apply();
     }
 
     @Override
@@ -177,9 +176,6 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
     @Override
     public void onClick(View v, int position) {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.beep);
-        }
         Intent editIntent = new Intent(ActivityInventaires.this, ActivityInventaire.class);
         editIntent.putExtra("NUM_INV", inv1s.get(position).num_inv);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_INV");
@@ -315,15 +311,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
 

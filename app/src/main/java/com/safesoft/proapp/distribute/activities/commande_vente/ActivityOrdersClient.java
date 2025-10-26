@@ -230,11 +230,6 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onClick(View v, int position) {
-
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.beep);
-        }
-
         Intent editIntent = new Intent(ActivityOrdersClient.this, ActivityOrderClient.class);
         editIntent.putExtra("NUM_BON", bon1s_temp.get(position).num_bon);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ORDER_CLIENT");
@@ -583,15 +578,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        MediaPlayer mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
 }

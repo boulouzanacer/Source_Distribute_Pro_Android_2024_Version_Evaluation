@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -28,6 +30,7 @@ import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,7 +44,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter_Situation_client;
 import com.safesoft.proapp.distribute.databases.DATABASE;
@@ -76,13 +83,10 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
     private ImageView imgv_client_map;
     private FancyButton Btn_itenerary, Btn_Call, Btn_update_position, BtnVerser, BtnVente;
 
-    private MediaPlayer mp;
-
     private static final int ACCES_FINE_LOCATION = 2;
     private static final int BLUETOOTH_CONNECT = 3;
     private Boolean checkPermission = false;
 
-    private Intent intent_location;
     private FusedLocationProviderClient fusedLocationClient;
 
     private ProgressDialog progress;
@@ -208,6 +212,17 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         imgv_client_map = findViewById(R.id.imgv_client_map);
         //RecycleViews
         recyclerView = findViewById(R.id.recycler_view_client_detail);
+        imgv_client_map.setOnClickListener(v -> {
+            if (client.latitude != 0 && client.longitude != 0) {
+                Intent intent = new Intent(ActivityClientDetail.this, ActivityMapView.class);
+                intent.putExtra("lat", client.latitude);
+                intent.putExtra("lng", client.longitude);
+                intent.putExtra("name", client.client);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Aucune position enregistrée pour ce client.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setRecycle() {
@@ -427,16 +442,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound();
-        }
         super.onBackPressed();
-    }
-
-
-    public void Sound() {
-        mp = MediaPlayer.create(this, R.raw.back);
-        mp.start();
     }
 
 
@@ -481,44 +487,74 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         }
     }
 
+    @SuppressWarnings("MissingPermission")
     private void getCurrentLocation() {
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Vérifie si le GPS est activé
+        if (locationManager == null ||
+                !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("GPS désactivé")
+                    .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
+                    .setCancelable(false)
+                    .setPositiveButton("Oui", (dialog, which) ->
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton("Non", (dialog, which) -> {
+                        dialog.dismiss();
+                        Toast.makeText(this, "Localisation annulée.", Toast.LENGTH_SHORT).show();
+                    })
+                    .show();
+            return;
+        }
+
+        // Vérifie la permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+
         progress = new ProgressDialog(ActivityClientDetail.this);
         progress.setTitle("Position");
-        progress.setMessage("Recherche position...");
+        progress.setMessage("Recherche position en cours...");
         progress.setIndeterminate(true);
-        progress.setCancelable(true);
+        progress.setCancelable(false);
         progress.show();
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-
-
-                        client.latitude = location.getLatitude();
-                        client.longitude = location.getLongitude();
-                        Toast.makeText(ActivityClientDetail.this, "Lat: " + client.latitude + ", Lng: " + client.longitude, Toast.LENGTH_LONG).show();
-
-                        controller.update_position_client(client.latitude, client.longitude, client.code_client);
-                        if (progress != null) {
-                            progress.dismiss();
-                        }
-
-                        setStaticMap(location.getLatitude(), location.getLongitude());
-
-                    } else {
-
-                        Toast.makeText(ActivityClientDetail.this, "Location not available", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-
-        } else {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
         }
+
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000).setMaxUpdates(1).setWaitForAccurateLocation(true).build();
+
+        fusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                fusedLocationClient.removeLocationUpdates(this);
+                if (progress != null) progress.dismiss();
+
+                if (locationResult.getLastLocation() == null) {
+                    Toast.makeText(ActivityClientDetail.this, "Position introuvable, réessayez.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Location location = locationResult.getLastLocation();
+                client.latitude = location.getLatitude();
+                client.longitude = location.getLongitude();
+
+                controller.update_position_client(client.latitude, client.longitude, client.code_client);
+                Toast.makeText(ActivityClientDetail.this, "Nouvelle position enregistrée : " + client.latitude + ", " + client.longitude, Toast.LENGTH_LONG).show();
+
+                setStaticMap(client.latitude, client.longitude);
+            }
+        }, getMainLooper());
     }
+
 
 
     public void Update_client_details() {

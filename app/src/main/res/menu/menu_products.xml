@@ -9,9 +9,9 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/print_stock"
-        android:title="Imprimer stock"
-        android:icon="@drawable/ic_outline_print_24"
+        android:id="@+id/etat_stock"
+        android:title="Etat de stock"
+        android:icon="@drawable/etat_stock_24"
         app:showAsAction="always" />
 
     <item

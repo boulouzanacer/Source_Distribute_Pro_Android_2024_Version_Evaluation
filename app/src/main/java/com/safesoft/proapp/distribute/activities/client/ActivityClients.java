@@ -57,7 +57,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     RecyclerAdapterClients adapter;
     ArrayList<PostData_Client> clients;
     DATABASE controller;
-    private MediaPlayer mp;
     private EventBus bus;
     private TextView nbr_client;
     private SearchView searchView;
@@ -175,9 +174,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
         if (v.getId() == R.id.item_root) {
 
-            if (prefs.getBoolean("ENABLE_SOUND", false)) {
-                Sound(R.raw.beep);
-            }
             Intent intent = new Intent(ActivityClients.this, ActivityClientDetail.class);
 
             intent.putExtra("CODE_CLIENT", clients.get(position).code_client);
@@ -336,14 +332,6 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
-    }
-
-    public void Sound(int SourceSound) {
-        mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
     @Override

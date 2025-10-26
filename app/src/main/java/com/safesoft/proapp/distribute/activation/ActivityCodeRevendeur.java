@@ -70,70 +70,60 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
-
                     case "0202" -> { // TIEMPO SOFT
                         intent.putExtra("REVENDEUR", "TIEMPO SOFT");
                         saveData("TIEMPO SOFT");
                         startActivity(intent);
                         finish();
                     }
-
                     case "0303" -> { // CHERRATA SOFT
                         intent.putExtra("REVENDEUR", "CHERRATA SOFT");
                         saveData("CHERRATA SOFT");
                         startActivity(intent);
                         finish();
                     }
-
                     case "0404" -> { // EASY SOFT
                         intent.putExtra("REVENDEUR", "EASY SOFT");
                         saveData("EASY SOFT");
                         startActivity(intent);
                         finish();
                     }
-
                     case "0505" -> { // MOON SOFT
                         intent.putExtra("REVENDEUR", "MOON SOFT");
                         saveData("MOON SOFT");
                         startActivity(intent);
                         finish();
                     }
-
                     case "0606" -> { // GLOBAL TECH
                         intent.putExtra("REVENDEUR", "GLOBAL TECH");
                         saveData("GLOBAL TECH");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "0707" -> { // POLYRAW
+                    case "0707" -> { // DSX SYSTEME
                         intent.putExtra("REVENDEUR", "DSX SYSTEME");
                         saveData("DSX SYSTEME");
                         startActivity(intent);
                         finish();
                     }
-
                     case "0808" -> { // PROSOLUTION
                         intent.putExtra("REVENDEUR", "PRO SOLUTION");
                         saveData("PRO SOLUTION");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "0909" -> { // ACIDOMTECH
+                    case "0909" -> { // SOFT SPACE
                         intent.putExtra("REVENDEUR", "SOFT SPACE");
                         saveData("SOFT SPACE");
                         startActivity(intent);
                         finish();
                     }
-
                     case "1010" -> { // TECH POS
                         intent.putExtra("REVENDEUR", "TECH POS");
                         startActivity(intent);
                         saveData("TECH POS");
                         finish();
                     }
-
                     case "1111" -> { // NDHL
                         intent.putExtra("REVENDEUR", "NDHL");
                         saveData("NDHL");
@@ -162,174 +152,152 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
                         finish();
                     }
 
-                    case "1515" -> { //DELPHI
+                    case "1515" -> { //DELPHI SOFT
                         intent.putExtra("REVENDEUR", "DELPHI SOFT");
                         startActivity(intent);
                         saveData("DELPHI SOFT");
                         finish();
                     }
 
-                    case "1616" -> { // UNIVERSOFT
+                    case "1616" -> { // ACIDOMTECH
                         intent.putExtra("REVENDEUR", "ACIDOMTECH");
                         startActivity(intent);
                         saveData("ACIDOMTECH");
                         finish();
                     }
 
-                    case "1717" -> { // UNIVERSOFT
+                    case "1717" -> { // EL KHALIL SOFT
                         intent.putExtra("REVENDEUR", "EL KHALIL SOFT");
                         startActivity(intent);
                         saveData("EL KHALIL SOFT");
                         finish();
                     }
-
                     case "1818" -> { //BBS
                         intent.putExtra("REVENDEUR", "BBS");
                         startActivity(intent);
                         saveData("BBS");
                         finish();
                     }
-
-                    case "2020" -> { //EXPERT INFO
+                    case "2020" -> { //GENERAL IT
                         intent.putExtra("REVENDEUR", "GENERAL IT");
                         startActivity(intent);
                         saveData("GENERAL IT");
                         finish();
                     }
-
-                    case "2121" -> { //ARC TECH
+                    case "2121" -> { //TIFAWT TECHNOLOGIE
                         intent.putExtra("REVENDEUR", "TIFAWT TECHNOLOGIE");
                         startActivity(intent);
                         saveData("TIFAWT TECHNOLOGIE");
                         finish();
                     }
-
-                    case "2626" -> { //DATA PRO
+                    case "2626" -> { //DARIA COMPUTER
                         intent.putExtra("REVENDEUR", "DARIA COMPUTER");
                         startActivity(intent);
                         saveData("DARIA COMPUTER");
                         finish();
                     }
-
-                    case "3030" -> { //LAGA
+                    case "3030" -> { //DATA PRO
                         intent.putExtra("REVENDEUR", "DATA PRO");
                         startActivity(intent);
                         saveData("DATA PRO");
                         finish();
                     }
-
-                    case "3131" -> { //SOFT SPACE
+                    case "3131" -> { //AFKAR SOFT
                         intent.putExtra("REVENDEUR", "AFKAR SOFT");
                         startActivity(intent);
                         saveData("AFKAR SOFT");
                         finish();
                     }
-
-                    case "3232" -> { //AFKAR SOFT
+                    case "3232" -> { //AZAD ADRAR
                         intent.putExtra("REVENDEUR", "AZAD ADRAR");
                         startActivity(intent);
                         saveData("AZAD ADRAR");
                         finish();
                     }
-
-                    case "3333" -> { //AZAD ADRAR
+                    case "3333" -> { //VAST SOFT
                         intent.putExtra("REVENDEUR", "VAST SOFT");
                         startActivity(intent);
                         saveData("VAST SOFT");
                         finish();
                     }
-
-                    case "3434" -> { //GENERAL IT
+                    case "3434" -> { //EASY SOLUTION
                         intent.putExtra("REVENDEUR", "EASY SOLUTION");
                         startActivity(intent);
                         saveData("EASY SOLUTION");
                         finish();
                     }
-
-                    case "3535" -> { // VAST SOFT
+                    case "3535" -> { // CAM PLUS
                         intent.putExtra("REVENDEUR", "CAM PLUS");
                         startActivity(intent);
                         saveData("CAM PLUS");
                         finish();
                     }
-
-                    case "3737" -> { // CAM PLUS
+                    case "3737" -> { // EXPERT INFO
                         intent.putExtra("REVENDEUR", "EXPERT INFO");
                         saveData("EXPERT INFO");
                         startActivity(intent);
                         finish();
                     }
-
                     case "4040" -> { // ATLANTIC SOLUTION
                         intent.putExtra("REVENDEUR", "ATLANTIC SOLUTION");
                         saveData("ATLANTIC SOLUTION");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "4242" -> { // TIFAWT TECHNOLOGIE
+                    case "4242" -> { // KATIA QUEEN SOFT
                         intent.putExtra("REVENDEUR", "KATIA QUEEN SOFT");
                         saveData("KATIA QUEEN SOFT");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "4343" -> { // DARIA COMPUTER
+                    case "4343" -> { // NOUH BARIKA
                         intent.putExtra("REVENDEUR", "NOUH BARIKA");
                         saveData("NOUH BARIKA");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "4444" -> { // MATEN AFKAR
+                    case "4444" -> { // OA TECH
                         intent.putExtra("REVENDEUR", "OA TECH");
                         saveData("OA TECH");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "4545" -> { //NOUH BARIKA
+                    case "4545" -> { //MATEN AFKAR
                         intent.putExtra("REVENDEUR", "MATEN AFKAR");
                         saveData("MATEN AFKAR");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "4646" -> { // KATIA QUEEN SOFT
+                    case "4646" -> { // APEX
                         intent.putExtra("REVENDEUR", "APEX");
                         saveData("APEX");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "4747" -> { // OA TECH
+                    case "4747" -> { // INFO MICRO DRIEF
                         intent.putExtra("REVENDEUR", "INFO MICRO DRIEF");
                         saveData("INFO MICRO DRIEF");
                         startActivity(intent);
                         finish();
                     }
-
                     case "4848" -> { // BR SOFT
                         intent.putExtra("REVENDEUR", "BR SOFT");
                         saveData("BR SOFT");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "4949" -> { // BR SOFT
+                    case "4949" -> { // TECHNO INFODZ
                         intent.putExtra("REVENDEUR", "TECHNO_INFODZ");
                         saveData("TECHNO_INFODZ");
                         startActivity(intent);
                         finish();
                     }
-
-                    case "5050" -> { // BR SOFT
+                    case "5050" -> { // SSG SERVICES
                         intent.putExtra("REVENDEUR", "SSG SERVICES");
                         saveData("SSG SERVICES");
                         startActivity(intent);
                         finish();
                     }
-
                     default -> otpTextView.showError();
                 }
             }

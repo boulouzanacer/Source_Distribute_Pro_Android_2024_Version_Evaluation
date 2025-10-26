@@ -899,16 +899,10 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
     }
 
-    public void Sound(int resid) {
-        MediaPlayer mp = MediaPlayer.create(this, resid);
-        mp.start();
-    }
+
 
     @Subscribe
     public void onEventLocation(LocationEvent event) {
@@ -1005,9 +999,6 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
                 controller.update_into_achat2("ACHAT2", NUM_BON, item_panier.getData(), item_panier.getQteOld(), item_panier.getGratuitOld());
             }
             initData();
-            if (prefs.getBoolean("ENABLE_SOUND", false)) {
-                Sound(R.raw.cashier_quotka);
-            }
 
             if (prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 // Initialize activity

@@ -152,7 +152,6 @@
     <string name="INFO_DELPHI3">Mobile : +(213)  550 33 70 13</string>
     <string name="INFO_DELPHI4">Email : jubakerriche@yahoo.fr</string>
 
-
     <!--BBS-->
     <string name="INFO_BBS1"> Dani Soft</string>
     <string name="INFO_BBS2">SNTP GROUPE B N°38 DAR EL BEIDA -ALGER</string>
@@ -257,6 +256,12 @@
     <string name="INFO_BRSOFT2"> - </string>
     <string name="INFO_BRSOFT3"> Rachid    :0560 9374 84 \n Ali    : 0550 06 80 68</string>
     <string name="INFO_BRSOFT4"> - </string>
+
+    <!--TECHNO_INFODZ-->
+    <string name="INFO_TECHNO_INFODZ1">TECHNO INFO DZ</string>
+    <string name="INFO_TECHNO_INFODZ2"> BOUIRA </string>
+    <string name="INFO_TECHNO_INFODZ3"> 0666 63 64 73 </string>
+    <string name="INFO_TECHNO_INFODZ4"> - </string>
 
     <!--INFO MICRO DRIEF-->
     <string name="INFO_INFO_MICRO1">INFO MICRO DRIEF</string>

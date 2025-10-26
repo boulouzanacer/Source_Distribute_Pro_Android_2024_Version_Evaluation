@@ -501,6 +501,12 @@ public class ActivityActivation extends AppCompatActivity {
         }
 
         //49 TECHNO_INFODZ
+        if (revendeur.equals("TECHNO_INFODZ")) {
+            inforevenedeur1.setText(R.string.INFO_TECHNO_INFODZ1);
+            inforevenedeur2.setText(R.string.INFO_TECHNO_INFODZ2);
+            inforevenedeur3.setText(R.string.INFO_TECHNO_INFODZ3);
+            inforevenedeur4.setText(R.string.INFO_TECHNO_INFODZ4);
+        }
 
         //50 SSG_SERVICES
 

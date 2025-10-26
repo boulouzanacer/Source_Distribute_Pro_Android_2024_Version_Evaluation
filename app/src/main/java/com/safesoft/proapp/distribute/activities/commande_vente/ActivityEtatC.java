@@ -65,7 +65,6 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     private RelativeLayout empty_data;
     private TextView debut, fin, txtv_user;
     DATABASE controller;
-    private MediaPlayer mp;
 
     private Thread thread;
     private Handler handler;
@@ -465,17 +464,8 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
     }
-
-    public void Sound(int SourceSound) {
-        mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
-    }
-
 
     @Override
     protected void onDestroy() {

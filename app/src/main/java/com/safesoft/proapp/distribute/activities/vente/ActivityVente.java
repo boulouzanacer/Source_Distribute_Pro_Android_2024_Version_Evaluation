@@ -134,7 +134,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     String SOURCE_EXPORT = "";
     SharedPreferences prefs;
     private PostData_Params params;
-    private MediaPlayer mp;
     private boolean show_picture_prod;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat date_format;
@@ -1201,15 +1200,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int resid) {
-        MediaPlayer mp = MediaPlayer.create(this, resid);
-        mp.start();
     }
 
     @Subscribe
@@ -1318,10 +1309,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             }
 
             initData();
-            if (prefs.getBoolean("ENABLE_SOUND", false)) {
-                Sound(R.raw.cashier_quotka);
-            }
-
             if (prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 // Initialize activity
                 Activity activity;

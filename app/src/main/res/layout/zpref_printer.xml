@@ -194,6 +194,33 @@
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
+
+        <com.safesoft.proapp.distribute.view.FlowRadioGroup
+            android:id="@+id/rg_model_ticket_codebarre"
+            android:weightSum="2"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rg_model_ticket_codebarre_50X30"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Model 50 X 30" />
+
+            <RadioButton
+                android:id="@+id/rg_model_ticket_codebarre_40X20"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Model 40 X 20" />
+
+        </com.safesoft.proapp.distribute.view.FlowRadioGroup>
+
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
             android:id="@+id/rg_model_arabe_ticket"
             android:weightSum="2"

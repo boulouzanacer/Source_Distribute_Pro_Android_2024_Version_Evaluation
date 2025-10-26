@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DATABASE extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 16; // Database version
+    private static final int DATABASE_VERSION = 17; // Database version
     public static final String DATABASE_NAME = "safe_distribute_pro"; //Database name
     private final Context mContext;
 
@@ -281,9 +281,33 @@ public class DATABASE extends SQLiteOpenHelper {
                 "UTILISATEUR VARCHAR, " +
                 "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)) DEFAULT 0)");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS INV1(NUM_INV VARCHAR PRIMARY KEY, DATE_INV VARCHAR, HEURE_INV VARCHAR, LIBELLE VARCHAR, NBR_PRODUIT VARCHAR, UTILISATEUR VARCHAR, CODE_DEPOT VARCHAR, IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)), DATE_EXPORT_INV VARCHAR, BLOCAGE VARCHAR, EXPORTATION VARCHAR)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS INV1(" +
+                "NUM_INV VARCHAR PRIMARY KEY, " +
+                "DATE_INV VARCHAR, " +
+                "HEURE_INV VARCHAR, " +
+                "LIBELLE VARCHAR, " +
+                "NBR_PRODUIT VARCHAR, " +
+                "UTILISATEUR VARCHAR, " +
+                "CODE_DEPOT VARCHAR, " +
+                "IS_EXPORTED boolean CHECK (IS_EXPORTED IN (0,1)), " +
+                "DATE_EXPORT_INV VARCHAR, " +
+                "BLOCAGE VARCHAR, " +
+                "EXPORTATION VARCHAR)");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS INV2(RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, CODE_BARRE VARCHAR , NUM_INV VARCHAR, PRODUIT VARCHAR, NBRE_COLIS DOUBLE, COLISSAGE DOUBLE, PA_HT DOUBLE, QTE DOUBLE, QTE_TMP DOUBLE, QTE_NEW DOUBLE, TVA DOUBLE, VRAC VARCHAR, CODE_DEPOT VARCHAR )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS INV2(" +
+                "RECORDID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "CODE_BARRE VARCHAR , " +
+                "NUM_INV VARCHAR, " +
+                "PRODUIT VARCHAR, " +
+                "NBRE_COLIS DOUBLE, " +
+                "COLISSAGE DOUBLE, " +
+                "PA_HT DOUBLE, " +
+                "QTE DOUBLE, " +
+                "QTE_TMP DOUBLE, " +
+                "QTE_NEW DOUBLE, " +
+                "TVA DOUBLE, " +
+                "VRAC VARCHAR, " +
+                "CODE_DEPOT VARCHAR )");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS POSITION(POSITION_ID INTEGER PRIMARY KEY AUTOINCREMENT, LAT DOUBLE, LONGI DOUBLE, ADRESS VARCHAR, COLOR boolean CHECK (COLOR IN (0,1)), CLIENT VARCHAR, NUM_BON VARCHAR)");
 
@@ -440,6 +464,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS COMMUNES (ID INTEGER NOT NULL PRIMARY KEY, NAME VARCHAR NOT NULL, POST_CODE VARCHAR NOT NULL, WILAYA_ID INTEGER NOT NULL, LATITUDE numeric NOT NULL, LONGITUDE numeric NOT NULL, foreign key(WILAYA_ID) references WILAYAS(ID) on delete cascade)");
 
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_inv2_numinv ON INV2(NUM_INV);");
+
         insert_wilaya_commune_into_database(db);
     }
 
@@ -449,7 +475,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
         Log.v("TRACKKK", "================>  ON UPGRADE EXECUTED");
 
-        String[] list_requet = new String[17];
+        String[] list_requet = new String[18];
 
         list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0";
         list_requet[1] = "ALTER TABLE CLIENT ADD COLUMN WILAYA VARCHAR ";
@@ -514,6 +540,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 "IS_NEW INTEGER," +
                 "FOREIGN KEY(CODE_CLIENT) REFERENCES CLIENT (CODE_CLIENT) ON DELETE CASCADE," +
                 "FOREIGN KEY(NUM_TOURNEE) REFERENCES TOURNEE1 (NUM_TOURNEE) ON DELETE CASCADE)";
+
+        list_requet[17] = "CREATE INDEX IF NOT EXISTS idx_inv2_numinv ON INV2(NUM_INV)";
 
 
         for (String s : list_requet) {
@@ -2034,7 +2062,7 @@ public class DATABASE extends SQLiteOpenHelper {
         ArrayList<String> familles = new ArrayList<>();
         familles.add("Toutes");
         familles.add("<Aucune>");
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -2050,66 +2078,108 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //============================== FUNCTION SELECT Produits FROM Produit TABLE ===============================
     @SuppressLint("Range")
-    public ArrayList<PostData_Produit> select_produits_from_database(String querry, boolean show_picture_prod) {
+    public ArrayList<PostData_Produit> select_produits_from_database(String query, boolean show_picture_prod) {
         ArrayList<PostData_Produit> produits = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
-        try (Cursor cursor = db.rawQuery(querry, null)) {
-            // looping through all rows and adding to list
+        SQLiteDatabase db = this.getReadableDatabase(); // ✅ Changement ici
+
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery(query, null);
+
+            // ✅ Préparer les index une seule fois
+            int idxId = cursor.getColumnIndex("PRODUIT_ID");
+            int idxCodeBarre = cursor.getColumnIndex("CODE_BARRE");
+            int idxRefProd = cursor.getColumnIndex("REF_PRODUIT");
+            int idxProd = cursor.getColumnIndex("PRODUIT");
+            int idxPaHt = cursor.getColumnIndex("PA_HT");
+            int idxPamp = cursor.getColumnIndex("PAMP");
+            int idxTva = cursor.getColumnIndex("TVA");
+            int idxPv1 = cursor.getColumnIndex("PV1_HT");
+            int idxPv2 = cursor.getColumnIndex("PV2_HT");
+            int idxPv3 = cursor.getColumnIndex("PV3_HT");
+            int idxPv4 = cursor.getColumnIndex("PV4_HT");
+            int idxPv5 = cursor.getColumnIndex("PV5_HT");
+            int idxPv6 = cursor.getColumnIndex("PV6_HT");
+            int idxPvLimite = cursor.getColumnIndex("PV_LIMITE");
+            int idxStock = cursor.getColumnIndex("STOCK");
+            int idxColissage = cursor.getColumnIndex("COLISSAGE");
+            int idxStockIni = cursor.getColumnIndex("STOCK_INI");
+            int idxStockColis = cursor.getColumnIndex("STOCK_COLIS");
+            int idxStockVrac = cursor.getColumnIndex("STOCK_VRAC");
+            int idxPhoto = show_picture_prod ? cursor.getColumnIndex("PHOTO") : -1;
+            int idxDescription = cursor.getColumnIndex("DETAILLE");
+            int idxFamille = cursor.getColumnIndex("FAMILLE");
+            int idxDestockType = cursor.getColumnIndex("DESTOCK_TYPE");
+            int idxDestockCodeBarre = cursor.getColumnIndex("DESTOCK_CODE_BARRE");
+            int idxDestockQte = cursor.getColumnIndex("DESTOCK_QTE");
+            int idxPromo = cursor.getColumnIndex("PROMO");
+            int idxD1 = cursor.getColumnIndex("D1");
+            int idxD2 = cursor.getColumnIndex("D2");
+            int idxPp1 = cursor.getColumnIndex("PP1_HT");
+            int idxQtePromo = cursor.getColumnIndex("QTE_PROMO");
+            int idxIsNew = cursor.getColumnIndex("ISNEW");
+
             if (cursor.moveToFirst()) {
                 do {
                     PostData_Produit produit = new PostData_Produit();
 
-                    produit.produit_id = cursor.getString(cursor.getColumnIndex("PRODUIT_ID"));
-                    produit.code_barre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
-                    produit.ref_produit = cursor.getString(cursor.getColumnIndex("REF_PRODUIT"));
+                    // ✅ Assignation directe
+                    produit.produit_id = cursor.isNull(idxId) ? "" : cursor.getString(idxId);
+                    produit.code_barre = cursor.isNull(idxCodeBarre) ? "" : cursor.getString(idxCodeBarre);
+                    produit.ref_produit = cursor.isNull(idxRefProd) ? "" : cursor.getString(idxRefProd);
+                    produit.produit = cursor.isNull(idxProd) ? "" : cursor.getString(idxProd);
 
-                    produit.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                    produit.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
-                    produit.pamp = cursor.getDouble(cursor.getColumnIndex("PAMP"));
-                    produit.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
-                    produit.pv1_ht = cursor.getDouble(cursor.getColumnIndex("PV1_HT"));
-                    produit.pv2_ht = cursor.getDouble(cursor.getColumnIndex("PV2_HT"));
-                    produit.pv3_ht = cursor.getDouble(cursor.getColumnIndex("PV3_HT"));
-                    produit.pv4_ht = cursor.getDouble(cursor.getColumnIndex("PV4_HT"));
-                    produit.pv5_ht = cursor.getDouble(cursor.getColumnIndex("PV5_HT"));
-                    produit.pv6_ht = cursor.getDouble(cursor.getColumnIndex("PV6_HT"));
+                    produit.pa_ht = cursor.isNull(idxPaHt) ? 0 : cursor.getDouble(idxPaHt);
+                    produit.pamp = cursor.isNull(idxPamp) ? 0 : cursor.getDouble(idxPamp);
+                    produit.tva = cursor.isNull(idxTva) ? 0 : cursor.getDouble(idxTva);
+                    produit.pv1_ht = cursor.isNull(idxPv1) ? 0 : cursor.getDouble(idxPv1);
+                    produit.pv2_ht = cursor.isNull(idxPv2) ? 0 : cursor.getDouble(idxPv2);
+                    produit.pv3_ht = cursor.isNull(idxPv3) ? 0 : cursor.getDouble(idxPv3);
+                    produit.pv4_ht = cursor.isNull(idxPv4) ? 0 : cursor.getDouble(idxPv4);
+                    produit.pv5_ht = cursor.isNull(idxPv5) ? 0 : cursor.getDouble(idxPv5);
+                    produit.pv6_ht = cursor.isNull(idxPv6) ? 0 : cursor.getDouble(idxPv6);
+                    produit.pv_limite = cursor.isNull(idxPvLimite) ? 0 : cursor.getDouble(idxPvLimite);
 
-                    produit.pv_limite = cursor.getDouble(cursor.getColumnIndex("PV_LIMITE"));
+                    produit.stock = cursor.isNull(idxStock) ? 0 : cursor.getDouble(idxStock);
+                    produit.colissage = cursor.isNull(idxColissage) ? 0 : cursor.getDouble(idxColissage);
+                    produit.stock_ini = cursor.isNull(idxStockIni) ? 0 : cursor.getDouble(idxStockIni);
+                    produit.stock_colis = cursor.isNull(idxStockColis) ? 0 : cursor.getInt(idxStockColis);
+                    produit.stock_vrac = cursor.isNull(idxStockVrac) ? 0 : cursor.getInt(idxStockVrac);
 
-                    produit.stock = cursor.getDouble(cursor.getColumnIndex("STOCK"));
-                    produit.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
-                    produit.stock_ini = cursor.getDouble(cursor.getColumnIndex("STOCK_INI"));
-                    produit.stock_colis = cursor.getInt(cursor.getColumnIndex("STOCK_COLIS"));
-                    produit.stock_vrac = cursor.getInt(cursor.getColumnIndex("STOCK_VRAC"));
-
-                    if (show_picture_prod) {
-                        produit.photo = cursor.getBlob(cursor.getColumnIndex("PHOTO"));
+                    if (show_picture_prod && idxPhoto != -1 && !cursor.isNull(idxPhoto)) {
+                        produit.photo = cursor.getBlob(idxPhoto);
                     }
 
-                    produit.description = cursor.getString(cursor.getColumnIndex("DETAILLE"));
-                    produit.famille = cursor.getString(cursor.getColumnIndex("FAMILLE"));
-                    produit.destock_type = cursor.getString(cursor.getColumnIndex("DESTOCK_TYPE"));
-                    produit.destock_code_barre = cursor.getString(cursor.getColumnIndex("DESTOCK_CODE_BARRE"));
-                    produit.destock_qte = cursor.getDouble(cursor.getColumnIndex("DESTOCK_QTE"));
+                    produit.description = cursor.isNull(idxDescription) ? "" : cursor.getString(idxDescription);
+                    produit.famille = cursor.isNull(idxFamille) ? "" : cursor.getString(idxFamille);
+                    produit.destock_type = cursor.isNull(idxDestockType) ? "" : cursor.getString(idxDestockType);
+                    produit.destock_code_barre = cursor.isNull(idxDestockCodeBarre) ? "" : cursor.getString(idxDestockCodeBarre);
+                    produit.destock_qte = cursor.isNull(idxDestockQte) ? 0 : cursor.getDouble(idxDestockQte);
 
-                    produit.promo = cursor.getInt(cursor.getColumnIndex("PROMO"));
-                    produit.d1 = cursor.getString(cursor.getColumnIndex("D1"));
-                    produit.d2 = cursor.getString(cursor.getColumnIndex("D2"));
-                    produit.pp1_ht = cursor.getDouble(cursor.getColumnIndex("PP1_HT"));
-                    produit.qte_promo = cursor.getDouble(cursor.getColumnIndex("QTE_PROMO"));
-
-                    produit.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                    produit.promo = cursor.isNull(idxPromo) ? 0 : cursor.getInt(idxPromo);
+                    produit.d1 = cursor.isNull(idxD1) ? "" : cursor.getString(idxD1);
+                    produit.d2 = cursor.isNull(idxD2) ? "" : cursor.getString(idxD2);
+                    produit.pp1_ht = cursor.isNull(idxPp1) ? 0 : cursor.getDouble(idxPp1);
+                    produit.qte_promo = cursor.isNull(idxQtePromo) ? 0 : cursor.getDouble(idxQtePromo);
+                    produit.isNew = cursor.isNull(idxIsNew) ? 0 : cursor.getInt(idxIsNew);
 
                     produits.add(produit);
+
                 } while (cursor.moveToNext());
             }
 
+        } catch (OutOfMemoryError oom) {
+            oom.printStackTrace(); // ✅ Important pour traquer la cause
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (cursor != null && !cursor.isClosed()) cursor.close();
+            // db.close(); // évite de fermer si ton DBHelper est global
         }
 
         return produits;
     }
+
 
 
     @SuppressLint("Range")
@@ -4557,32 +4627,39 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //=============================== FUNCTION TO INSERT INTO Inventaires2 TABLE ===============================
     public void insert_into_inventaire2(PostData_Inv2 inv2s) {
+        SQLiteDatabase db = null;
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
+            db = this.getWritableDatabase();
             db.beginTransaction();
-            try {
-                ContentValues values = new ContentValues();
-                values.put("CODE_BARRE", inv2s.codebarre);
-                values.put("NUM_INV", inv2s.num_inv);
-                values.put("PRODUIT", inv2s.produit);
-                values.put("NBRE_COLIS", inv2s.nbr_colis);
-                values.put("COLISSAGE", inv2s.colissage);
-                values.put("PA_HT", inv2s.pa_ht);
-                values.put("QTE", inv2s.qte_theorique);
-                values.put("QTE_NEW", inv2s.qte_physique + inv2s.vrac);
-                values.put("CODE_DEPOT", inv2s.code_depot);
-                values.put("VRAC", inv2s.vrac);
-                db.insert("INV2", null, values);
 
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
+            ContentValues values = new ContentValues(10); // Capacity optimization
+            values.put("CODE_BARRE", inv2s.codebarre);
+            values.put("NUM_INV", inv2s.num_inv);
+            values.put("PRODUIT", inv2s.produit);
+            values.put("NBRE_COLIS", inv2s.nbr_colis);
+            values.put("COLISSAGE", inv2s.colissage);
+            values.put("PA_HT", inv2s.pa_ht);
+            values.put("QTE", inv2s.qte_theorique);
+            values.put("QTE_NEW", inv2s.qte_physique + inv2s.vrac); // Calcul direct optimisé
+            values.put("CODE_DEPOT", inv2s.code_depot);
+            values.put("VRAC", inv2s.vrac);
+
+            db.insert("INV2", null, values);
+            db.setTransactionSuccessful();
+
+        } catch (SQLiteDatabaseLockedException sqlLockEx) {
+            Log.e("DB_LOCK", "Database is locked: " + sqlLockEx.getMessage());
+        } catch (Exception ex) {
+            Log.e("DB_ERROR", "Error inserting INV2: " + ex.getMessage());
+        } finally {
+            if (db != null) {
+                try {
+                    db.endTransaction();
+                } catch (Exception ignored) {}
             }
-        } catch (SQLiteDatabaseLockedException sqlilock) {
-            Log.v("TRACKKK", sqlilock.getMessage());
         }
-
     }
+
 
     public String format_num_bon(String number, Integer length) {
         String _number = number;
@@ -4651,37 +4728,55 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //============================== FUNCTION SELECT FROM Inventaire2 TABLE ===============================
     @SuppressLint("Range")
-    public ArrayList<PostData_Inv2> select_inventaire2_from_database(String querry) {
+    public ArrayList<PostData_Inv2> select_inventaire2_from_database(String query) {
         ArrayList<PostData_Inv2> all_inv2 = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
+        Cursor cursor = null;
 
-            do {
+        try {
+            cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
 
-                PostData_Inv2 inv2 = new PostData_Inv2();
-                inv2.recordid = cursor.getInt(cursor.getColumnIndex("RECORDID"));
-                inv2.codebarre = cursor.getString(cursor.getColumnIndex("CODE_BARRE"));
-                inv2.num_inv = cursor.getString(cursor.getColumnIndex("NUM_INV"));
-                inv2.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
-                inv2.nbr_colis = cursor.getDouble(cursor.getColumnIndex("NBRE_COLIS"));
-                inv2.colissage = cursor.getDouble(cursor.getColumnIndex("COLISSAGE"));
-                inv2.pa_ht = cursor.getDouble(cursor.getColumnIndex("PA_HT"));
-                inv2.qte_theorique = cursor.getDouble(cursor.getColumnIndex("QTE"));
-                //inv2.q = cursor.getDouble(cursor.getColumnIndex("QTE_TMP"));
-                inv2.qte_physique = cursor.getDouble(cursor.getColumnIndex("QTE_NEW"));
-                inv2.tva = cursor.getDouble(cursor.getColumnIndex("TVA"));
-                inv2.vrac = cursor.getDouble(cursor.getColumnIndex("VRAC"));
-                inv2.code_depot = cursor.getString(cursor.getColumnIndex("CODE_DEPOT"));
+                // Pré-calcul des index des colonnes
+                final int idxRecordId     = cursor.getColumnIndex("RECORDID");
+                final int idxCodeBarre    = cursor.getColumnIndex("CODE_BARRE");
+                final int idxNumInv       = cursor.getColumnIndex("NUM_INV");
+                final int idxProduit      = cursor.getColumnIndex("PRODUIT");
+                final int idxNbrColis     = cursor.getColumnIndex("NBRE_COLIS");
+                final int idxColissage    = cursor.getColumnIndex("COLISSAGE");
+                final int idxPaHt         = cursor.getColumnIndex("PA_HT");
+                final int idxQteTheo      = cursor.getColumnIndex("QTE");
+                final int idxQtePhys      = cursor.getColumnIndex("QTE_NEW");
+                final int idxTva          = cursor.getColumnIndex("TVA");
+                final int idxVrac         = cursor.getColumnIndex("VRAC");
+                final int idxCodeDepot    = cursor.getColumnIndex("CODE_DEPOT");
 
-                all_inv2.add(inv2);
+                do {
+                    PostData_Inv2 inv2 = new PostData_Inv2();
+                    inv2.recordid      = cursor.getInt(idxRecordId);
+                    inv2.codebarre     = cursor.getString(idxCodeBarre);
+                    inv2.num_inv       = cursor.getString(idxNumInv);
+                    inv2.produit       = cursor.getString(idxProduit);
+                    inv2.nbr_colis     = cursor.getDouble(idxNbrColis);
+                    inv2.colissage     = cursor.getDouble(idxColissage);
+                    inv2.pa_ht         = cursor.getDouble(idxPaHt);
+                    inv2.qte_theorique = cursor.getDouble(idxQteTheo);
+                    inv2.qte_physique  = cursor.getDouble(idxQtePhys);
+                    inv2.tva           = cursor.getDouble(idxTva);
+                    inv2.vrac          = cursor.getDouble(idxVrac);
+                    inv2.code_depot    = cursor.getString(idxCodeDepot);
 
-            } while (cursor.moveToNext());
+                    all_inv2.add(inv2);
+
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) cursor.close();
         }
-        cursor.close();
+
         return all_inv2;
     }
+
 
     /////////////////////////////////////////////// TOURNEE ////////////////////////////////////////////////
     //=============================== FUNCTION TO INSERT INTO Tournee1 TABLE ===============================
@@ -4943,32 +5038,46 @@ public class DATABASE extends SQLiteOpenHelper {
 
     //================================== UPDATE TABLE (Inventaires2) =======================================
     public boolean Update_inventaire2(PostData_Inv2 _inv2) {
+        SQLiteDatabase db = null;
         boolean executed = false;
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
+            db = this.getWritableDatabase();
             db.beginTransaction();
-            try {
 
-                ContentValues args1 = new ContentValues();
-                args1.put("NBRE_COLIS", _inv2.nbr_colis);
-                args1.put("COLISSAGE", _inv2.colissage);
-                args1.put("QTE_NEW", _inv2.qte_physique + _inv2.vrac);
-                args1.put("VRAC", _inv2.vrac);
+            // Capacité définie pour éviter les réallocations internes
+            ContentValues values = new ContentValues(4);
+            values.put("NBRE_COLIS", _inv2.nbr_colis);
+            values.put("COLISSAGE", _inv2.colissage);
+            values.put("QTE_NEW", _inv2.qte_physique + _inv2.vrac); // Calcul direct optimisé
+            values.put("VRAC", _inv2.vrac);
 
-                String selection1 = "RECORDID=? AND NUM_INV=?";
-                String[] selectionArgs1 = {String.valueOf(_inv2.recordid), _inv2.num_inv};
-                db.update("INV2", args1, selection1, selectionArgs1);
+            // Utilisation d'un WHERE ciblé et efficace
+            String where = "RECORDID=? AND NUM_INV=?";
+            String[] whereArgs = {
+                    String.valueOf(_inv2.recordid),
+                    _inv2.num_inv
+            };
 
-                db.setTransactionSuccessful();
-                executed = true;
-            } finally {
-                db.endTransaction();
+            // Appel unique pour limiter le coût I/O
+            db.update("INV2", values, where, whereArgs);
+
+            db.setTransactionSuccessful();
+            executed = true;
+
+        } catch (SQLiteDatabaseLockedException sqlLockEx) {
+            Log.e("DB_LOCK", "Database locked during update: " + sqlLockEx.getMessage());
+        } catch (Exception ex) {
+            Log.e("DB_ERROR", "Error updating INV2: " + ex.getMessage());
+        } finally {
+            if (db != null) {
+                try {
+                    db.endTransaction();
+                } catch (Exception ignored) {}
             }
-        } catch (SQLiteDatabaseLockedException sqlilock) {
-            Log.v("TRACKKK", sqlilock.getMessage());
         }
         return executed;
     }
+
 
     //================================== UPDATE TABLE (Inventaires1) =======================================
     public boolean Update_inventaire1(String num_inv) {

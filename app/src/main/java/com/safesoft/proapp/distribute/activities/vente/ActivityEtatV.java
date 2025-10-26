@@ -67,7 +67,6 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     private RelativeLayout empty_data;
     private TextView txtv_debut, txtv_fin, txtv_user, txtv_wilaya, txtv_commune;
     private DATABASE controller;
-    private MediaPlayer mp;
     Boolean printer_mode_integrate = true;
     private Thread thread;
     private Handler handler;
@@ -471,17 +470,8 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
     }
-
-    public void Sound(int SourceSound) {
-        mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
-    }
-
 
     @Override
     protected void onDestroy() {

@@ -210,6 +210,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private FlowRadioGroup rg_langue_ticket;
     private FlowRadioGroup rg_model_latin_ticket;
     private FlowRadioGroup rg_model_arabe_ticket;
+    private FlowRadioGroup rg_model_ticket_codebarre;
     private TextView tv_device_selected;
     private ProgressBar pb_connect;
 
@@ -240,6 +241,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private int checkedConType = BaseEnum.CON_WIFI;
     private int checkedImpType = BaseEnum.IMP_TYPE_TICKET;
     private int checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
+    private int ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_50X30;
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
 
@@ -870,6 +872,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_langue_ticket = findViewById(R.id.rg_langue_ticket);
         rg_model_latin_ticket = findViewById(R.id.rg_model_latin_ticket);
         rg_model_arabe_ticket = findViewById(R.id.rg_model_arabe_ticket);
+        rg_model_ticket_codebarre = findViewById(R.id.rg_model_ticket_codebarre);
 
         btn_connect_printer = findViewById(R.id.btn_connect_printer);
         btn_disConnect_printer = findViewById(R.id.btn_disConnect_printer);
@@ -1115,6 +1118,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_vente_stock_negatif = findViewById(R.id.switch_vente_stock_negatif);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_allow_credit_in_vente = findViewById(R.id.switch_allow_credit_in_vente);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_show_photo_produit = findViewById(R.id.switch_show_photo_produit);
 
 
@@ -1144,6 +1149,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_son.setChecked(prefs.getBoolean("ENABLE_SOUND", false));
 
         switch_vente_stock_negatif.setChecked(prefs.getBoolean("STOCK_MOINS", false));
+        switch_allow_credit_in_vente.setChecked(prefs.getBoolean("ALLOW_CREDIT_VENTE", true));
         switch_show_photo_produit.setChecked(prefs.getBoolean("SHOW_PROD_PIC", false));
 
 
@@ -1269,11 +1275,20 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         });
 
 
+
         switch_vente_stock_negatif.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("STOCK_MOINS", isChecked);
             editor.apply();
         });
+
+
+        switch_allow_credit_in_vente.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("ALLOW_CREDIT_VENTE", isChecked);
+            editor.apply();
+        });
+
 
         switch_show_photo_produit.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1446,17 +1461,19 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_TICKET")) {
             rg_type_imprimente.check(R.id.rb_type_ticket);
+            rg_model_ticket_codebarre.setVisibility(GONE);
+            rg_model_latin_ticket.setVisibility(VISIBLE);
         } else if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_CODEBARRE")) {
             rg_type_imprimente.check(R.id.rb_type_codebarre);
+            rg_model_ticket_codebarre.setVisibility(VISIBLE);
+            rg_model_latin_ticket.setVisibility(GONE);
         }
 
         if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
             rg_langue_ticket.check(R.id.rb_langue_latin);
-            rg_model_latin_ticket.setVisibility(VISIBLE);
             rg_model_arabe_ticket.setVisibility(GONE);
         } else if (Objects.equals(prefs.getString("LANGUE_TICKET", "ARABE"), "ARABE")) {
             rg_langue_ticket.check(R.id.rb_langue_arabe);
-            rg_model_latin_ticket.setVisibility(GONE);
             rg_model_arabe_ticket.setVisibility(VISIBLE);
         }
 
@@ -1470,6 +1487,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             rg_model_arabe_ticket.check(R.id.rb_model_arabe_1);
         } else if (Objects.equals(prefs.getString("MODEL_TICKET_ARABE", "MODEL 3"), "MODEL 4")) {
             rg_model_arabe_ticket.check(R.id.rb_model_arabe_2);
+        }
+
+        if (prefs.getString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_50X30").equals("TICKET_CODEBARRE_50X30")) {
+            rg_model_ticket_codebarre.check(R.id.rg_model_ticket_codebarre_50X30);
+        } else {
+            rg_model_ticket_codebarre.check(R.id.rg_model_ticket_codebarre_40X20);
         }
 
         //EventBus listener
@@ -1504,12 +1527,24 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     {
                         langue_ticket_title.setVisibility(VISIBLE);
                         rg_langue_ticket.setVisibility(VISIBLE);
+                        if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
+                            rg_model_latin_ticket.setVisibility(VISIBLE);
+                            rg_model_arabe_ticket.setVisibility(GONE);
+                        } else if (Objects.equals(prefs.getString("LANGUE_TICKET", "ARABE"), "ARABE")) {
+                            rg_model_arabe_ticket.setVisibility(VISIBLE);
+                            rg_model_latin_ticket.setVisibility(GONE);
+                        }
+                        rg_model_ticket_codebarre.setVisibility(GONE);
+                        rg_langue_ticket.setVisibility(VISIBLE);
                         checkedImpType = BaseEnum.IMP_TYPE_TICKET;
                     }
                     case R.id.rb_type_codebarre ->//codebarre
                     {
                         langue_ticket_title.setVisibility(GONE);
                         rg_langue_ticket.setVisibility(GONE);
+                        rg_model_latin_ticket.setVisibility(GONE);
+                        rg_model_arabe_ticket.setVisibility(GONE);
+                        rg_model_ticket_codebarre.setVisibility(VISIBLE);
                         checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
                         checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
                         saveConfigTicketLangue(checkedTicketModel);
@@ -1570,6 +1605,21 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                             checkedTicketModel = BaseEnum.TICKET_ARABE_MODEL_2;
                 }
                 saveConfigTicketLangueArabe(checkedTicketModel);
+            }
+        });
+
+
+        rg_model_ticket_codebarre.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+            // doDisConnect();
+            switch (i) {
+                case R.id.rg_model_ticket_codebarre_50X30 ->//Ticket 50X30
+                        ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_50X30;
+                case R.id.rg_model_ticket_codebarre_40X20 ->//ticket 40X20
+                        ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_40X20;
+            }
+            saveConfigTicketCodebarreModel(ticketCodebarreModel);
             }
         });
     }
@@ -1705,6 +1755,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.putString("MODEL_TICKET_ARABE", "MODEL 3");
             case BaseEnum.TICKET_ARABE_MODEL_2 -> //ticket model 2
                     editor.putString("MODEL_TICKET_ARABE", "MODEL 4");
+        }
+        editor.apply();
+    }
+
+    private void saveConfigTicketCodebarreModel(int ticketCodebarreModel) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        switch (ticketCodebarreModel) {
+            case BaseEnum.TICKET_CODEBARRE_50X30 -> //ticket model 50X30
+                    editor.putString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_50X30");
+            case BaseEnum.TICKET_CODEBARRE_40X20 -> //ticket model 40X20
+                    editor.putString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_40X20");
         }
         editor.apply();
     }
@@ -3056,9 +3117,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
     }
 

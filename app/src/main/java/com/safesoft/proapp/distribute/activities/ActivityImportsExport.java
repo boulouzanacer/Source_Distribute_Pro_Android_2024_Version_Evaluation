@@ -122,7 +122,6 @@ public class ActivityImportsExport extends AppCompatActivity {
     private String currentDateTimeString = null;
 
     SharedPreferences prefs;
-    private MediaPlayer mp;
     //private final EventBus bus = EventBus.getDefault();
     private NumberFormat nf;
 
@@ -568,15 +567,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound();
-        }
         super.onBackPressed();
-    }
-
-    public void Sound() {
-        mp = MediaPlayer.create(this, R.raw.back);
-        mp.start();
     }
 
 

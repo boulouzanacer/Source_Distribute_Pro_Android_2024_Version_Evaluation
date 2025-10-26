@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:visibility="visible"
+    android:visibility="gone"
     android:padding="10dp"
     android:id="@+id/sub_track_phone"
     android:layout_height="wrap_content">

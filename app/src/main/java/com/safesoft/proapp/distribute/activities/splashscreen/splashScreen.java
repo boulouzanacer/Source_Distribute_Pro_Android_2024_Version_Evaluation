@@ -484,7 +484,7 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur4.setText(R.string.INFO_INFO_MICRO4);
         }
 
-        //48
+        //48 BR SOFT
         if (revendeur.equals("BR SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_brsoft_500_100);
             inforevenedeur1.setText(R.string.INFO_BRSOFT1);
@@ -494,9 +494,14 @@ public class splashScreen extends AppCompatActivity {
         }
 
 
-
-
         //49 TECHNO_INFODZ
+        if (revendeur.equals("TECHNO_INFODZ")) {
+            logo_revendeur.setImageResource(R.drawable.logo_techno_infodz_500_100);
+            inforevenedeur1.setText(R.string.INFO_TECHNO_INFODZ1);
+            inforevenedeur2.setText(R.string.INFO_TECHNO_INFODZ2);
+            inforevenedeur3.setText(R.string.INFO_TECHNO_INFODZ3);
+            inforevenedeur4.setText(R.string.INFO_TECHNO_INFODZ4);
+        }
 
         //50 SSG_SERVICES
 

@@ -51,7 +51,6 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
     RecyclerAdapterTournee1 adapter;
     ArrayList<PostData_Tournee1> tournee1s;
     DATABASE controller;
-    private MediaPlayer mp;
     private String Server;
     private String Username, Password;
     private String Path;
@@ -148,11 +147,6 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
     @Override
     public void onClick(View v, int position) {
-
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.beep);
-        }
-
         Intent editIntent = new Intent(ActivityTourneesClient.this, ActivityTourneeClient.class);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_TOURNEE");
         editIntent.putExtra("NUM_TOURNEE", tournee1s.get(position).num_tournee);
@@ -289,15 +283,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
 

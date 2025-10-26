@@ -155,12 +155,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
         fadeIn.setInterpolator(new AccelerateInterpolator()); //add this
         fadeIn.setDuration(300);
 
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.pellet);
-            mp.start();
-        }
-
-
         switch (v.getId()) {
 
             case R.id.btn_clients -> {

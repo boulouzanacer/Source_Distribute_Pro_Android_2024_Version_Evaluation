@@ -1,8 +1,10 @@
 package com.safesoft.proapp.distribute.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +27,8 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class FragmentValideBon {
 
     MaterialFancyButton btn_valider, btn_cancel;
@@ -32,17 +36,20 @@ public class FragmentValideBon {
     private double val_ancien_sold = 0.0, val_montant_bon = 0.0, val_solde_actuel = 0.0, val_versement = 0.0, val_nouveau_solde = 0.0;
     private TextView charge_montant_bon;
     private final EventBus bus = EventBus.getDefault();
-    Activity activity;
+    Activity mactivity;
     AlertDialog dialog;
     private NumberFormat nf;
+    private final String PREFS = "ALL_PREFS";
+    SharedPreferences prefs;
 
     //PopupWindow display method
     public void showDialogbox(Activity activity, double recieve_ancien_solde, double recieve_montant_bon, double recieve_versement) {
 
-        this.activity = activity;
+        this.mactivity = activity;
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
         ((DecimalFormat) nf).applyPattern("####0.00");
+        prefs = mactivity.getSharedPreferences(PREFS, MODE_PRIVATE);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -102,6 +109,15 @@ public class FragmentValideBon {
 
             if (Objects.requireNonNull(edt_versement.getText()).length() > 0) {
 
+
+                if (!prefs.getBoolean("ALLOW_CREDIT_VENTE", true)) {
+                    if (val_versement != val_montant_bon) {
+                        edt_versement.setError("Vous n'avez pas le droit de faire un credit !!");
+                        return;
+                    }
+
+                }
+
                 // RemiseEventRemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
                 ValidateFactureEvent Valider_bon_versement = new ValidateFactureEvent(val_versement);
                 // Post the event
@@ -154,6 +170,7 @@ public class FragmentValideBon {
 
 
     void onVersementChange() {
+
         if (edt_versement.getText().toString().isEmpty()) {
             val_versement = 0.00;
         } else {
@@ -161,6 +178,7 @@ public class FragmentValideBon {
         }
         val_nouveau_solde = val_solde_actuel - val_versement;
         edt_nouveau_solde.setText(nf.format(val_nouveau_solde));
+
     }
 
 }

@@ -882,15 +882,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int resid) {
-        MediaPlayer mp = MediaPlayer.create(this, resid);
-        mp.start();
     }
 
     @Subscribe
@@ -977,9 +969,6 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             }
 
             initData();
-            if (prefs.getBoolean("ENABLE_SOUND", false)) {
-                Sound(R.raw.cashier_quotka);
-            }
 
         } catch (Exception e) {
             Crouton.makeText(ActivityOrderFournisseur.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();

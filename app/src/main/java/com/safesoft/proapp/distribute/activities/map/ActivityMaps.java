@@ -71,7 +71,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     private Geocoder geocoder;
     private List<Address> addresses;
     private String address;
-    private MediaPlayer mp;
     private DATABASE controller;
     private ArrayList<PostData_Client> clients;
     private ConnectionDetector ConnectionDetector;
@@ -344,15 +343,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
     @Override

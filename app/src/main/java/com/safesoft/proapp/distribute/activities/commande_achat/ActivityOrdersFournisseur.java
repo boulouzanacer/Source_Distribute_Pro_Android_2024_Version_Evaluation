@@ -171,10 +171,6 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
     @Override
     public void onClick(View v, int position) {
 
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.beep);
-        }
-
         Intent editIntent = new Intent(ActivityOrdersFournisseur.this, ActivityOrderFournisseur.class);
         editIntent.putExtra("NUM_BON", achat1s_com.get(position).num_bon);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ORDER_ACHAT");
@@ -205,10 +201,6 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
-
-                                        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-                                            Sound(R.raw.beep);
-                                        }
 
                                         Intent editIntent = new Intent(ActivityOrdersFournisseur.this, ActivityOrderClient.class);
                                         editIntent.putExtra("NUM_BON", achat1s_com.get(position).num_bon);
@@ -402,15 +394,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        MediaPlayer mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
 }

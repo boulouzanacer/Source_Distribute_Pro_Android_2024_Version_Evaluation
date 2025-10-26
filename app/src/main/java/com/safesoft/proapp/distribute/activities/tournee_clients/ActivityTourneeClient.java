@@ -295,14 +295,6 @@ public class ActivityTourneeClient extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        MediaPlayer mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 }

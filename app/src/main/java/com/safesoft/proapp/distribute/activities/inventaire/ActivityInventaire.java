@@ -40,6 +40,7 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
+import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierInventaire;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
@@ -514,37 +515,67 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         }
     }
 
-    protected void initData() {
-        final_panier = controller.select_inventaire2_from_database("SELECT " +
-                "INV2.RECORDID, " +
-                "INV2.CODE_BARRE, " +
-                "INV2.NUM_INV, " +
-                "INV2.PRODUIT, " +
-                "INV2.NBRE_COLIS, " +
-                "INV2.COLISSAGE, " +
-                "INV2.PA_HT, " +
-                "INV2.QTE, " +
-                "INV2.QTE_TMP, " +
-                "INV2.QTE_NEW, " +
-                "INV2.TVA, " +
-                "INV2.VRAC, " +
-                "INV2.CODE_DEPOT " +
-                "FROM INV2 " +
-                "WHERE INV2.NUM_INV = '" + NUM_INV + "'");
+    private void initData() {
+        // Run in background to avoid blocking UI thread
+        new Thread(() -> {
+            // Query database
+            ArrayList<PostData_Inv2> data = controller.select_inventaire2_from_database(
+                    "SELECT " +
+                            "INV2.RECORDID, INV2.CODE_BARRE, INV2.NUM_INV, INV2.PRODUIT, " +
+                            "INV2.NBRE_COLIS, INV2.COLISSAGE, INV2.PA_HT, INV2.QTE, " +
+                            "INV2.QTE_TMP, INV2.QTE_NEW, INV2.TVA, INV2.VRAC, INV2.CODE_DEPOT " +
+                            "FROM INV2 WHERE INV2.NUM_INV = '" + NUM_INV + "'"
+            );
 
-        // Create the adapter to convert the array to views
-        PanierAdapter = new ListViewAdapterPanierInventaire(this, R.layout.transfert2_items, final_panier);
+            runOnUiThread(() -> {
+                // Only initialize adapter once
+                if (PanierAdapter == null) {
+                    final_panier = data;
+                    PanierAdapter = new ListViewAdapterPanierInventaire(
+                            ActivityInventaire.this,
+                            R.layout.transfert2_items,
+                            final_panier
+                    );
+                    expandableListView = findViewById(R.id.expandable_listview);
+                    expandableListView.setAdapter(PanierAdapter);
+                    expandableListView.setExpanded(true);
+                    registerForContextMenu(expandableListView);
+                } else {
+                    // Update existing list
+                    final_panier.clear();
+                    final_panier.addAll(data);
+                    PanierAdapter.notifyDataSetChanged();
+                }
 
-        expandableListView = findViewById(R.id.expandable_listview);
+                // Update totals & save
+                calcule();
+                sauvegarder();
+            });
+        }).start();
+    }
 
-        expandableListView.setAdapter(PanierAdapter);
 
-        // This actually does the magic
-        expandableListView.setExpanded(true);
-        registerForContextMenu(expandableListView);
+    public void calcule() {
 
-        calcule();
-        sauvegarder();
+        val_nbr_produit = final_panier.size();
+
+        final BadgeDrawable drawable = new BadgeDrawable.Builder()
+                .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
+                .badgeColor(0xff303F9F)
+                .text1(String.valueOf(val_nbr_produit))
+                .text2(" PRODUIT")
+                .build();
+        SpannableString spannableString = new SpannableString(TextUtils.concat(drawable.toSpannable()));
+        nbr_produit.setText(spannableString);
+
+    }
+
+    protected void sauvegarder() {
+
+        inv1.nbr_produit = final_panier.size();
+        //update current inv1
+        controller.update_inv1_nbr_produit("INV1", inv1);
+
     }
 
     @Override
@@ -611,7 +642,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                     Activity activity;
                     activity = ActivityInventaire.this;
                     FragmentQteInventaire fragmentQteInventaire = new FragmentQteInventaire();
-                    fragmentQteInventaire.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position));
+                    fragmentQteInventaire.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), null);
 
                 } catch (Exception e) {
 
@@ -627,20 +658,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         }
     }
 
-    public void calcule() {
 
-        val_nbr_produit = final_panier.size();
-
-        final BadgeDrawable drawable = new BadgeDrawable.Builder()
-                .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-                .badgeColor(0xff303F9F)
-                .text1(String.valueOf(val_nbr_produit))
-                .text2(" PRODUIT")
-                .build();
-        SpannableString spannableString = new SpannableString(TextUtils.concat(drawable.toSpannable()));
-        nbr_produit.setText(spannableString);
-
-    }
 
 
     @Override
@@ -661,13 +679,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
 
     //Versement
-    protected void sauvegarder() {
 
-        inv1.nbr_produit = final_panier.size();
-        //update current inv1
-        controller.update_inv1_nbr_produit("INV1", inv1);
-
-    }
 
 
     @Override
@@ -749,9 +761,44 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         inv2.num_inv = NUM_INV;
         // inv2.code_depot = CODE_DEPOT;
         SOURCE = "INV2_INSERT";
+
+        PostData_Inv2 checked_inv2;
+        String querry = "SELECT " +
+                "INV2.RECORDID, " +
+                "INV2.CODE_BARRE, " +
+                "INV2.NUM_INV, " +
+                "INV2.PRODUIT, " +
+                "INV2.NBRE_COLIS, " +
+                "INV2.COLISSAGE, " +
+                "INV2.PA_HT, " +
+                "INV2.QTE, " +
+                "INV2.QTE_TMP, " +
+                "INV2.QTE_NEW, " +
+                "INV2.TVA, " +
+                "INV2.VRAC, " +
+                "INV2.CODE_DEPOT " +
+                "FROM INV2 " +
+                "LEFT JOIN INV1 ON INV1.NUM_INV = INV2.NUM_INV " +
+                "WHERE INV2.CODE_BARRE = '" + inv2.codebarre + "' AND INV1.IS_EXPORTED <> 1 ";
+        checked_inv2 = controller.check_if_inv2_exist(querry);
+
+        if (checked_inv2 != null && !checked_inv2.num_inv.equals(inv2.num_inv)) {
+            new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Attention !!")
+                    .setContentText("Produit déjà inséré dans le bon d'inventaire n° " + checked_inv2.num_inv +
+                            " avec une quantité de : " + checked_inv2.qte_physique +
+                            ". Veuillez accéder au bon d'inventaire numéro : " + checked_inv2.num_inv +
+                            " afin de modifier la quantité.")
+                    .show();
+            return;
+        }
+
         Activity activity = ActivityInventaire.this;
         FragmentQteInventaire fragmentqteinventaire = new FragmentQteInventaire();
-        fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(), inv2);
+        fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(), inv2, checked_inv2);
+
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs.edit().putInt("LAST_CLICKED_POSITION", position).apply();
 
     }
 
@@ -834,9 +881,41 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             inv2.code_depot = CODE_DEPOT;
 
             SOURCE = "INV2_INSERT";
+
+            PostData_Inv2 checked_inv2;
+            String querry_check_inv = "SELECT " +
+                    "INV2.RECORDID, " +
+                    "INV2.CODE_BARRE, " +
+                    "INV2.NUM_INV, " +
+                    "INV2.PRODUIT, " +
+                    "INV2.NBRE_COLIS, " +
+                    "INV2.COLISSAGE, " +
+                    "INV2.PA_HT, " +
+                    "INV2.QTE, " +
+                    "INV2.QTE_TMP, " +
+                    "INV2.QTE_NEW, " +
+                    "INV2.TVA, " +
+                    "INV2.VRAC, " +
+                    "INV2.CODE_DEPOT " +
+                    "FROM INV2 " +
+                    "LEFT JOIN INV1 ON INV1.NUM_INV = INV2.NUM_INV " +
+                    "WHERE INV2.CODE_BARRE = '" + inv2.codebarre + "' AND INV1.IS_EXPORTED <> 1 ";
+            checked_inv2 = controller.check_if_inv2_exist(querry_check_inv);
+
+            if (checked_inv2 != null && !checked_inv2.num_inv.equals(inv2.num_inv)) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention !!")
+                        .setContentText("Produit déjà inséré dans le bon d'inventaire n° " + checked_inv2.num_inv +
+                                " avec une quantité de : " + checked_inv2.qte_physique +
+                                ". Veuillez accéder au bon d'inventaire numéro : " + checked_inv2.num_inv +
+                                " afin de modifier la quantité.")
+                        .show();
+                return;
+            }
+
             Activity activity = ActivityInventaire.this;
             FragmentQteInventaire fragmentqteinventaire = new FragmentQteInventaire();
-            fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(), inv2);
+            fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(), inv2, checked_inv2);
 
         } else if (produits.size() > 1) {
             Crouton.makeText(ActivityInventaire.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
@@ -849,20 +928,20 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         @Override
         public void onReceive(Context context, Intent intent) {
 
-                if (Objects.requireNonNull(intent.getAction()).equals(BROADCAST_KEYBOARD)){
+            if (Objects.requireNonNull(intent.getAction()).equals(BROADCAST_KEYBOARD)){
 
-                    String barcode2 = intent.getStringExtra("com.symbol.datawedge.data_string");
-                    Log.v("TEST", "code_barre : " + barcode2);
-                    selectProductFromScan(barcode2);
+                String barcode2 = intent.getStringExtra("com.symbol.datawedge.data_string");
+                Log.v("TEST", "code_barre : " + barcode2);
+                selectProductFromScan(barcode2);
 
-                }else {
-                    String barcode = intent.getStringExtra("barcode");
-                    //byte[] barcode = intent.getByteArrayExtra("barcode");
-                    int barocodelen = intent.getIntExtra("length", 0);
-                    byte temp = intent.getByteExtra("barcodeType", (byte) 0);
-                    //android.util.Log.i("debug", "----codetype--" + temp);
-                    selectProductFromScan(barcode);
-                }
+            }else {
+                String barcode = intent.getStringExtra("barcode");
+                //byte[] barcode = intent.getByteArrayExtra("barcode");
+                int barocodelen = intent.getIntExtra("length", 0);
+                byte temp = intent.getByteExtra("barcodeType", (byte) 0);
+                //android.util.Log.i("debug", "----codetype--" + temp);
+                selectProductFromScan(barcode);
+            }
         }
     };
 

@@ -212,10 +212,6 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
 
     @Override
     public void onClick(View v, int position) {
-
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.beep);
-        }
         Intent editIntent = new Intent(ActivityVentes.this, ActivityVente.class);
         editIntent.putExtra("NUM_BON", bon1s.get(position).num_bon);
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_SALE");
@@ -490,15 +486,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        MediaPlayer mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
 }

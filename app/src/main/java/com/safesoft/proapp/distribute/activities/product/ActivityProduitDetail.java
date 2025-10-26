@@ -45,7 +45,6 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
     ImagePopup imagePopup;
     private LinearLayout Lnr_pv1, Lnr_pv2, Lnr_pv3, Lnr_pv4, Lnr_pv5, Lnr_pv6;
-    private MediaPlayer mp;
     private NumberFormat nf;
     SharedPreferences prefs;
     private DATABASE controller;
@@ -325,15 +324,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound();
-        }
         super.onBackPressed();
-    }
-
-    public void Sound() {
-        mp = MediaPlayer.create(this, R.raw.back);
-        mp.start();
     }
 
 

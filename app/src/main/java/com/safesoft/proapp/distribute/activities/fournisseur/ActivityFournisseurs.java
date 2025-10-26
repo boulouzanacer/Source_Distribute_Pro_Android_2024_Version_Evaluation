@@ -48,7 +48,6 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     private RecyclerAdapterFournisseurs adapter;
     private ArrayList<PostData_Fournisseur> fournisseurs;
     private DATABASE controller;
-    private MediaPlayer mp;
     private EventBus bus;
     private TextView nbr_fournisseur;
     private final String PREFS = "ALL_PREFS";
@@ -158,9 +157,6 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     public void onClick(View v, int position) {
 
         if (v.getId() == R.id.item_root) {
-            if (prefs.getBoolean("ENABLE_SOUND", false)) {
-                Sound(R.raw.beep);
-            }
             Intent intent = new Intent(ActivityFournisseurs.this, ActivityFournisseurDetail.class);
 
             intent.putExtra("CODE_FRS", fournisseurs.get(position).code_frs);
@@ -294,15 +290,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int SourceSound) {
-        mp = MediaPlayer.create(this, SourceSound);
-        mp.start();
     }
 
     @Override

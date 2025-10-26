@@ -702,7 +702,13 @@ public class Printing {
                         case "ACHAT" -> print_bon_achat();
                         case "ETIQUETTE" -> print_etiquette();
                         case "ETAT_VENTE", "ETAT_COMMANDE" -> print_etat_vente_command();
-                        case "ETIQUETTE_CODEBARRE" -> print_etiquette_code_barre(produit.code_barre, produit.produit, produit.pv1_ht * (1 + (produit.tva / 100)));
+                        case "ETIQUETTE_CODEBARRE" -> {
+                            if (prefs.getString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_50X30").equals("TICKET_CODEBARRE_50X30")) {
+                                print_etiquette_code_barre_50_X_30(produit.code_barre, produit.produit, produit.pv1_ht * (1 + (produit.tva / 100)));
+                            } else {
+                                print_etiquette_code_barre_40_X_20(produit.code_barre, produit.produit, produit.pv1_ht * (1 + (produit.tva / 100)));
+                            }
+                        }
                         case "VERSEMENT_CLIENT" -> print_versement_client();
                         case "VERSEMENT_FOURNISSEUR" -> print_versement_fournisseur();
                         case "ARABIC" -> print_arabic();
@@ -2032,6 +2038,8 @@ public class Printing {
                 Cmd cmd = cmdFactory.create();
                 cmd.append(cmd.getHeaderCmd());
                 cmd.setChartsetName(mChartsetName);
+
+
                 //cmd.setPrinterCharacterTable(22);
                 CommonSetting commonSetting = new CommonSetting();
                 commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
@@ -2529,8 +2537,8 @@ public class Printing {
 
                     textSetting.setAlign(CommonEnum.ALIGN_LEFT);
                     textSetting.setBold(SettingEnum.Enable);
-                    String format0 = "%1$-22s%2$-5s%3$-11s%4$10s";
-                    cmd.append(cmd.getTextCmd(textSetting, String.format(format0, "PRODUIT", StringUtils.center("STOCK", 5), StringUtils.center("VRAC", 11), "TOTAL")));
+                    String format0 = "%1$-33s%2$-5s%3$-10s";
+                    cmd.append(cmd.getTextCmd(textSetting, String.format(format0, "PRODUIT", StringUtils.center("STOCK", 5), StringUtils.center("PRIX", 10))));
                     textSetting.setBold(SettingEnum.Disable);
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
@@ -2538,75 +2546,23 @@ public class Printing {
 
                     /////////////////////////////IMPRESSION BON2////////////////////////////////////
 
-                    double nbr_colis, colissage, qte, vrac, total_stock;
-                    String nbr_colis_Str, colissage_Str, qte_Str, vrac_Str, total_stock_Str, X1_Str, X2_Str, eq1_Str, plus_Str;
-                    //nbr_colis = 10.0; colissage =23.0 ; qte = 120.00 ; gte_gratuit = 1.0;  prix_unit = 12345.33 ;
+                    double qte, prix;
+                    String qte_Str, prix_Str;
 
-                    double epsilon = 0.000001;
                     int compt = 0;
                     for (int i = 0; i < produits.size(); i++) {
 
+                            qte = produits.get(i).stock;
+                            qte_Str = new DecimalFormat("####0.##").format(qte);
 
-                        if (produits.get(i).stock > epsilon || produits.get(i).stock < -epsilon) {
+                            prix = produits.get(i).pv1_ht * (1 + produits.get(i).tva / 100);
+                            prix_Str = new DecimalFormat("####0.##").format(prix);
 
-                            cmd.append(cmd.getTextCmd(textSetting, produits.get(i).produit));
+                            String format1 = "%1$-33s " + "%2$-5s " + "%3$-10s";
+                            cmd.append(cmd.getTextCmd(textSetting, String.format(format1, produits.get(i).produit, qte_Str, StringUtils.center(prix_Str, 10))));
                             cmd.append(cmd.getLFCRCmd()); // one line space
 
-                            nbr_colis = produits.get(i).stock_colis;
-                            nbr_colis_Str = new DecimalFormat("####0.##").format(nbr_colis);
-
-                            colissage = produits.get(i).colissage;
-                            colissage_Str = new DecimalFormat("####0.##").format(colissage);
-
-                            if(nbr_colis == 0.0){
-                                qte = produits.get(i).stock;
-                                qte_Str = new DecimalFormat("####0.##").format(qte);
-
-                            }else{
-                                qte = produits.get(i).stock_colis * produits.get(i).colissage;
-                                qte_Str = new DecimalFormat("####0.##").format(qte);
-                            }
-
-
-                            vrac = produits.get(i).stock_vrac;
-                            vrac_Str = new DecimalFormat("####0.##").format(vrac);
-
-
-                            total_stock = qte + vrac;
-
-                            total_stock_Str = new DecimalFormat("####0.##").format(total_stock);
-
-
-                            X1_Str = "X";
-                            eq1_Str = "=";
-                            plus_Str = "+";
-
-                            if (vrac == 0.0) {
-                                vrac_Str = "";
-                                plus_Str = " ";
-                            }
-
-                            if (colissage == 0.0) {
-                                nbr_colis_Str = "";
-                                colissage_Str = "";
-                                X1_Str = " ";
-                                eq1_Str = " ";
-                            }
-
-                            String format1 = "  %1$-6s " + X1_Str + " %2$-6s " + eq1_Str + " %3$-9s" + plus_Str + "%4$-5s=%5$9s";
-                            cmd.append(cmd.getTextCmd(textSetting, String.format(format1, StringUtils.center(nbr_colis_Str, 6), StringUtils.center(colissage_Str, 6), StringUtils.center(qte_Str, 9), StringUtils.center(vrac_Str, 5), total_stock_Str)));
-                            cmd.append(cmd.getLFCRCmd()); // one line space
-
-                       /* if(i<final_panier.size()-1){
-                            textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                            cmd.append(cmd.getTextCmd(textSetting, "------------------------"));
-                            textSetting.setAlign(CommonEnum.ALIGN_LEFT);
-                            cmd.append(cmd.getLFCRCmd()); // one line space
-                        }*/
                             compt++;
-                        }
-
-
                     }
 
                     cmd.append(cmd.getTextCmd(textSetting, "------------------------------------------------"));
@@ -2615,11 +2571,38 @@ public class Printing {
 
                     /////////////////////////////IMPRESSION TOTAL////////////////////////////////////
 
+                    double totalAchat = 0.0;
+                    double totalVente = 0.0;
+                    double totalStock = 0.0;
                     int nbr_produit;
+                    String total_achat_str;
+                    String total_vente_str;
+                    String total_stock_str;
                     String nbr_produit_str;
 
+                    for(int i = 0; i < produits.size(); i++) {
+                        double rowVente = (produits.get(i).pv1_ht * (1 + produits.get(i).tva / 100)) * produits.get(i).stock;
+                        double rowAchat = produits.get(i).pamp * produits.get(i).stock;
+                        double rowStock = produits.get(i).stock;
+                        totalVente += rowVente;
+                        totalAchat += rowAchat;
+                        totalStock += rowStock;
+                    }
+
                     nbr_produit = compt;
+                    total_achat_str = new DecimalFormat("####0.##").format(Double.valueOf(totalAchat));
+                    total_vente_str = new DecimalFormat("####0.##").format(Double.valueOf(totalVente));
+                    total_stock_str = new DecimalFormat("####0.##").format(Double.valueOf(totalStock));
                     nbr_produit_str = new DecimalFormat("####0.##").format(Double.valueOf(nbr_produit));
+
+                    if (prefs.getBoolean("SHOW_ACHAT_CLIENT", false)) {
+                        cmd.append(cmd.getTextCmd(textSetting, "TOTAL ACHAT : " + total_achat_str));
+                        cmd.append(cmd.getLFCRCmd()); // one line space
+                    }
+                    cmd.append(cmd.getTextCmd(textSetting, "TOTAL VENTE : " + total_vente_str));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
+                    cmd.append(cmd.getTextCmd(textSetting, "TOTAL STOCK : " + total_stock_str));
+                    cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getTextCmd(textSetting, "TOTAL PRODUIT : " + nbr_produit_str));
                     cmd.append(cmd.getLFCRCmd()); // one line space
 
@@ -2644,7 +2627,7 @@ public class Printing {
 
     }
 
-    void print_etiquette_code_barre(String barcodeContent, String produit, double prix_vente_ttc) {
+    void print_etiquette_code_barre_40_X_20(String barcodeContent, String produit, double prix_vente_ttc) {
 
         new Thread(new Runnable() {
             @Override
@@ -2663,12 +2646,12 @@ public class Printing {
 
                     rtPrinter.writeMsg(TonyUtils.InitPrinter());
                     TonyUtils.Tsc_InitLabelPrint(rtPrinter);
-                    rtPrinter.writeMsg(TonyUtils.SetSize("80", "40").getBytes());
+                    rtPrinter.writeMsg(TonyUtils.SetSize("40", "20").getBytes());
                     String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
                     rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
 
                     String prix_vente_str = new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
-                    String strPrintTxtPrix = TonyUtils.printText("80", "80", "TSS24.BF2", "0", "2", "2", prix_vente_str + ";");
+                    String strPrintTxtPrix = TonyUtils.printText("40", "50", "TSS24.BF2", "0", "1", "1", prix_vente_str + ";");
                     rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
                     // String strPrint = TonyUtils.setPRINT("1", "1");
                     // rtPrinter.writeMsg(strPrint.getBytes());
@@ -2680,9 +2663,64 @@ public class Printing {
                     barcodeSetting.setNarrowInDot(2);//narrow bar setting, bar width
                     barcodeSetting.setWideInDot(4);
                     barcodeSetting.setHeightInDot(48);//bar height setting
+                    //barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+                    barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
+                    int x = 70, y = 80;
+                    barcodeSetting.setPosition(new Position(x, y));
+
+
+                    byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
+                    tscCmd.append(barcodeCmd);
+
+                    tscCmd.append(tscCmd.getPrintCopies(1));
+                    tscCmd.append(tscCmd.getEndCmd());
+                    if (rtPrinter != null) {
+                        rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
+                    }
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+                hideProgressDialog();
+            }
+        }).start();
+
+    }
+
+
+    void print_etiquette_code_barre_50_X_30(String barcodeContent, String produit, double prix_vente_ttc) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Impression...");
+
+                BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
+                try {
+
+                    CmdFactory tscFac = new TscFactory();
+                    Cmd tscCmd = tscFac.create();
+
+                    tscCmd.append(tscCmd.getHeaderCmd());
+
+                    rtPrinter.writeMsg(TonyUtils.InitPrinter());
+                    TonyUtils.Tsc_InitLabelPrint(rtPrinter);
+                    rtPrinter.writeMsg(TonyUtils.SetSize("50", "30").getBytes());
+                    String strPrintTxtproduit = TonyUtils.printText("10", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
+                    rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
+
+                    String prix_vente_str = new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
+                    String strPrintTxtPrix = TonyUtils.printText("10", "60", "TSS24.BF2", "0", "2", "2", prix_vente_str + ";");
+                    rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
+
+
+                    BarcodeSetting barcodeSetting = new BarcodeSetting();
+                    barcodeSetting.setNarrowInDot(2);//narrow bar setting, bar width
+                    barcodeSetting.setWideInDot(4);
+                    barcodeSetting.setHeightInDot(48);//bar height setting
                     barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
                     barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
-                    int x = 80, y = 130;
+                    int x = 10, y = 120;
                     barcodeSetting.setPosition(new Position(x, y));
 
 

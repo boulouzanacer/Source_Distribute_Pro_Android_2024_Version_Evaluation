@@ -1121,15 +1121,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
     @Override
     public void onBackPressed() {
-        if (prefs.getBoolean("ENABLE_SOUND", false)) {
-            Sound(R.raw.back);
-        }
         super.onBackPressed();
-    }
-
-    public void Sound(int resid) {
-        MediaPlayer mp = MediaPlayer.create(this, resid);
-        mp.start();
     }
 
     @Subscribe
@@ -1241,9 +1233,6 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             }
 
             initData();
-            if (prefs.getBoolean("ENABLE_SOUND", false)) {
-                Sound(R.raw.cashier_quotka);
-            }
 
             if (prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 // Initialize activity
