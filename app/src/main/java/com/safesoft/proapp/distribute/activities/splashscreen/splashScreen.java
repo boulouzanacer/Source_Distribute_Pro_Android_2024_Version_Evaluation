@@ -32,14 +32,6 @@ public class splashScreen extends AppCompatActivity {
     public static final String NUM_SERIE = "INFO_ACTIVATION";
 
     public static String revendeur = "SAFE SOFT";
-    //public static final String revendeur = "TIEMPO SOFT";
-    //public static final String revendeur = "CHERRATA SOFT";
-    //public static final String revendeur = "TECH POS";
-    //public static final String revendeur = "CAM PLUS";
-    //public static final String revendeur = "GLOBAL TECH";
-    //public static final String revendeur = "VAST SOFT";
-    //public static final String revendeur = "TIFAWT TECHNOLOGIE";
-    //public static final String revendeur = "EASY SOFT";
 
     ImageView imagesplash, logo_revendeur;
     LinearLayout linear_layout_revendeur;
@@ -237,8 +229,17 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur4.setText(R.string.INFO_GLOBAL_TECH4);
         }
 
-        //07
+        //07 DSX SYSTEME
         if (revendeur.equals("DSX SYSTEME")) {
+            logo_revendeur.setImageResource(R.drawable.logo_poliraw_500_100);
+            inforevenedeur1.setText(R.string.INFO_POLYRAW1);
+            inforevenedeur2.setText(R.string.INFO_POLYRAW2);
+            inforevenedeur3.setText(R.string.INFO_POLYRAW3);
+            inforevenedeur4.setText(R.string.INFO_POLYRAW4);
+        }
+
+        //07 POLYRAW
+        if (revendeur.equals("POLYRAW")) {
             logo_revendeur.setImageResource(R.drawable.logo_poliraw_500_100);
             inforevenedeur1.setText(R.string.INFO_POLYRAW1);
             inforevenedeur2.setText(R.string.INFO_POLYRAW2);
@@ -327,8 +328,17 @@ public class splashScreen extends AppCompatActivity {
             inforevenedeur4.setText(R.string.INFO_ACIDOMTECH4);
         }
 
-        //17
+        //17 EL KHALIL SOFT
         if (revendeur.equals("EL KHALIL SOFT")) {
+            logo_revendeur.setImageResource(R.drawable.logo_universoft_500_100);
+            inforevenedeur1.setText(R.string.INFO_UNIVERSOFT1);
+            inforevenedeur2.setText(R.string.INFO_UNIVERSOFT2);
+            inforevenedeur3.setText(R.string.INFO_UNIVERSOFT3);
+            inforevenedeur4.setText(R.string.INFO_UNIVERSOFT4);
+        }
+
+        //17 UNIVER SOFT
+        if (revendeur.equals("UNIVER SOFT")) {
             logo_revendeur.setImageResource(R.drawable.logo_universoft_500_100);
             inforevenedeur1.setText(R.string.INFO_UNIVERSOFT1);
             inforevenedeur2.setText(R.string.INFO_UNIVERSOFT2);

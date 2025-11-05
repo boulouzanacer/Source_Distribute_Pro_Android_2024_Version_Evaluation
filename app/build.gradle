@@ -10,11 +10,21 @@ android {
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
         targetSdkVersion 36
-        versionCode 583
-        versionName "251025"
+        versionCode 585
+        versionName "291025"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)
+
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
+
+        ndk {
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
+        }
     }
 
     buildTypes {
@@ -44,11 +54,19 @@ android {
         }
     }
 
+    // force NDK version (dans settings.gradle ou build.gradle top-level)
+    ndkVersion "r28" // ou r29/r30... (exact string selon SDK manager)
 
 
     packagingOptions {
         resources {
             excludes += ['META-INF/DEPENDENCIES.txt', 'META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/DEPENDENCIES', 'META-INF/notice.txt', 'META-INF/license.txt', 'META-INF/dependencies.txt', 'META-INF/LGPL2.1']
+        }
+
+        jniLibs {
+            // option alternative : useLegacyPackaging true -> compresse et force extraction
+            // Préfère d'abord mettre à jour AGP/NDK avant d'utiliser ceci.
+            // useLegacyPackaging true
         }
     }
 
@@ -84,7 +102,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.4.1'
     implementation 'androidx.activity:activity:1.11.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.6.1', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.7.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
@@ -119,10 +137,6 @@ dependencies {
     //Button
     //implementation 'com.rilixtech:materialfancybuttons:1.8.7'
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
-    //noinspection Aligned16KB
-    implementation 'me.dm7.barcodescanner:zbar:1.9.8'
-    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
-
 
     implementation 'androidx.gridlayout:gridlayout:1.1.0'
     implementation 'com.github.aabhasr1:OtpView:v1.1.2'
@@ -143,6 +157,13 @@ dependencies {
 
     implementation 'com.itextpdf:itextg:5.5.10'   // For generating PDF
     //implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'  // For viewing PDF
+    //implementation 'com.tom-roush:pdfbox-android:2.0.27.0'
+    implementation 'com.github.mhiew:android-pdf-viewer:3.2.0-beta.3'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+
+
 
     //détecter si une fuites mémoires est disponible
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
@@ -159,7 +180,7 @@ dependencies {
     implementation project(':easy_form_library')
     implementation project(':materialfancybuttons_library')
     implementation project(':time_picker_dialog_library')
-    implementation project(':pdf_viewer_library')
+    //implementation project(':pdf_viewer_library')
     implementation project(':fancybuttons_library')
     implementation project(':victor_library')
     implementation project(':simple_recycler_adapter_library')
@@ -171,10 +192,7 @@ dependencies {
     implementation files('libs/printer_library.jar')
     //implementation 'org.apache.groovy:groovy:4.0.18'
 
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0") {
-        exclude group: 'com.google.zxing', module: 'android-core'
-        transitive = false
-    }
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 
     //Commande pour afficher les warrning en details c tt
     tasks.withType(JavaCompile).configureEach {

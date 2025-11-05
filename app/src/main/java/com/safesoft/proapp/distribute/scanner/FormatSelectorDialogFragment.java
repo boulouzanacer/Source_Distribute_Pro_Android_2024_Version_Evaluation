@@ -7,84 +7,84 @@ import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
 
-import java.util.ArrayList;
+import com.google.zxing.BarcodeFormat;
 
-import me.dm7.barcodescanner.zbar.BarcodeFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FormatSelectorDialogFragment extends DialogFragment {
+
     public interface FormatSelectorDialogListener {
-        void onFormatsSaved(ArrayList<Integer> selectedIndices);
+        void onFormatsSaved(ArrayList<BarcodeFormat> selectedFormats);
     }
 
-    private ArrayList<Integer> mSelectedIndices;
+    private ArrayList<BarcodeFormat> mSelectedFormats;
     private FormatSelectorDialogListener mListener;
 
-    public void onCreate(Bundle state) {
-        super.onCreate(state);
-        setRetainInstance(true);
-    }
+    // ✅ Liste des formats supportés par ZXing (tu peux en ajouter ou en retirer)
+    private static final List<BarcodeFormat> SUPPORTED_FORMATS = Arrays.asList(
+            BarcodeFormat.QR_CODE,
+            BarcodeFormat.EAN_13,
+            BarcodeFormat.EAN_8,
+            BarcodeFormat.CODE_128,
+            BarcodeFormat.CODE_39,
+            BarcodeFormat.CODE_93,
+            BarcodeFormat.UPC_A,
+            BarcodeFormat.UPC_E,
+            BarcodeFormat.ITF,
+            BarcodeFormat.PDF_417,
+            BarcodeFormat.AZTEC,
+            BarcodeFormat.DATA_MATRIX
+    );
 
-    public static FormatSelectorDialogFragment newInstance(FormatSelectorDialogListener listener, ArrayList<Integer> selectedIndices) {
+    public static FormatSelectorDialogFragment newInstance(FormatSelectorDialogListener listener, ArrayList<BarcodeFormat> selectedFormats) {
         FormatSelectorDialogFragment fragment = new FormatSelectorDialogFragment();
-        if (selectedIndices == null) {
-            selectedIndices = new ArrayList<Integer>();
-        }
-        fragment.mSelectedIndices = new ArrayList<Integer>(selectedIndices);
         fragment.mListener = listener;
+        fragment.mSelectedFormats = selectedFormats != null ? new ArrayList<>(selectedFormats) : new ArrayList<>();
         return fragment;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (mSelectedIndices == null || mListener == null) {
+        if (mSelectedFormats == null || mListener == null) {
             dismiss();
             return null;
         }
 
-        String[] formats = new String[BarcodeFormat.ALL_FORMATS.size()];
-        boolean[] checkedIndices = new boolean[BarcodeFormat.ALL_FORMATS.size()];
-        int i = 0;
-        for (BarcodeFormat format : BarcodeFormat.ALL_FORMATS) {
-            formats[i] = format.getName();
-            checkedIndices[i] = mSelectedIndices.contains(i);
-            i++;
+        // Construction des noms et états cochés
+        String[] formatNames = new String[SUPPORTED_FORMATS.size()];
+        boolean[] checkedItems = new boolean[SUPPORTED_FORMATS.size()];
+
+        for (int i = 0; i < SUPPORTED_FORMATS.size(); i++) {
+            BarcodeFormat format = SUPPORTED_FORMATS.get(i);
+            formatNames[i] = format.toString();
+            checkedItems[i] = mSelectedFormats.contains(format);
         }
 
+        // Création de la boîte de dialogue
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Set the dialog title
-        builder.setTitle("Choisir format ")
-                // Specify the list array, the items to be selected by default (null for none),
-                // and the listener through which to receive callbacks when items are selected
-                .setMultiChoiceItems(formats, checkedIndices,
-                        new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                if (isChecked) {
-                                    // If the user checked the item, add it to the selected items
-                                    mSelectedIndices.add(which);
-                                } else if (mSelectedIndices.contains(which)) {
-                                    // Else, if the item is already in the array, remove it
-                                    mSelectedIndices.remove((Integer) which);
-                                }
-                            }
-                        })
-                // Set the action buttons
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setTitle("Choisir formats à scanner")
+                .setMultiChoiceItems(formatNames, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK, so save the mSelectedIndices results somewhere
-                        // or return them to the component that opened the dialog
-                        if (mListener != null) {
-                            mListener.onFormatsSaved(mSelectedIndices);
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        BarcodeFormat selectedFormat = SUPPORTED_FORMATS.get(which);
+                        if (isChecked) {
+                            if (!mSelectedFormats.contains(selectedFormat)) {
+                                mSelectedFormats.add(selectedFormat);
+                            }
+                        } else {
+                            mSelectedFormats.remove(selectedFormat);
                         }
                     }
                 })
-                .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                .setPositiveButton("✅ OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.onFormatsSaved(mSelectedFormats);
                     }
-                });
+                })
+                .setNegativeButton("❌ Annuler", null);
 
         return builder.create();
     }

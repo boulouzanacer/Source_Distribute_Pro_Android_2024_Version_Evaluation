@@ -3218,9 +3218,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                 con.setAutoCommit(false);
                 list_produit_not_exported = update_produit_into_server(con, stmt);
 
-                boolean is_syc_all_clients = prefs.getBoolean("SYCHRONISER_TOUS_PRODUIT", false);
+                boolean is_syc_all_products = prefs.getBoolean("SYCHRONISER_TOUS_PRODUIT", false);
 
-                if (code_depot.equals("000000") || is_syc_all_clients) {
+                if (code_depot.equals("000000") || is_syc_all_products) {
                     String sql12 = "SELECT  COUNT(*) FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0) = 0  ";
                     if (TYPE_LOGICIEL.equals("PME PRO")) {
                         sql12 = sql12 + " AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 )";
@@ -3260,8 +3260,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                         sql3 = sql3 + ", coalesce(PRODUIT.PV4_HT,0) AS PV4_HT " +
                                 ", coalesce(PRODUIT.PV5_HT,0) AS PV5_HT " +
                                 ", coalesce(PRODUIT.PV6_HT,0) AS PV6_HT" +
-                                ", coalesce(PRODUIT.PV_LIMITE,0) AS PV_LIMITE" +
-                                ", PRODUIT.PHOTO ";
+                                ", coalesce(PRODUIT.PV_LIMITE,0) AS PV_LIMITE ";
+
+                        if(prefs.getBoolean("SHOW_PROD_PIC", false)){
+                            sql3 = sql3 + ", PRODUIT.PHOTO ";
+                        }
                     }
                     sql3 = sql3 + " FROM PRODUIT WHERE Coalesce(PRODUIT.SUP,0)=0 ";
 
@@ -3291,7 +3294,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
                             produit_update.pv_limite = rs3.getDouble("PV_LIMITE");
 
-                            produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
+                            if(prefs.getBoolean("SHOW_PROD_PIC", false)){
+                                produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
+                            }
                         }
 
                         produit_update.description = rs3.getString("DETAILLE");
@@ -3378,12 +3383,15 @@ public class ActivityImportsExport extends AppCompatActivity {
                             " PRODUIT.DESTOCK_QTE ";
 
                     if (TYPE_LOGICIEL.equals("PME PRO")) {
+
                         sql3 = sql3 + ", coalesce(PRODUIT.PV4_HT,0) AS PV4_HT " +
                                 ", coalesce(PRODUIT.PV5_HT,0) AS PV5_HT " +
                                 ", coalesce(PRODUIT.PV6_HT,0) AS PV6_HT" +
-                                ", coalesce(PRODUIT.PV_LIMITE,0) AS PV_LIMITE" +
-                                ", PRODUIT.PHOTO " +
-                                " FROM DEPOT2 " +
+                                ", coalesce(PRODUIT.PV_LIMITE,0) AS PV_LIMITE ";
+                        if(prefs.getBoolean("SHOW_PROD_PIC", false)){
+                            sql3 = sql3 + ", PRODUIT.PHOTO ";
+                        }
+                        sql3 = sql3 + " FROM DEPOT2 " +
                                 " LEFT JOIN PRODUIT ON ( PRODUIT.code_barre = DEPOT2.code_barre ) " +
                                 " WHERE DEPOT2.code_depot = '" + code_depot + "' AND Coalesce(PRODUIT.SUP,0)=0 AND DEPOT2.CODE_LOT IS NULL AND Coalesce(PRODUIT.GER_LOT,0)=0 AND (coalesce(PRODUIT.MAT_PREM,0)=0 OR coalesce(PRODUIT.MAT_PREM,0)=3 )";
                     } else {
@@ -3419,7 +3427,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                             produit_update.pv6_ht = rs3.getDouble("PV6_HT");
                             produit_update.pv_limite = rs3.getDouble("PV_LIMITE");
                             //produit_update.photo = rs3.getBytes("PHOTO");
-                            produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
+                            if(prefs.getBoolean("SHOW_PROD_PIC", false)){
+                                produit_update.photo = ImageUtils.getInstant().getCompressedBitmap(rs3.getBytes("PHOTO"));
+                            }
 
                         }
 

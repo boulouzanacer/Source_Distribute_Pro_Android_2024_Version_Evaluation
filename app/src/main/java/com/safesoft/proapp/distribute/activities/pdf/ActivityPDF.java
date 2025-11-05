@@ -20,25 +20,13 @@ import android.print.PrintManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowInsetsController;
 import android.webkit.MimeTypeMap;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.safesoft.proapp.distribute.R;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.ConnectException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Objects;
 
 public class ActivityPDF extends AppCompatActivity {

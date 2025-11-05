@@ -101,4 +101,12 @@
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
+
+    <!-- Base application theme. -->
+    <style name="AppThemeNoActionBar" parent="AppTheme.NoActionBar"/>
+
+    <style name="AppThemeNoActionBar.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>
