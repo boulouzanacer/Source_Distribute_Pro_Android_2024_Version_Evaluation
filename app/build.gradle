@@ -10,8 +10,8 @@ android {
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
         targetSdkVersion 36
-        versionCode 585
-        versionName "291025"
+        versionCode 586
+        versionName "071125"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)

@@ -478,7 +478,9 @@ public class DATABASE extends SQLiteOpenHelper {
         String[] list_requet = new String[18];
 
         list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0";
+
         list_requet[1] = "ALTER TABLE CLIENT ADD COLUMN WILAYA VARCHAR ";
+
         list_requet[2] = "ALTER TABLE CLIENT ADD COLUMN COMMUNE VARCHAR ";
 
         list_requet[3] = "CREATE TABLE IF NOT EXISTS CARNET_F(RECORDID INTEGER PRIMARY KEY, " +
@@ -502,6 +504,7 @@ public class DATABASE extends SQLiteOpenHelper {
         list_requet[6] = "ALTER TABLE PRODUIT ADD COLUMN QTE_PROMO DOUBLE";
 
         list_requet[7] = "DROP TABLE IF EXISTS TOURNEE1";
+
         list_requet[8] = "DROP TABLE IF EXISTS TOURNEE2";
 
         list_requet[9]  = "ALTER TABLE BON1 ADD COLUMN LIVRER INTEGER DEFAULT 0 ";

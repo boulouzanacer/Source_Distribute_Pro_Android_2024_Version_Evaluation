@@ -355,8 +355,6 @@ public class FragmentNewEditClient {
             if (old_client.mode_tarif.equals("6")) {
                 radioGroup_mode_tarif.check(R.id.rb_6);
             }
-
-
         }
 
         btn_valider.setOnClickListener(v -> {

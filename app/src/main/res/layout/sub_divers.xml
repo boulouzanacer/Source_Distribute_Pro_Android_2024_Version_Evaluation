@@ -47,6 +47,8 @@
 
     <include layout="@layout/sub_layout_allow_credit_vente"/>
 
+    <include layout="@layout/sub_layout_combin_products"/>
+
     <include layout="@layout/sub_layout_vente_stock_moins"/>
 
     <include layout="@layout/sub_layout_show_photo_produit"/>

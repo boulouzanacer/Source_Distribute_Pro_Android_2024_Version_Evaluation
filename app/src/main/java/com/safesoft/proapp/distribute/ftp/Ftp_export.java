@@ -1352,6 +1352,11 @@ public class Ftp_export {
                         .setTitleText("Exportation...")
                         .setContentText("Problem de connexion serveur ftp")
                         .show();
+            }else if (result == 3) {
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Exportation...")
+                        .setContentText("Problème d’accès à l’exportation des fichiers vers le serveur !!")
+                        .show();
             }
         }
     }
@@ -1535,7 +1540,7 @@ public class Ftp_export {
                                         controller.update_ventes_commandes_as_exported(true, num_bon);
                                     }
                                 } catch (Exception e) {
-
+                                    Log.v("TAG", e.getMessage());
                                 }
                             }
 
@@ -1629,6 +1634,11 @@ public class Ftp_export {
                         .setTitleText("Exportation...")
                         .setContentText("Problem de connexion serveur ftp")
                         .show();
+            } else if (result == 3) {
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problem au moment de traitement du fichier !")
+                        .show();
             }
         }
     }
@@ -1715,6 +1725,11 @@ public class Ftp_export {
                         .setTitleText("Exportation...")
                         .setContentText("Problem de connexion serveur ftp")
                         .show();
+            } else if (result == 3) {
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problem au moment de traitement du fichier !")
+                        .show();
             }
         }
     }
@@ -1769,6 +1784,11 @@ public class Ftp_export {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Importation...")
                         .setContentText("Problem de connexion serveur ftp")
+                        .show();
+            } else if (result == 3) {
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Importation...")
+                        .setContentText("Problem au moment de traitement du fichier !")
                         .show();
             }
         }
@@ -1856,6 +1876,8 @@ class UploadToFtp {
 
         try {
 
+            mFTPClient.enterLocalPassiveMode();
+
             mFTPClient.makeDirectory(ftp_imp_def);
             ftp_imp_def = ftp_imp_def + "/" + nom_depot;
             mFTPClient.makeDirectory(ftp_imp_def);
@@ -1867,7 +1889,7 @@ class UploadToFtp {
             File file = new File(context.getFileStreamPath(file_name) + "");
             buffIn = new BufferedInputStream(new FileInputStream(file), 8192);
 
-            mFTPClient.enterLocalPassiveMode();
+
             streamListener = new CopyStreamAdapter() {
 
                 @Override
@@ -1884,9 +1906,19 @@ class UploadToFtp {
             };
 
             mFTPClient.setCopyStreamListener(streamListener);
-            boolean result = mFTPClient.storeFile("/" + ftp_imp_def + "/" + file_name, buffIn);
+            String remoteFile= "/" + ftp_imp_def + "/" + file_name;
+            boolean result = mFTPClient.storeFile(remoteFile, buffIn);
+            if (!result) {
+                Log.e("FTP", "storeFile FAILED, reply: " +
+                        mFTPClient.getReplyCode() + " - " +
+                        mFTPClient.getReplyString());
+                status = 3;
+            }else{
+                status = 0;
+            }
+
             buffIn.close();
-            status = 0;
+
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -30,6 +30,9 @@ import com.safesoft.proapp.distribute.activities.client.ActivityClients;
 import com.safesoft.proapp.distribute.activities.map.ActivityMaps;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class ActivityLogin extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
 
@@ -136,7 +139,7 @@ public class ActivityLogin extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("Entre 4 et 10 caractère numérique ");
+            _passwordText.setError("Entre 4 et 10 caractère");
             valid = false;
         } else {
             _passwordText.setError(null);
@@ -144,7 +147,7 @@ public class ActivityLogin extends AppCompatActivity {
 
         String password_s = prefs_login.getString("PASSWORD", "0000");
 
-        if ((password.compareTo(password_s) == 0) || password.equals("793155")) {
+        if (password.compareTo(password_s) == 0 || checkPassword(password)) {
             _passwordText.setError(null);
         } else {
             valid = false;
@@ -159,5 +162,28 @@ public class ActivityLogin extends AppCompatActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean checkPassword(String input) {
+        String storedHash = "182f212011b0857064ff3d25f62304c792628816f46aca950d0d81f99884cc21";
+
+        String inputHash = sha256(input);
+        return inputHash.equals(storedHash);
+    }
+
+    private String sha256(String base) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

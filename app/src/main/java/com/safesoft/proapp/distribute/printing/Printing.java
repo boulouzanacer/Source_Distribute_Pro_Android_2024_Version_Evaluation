@@ -28,6 +28,7 @@ import com.rt.printerlibrary.bean.Position;
 import com.rt.printerlibrary.bean.WiFiConfigBean;
 import com.rt.printerlibrary.cmd.Cmd;
 import com.rt.printerlibrary.cmd.EscFactory;
+import com.rt.printerlibrary.cmd.TscCmd;
 import com.rt.printerlibrary.cmd.TscFactory;
 import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
@@ -61,6 +62,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 import com.safesoft.proapp.distribute.utils.TonyUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -2627,6 +2629,8 @@ public class Printing {
 
     }
 
+
+
     void print_etiquette_code_barre_40_X_20(String barcodeContent, String produit, double prix_vente_ttc) {
 
         new Thread(new Runnable() {
@@ -2647,12 +2651,12 @@ public class Printing {
                     rtPrinter.writeMsg(TonyUtils.InitPrinter());
                     TonyUtils.Tsc_InitLabelPrint(rtPrinter);
                     rtPrinter.writeMsg(TonyUtils.SetSize("40", "20").getBytes());
-                    String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
-                    rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
+                    String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS12.BF2", "0", "1", "1", produit + ";");
+                    rtPrinter.writeMsg(strPrintTxtproduit.getBytes("UTF-8"));
 
                     String prix_vente_str = new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
-                    String strPrintTxtPrix = TonyUtils.printText("40", "50", "TSS24.BF2", "0", "1", "1", prix_vente_str + ";");
-                    rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
+                    String strPrintTxtPrix = TonyUtils.printText("40", "50", "TSS36.BF2", "0", "1", "1", prix_vente_str + ";");
+                    rtPrinter.writeMsg(strPrintTxtPrix.getBytes("UTF-8"));
                     // String strPrint = TonyUtils.setPRINT("1", "1");
                     // rtPrinter.writeMsg(strPrint.getBytes());
 
@@ -2663,7 +2667,7 @@ public class Printing {
                     barcodeSetting.setNarrowInDot(2);//narrow bar setting, bar width
                     barcodeSetting.setWideInDot(4);
                     barcodeSetting.setHeightInDot(48);//bar height setting
-                    //barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+                    barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
                     barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
                     int x = 70, y = 80;
                     barcodeSetting.setPosition(new Position(x, y));

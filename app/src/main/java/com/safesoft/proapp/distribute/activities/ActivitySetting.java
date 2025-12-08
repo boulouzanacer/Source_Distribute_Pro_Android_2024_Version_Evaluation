@@ -1117,8 +1117,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_vente_stock_negatif = findViewById(R.id.switch_vente_stock_negatif);
+
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_allow_credit_in_vente = findViewById(R.id.switch_allow_credit_in_vente);
+
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_groupe_details_product = findViewById(R.id.switch_groupe_details_product);
+
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_show_photo_produit = findViewById(R.id.switch_show_photo_produit);
 
@@ -1150,6 +1155,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         switch_vente_stock_negatif.setChecked(prefs.getBoolean("STOCK_MOINS", false));
         switch_allow_credit_in_vente.setChecked(prefs.getBoolean("ALLOW_CREDIT_VENTE", true));
+        switch_groupe_details_product.setChecked(prefs.getBoolean("GROUPE_PRODUCTS_BON", false));
         switch_show_photo_produit.setChecked(prefs.getBoolean("SHOW_PROD_PIC", false));
 
 
@@ -1286,6 +1292,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_allow_credit_in_vente.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("ALLOW_CREDIT_VENTE", isChecked);
+            editor.apply();
+        });
+
+        switch_groupe_details_product.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("GROUPE_PRODUCTS_BON", isChecked);
             editor.apply();
         });
 

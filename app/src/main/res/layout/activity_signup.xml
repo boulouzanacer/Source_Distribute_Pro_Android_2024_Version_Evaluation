@@ -43,7 +43,7 @@
                     android:id="@+id/input_password_old"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:hint="Ancien mot de passe" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,7 +59,7 @@
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:hint="Nouveau mot de passe" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,7 +75,7 @@
                     android:id="@+id/input_reEnterPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:hint="Re-entrer mot de passe" />
             </com.google.android.material.textfield.TextInputLayout>
 

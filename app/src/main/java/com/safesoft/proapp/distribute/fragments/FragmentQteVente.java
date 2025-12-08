@@ -235,9 +235,11 @@ public class FragmentQteVente {
             }
 
             if (checked_bon2 != null) {
-                txv_message.setText("Produit déja inseré avec quantité: " + nq.format(checked_bon2.qte));
-                if_bon2_exist = true;
-                arrived_bon2 = checked_bon2;
+                if(prefs.getBoolean("GROUPE_PRODUCTS_BON", false)){
+                    txv_message.setText("Produit déja inseré avec quantité: " + nq.format(checked_bon2.qte));
+                    if_bon2_exist = true;
+                    arrived_bon2 = checked_bon2;
+                }
             }
 
         }

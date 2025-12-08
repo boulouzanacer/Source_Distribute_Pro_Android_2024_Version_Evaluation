@@ -72,7 +72,6 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
-
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Bons de commandes");

@@ -16,7 +16,7 @@ public class LocationServerConnect {
     public static void ConnectServer(String phoneId, String device_name, String email, String password, Callback callback) {
         new Thread(() -> {
             try {
-                URL url = new URL("https://ebwbrjkqrsgumlwvhrhb.supabase.co/functions/v1/phone-auth");
+                URL url = new URL("https://geo-track.onrender.com/api/phone-auth");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
                 conn.setRequestMethod("POST");
@@ -27,6 +27,7 @@ public class LocationServerConnect {
                 jsonParam.put("phone_id", phoneId);
                 jsonParam.put("device_name", device_name);
                 jsonParam.put("email", email);
+                jsonParam.put("username", email);
                 jsonParam.put("password", password);
 
                 OutputStream os = conn.getOutputStream();
