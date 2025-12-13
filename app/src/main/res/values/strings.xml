@@ -312,7 +312,7 @@
     <string name="objectif_montant">Objectif montant</string>
     <string name="valider">Valider</string>
     <string name="modifier">Modifier</string>
-    <string name="localisation">Activiter / Désactiver localisation bon</string>
+    <string name="localisation">Activer / Désactiver service de localisation</string>
     <string name="a_vous_permet_d_activer_ou_d_sactiver_le_son_de_pda">ça vous permet d\'activer ou désactiver le son de PDA</string>
     <string name="activer_le_song">Activer / Désactiver le son</string>
     <string name="vente_avec_stock_moins">vente avec stock moins</string>

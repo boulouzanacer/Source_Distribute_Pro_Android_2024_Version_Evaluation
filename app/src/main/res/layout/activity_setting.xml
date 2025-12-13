@@ -95,7 +95,7 @@
                 android:textColor="@color/accent"
                 android:background="@drawable/parametre_rounded"
                 android:text="@string/suivi_de_t_l_phone"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_height="match_parent" />
 
             <include layout="@layout/sub_track_phone" />

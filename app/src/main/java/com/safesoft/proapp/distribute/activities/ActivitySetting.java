@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -112,6 +113,7 @@ import com.rt.printerlibrary.setting.BarcodeSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
 import com.safesoft.proapp.distribute.activation.NetClient;
+import com.safesoft.proapp.distribute.activities.client.ActivityClientDetail;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
@@ -127,11 +129,13 @@ import com.safesoft.proapp.distribute.eventsClasses.SelectedBackupEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedDepotEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedVendeurEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SendLocationEvent;
+import com.safesoft.proapp.distribute.fragments.FragmentAdminGps;
 import com.safesoft.proapp.distribute.fragments.FragmentLoginAccount;
 import com.safesoft.proapp.distribute.fragments.FragmentSignUpCloudAccount;
 import com.safesoft.proapp.distribute.fragments.FragmentListDatabases;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedDepot;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedVendeur;
+import com.safesoft.proapp.distribute.fragments.FragmentVersementClient;
 import com.safesoft.proapp.distribute.fragments.PasswordResetDialogFragment;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.gps.services.LocationServerConnect;
@@ -257,6 +261,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private IconSpinnerItem selected_prix_revendeur;
 
     private TextView txtv_email_cloud, txtv_password_cloud;
+    private TextView txtv_status_gps_enabled;
     private Button btn_signup_cloud, btn_login_cloud, btn_deconecte_cloud;
 
     private boolean is_app_synchronised_mode = false;
@@ -264,16 +269,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     //-------------------- GPS Sender  ---------------
     private static final int REQUEST_LOCATION_PERMISSION = 100;
-    private Intent intent_location;
-    private String deviceId = "123456789";
-    private String device_name = "";
-    private String user_email = "";
-    private String user_password = "";
-    ImageView statusIcon;
-    private TextView device_id_txtv, locationStatus ;
-    private EditText edt_device_name, edt_email, edt_password;
-    private Button start_server_btn;
-    private Button stop_server_btn;
     //-------------------------------------------------
 
     private void CheckAllPermission() {
@@ -590,6 +585,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
             }
         });
+
         activity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -1070,8 +1066,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
-        //Switch
+        txtv_status_gps_enabled = findViewById(R.id.txtv_status_gps_enabled);
 
+
+        //Switch
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_module_achat = findViewById(R.id.switch_module_achat);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -1113,6 +1111,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_gps = findViewById(R.id.switch_gps);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_service_location = findViewById(R.id.switch_service_location);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_son = findViewById(R.id.switch_son);
 
         @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -1151,6 +1151,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
 
         switch_gps.setChecked(prefs.getBoolean("GPS_LOCALISATION", false));
+        switch_service_location.setChecked(prefs.getBoolean("PHONE_LOCATION_SERVICE", false));
+
         switch_son.setChecked(prefs.getBoolean("ENABLE_SOUND", false));
 
         switch_vente_stock_negatif.setChecked(prefs.getBoolean("STOCK_MOINS", false));
@@ -1274,6 +1276,63 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
+        switch_service_location.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // show directly fragment setting
+
+            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            FragmentAdminGps fragment_admin_gps = new FragmentAdminGps();
+            fragment_admin_gps.showDialogbox(this, deviceId);
+            //SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            //editor.putBoolean("PHONE_LOCATION_SERVICE", isChecked);
+            //editor.apply();
+        });
+
+        try {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                txtv_status_gps_enabled.setText("GPS désactivé");
+                txtv_status_gps_enabled.setTextColor(getResources().getColor(R.color.red));
+
+                if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
+
+                    new androidx.appcompat.app.AlertDialog.Builder(this)
+                            .setTitle("GPS désactivé")
+                            .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
+                            .setPositiveButton("Oui", (d, w) -> {
+                                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(i);
+                            })
+                            .setNegativeButton("Non", (d, w) -> d.dismiss())
+                            .show();
+                }
+
+            }else{
+                txtv_status_gps_enabled.setText("GPS activé");
+                txtv_status_gps_enabled.setTextColor(getResources().getColor(R.color.emerald));
+            }
+
+        }catch (Exception e){
+            Log.e("Exception",e.getMessage());
+        }
+        if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
+
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle("GPS désactivé")
+                        .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
+                        .setPositiveButton("Oui", (d, w) -> {
+                            Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(i);
+                        })
+                        .setNegativeButton("Non", (d, w) -> d.dismiss())
+                        .show();
+            }
+        }
+
         switch_son.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("ENABLE_SOUND", isChecked);
@@ -1323,74 +1382,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             // company_logo.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length) );
         }
 
-
-        //--------------GPS Sender -----------------------
-        device_id_txtv = findViewById(R.id.device_id);
-        edt_device_name = findViewById(R.id.edt_device_name);
-        edt_email = findViewById(R.id.edt_email);
-        edt_password = findViewById(R.id.edt_password);
-        statusIcon = findViewById(R.id.status_icon);
-        locationStatus = findViewById(R.id.location_status_message);
-
-        start_server_btn = findViewById(R.id.start_btn);
-        stop_server_btn = findViewById(R.id.stop_btn);
-
-        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        device_name = prefs.getString("DEVICE_NAME", "");
-        user_email = prefs.getString("USER_EMAIL", "");
-        user_password = prefs.getString("USER_PASSWORD", "");
-
-        if(device_name.equals("")){
-            device_name = deviceId;
-        }
-
-        device_id_txtv.setText(deviceId);
-        edt_device_name.setText(device_name);
-        edt_email.setText(user_email);
-        edt_password.setText(user_password);
-
-
-        intent_location = new Intent(this, ServiceSenderLocation.class);
-
-        //checkAndRequestPermissions();
-
-        start_server_btn.setOnClickListener(v -> {
-
-            deviceId = device_id_txtv.getText().toString();
-            device_name = edt_device_name.getText().toString();
-            user_email = edt_email.getText().toString();
-            user_password = edt_password.getText().toString();
-
-            prefs.edit()
-                    .putString("DEVICE_ID", deviceId)
-                    .putString("DEVICE_NAME", device_name)
-                    .putString("USER_EMAIL", user_email)
-                    .putString("USER_PASSWORD", user_password)
-                    .apply();
-
-            checkAndRequestPermissions();
-
-        });
-
-        stop_server_btn.setOnClickListener(v -> {
-            if (isServiceRunning(ServiceSenderLocation.class)) {
-                stopService(new Intent(this, ServiceSenderLocation.class));
-                Crouton.makeText(ActivitySetting.this, "Service Localisation est arrêter !", Style.ALERT).show();
-
-                edt_device_name.setEnabled(true);
-                edt_email.setEnabled(true);
-                edt_password.setEnabled(true);
-                start_server_btn.setEnabled(true);
-                stop_server_btn.setEnabled(false);
-                statusIcon.setImageResource(R.drawable.ic_status_disconnected);
-
-            } else {
-                Crouton.makeText(this, "Service is not running", Style.ALERT).show();
-            }
-        });
-        //------------------------------------------
     }
 
 
@@ -2654,7 +2645,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                 if (aBoolean) {
                     @SuppressLint("InflateParams")
-                    View customView = getLayoutInflater().inflate(R.layout.custom_cruton_style, null);
+                    View customView = getLayoutInflater().inflate(R.layout.cruton_style_bdd_connected, null);
                     Crouton.show(ActivitySetting.this, customView);
                     Sound(R.raw.login);
                 } else {
@@ -3144,65 +3135,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         super.onDestroy();
     }
 
-    private void checkAndRequestPermissions() {
-        boolean fineLocationGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        boolean foregroundServiceGranted = true;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14+
-            foregroundServiceGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        }
-
-        if (!fineLocationGranted || !foregroundServiceGranted) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.FOREGROUND_SERVICE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-        } else {
-            LocationServerConnect.ConnectServer(deviceId, device_name, user_email, user_password, new LocationServerConnect.Callback() {
-                        @Override
-                        public void onResult(int responseCode, String responseMessage) {
-                            runOnUiThread(() -> {
-                                // Update UI here
-                                Log.e("LocationServer", "Success: " + responseCode + " - " + responseMessage);
 
 
-                                if(responseCode == 200){
 
-                                    Crouton.makeText(ActivitySetting.this, "Service localisation connecté", Style.CONFIRM).show();
-                                    edt_device_name.setEnabled(false);
-                                    edt_email.setEnabled(false);
-                                    edt_password.setEnabled(false);
-                                    start_server_btn.setEnabled(false);
-                                    stop_server_btn.setEnabled(true);
-
-                                    restartLocationService();
-                                    statusIcon.setImageResource(R.drawable.ic_status_connected);
-                                }else if (responseCode == 401){
-                                    Crouton.makeText(ActivitySetting.this, "Compte n'exist pas ou mot de passe incorrect!", Style.ALERT).show();
-                                    statusIcon.setImageResource(R.drawable.ic_status_warning);
-                                }else if (responseCode == 403){
-                                    Crouton.makeText(ActivitySetting.this, "Ce téléphone est associé à un autre utilisateur.", Style.ALERT).show();
-                                    statusIcon.setImageResource(R.drawable.ic_status_warning);
-                                }else{
-                                    Crouton.makeText(ActivitySetting.this, "Problème de lancement du service localisation!", Style.ALERT).show();
-                                    statusIcon.setImageResource(R.drawable.ic_status_warning);
-                                }
-
-                            });
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            runOnUiThread(() -> {
-                                Log.e("LocationServer", "Error", e);
-                                Crouton.makeText(ActivitySetting.this, "Error: " + e.getMessage(), Style.ALERT).show();
-                                statusIcon.setImageResource(R.drawable.ic_status_disconnected);
-                            });
-                        }
-                    }
-            );
-            //restartLocationService();
-        }
-    }
-
-    @Override
+  /*  @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -3216,6 +3152,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             }
 
             if (permissionGranted) {
+
                 LocationServerConnect.ConnectServer(deviceId, device_name, user_email, user_password, new LocationServerConnect.Callback() {
                             @Override
                             public void onResult(int responseCode, String responseMessage) {
@@ -3223,19 +3160,21 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                     // Update UI here
                                     Log.d("LocationServer", "Success: " + responseCode + " - " + responseMessage);
 
-                                    if(responseCode == 200){
-                                        edt_device_name.setEnabled(false);
-                                        edt_email.setEnabled(false);
-                                        edt_password.setEnabled(false);
-                                        start_server_btn.setEnabled(false);
-                                        stop_server_btn.setEnabled(true);
+                                    if (responseCode == 200) {
+                                        //Crouton.makeText(ActivitySetting.this, "Service localisation connecté", Style.CONFIRM).show();
+                                        View customView = getLayoutInflater().inflate(R.layout.cruton_style_loca_connected, null);
+                                        Crouton.show(ActivitySetting.this, customView);
 
                                         restartLocationService();
-                                        Crouton.makeText(ActivitySetting.this, "Service localisation connecté", Style.CONFIRM).show();
-                                        statusIcon.setImageResource(R.drawable.ic_status_connected);
-                                    }else{
+
+                                    } else if (responseCode == 401) {
+                                        Crouton.makeText(ActivitySetting.this, "Compte n'exist pas ou mot de passe incorrect!", Style.ALERT).show();
+
+                                    } else if (responseCode == 403) {
+                                        Crouton.makeText(ActivitySetting.this, "Ce téléphone est associé à un autre utilisateur.", Style.ALERT).show();
+
+                                    } else {
                                         Crouton.makeText(ActivitySetting.this, "Problème de lancement du service localisation!", Style.ALERT).show();
-                                        statusIcon.setImageResource(R.drawable.ic_status_warning);
                                     }
                                 });
                             }
@@ -3245,7 +3184,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                 runOnUiThread(() -> {
                                     Log.e("LocationServer", "Error", e);
                                     Crouton.makeText(ActivitySetting.this, "Error: " + e.getMessage(), Style.ALERT).show();
-                                    statusIcon.setImageResource(R.drawable.ic_status_disconnected);
                                 });
                             }
                         }
@@ -3255,27 +3193,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 Log.e("PERMISSION", "Location or foreground service permission denied");
             }
         }
-    }
+    }*/
 
-    private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void restartLocationService() {
-        if (isServiceRunning(ServiceSenderLocation.class)) {
-            Intent stopIntent = new Intent(this, ServiceSenderLocation.class);
-            stopIntent.setAction("RESTART_SERVICE");
-            startForegroundService(stopIntent);
-        } else {
-            startForegroundService(intent_location);
-        }
-    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)

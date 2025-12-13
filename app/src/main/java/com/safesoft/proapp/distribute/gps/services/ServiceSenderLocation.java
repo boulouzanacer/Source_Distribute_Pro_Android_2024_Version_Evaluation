@@ -139,28 +139,6 @@ public class ServiceSenderLocation extends Service {
 
     private void getCurrentLocation() {
 
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        // Vérifie si le GPS est activé
-        if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-            AlertDialog dialog = new AlertDialog.Builder(getApplicationContext(),
-                    android.R.style.Theme_Material_Light_Dialog_Alert)
-                    .setTitle("GPS désactivé")
-                    .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
-                    .setPositiveButton("Oui", (d, w) -> {
-                        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getApplicationContext().startActivity(i);
-                    })
-                    .setNegativeButton("Non", (d, w) -> d.dismiss())
-                    .create();
-
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY); // Needs SYSTEM_ALERT_WINDOW
-            dialog.show();
-            return;
-        }
-
         // Vérifie la permission
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;

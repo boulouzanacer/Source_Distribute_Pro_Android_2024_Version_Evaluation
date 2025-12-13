@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/blue"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/blue"
+            android:text="GPS Sender - Admin maps"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:typeface="monospace" />
+
+        <LinearLayout
+            android:weightSum="4"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Terminal ID : "
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"/>
+
+            <TextView
+                android:id="@+id/device_id"
+                android:text="0000000000000"
+                android:layout_width="0dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="start"/>
+
+        </LinearLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contextClickable="false"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            app:hintTextColor="@color/blue"
+            android:layout_margin="5dp"
+            app:expandedHintEnabled="false"
+            app:layout_constraintTop_toBottomOf="@+id/device_id"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:helperText="   "
+            android:hint="nom de telephone">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_device_name"
+                android:gravity="center"
+                android:inputType="text"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contextClickable="false"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            app:hintTextColor="@color/blue"
+            android:layout_margin="5dp"
+            app:expandedHintEnabled="false"
+            app:helperText="   "
+            android:hint="email"
+            app:layout_constraintTop_toBottomOf="@+id/edt_device_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_email"
+                android:gravity="center"
+                android:inputType="text"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contextClickable="false"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            app:hintTextColor="@color/blue"
+            android:layout_margin="5dp"
+            app:expandedHintEnabled="false"
+            app:helperText="   "
+            android:hint="password"
+            app:layout_constraintTop_toBottomOf="@+id/edt_email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_password"
+                android:gravity="center"
+                android:inputType="text"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_check_connection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="Tester le service" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Envoi de position -->
+            <TextView
+                android:id="@+id/location_status_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Envoi position message"
+                android:textAlignment="center"
+                android:textStyle="italic"
+                android:textColor="@color/black" />
+
+            <!-- Envoi de position -->
+            <TextView
+                android:id="@+id/location_status_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:padding="10dp"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:layout_height="0dp">
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_valider"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/blue"
+                android:layout_marginEnd="5sp"
+                app:mfb_text="Valider"
+                app:mfb_textColor="#FFFFFF" />
+
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:background="@color/blue"
+                app:mfb_text="Annuler"
+                app:mfb_textColor="#FFFFFF" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationSender {
+
     public static void sendLocation(
             String deviceId,
             double latitude,
@@ -35,6 +36,7 @@ public class LocationSender {
         DATABASE controller = new DATABASE(rContext);
 
         try {
+
             URL url = new URL("https://geo-track.onrender.com/api/bon/sync");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 

@@ -161,8 +161,8 @@ public class ActivityActivation extends AppCompatActivity {
     }
 
     public void saveActivationData(boolean is_activated) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("APP_ACTIVATED", is_activated);
         editor.apply();
     }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#a8f7bb"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/service_localisation_connected" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_alignStart="@+id/textView1"
+            android:text="Paramètres sauvegardé, Service localisation en marche, merci de l'activer" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/imageView1"
+            android:layout_marginStart="10dp"
+            android:text="Connecté"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </RelativeLayout>
+
+</LinearLayout>
