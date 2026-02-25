@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -52,7 +51,7 @@ import com.safesoft.proapp.distribute.fragments.FragmentQteAchat;
 import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectFournisseur;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
-import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
 import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
@@ -97,7 +96,6 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     private double val_timbre = 0.00;
     private double val_remise = 0.00;
     private double val_total_ttc_remise = 0.00;
-    private boolean show_picture_prod;
     private EventBus bus;
     private String NUM_BON;
     private String CODE_DEPOT;
@@ -163,8 +161,6 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
-
-        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
 
         initViews();
 
@@ -354,19 +350,111 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
     @SuppressLint("NonConstantResourceId")
     public void onClickEvent(View v) {
-        switch (v.getId()) {
-            case R.id.btn_select_fournisseur:
-                if (achat1_com.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-                showListFournisseur();
-                break;
+        int viewId = v.getId();
 
-            case R.id.btn_mode_tarif:
+        if (viewId == R.id.btn_select_fournisseur) {
+            if (achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+            showListFournisseur();
+
+        } else if (viewId == R.id.btn_mode_tarif) {
+            if (achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+
+            if (achat1_com.fournis.isEmpty()) {
+                Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
+                return;
+            }
+
+        } else if (viewId == R.id.addProduct) {
+            if (achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+            if (achat1_com.fournis.isEmpty()) {
+
+                Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
+                return;
+            }
+
+            if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                        .show();
+
+                return;
+            }
+            Activity activity;
+            activity = ActivityOrderFournisseur.this;
+            FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
+            fragmentSelectProduct.showDialogbox(activity, getBaseContext(), "0", "ACHAT");
+
+        } else if (viewId == R.id.valide_facture) {
+
+            if (achat1_com.fournis.isEmpty()) {
+
+                Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur", Style.ALERT).show();
+                return;
+            }
+            if (final_panier.isEmpty()) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+            if (achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+
+            onVersementReceived(null);
+
+        } else if (viewId == R.id.txv_timbre_btn) {
+            if (achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+
+        } else if (viewId == R.id.txv_remise_btn) {
+            if (achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+
+            Activity mactivity;
+            mactivity = ActivityOrderFournisseur.this;
+            FragmentRemise fragmentRemise = new FragmentRemise();
+            fragmentRemise.showDialogbox(mactivity, val_total_ttc, val_remise);
+
+        } else if (viewId == R.id.btn_scan_produit) {
+            if (ContextCompat.checkSelfPermission(ActivityOrderFournisseur.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ActivityOrderFournisseur.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+
+            } else {
                 if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
@@ -376,179 +464,62 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 }
 
                 if (achat1_com.fournis.isEmpty()) {
-                    Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
+
+                    Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                     return;
                 }
 
-                break;
-            case R.id.addProduct:
-                if (achat1_com.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-                if (achat1_com.fournis.isEmpty()) {
-
-                    Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
-                    return;
-                }
-
-                if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Important !")
-                            .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
-                            .show();
-
-                    return;
-                }
-                // Initialize activity
-                Activity activity;
-                activity = ActivityOrderFournisseur.this;
-                FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
-                fragmentSelectProduct.showDialogbox(activity, getBaseContext(), "0", "ACHAT");
-
-                break;
-
-            case R.id.valide_facture:
-
-                if (achat1_com.fournis.isEmpty()) {
-
-                    Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur", Style.ALERT).show();
-                    return;
-                }
-                if (final_panier.isEmpty()) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-                if (achat1_com.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-
-                //FragmentValider fragmentvalider = new FragmentValider();
-                //fragmentvalider.showDialogbox(ActivityOrder.this, bon1_temp.solde_ancien, bon1_temp.montant_bon, bon1_temp.verser);
-                onVersementReceived(null);
-
-                break;
-            case R.id.txv_timbre_btn:
-                if (achat1_com.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-
-                // Initialize activity
-                /*Activity mactivity;
-                mactivity = ActivityOrderFournisseur.this;
-                FragmentRemise fragmentRemise = new FragmentRemise();
-                fragmentRemise.showDialogbox(mactivity, val_total_ttc, val_remise);*/
-
-                break;
-            case R.id.txv_remise_btn:
-                if (achat1_com.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-
-                // Initialize activity
-                Activity mactivity;
-                mactivity = ActivityOrderFournisseur.this;
-                FragmentRemise fragmentRemise = new FragmentRemise();
-                fragmentRemise.showDialogbox(mactivity, val_total_ttc, val_remise);
-
-                break;
-            case R.id.btn_scan_produit:
-                if (ContextCompat.checkSelfPermission(ActivityOrderFournisseur.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ActivityOrderFournisseur.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-
-                } else {
-                    if (achat1_com.blocage.equals("F")) {
-                        new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Ce bon est déja validé")
-                                .show();
-                        return;
-                    }
-
-                    if (achat1_com.fournis.isEmpty()) {
-
-                        Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
-                        return;
-                    }
-
-                    startScanProduct();
-                }
-                break;
-            case R.id.btn_mofifier_bon:
-                if (!SOURCE_EXPORT.equals("EXPORTED")) {
-                    if (!achat1_com.blocage.equals("F")) {
-                        new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Ce bon n'est pas encore validé")
-                                .show();
-                        return;
-
-                    } else {
-                        new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Modification")
-                                .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
-                                .setCancelText("Non")
-                                .setConfirmText("Oui")
-                                .showCancelButton(true)
-                                .setCancelClickListener(Dialog::dismiss)
-                                .setConfirmClickListener(sDialog -> {
-
-                                    try {
-                                        if (controller.modifier_achat1_sql("ACHAT1_TEMP", achat1_com)) {
-                                            achat1_com.blocage = "M";
-                                            validate_theme();
-                                        }
-                                    } catch (Exception e) {
-
-                                        new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                                .setTitleText("Attention!")
-                                                .setContentText("problème lors de Modification de Bon : " + e.getMessage())
-                                                .show();
-                                    }
-                                    sDialog.dismiss();
-                                }).show();
-                    }
-                } else {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja exporté")
-                            .show();
-                }
-
-                break;
-            case R.id.btn_imp_bon:
+                startScanProduct();
+            }
+        } else if (viewId == R.id.btn_mofifier_bon) {
+            if (!SOURCE_EXPORT.equals("EXPORTED")) {
                 if (!achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Ce bon n'est pas encore validé")
                             .show();
                     return;
+
+                } else {
+                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Modification")
+                            .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
+                            .setCancelText("Non")
+                            .setConfirmText("Oui")
+                            .showCancelButton(true)
+                            .setCancelClickListener(Dialog::dismiss)
+                            .setConfirmClickListener(sDialog -> {
+
+                                try {
+                                    if (controller.modifier_achat1_sql("ACHAT1_TEMP", achat1_com)) {
+                                        achat1_com.blocage = "M";
+                                        validate_theme();
+                                    }
+                                } catch (Exception e) {
+
+                                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("Attention!")
+                                            .setContentText("problème lors de Modification de Bon : " + e.getMessage())
+                                            .show();
+                                }
+                                sDialog.dismiss();
+                            }).show();
                 }
+            } else {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja exporté")
+                        .show();
+            }
 
-                /*Activity bactivity;
-                bactivity = ActivityOrderFournisseur.this;
-                PrinterVente printer = new PrinterVente();
-                printer.start_print_order_bon(bactivity, final_panier, bon1_a_com);*/
-
-                break;
+        } else if (viewId == R.id.btn_imp_bon) {
+            if (!achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon n'est pas encore validé")
+                        .show();
+                return;
+            }
 
         }
     }
@@ -654,70 +625,69 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.delete_produit:
-                if (achat1_com.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return true;
-                }
+        int itemId = item.getItemId();
+        if (itemId == R.id.delete_produit) {
+            if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Suppression")
-                        .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
-                        .setCancelText("Anuuler")
-                        .setConfirmText("Supprimer")
-                        .showCancelButton(true)
-                        .setCancelClickListener(Dialog::dismiss)
-                        .setConfirmClickListener(sDialog -> {
-
-                            try {
-                                SOURCE = "BON2_TEMP_DELETE";
-                                controller.delete_from_achat2("ACHAT2_TEMP", final_panier.get(info.position).recordid, final_panier.get(info.position));
-                                initData();
-                                //PanierAdapter.RefrechPanier(final_panier);
-                                PanierAdapter = new ListViewAdapterPanierAchat(ActivityOrderFournisseur.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
-                                expandableListView.setAdapter(PanierAdapter);
-
-                            } catch (Exception e) {
-
-                                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Attention!")
-                                        .setContentText("problème lors suppression produits! : " + e.getMessage())
-                                        .show();
-                            }
-
-                            sDialog.dismiss();
-                        }).show();
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
                 return true;
+            }
+            new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Suppression")
+                    .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
+                    .setCancelText("Anuuler")
+                    .setConfirmText("Supprimer")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
 
-            case R.id.edit_produit:
-                if (achat1_com.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return true;
-                }
-                try {
-                    SOURCE = "BON2_TEMP_EDIT";
-                    Activity activity;
-                    activity = ActivityOrderFournisseur.this;
-                    FragmentQteAchat fragmentqte = new FragmentQteAchat();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), 0);
+                        try {
+                            SOURCE = "BON2_TEMP_DELETE";
+                            controller.delete_from_achat2("ACHAT2_TEMP", final_panier.get(info.position).recordid, final_panier.get(info.position));
+                            initData();
+                            PanierAdapter = new ListViewAdapterPanierAchat(ActivityOrderFournisseur.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+                            expandableListView.setAdapter(PanierAdapter);
 
-                } catch (Exception e) {
+                        } catch (Exception e) {
 
-                    new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Attention!")
-                            .setContentText("Error : " + e.getMessage())
-                            .show();
-                }
+                            new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention!")
+                                    .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                    .show();
+                        }
 
+                        sDialog.dismiss();
+                    }).show();
+            return true;
+
+        } else if (itemId == R.id.edit_produit) {
+            if (achat1_com.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
                 return true;
-            default:
-                return super.onContextItemSelected(item);
+            }
+            try {
+                SOURCE = "BON2_TEMP_EDIT";
+                Activity activity;
+                activity = ActivityOrderFournisseur.this;
+                FragmentQteAchat fragmentqte = new FragmentQteAchat();
+                fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), 0);
+
+            } catch (Exception e) {
+
+                new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Attention!")
+                        .setContentText("Error : " + e.getMessage())
+                        .show();
+            }
+
+            return true;
+        } else {
+            return super.onContextItemSelected(item);
         }
     }
 
@@ -1029,20 +999,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             resultscan = codebarres.get(0).code_barre;
         }
         ///////////////////////////////////CODE BARRE //////////////////////////////////////
-        String querry = "";
-        if(show_picture_prod){
-            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        }else{
-            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        }
 
-        produits = controller.select_produits_from_database(querry, show_picture_prod);
+
+        produits = controller.select_produits_from_database(querry);
 
         if (produits.size() == 1) {
 

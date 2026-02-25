@@ -165,7 +165,7 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private boolean checkPassword(String input) {
-        String storedHash = "182f212011b0857064ff3d25f62304c792628816f46aca950d0d81f99884cc21";
+        String storedHash = "3d576a8bc50ddce525210215de896d61745e2dff3f6d06e9f983df1dedf9402e";
 
         String inputHash = sha256(input);
         return inputHash.equals(storedHash);

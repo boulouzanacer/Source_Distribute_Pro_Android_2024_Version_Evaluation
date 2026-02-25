@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -69,7 +68,7 @@ import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectClient;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.fragments.FragmentValideBon;
-import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
@@ -134,7 +133,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     String SOURCE_EXPORT = "";
     SharedPreferences prefs;
     private PostData_Params params;
-    private boolean show_picture_prod;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat date_format;
     @SuppressLint("SimpleDateFormat")
@@ -184,8 +182,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
 
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
-
-        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
 
         initViews();
 
@@ -447,114 +443,179 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
     @SuppressLint("NonConstantResourceId")
     public void onClickEvent(View v) throws UnsupportedEncodingException, ParseException {
-        switch (v.getId()) {
-            case R.id.btn_select_client -> {
-                if (bon1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-                showListClient();
+        int viewId = v.getId();
+
+        if (viewId == R.id.btn_select_client) {
+            if (bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
             }
-            case R.id.btn_mode_tarif -> {
+            showListClient();
 
-                if (bon1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
+        } else if (viewId == R.id.btn_mode_tarif) {
 
-                if (bon1.client.isEmpty()) {
-                    Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
-                    return;
-                }
+            if (bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
 
-                String selectedTitle = prefs.getString("PRIX_REVENDEUR", "Libre");
+            if (bon1.client.isEmpty()) {
+                Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                return;
+            }
 
-                if (selectedTitle.equals("Libre")) {
+            String selectedTitle = prefs.getString("PRIX_REVENDEUR", "Libre");
 
-                    if (client_selected.mode_tarif.equals("0")) {
+            if (selectedTitle.equals("Libre")) {
 
-                        if (btn_mode_tarif.getText().toString().equals("Tarif 1")) {
-                            if (params.prix_2 == 1 && is_app_synchronised_mode) {
-                                bon1.mode_tarif = "2";
-                                btn_mode_tarif.setText("Tarif 2");
-                            } else {
-                                bon1.mode_tarif = "1";
-                                btn_mode_tarif.setText("Tarif 1");
-                            }
-                        } else if (btn_mode_tarif.getText().toString().equals("Tarif 2")) {
-                            if (params.prix_3 == 1 && is_app_synchronised_mode) {
-                                bon1.mode_tarif = "3";
-                                btn_mode_tarif.setText("Tarif 3");
-                            } else {
-                                bon1.mode_tarif = "1";
-                                btn_mode_tarif.setText("Tarif 1");
-                            }
-                        } else if (btn_mode_tarif.getText().toString().equals("Tarif 3")) {
-                            if (params.prix_4 == 1) {
-                                bon1.mode_tarif = "4";
-                                btn_mode_tarif.setText("Tarif 4");
-                            } else {
-                                bon1.mode_tarif = "1";
-                                btn_mode_tarif.setText("Tarif 1");
-                            }
-                        } else if (btn_mode_tarif.getText().toString().equals("Tarif 4")) {
-                            if (params.prix_5 == 1) {
-                                bon1.mode_tarif = "5";
-                                btn_mode_tarif.setText("Tarif 5");
-                            } else {
-                                bon1.mode_tarif = "1";
-                                btn_mode_tarif.setText("Tarif 1");
-                            }
-                        } else if (btn_mode_tarif.getText().toString().equals("Tarif 5")) {
-                            if (params.prix_6 == 1) {
-                                bon1.mode_tarif = "6";
-                                btn_mode_tarif.setText("Tarif 6");
-                            } else {
-                                bon1.mode_tarif = "1";
-                                btn_mode_tarif.setText("Tarif 1");
-                            }
-                        } else if (btn_mode_tarif.getText().toString().equals("Tarif 6")) {
+                if (client_selected.mode_tarif.equals("0")) {
+
+                    if (btn_mode_tarif.getText().toString().equals("Tarif 1")) {
+                        if (params.prix_2 == 1) {
+                            bon1.mode_tarif = "2";
+                            btn_mode_tarif.setText("Tarif 2");
+                        } else {
                             bon1.mode_tarif = "1";
                             btn_mode_tarif.setText("Tarif 1");
                         }
-
-                        sauvegarder();
-                    } else {
-
-                    }
-
-                }else{
-
-                    if(selectedTitle.equals(params.pv1_titre)){
-                        btn_mode_tarif.setText("Tarif 1");
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 2")) {
+                        if (params.prix_3 == 1) {
+                            bon1.mode_tarif = "3";
+                            btn_mode_tarif.setText("Tarif 3");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 3")) {
+                        if (params.prix_4 == 1) {
+                            bon1.mode_tarif = "4";
+                            btn_mode_tarif.setText("Tarif 4");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 4")) {
+                        if (params.prix_5 == 1) {
+                            bon1.mode_tarif = "5";
+                            btn_mode_tarif.setText("Tarif 5");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 5")) {
+                        if (params.prix_6 == 1) {
+                            bon1.mode_tarif = "6";
+                            btn_mode_tarif.setText("Tarif 6");
+                        } else {
+                            bon1.mode_tarif = "1";
+                            btn_mode_tarif.setText("Tarif 1");
+                        }
+                    } else if (btn_mode_tarif.getText().toString().equals("Tarif 6")) {
                         bon1.mode_tarif = "1";
-                    }else if(selectedTitle.equals(params.pv2_titre)){
-                        btn_mode_tarif.setText("Tarif 2");
-                        bon1.mode_tarif = "2";
-                    }else if(selectedTitle.equals(params.pv3_titre)){
-                        btn_mode_tarif.setText("Tarif 3");
-                        bon1.mode_tarif = "3";
-                    } else if(selectedTitle.equals(params.pv4_titre)){
-                        btn_mode_tarif.setText("Tarif 4");
-                        bon1.mode_tarif = "4";
-                    } else if(selectedTitle.equals(params.pv5_titre)){
-                        btn_mode_tarif.setText("Tarif 5");
-                        bon1.mode_tarif = "5";
-                    } else if(selectedTitle.equals(params.pv6_titre)){
-                        btn_mode_tarif.setText("Tarif 6");
-                        bon1.mode_tarif = "6";
+                        btn_mode_tarif.setText("Tarif 1");
                     }
+
+                    sauvegarder();
                 }
 
+            } else {
+
+                if (selectedTitle.equals(params.pv1_titre)) {
+                    btn_mode_tarif.setText("Tarif 1");
+                    bon1.mode_tarif = "1";
+                } else if (selectedTitle.equals(params.pv2_titre)) {
+                    btn_mode_tarif.setText("Tarif 2");
+                    bon1.mode_tarif = "2";
+                } else if (selectedTitle.equals(params.pv3_titre)) {
+                    btn_mode_tarif.setText("Tarif 3");
+                    bon1.mode_tarif = "3";
+                } else if (selectedTitle.equals(params.pv4_titre)) {
+                    btn_mode_tarif.setText("Tarif 4");
+                    bon1.mode_tarif = "4";
+                } else if (selectedTitle.equals(params.pv5_titre)) {
+                    btn_mode_tarif.setText("Tarif 5");
+                    bon1.mode_tarif = "5";
+                } else if (selectedTitle.equals(params.pv6_titre)) {
+                    btn_mode_tarif.setText("Tarif 6");
+                    bon1.mode_tarif = "6";
+                }
             }
 
-            case R.id.addProduct -> {
+        } else if (viewId == R.id.addProduct) {
+            if (bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+
+            if (bon1.client.isEmpty()) {
+                Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                return;
+            }
+
+            if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                        .show();
+
+                return;
+            }
+
+            Activity activity;
+            activity = ActivityVente.this;
+            FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
+            fragmentSelectProduct.showDialogbox(activity, getBaseContext(), bon1.mode_tarif, "VENTE");
+
+        } else if (viewId == R.id.valide_facture) {
+            if (bon1.client.isEmpty()) {
+                Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client", Style.ALERT).show();
+                return;
+            }
+            if (final_panier.isEmpty()) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+            if (bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+            FragmentValideBon fragmentvalider = new FragmentValideBon();
+            fragmentvalider.showDialogbox(ActivityVente.this, bon1.ancien_solde, bon1.montant_bon, bon1.verser);
+
+        } else if (viewId == R.id.txv_remise_btn) {
+            if (bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
+                return;
+            }
+
+            Activity mactivity;
+            mactivity = ActivityVente.this;
+            FragmentRemise fragmentRemise = new FragmentRemise();
+            fragmentRemise.showDialogbox(mactivity, val_total_ttc, val_remise);
+
+        } else if (viewId == R.id.btn_scan_produit) {
+            if (ContextCompat.checkSelfPermission(ActivityVente.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ActivityVente.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+
+            } else {
                 if (bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
@@ -562,159 +623,85 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                             .show();
                     return;
                 }
-
                 if (bon1.client.isEmpty()) {
+
                     Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
                     return;
                 }
-
-                if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Important !")
-                            .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
-                            .show();
-
-                    return;
-                }
-
-                // Initialize activity
-                Activity activity;
-                // define activity of this class//
-                activity = ActivityVente.this;
-                FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
-                fragmentSelectProduct.showDialogbox(activity, getBaseContext(), bon1.mode_tarif, "VENTE");
+                startScanProduct();
             }
-            case R.id.valide_facture -> {
-                if (bon1.client.isEmpty()) {
-                    Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client", Style.ALERT).show();
-                    return;
-                }
-                if (final_panier.isEmpty()) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-                if (bon1.blocage.equals("F")) {
+
+        } else if (viewId == R.id.btn_mofifier_bon) {
+            if (!bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon n'est pas encore validé")
+                        .show();
+                return;
+
+            }
+            if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
+                if (!SOURCE_EXPORT.equals("EXPORTED")) {
+
                     new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
-                FragmentValideBon fragmentvalider = new FragmentValideBon();
-                fragmentvalider.showDialogbox(ActivityVente.this, bon1.ancien_solde, bon1.montant_bon, bon1.verser);
-            }
-            case R.id.txv_remise_btn -> {
-                if (bon1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return;
-                }
+                            .setTitleText("Modification")
+                            .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
+                            .setCancelText("Non")
+                            .setConfirmText("Oui")
+                            .showCancelButton(true)
+                            .setCancelClickListener(Dialog::dismiss)
+                            .setConfirmClickListener(sDialog -> {
 
-                // Initialize activity
-                Activity mactivity;
+                                try {
 
-                // define activity of this class//
-                mactivity = ActivityVente.this;
-                FragmentRemise fragmentRemise = new FragmentRemise();
-                fragmentRemise.showDialogbox(mactivity, val_total_ttc, val_remise);
-            }
-            case R.id.btn_scan_produit -> {
-                if (ContextCompat.checkSelfPermission(ActivityVente.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ActivityVente.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-
-                } else {
-                    if (bon1.blocage.equals("F")) {
-                        new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Ce bon est déja validé")
-                                .show();
-                        return;
-                    }
-                    if (bon1.client.isEmpty()) {
-
-                        Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
-                        return;
-                    }
-                    startScanProduct();
-                }
-            }
-            case R.id.btn_mofifier_bon -> {
-                if (!bon1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon n'est pas encore validé")
-                            .show();
-                    return;
-
-                }
-                if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
-                    if (!SOURCE_EXPORT.equals("EXPORTED")) {
-
-                        new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Modification")
-                                .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
-                                .setCancelText("Non")
-                                .setConfirmText("Oui")
-                                .showCancelButton(true)
-                                .setCancelClickListener(Dialog::dismiss)
-                                .setConfirmClickListener(sDialog -> {
-
-                                    try {
-
-                                        if (controller.modifier_bon1_sql("BON1", bon1.num_bon, bon1)) {
-                                            bon1.blocage = "M";
-                                            validate_theme();
-                                        }
-
-
-                                    } catch (Exception e) {
-
-                                        new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                                                .setTitleText("Attention!")
-                                                .setContentText("problème lors de Modification de Bon : " + e.getMessage())
-                                                .show();
+                                    if (controller.modifier_bon1_sql("BON1", bon1.num_bon, bon1)) {
+                                        bon1.blocage = "M";
+                                        validate_theme();
                                     }
-                                    sDialog.dismiss();
-                                }).show();
-                    } else {
-                        new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Ce bon est déja exporté")
-                                .show();
-                    }
+
+
+                                } catch (Exception e) {
+
+                                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("Attention!")
+                                            .setContentText("problème lors de Modification de Bon : " + e.getMessage())
+                                            .show();
+                                }
+                                sDialog.dismiss();
+                            }).show();
                 } else {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention!!")
-                            .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
-                            .show();
-                }
-            }
-            case R.id.btn_imp_bon -> {
-                if (!bon1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Ce bon n'est pas encore validé")
+                            .setContentText("Ce bon est déja exporté")
                             .show();
-                    return;
                 }
-                if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
-                    Activity bactivity;
-                    bactivity = ActivityVente.this;
+            } else {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention!!")
+                        .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
+                        .show();
+            }
 
-                    Printing printer = new Printing();
-                    printer.start_print_bon_vente(bactivity, "VENTE", final_panier, bon1);
-                } else {
-                    Intent html_intent = new Intent(this, ActivityHtmlView.class);
-                    html_intent.putExtra("TYPE_BON", "VENTE");
-                    html_intent.putExtra("BON1", bon1);
-                    html_intent.putExtra("BON2", final_panier);
-                    startActivity(html_intent);
-                }
+        } else if (viewId == R.id.btn_imp_bon) {
+            if (!bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon n'est pas encore validé")
+                        .show();
+                return;
+            }
+            if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
+                Activity bactivity;
+                bactivity = ActivityVente.this;
+
+                Printing printer = new Printing();
+                printer.start_print_bon_vente(bactivity, "VENTE", final_panier, bon1);
+            } else {
+                Intent html_intent = new Intent(this, ActivityHtmlView.class);
+                html_intent.putExtra("TYPE_BON", "VENTE");
+                html_intent.putExtra("BON1", bon1);
+                html_intent.putExtra("BON2", final_panier);
+                startActivity(html_intent);
             }
         }
     }
@@ -960,72 +947,69 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.delete_produit:
-                if (bon1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return true;
-                }
+        int itemId = item.getItemId();
+        if (itemId == R.id.delete_produit) {
+            if (bon1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Suppression")
-                        .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
-                        .setCancelText("Anuuler")
-                        .setConfirmText("Supprimer")
-                        .showCancelButton(true)
-                        .setCancelClickListener(Dialog::dismiss)
-                        .setConfirmClickListener(sDialog -> {
-
-                            try {
-                                SOURCE = "BON2_DELETE";
-                                controller.delete_from_bon2("BON2", final_panier.get(info.position).recordid, final_panier.get(info.position));
-                                initData();
-                                //PanierAdapter.RefrechPanier(final_panier);
-                                PanierAdapter = new ListViewAdapterPanierVente(ActivityVente.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
-                                expandableListView.setAdapter(PanierAdapter);
-
-                            } catch (Exception e) {
-
-                                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Attention!")
-                                        .setContentText("problème lors suppression produits! : " + e.getMessage())
-                                        .show();
-                            }
-
-                            sDialog.dismiss();
-                        }).show();
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
                 return true;
+            }
+            new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Suppression")
+                    .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
+                    .setCancelText("Anuuler")
+                    .setConfirmText("Supprimer")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
 
-            case R.id.edit_produit:
-                if (bon1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
-                    return true;
-                }
-                try {
-                    SOURCE = "BON2_EDIT";
-                    Activity activity;
-                    activity = ActivityVente.this;
-                    double last_price = controller.select_last_price_from_database("BON1", bon1.code_client, final_panier.get(info.position).codebarre);
-                    FragmentQteVente fragmentqte = new FragmentQteVente();
-                    fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), last_price);
+                        try {
+                            SOURCE = "BON2_DELETE";
+                            controller.delete_from_bon2("BON2", final_panier.get(info.position).recordid, final_panier.get(info.position));
+                            initData();
+                            PanierAdapter = new ListViewAdapterPanierVente(ActivityVente.this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
+                            expandableListView.setAdapter(PanierAdapter);
 
-                } catch (Exception e) {
+                        } catch (Exception e) {
 
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Attention!")
-                            .setContentText("Error : " + e.getMessage())
-                            .show();
-                }
+                            new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention!")
+                                    .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                    .show();
+                        }
 
+                        sDialog.dismiss();
+                    }).show();
+            return true;
+
+        } else if (itemId == R.id.edit_produit) {
+            if (bon1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja validé")
+                        .show();
                 return true;
-            default:
-                return super.onContextItemSelected(item);
+            }
+            try {
+                SOURCE = "BON2_EDIT";
+                Activity activity;
+                activity = ActivityVente.this;
+                double last_price = controller.select_last_price_from_database("BON1", bon1.code_client, final_panier.get(info.position).codebarre);
+                FragmentQteVente fragmentqte = new FragmentQteVente();
+                fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), last_price);
+
+            } catch (Exception e) {
+
+                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Attention!")
+                        .setContentText("Error : " + e.getMessage())
+                        .show();
+            }
+            return true;
         }
+        return super.onContextItemSelected(item);
     }
 
     public void calcule() {
@@ -1382,21 +1366,12 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         }
         ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
-        String querry = "";
-
-        if(show_picture_prod){
-            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, PV1_HT, QTE_PROMO, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        }else{
-            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        }
 
-        produits = controller.select_produits_from_database(querry, show_picture_prod);
+        produits = controller.select_produits_from_database(querry);
 
 
         if (produits.size() == 1) {
@@ -1463,24 +1438,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                     imageBitmap.compress(Bitmap.CompressFormat.PNG, 100 /* Ignored for PNGs */, blob);
                     byte[] inputData = blob.toByteArray();
                     bus.post(new ByteDataEvent(inputData));
-                }
-            }
-        } else if (requestCode == 4000) {
-            if (resultCode == RESULT_OK) {
-                if (data != null) {
-                    Uri selectedImage = data.getData();
-                    InputStream iStream;
-                    try {
-                        iStream = getContentResolver().openInputStream(selectedImage);
-                        byte[] inputData = getBytes(iStream);
-
-                        bus.post(new ByteDataEvent(inputData));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "An error occured!", Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                 }
             }
         }

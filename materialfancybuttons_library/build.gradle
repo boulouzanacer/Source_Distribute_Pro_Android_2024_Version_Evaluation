@@ -7,7 +7,7 @@ android {
     minSdkVersion 26
   }
 
-  namespace 'cn.pedant.SweetAlert'
+  namespace 'com.rilixtech.materialfancybutton'
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_17
     targetCompatibility JavaVersion.VERSION_17

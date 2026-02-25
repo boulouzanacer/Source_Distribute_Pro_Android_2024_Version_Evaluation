@@ -169,29 +169,29 @@ public class FullScannerActivity extends BaseScannerActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_flash:
-                mFlash = !mFlash;
-                applyTorch();
-                item.setTitle(mFlash ? R.string.flash_on : R.string.flash_off);
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_flash) {
+            mFlash = !mFlash;
+            applyTorch();
+            item.setTitle(mFlash ? R.string.flash_on : R.string.flash_off);
+            return true;
 
-            case R.id.menu_auto_focus:
-                mAutoFocus = !mAutoFocus;
-                applyAutoFocus();
-                item.setTitle(mAutoFocus ? R.string.auto_focus_on : R.string.auto_focus_off);
-                return true;
+        } else if (itemId == R.id.menu_auto_focus) {
+            mAutoFocus = !mAutoFocus;
+            applyAutoFocus();
+            item.setTitle(mAutoFocus ? R.string.auto_focus_on : R.string.auto_focus_off);
+            return true;
 
-            case R.id.menu_formats:
-                FormatSelectorDialogFragment formatsDialog = FormatSelectorDialogFragment.newInstance(this, mSelectedFormats);
-                formatsDialog.show(getSupportFragmentManager(), "format_selector");
-                return true;
+        } else if (itemId == R.id.menu_formats) {
+            FormatSelectorDialogFragment formatsDialog = FormatSelectorDialogFragment.newInstance(this, mSelectedFormats);
+            formatsDialog.show(getSupportFragmentManager(), "format_selector");
+            return true;
 
-            case R.id.menu_camera_selector:
-                mScannerView.pause();
-                CameraSelectorDialogFragment cameraDialog = CameraSelectorDialogFragment.newInstance(this, mCameraId);
-                cameraDialog.show(getSupportFragmentManager(), "camera_selector");
-                return true;
+        } else if (itemId == R.id.menu_camera_selector) {
+            mScannerView.pause();
+            CameraSelectorDialogFragment cameraDialog = CameraSelectorDialogFragment.newInstance(this, mCameraId);
+            cameraDialog.show(getSupportFragmentManager(), "camera_selector");
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

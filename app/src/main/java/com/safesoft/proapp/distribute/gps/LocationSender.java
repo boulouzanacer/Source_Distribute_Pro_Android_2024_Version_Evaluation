@@ -31,7 +31,7 @@ public class LocationSender {
             int nbrBon2Temp,
             Context rContext) {
 
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
+        //StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
         DATABASE controller = new DATABASE(rContext);
 

@@ -680,47 +680,54 @@ public class Printing {
 
         @Override
         protected void onPostExecute(Boolean result) {
+            // 1) Close progress safely
+            dismissProgressSafely();
 
-            mProgressDialog.dismiss();
+            if (!result) return;
 
-            if (result) {
-                try {
-                    switch (type_print) {
-                        case "VENTE", "ORDER" -> {
-                            if (prefs.getString("MODEL_TICKET_LATIN", "MODEL 1").equals("MODEL 1")) {
-                                print_bon_vente_with_colisage();
-                            } else {
-                                print_bon_vente_without_colisage();
-                            }
-                           /* if(prefs.getString("LARGEUR_TICKET", "80").equals("80")){
-
-                            }else{
-
-                            }*/
-                          //  print_bon_vente_58_with_colisage();
-
+            try {
+                switch (type_print) {
+                    case "VENTE", "ORDER" -> {
+                        if ("MODEL 1".equals(prefs.getString("MODEL_TICKET_LATIN", "MODEL 1"))) {
+                            print_bon_vente_with_colisage();
+                        } else {
+                            print_bon_vente_without_colisage();
                         }
-
-                        case "ACHAT" -> print_bon_achat();
-                        case "ETIQUETTE" -> print_etiquette();
-                        case "ETAT_VENTE", "ETAT_COMMANDE" -> print_etat_vente_command();
-                        case "ETIQUETTE_CODEBARRE" -> {
-                            if (prefs.getString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_50X30").equals("TICKET_CODEBARRE_50X30")) {
-                                print_etiquette_code_barre_50_X_30(produit.code_barre, produit.produit, produit.pv1_ht * (1 + (produit.tva / 100)));
-                            } else {
-                                print_etiquette_code_barre_40_X_20(produit.code_barre, produit.produit, produit.pv1_ht * (1 + (produit.tva / 100)));
-                            }
-                        }
-                        case "VERSEMENT_CLIENT" -> print_versement_client();
-                        case "VERSEMENT_FOURNISSEUR" -> print_versement_fournisseur();
-                        case "ARABIC" -> print_arabic();
-                        case "STOCK" -> print_etat_stock();
-
                     }
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    case "ACHAT" -> print_bon_achat();
+                    case "ETIQUETTE" -> print_etiquette();
+                    case "ETAT_VENTE", "ETAT_COMMANDE" -> print_etat_vente_command();
+                    case "ETIQUETTE_CODEBARRE" -> {
+                        String model = prefs.getString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_50X30");
+                        double prixTTC = produit.pv1_ht * (1 + (produit.tva / 100));
+                        if ("TICKET_CODEBARRE_50X30".equals(model)) {
+                            print_etiquette_code_barre_50_X_30(produit.code_barre, produit.produit, prixTTC);
+                        } else if ("TICKET_CODEBARRE_40X20".equals(model)) {
+                            print_etiquette_code_barre_40_X_20(produit.code_barre, produit.produit, prixTTC);
+                        } else {
+                            print_etiquette_code_barre_40_X_20_without_codebarre(produit.code_barre, produit.produit, prixTTC);
+                        }
+                    }
+                    case "VERSEMENT_CLIENT" -> print_versement_client();
+                    case "VERSEMENT_FOURNISSEUR" -> print_versement_fournisseur();
+                    case "ARABIC" -> print_arabic();
+                    case "STOCK" -> print_etat_stock();
                 }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void dismissProgressSafely() {
+            try {
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+            } catch (Exception ignored) {
+                // IllegalArgumentException: View not attached to window manager
+                // BadTokenException, etc.
+            } finally {
+                mProgressDialog = null;
             }
         }
     }
@@ -2676,6 +2683,66 @@ public class Printing {
                     byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
                     tscCmd.append(barcodeCmd);
 
+                    tscCmd.append(tscCmd.getPrintCopies(1));
+                    tscCmd.append(tscCmd.getEndCmd());
+                    if (rtPrinter != null) {
+                        rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
+                    }
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+                hideProgressDialog();
+            }
+        }).start();
+
+    }
+
+
+    void print_etiquette_code_barre_40_X_20_without_codebarre(String barcodeContent, String produit, double prix_vente_ttc) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Impression...");
+
+                BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
+                try {
+
+
+                    CmdFactory tscFac = new TscFactory();
+                    Cmd tscCmd = tscFac.create();
+
+                    tscCmd.append(tscCmd.getHeaderCmd());
+
+                    rtPrinter.writeMsg(TonyUtils.InitPrinter());
+                    TonyUtils.Tsc_InitLabelPrint(rtPrinter);
+                    rtPrinter.writeMsg(TonyUtils.SetSize("40", "20").getBytes());
+                    String strPrintTxtproduit = TonyUtils.printText("10", "0", "TSS12.BF2", "0", "1", "2", produit + ";");
+                    rtPrinter.writeMsg(strPrintTxtproduit.getBytes("UTF-8"));
+
+                    String prix_vente_str = new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
+                    String strPrintTxtPrix = TonyUtils.printText("10", "90", "TSS36.BF2", "0", "1", "2", prix_vente_str + ";");
+                    rtPrinter.writeMsg(strPrintTxtPrix.getBytes("UTF-8"));
+                    // String strPrint = TonyUtils.setPRINT("1", "1");
+                    // rtPrinter.writeMsg(strPrint.getBytes());
+
+                    // tscCmd.append(tscCmd.getLFCRCmd()); // one line space
+
+
+                    /*BarcodeSetting barcodeSetting = new BarcodeSetting();
+                    barcodeSetting.setNarrowInDot(2);//narrow bar setting, bar width
+                    barcodeSetting.setWideInDot(4);
+                    barcodeSetting.setHeightInDot(48);//bar height setting
+                    barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+                    barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
+                    int x = 70, y = 80;
+                    barcodeSetting.setPosition(new Position(x, y));
+
+
+                    byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
+                    tscCmd.append(barcodeCmd);
+*/
                     tscCmd.append(tscCmd.getPrintCopies(1));
                     tscCmd.append(tscCmd.getEndCmd());
                     if (rtPrinter != null) {

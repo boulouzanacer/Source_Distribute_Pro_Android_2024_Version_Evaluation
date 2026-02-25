@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
+import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
+import static android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.rt.printerlibrary.enumerate.BarcodeType.CODE128;
@@ -17,9 +19,11 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -35,19 +39,21 @@ import android.os.Build;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
@@ -113,10 +119,12 @@ import com.rt.printerlibrary.setting.BarcodeSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
 import com.safesoft.proapp.distribute.activation.NetClient;
-import com.safesoft.proapp.distribute.activities.client.ActivityClientDetail;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.cloud.AllPrefsManager;
+import com.safesoft.proapp.distribute.cloud.ConfigFetcher;
+import com.safesoft.proapp.distribute.cloud.ConfigUploader;
 import com.safesoft.proapp.distribute.cloud.DownloadBackupTask;
 import com.safesoft.proapp.distribute.cloud.FetchFilesTask;
 import com.safesoft.proapp.distribute.cloud.FileUploader;
@@ -135,11 +143,10 @@ import com.safesoft.proapp.distribute.fragments.FragmentSignUpCloudAccount;
 import com.safesoft.proapp.distribute.fragments.FragmentListDatabases;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedDepot;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectedVendeur;
-import com.safesoft.proapp.distribute.fragments.FragmentVersementClient;
 import com.safesoft.proapp.distribute.fragments.PasswordResetDialogFragment;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.gps.services.LocationServerConnect;
-import com.safesoft.proapp.distribute.gps.services.ServiceSenderLocation;
+import com.safesoft.proapp.distribute.gps.service_start.AutoStartService;
+import com.safesoft.proapp.distribute.gps.service_start.RestartBroadcastReceiver;
 import com.safesoft.proapp.distribute.postData.PostData_Depot;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Vendeur;
@@ -171,12 +178,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class ActivitySetting extends BaseActivity implements View.OnClickListener, PrinterObserver {
 
     public Circle circle;
@@ -233,6 +241,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.READ_MEDIA_IMAGES
     };
 
@@ -266,10 +275,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private boolean is_app_synchronised_mode = false;
     private String numero_serie;
-
-    //-------------------- GPS Sender  ---------------
-    private static final int REQUEST_LOCATION_PERMISSION = 100;
-    //-------------------------------------------------
+    private Switch switch_service_location;
 
     private void CheckAllPermission() {
         NO_PERMISSION.clear();
@@ -330,8 +336,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         init();
         addListener();
 
-    }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(AutoStartService.ACTION_FOO);
+        filter.addAction(FragmentAdminGps.ACTION_LOCATION_SERVICE_STATE);
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
+        bm.registerReceiver(mBroadcastReceiver, filter);
 
+    }
 
     @Override
     public void initView() {
@@ -524,7 +535,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         })
                         .setCancelClickListener(Dialog::dismiss)
                         .show();
-
 
             }
         });
@@ -1096,6 +1106,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_solde_client = findViewById(R.id.switch_solde_client);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_solde_fournisseur = findViewById(R.id.switch_solde_fournisseur);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_remise = findViewById(R.id.switch_remise);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_modifier_bon = findViewById(R.id.switch_modifier_bon);
@@ -1110,8 +1122,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_gps = findViewById(R.id.switch_gps);
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch switch_service_location = findViewById(R.id.switch_service_location);
+
+        switch_service_location = findViewById(R.id.switch_service_location);
+
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_son = findViewById(R.id.switch_son);
 
@@ -1143,6 +1156,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_benifice.setChecked(prefs.getBoolean("AFFICHAGE_BENIFICE", false));
         switch_stock_moins.setChecked(prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false));
         switch_solde_client.setChecked(prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true));
+        switch_solde_fournisseur.setChecked(prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true));
         switch_remise.setChecked(prefs.getBoolean("AFFICHAGE_REMISE", true));
         switch_modifier_bon.setChecked(prefs.getBoolean("AUTORISE_MODIFY_BON", true));
         switch_edit_prix.setChecked(prefs.getBoolean("CAN_EDIT_PRICE", false));
@@ -1234,6 +1248,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
+        switch_solde_fournisseur.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", isChecked);
+            editor.apply();
+        });
+
         switch_remise.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("AFFICHAGE_REMISE", isChecked);
@@ -1277,18 +1297,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         });
 
         switch_service_location.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // show directly fragment setting
-
-            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-            FragmentAdminGps fragment_admin_gps = new FragmentAdminGps();
-            fragment_admin_gps.showDialogbox(this, deviceId);
-            //SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            //editor.putBoolean("PHONE_LOCATION_SERVICE", isChecked);
-            //editor.apply();
+            if(isChecked){
+                String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                FragmentAdminGps fragment_admin_gps = new FragmentAdminGps();
+                fragment_admin_gps.showDialogbox(this, deviceId);
+            }else{
+                RestartBroadcastReceiver.stopJob(getApplicationContext());
+            }
         });
 
+
         try {
+
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
@@ -1303,9 +1323,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                             .setPositiveButton("Oui", (d, w) -> {
                                 Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                 startActivity(i);
-                            })
-                            .setNegativeButton("Non", (d, w) -> d.dismiss())
-                            .show();
+                            }).setNegativeButton("Non", (d, w) -> d.dismiss()).show();
                 }
 
             }else{
@@ -1316,21 +1334,43 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }catch (Exception e){
             Log.e("Exception",e.getMessage());
         }
-        if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
 
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        try {
 
-                new androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle("GPS désactivé")
-                        .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
-                        .setPositiveButton("Oui", (d, w) -> {
-                            Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(i);
-                        })
-                        .setNegativeButton("Non", (d, w) -> d.dismiss())
-                        .show();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                boolean ignoring = pm.isIgnoringBatteryOptimizations(getPackageName());
+
+                if (!ignoring) {
+                    if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
+                        runOnUiThread(() -> {
+                            new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Distribute pro batterie optimization")
+                                    .setContentText(
+                                            "Le service de localisation est activé. Toutefois, l’optimisation de la batterie " +
+                                                    "peut empêcher son bon fonctionnement. Souhaitez-vous l’autoriser ?"
+                                    )
+                                    .setCancelText("Non")
+                                    .setConfirmText("Oui")
+                                    .showCancelButton(true)
+                                    .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                                    .setConfirmClickListener(sDialog -> {
+                                        Intent intent = new Intent(ACTION_APPLICATION_DETAILS_SETTINGS);
+                                        intent.setData(Uri.parse("package:" + getPackageName()));
+                                        startActivity(intent);
+                                        sDialog.dismissWithAnimation();
+                                    })
+                                    .show();
+                        });
+                    }
+
+                }else{
+
+                }
             }
+
+        }catch (Exception e){
+            Log.e("Exception",e.getMessage());
         }
 
         switch_son.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -1494,8 +1534,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         if (prefs.getString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_50X30").equals("TICKET_CODEBARRE_50X30")) {
             rg_model_ticket_codebarre.check(R.id.rg_model_ticket_codebarre_50X30);
-        } else {
+        } else if(prefs.getString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_40X20").equals("TICKET_CODEBARRE_40X20")){
             rg_model_ticket_codebarre.check(R.id.rg_model_ticket_codebarre_40X20);
+        }else{
+            rg_model_ticket_codebarre.check(R.id.rg_model_ticket_codebarre_40X20_without_codebarre);
         }
 
         //EventBus listener
@@ -1507,16 +1549,14 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_connect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                // doDisConnect();
-                switch (i) {
-                    case R.id.rb_connect_wifi ->//WiFi
-                            checkedConType = BaseEnum.CON_WIFI;
-                    case R.id.rb_connect_bluetooth ->//bluetooth
-                            checkedConType = BaseEnum.CON_BLUETOOTH;
-                    case R.id.rb_connect_usb ->//usb
-                            checkedConType = BaseEnum.CON_USB;
-                    case R.id.rb_connect_com ->//串口-AP02
-                            checkedConType = BaseEnum.CON_COM;
+                if (i == R.id.rb_connect_wifi) {
+                    checkedConType = BaseEnum.CON_WIFI;
+                } else if (i == R.id.rb_connect_bluetooth) {
+                    checkedConType = BaseEnum.CON_BLUETOOTH;
+                } else if (i == R.id.rb_connect_usb) {
+                    checkedConType = BaseEnum.CON_USB;
+                } else if (i == R.id.rb_connect_com) {
+                    checkedConType = BaseEnum.CON_COM;
                 }
             }
         });
@@ -1524,34 +1564,28 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_type_imprimente.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                // doDisConnect();
-                switch (i) {
-                    case R.id.rb_type_ticket ->//Ticket
-                    {
-                        langue_ticket_title.setVisibility(VISIBLE);
-                        rg_langue_ticket.setVisibility(VISIBLE);
-                        if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
-                            rg_model_latin_ticket.setVisibility(VISIBLE);
-                            rg_model_arabe_ticket.setVisibility(GONE);
-                        } else if (Objects.equals(prefs.getString("LANGUE_TICKET", "ARABE"), "ARABE")) {
-                            rg_model_arabe_ticket.setVisibility(VISIBLE);
-                            rg_model_latin_ticket.setVisibility(GONE);
-                        }
-                        rg_model_ticket_codebarre.setVisibility(GONE);
-                        rg_langue_ticket.setVisibility(VISIBLE);
-                        checkedImpType = BaseEnum.IMP_TYPE_TICKET;
-                    }
-                    case R.id.rb_type_codebarre ->//codebarre
-                    {
-                        langue_ticket_title.setVisibility(GONE);
-                        rg_langue_ticket.setVisibility(GONE);
-                        rg_model_latin_ticket.setVisibility(GONE);
+                if (i == R.id.rb_type_ticket) {
+                    langue_ticket_title.setVisibility(VISIBLE);
+                    rg_langue_ticket.setVisibility(VISIBLE);
+                    if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
+                        rg_model_latin_ticket.setVisibility(VISIBLE);
                         rg_model_arabe_ticket.setVisibility(GONE);
-                        rg_model_ticket_codebarre.setVisibility(VISIBLE);
-                        checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
-                        checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
-                        saveConfigTicketLangue(checkedTicketModel);
+                    } else if (Objects.equals(prefs.getString("LANGUE_TICKET", "ARABE"), "ARABE")) {
+                        rg_model_arabe_ticket.setVisibility(VISIBLE);
+                        rg_model_latin_ticket.setVisibility(GONE);
                     }
+                    rg_model_ticket_codebarre.setVisibility(GONE);
+                    rg_langue_ticket.setVisibility(VISIBLE);
+                    checkedImpType = BaseEnum.IMP_TYPE_TICKET;
+                } else if (i == R.id.rb_type_codebarre) {
+                    langue_ticket_title.setVisibility(GONE);
+                    rg_langue_ticket.setVisibility(GONE);
+                    rg_model_latin_ticket.setVisibility(GONE);
+                    rg_model_arabe_ticket.setVisibility(GONE);
+                    rg_model_ticket_codebarre.setVisibility(VISIBLE);
+                    checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
+                    checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
+                    saveConfigTicketLangue(checkedTicketModel);
                 }
                 saveConfigImpType(checkedImpType);
 
@@ -1561,22 +1595,14 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_langue_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                // doDisConnect();
-                switch (i) {
-                    case R.id.rb_langue_latin ->//Ticket latin
-                    {
-                        //model_ticket_title.setVisibility(View.VISIBLE);
-                        rg_model_latin_ticket.setVisibility(VISIBLE);
-                        rg_model_arabe_ticket.setVisibility(GONE);
-                        checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
-                    }
-                    case R.id.rb_langue_arabe ->//ticket arabe
-                    {
-                        //model_ticket_title.setVisibility(View.GONE);
-                        rg_model_arabe_ticket.setVisibility(VISIBLE);
-                        rg_model_latin_ticket.setVisibility(GONE);
-                        checkedTicketModel = BaseEnum.TICKET_LANGUE_ARABE;
-                    }
+                if (i == R.id.rb_langue_latin) {
+                    rg_model_latin_ticket.setVisibility(VISIBLE);
+                    rg_model_arabe_ticket.setVisibility(GONE);
+                    checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
+                } else if (i == R.id.rb_langue_arabe) {
+                    rg_model_arabe_ticket.setVisibility(VISIBLE);
+                    rg_model_latin_ticket.setVisibility(GONE);
+                    checkedTicketModel = BaseEnum.TICKET_LANGUE_ARABE;
                 }
                 saveConfigTicketLangue(checkedTicketModel);
             }
@@ -1586,12 +1612,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_model_latin_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                // doDisConnect();
-                switch (i) {
-                    case R.id.rb_model_latin_1 ->//Ticket latin
-                            checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_1;
-                    case R.id.rb_model_latin_2 ->//ticket arabe
-                            checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_2;
+                if (i == R.id.rb_model_latin_1) {
+                    checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_1;
+                } else if (i == R.id.rb_model_latin_2) {
+                    checkedTicketModel = BaseEnum.TICKET_LATIN_MODEL_2;
                 }
                 saveConfigTicketLangueLatin(checkedTicketModel);
             }
@@ -1600,12 +1624,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_model_arabe_ticket.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                // doDisConnect();
-                switch (i) {
-                    case R.id.rb_model_arabe_1 ->//Ticket latin
-                            checkedTicketModel = BaseEnum.TICKET_ARABE_MODEL_1;
-                    case R.id.rb_model_arabe_2 ->//ticket arabe
-                            checkedTicketModel = BaseEnum.TICKET_ARABE_MODEL_2;
+                if (i == R.id.rb_model_arabe_1) {
+                    checkedTicketModel = BaseEnum.TICKET_ARABE_MODEL_1;
+                } else if (i == R.id.rb_model_arabe_2) {
+                    checkedTicketModel = BaseEnum.TICKET_ARABE_MODEL_2;
                 }
                 saveConfigTicketLangueArabe(checkedTicketModel);
             }
@@ -1615,45 +1637,36 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         rg_model_ticket_codebarre.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-            // doDisConnect();
-            switch (i) {
-                case R.id.rg_model_ticket_codebarre_50X30 ->//Ticket 50X30
-                        ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_50X30;
-                case R.id.rg_model_ticket_codebarre_40X20 ->//ticket 40X20
-                        ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_40X20;
-            }
-            saveConfigTicketCodebarreModel(ticketCodebarreModel);
+                if (i == R.id.rg_model_ticket_codebarre_50X30) {
+                    ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_50X30;
+                } else if (i == R.id.rg_model_ticket_codebarre_40X20) {
+                    ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_40X20;
+                } else if (i == R.id.rg_model_ticket_codebarre_40X20_without_codebarre) {
+                    ticketCodebarreModel = BaseEnum.TICKET_CODEBARRE_40X20_WITHOUT_CODEBARRE;
+                }
+                saveConfigTicketCodebarreModel(ticketCodebarreModel);
             }
         });
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_disConnect_printer:
-                doDisConnect();
-                break;
-            case R.id.btn_connect_printer:
-                doConnect();
-                break;
-            case R.id.tv_device_selected:
-                //showConnectDialog();
-                break;
-            case R.id.btn_connected_list://显示多连接
-                //showConnectedListDialog();
-                showConnectDialog();
-                break;
-            case R.id.btn_test:
-                try {
-                    textPrint();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (SdkException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            default:
-                break;
+        int viewId = view.getId();
+        if (viewId == R.id.btn_disConnect_printer) {
+            doDisConnect();
+        } else if (viewId == R.id.btn_connect_printer) {
+            doConnect();
+        } else if (viewId == R.id.tv_device_selected) {
+        } else if (viewId == R.id.btn_connected_list) {
+            showConnectDialog();
+        } else if (viewId == R.id.btn_test) {
+            try {
+                textPrint();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (SdkException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -1769,6 +1782,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     editor.putString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_50X30");
             case BaseEnum.TICKET_CODEBARRE_40X20 -> //ticket model 40X20
                     editor.putString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_40X20");
+            case BaseEnum.TICKET_CODEBARRE_40X20_WITHOUT_CODEBARRE -> //ticket model 40X20
+                    editor.putString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_40X20_WITHOUT_CODEBARRE");
         }
         editor.apply();
     }
@@ -1875,10 +1890,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     connectBluetooth(bluetoothEdrConfigBean);
                 } else {
                     if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                        }
                         return;
                     }
                     BluetoothDevice device = getDevice();
+                    assert device != null;
                     BT_VALUE_MAC = device.getAddress();
                     BT_VALUE_NAME = device.getName();
 
@@ -2091,26 +2109,29 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private void showBluetoothDeviceChooseDialog() {
         BluetoothDeviceChooseDialog bluetoothDeviceChooseDialog = new BluetoothDeviceChooseDialog();
-        bluetoothDeviceChooseDialog.setOnDeviceItemClickListener(new BluetoothDeviceChooseDialog.onDeviceItemClickListener() {
-            @Override
-            public void onDeviceItemClick(BluetoothDevice device) {
-                //doDisConnect();
+        bluetoothDeviceChooseDialog.setOnDeviceItemClickListener(device -> {
+
+            // Android 12+ requires BLUETOOTH_CONNECT runtime permission
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
                     ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                     return;
                 }
-                if (TextUtils.isEmpty(device.getName())) {
-                    tv_device_selected.setText(device.getAddress());
-                } else {
-                    tv_device_selected.setText(device.getName());
-                }
-                BT_VALUE_MAC = device.getAddress();
-                BT_VALUE_NAME = device.getName();
-                configObj = new BluetoothEdrConfigBean(device);
-                tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
-                isConfigPrintEnable(configObj);
-
             }
+
+            // Safe for all API levels
+            if (TextUtils.isEmpty(device.getName())) {
+                tv_device_selected.setText(device.getAddress());
+            } else {
+                tv_device_selected.setText(device.getName());
+            }
+
+            BT_VALUE_MAC = device.getAddress();
+            BT_VALUE_NAME = device.getName();
+            configObj = new BluetoothEdrConfigBean(device);
+            tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
+            isConfigPrintEnable(configObj);
         });
 
         bluetoothDeviceChooseDialog.show(ActivitySetting.this.getFragmentManager(), null);
@@ -2164,85 +2185,89 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     @SuppressLint("NonConstantResourceId")
     public void onClickListener(View v) throws IOException {
 
-        switch (v.getId()) {
-            case R.id.code_depot_lnr -> {
-                final ScalingActivityAnimator mScalingActivityAnimator = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
-                View popView = mScalingActivityAnimator.start();
-                final EditText edited_code_depot = popView.findViewById(R.id.edited_prix);
-                edited_code_depot.setInputType(InputType.TYPE_CLASS_NUMBER);
-                Button mButtonSure = popView.findViewById(R.id.btn_sure);
-                Button mButtonBack = popView.findViewById(R.id.btn_cancel);
-                edited_code_depot.setText(code_depot.getText().toString());
-                mButtonBack.setOnClickListener(v1 -> mScalingActivityAnimator.resume());
-                mButtonSure.setOnClickListener(v12 -> {
-                    code_depot.setText(edited_code_depot.getText().toString());
-                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                    editor.putString("CODE_DEPOT", edited_code_depot.getText().toString());
-                    editor.apply();
-                    mScalingActivityAnimator.resume();
-                });
-            }
-            case R.id.nom_depot_lnr -> {
-                final ScalingActivityAnimator mScalingActivityAnimator2 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
-                View popView2 = mScalingActivityAnimator2.start();
-                final EditText edited_nom_depot = popView2.findViewById(R.id.edited_prix);
-                edited_nom_depot.setInputType(InputType.TYPE_CLASS_TEXT);
-                Button mButtonSure2 = popView2.findViewById(R.id.btn_sure);
-                Button mButtonBack2 = popView2.findViewById(R.id.btn_cancel);
-                edited_nom_depot.setText(nom_depot.getText().toString());
-                mButtonBack2.setOnClickListener(v1 -> mScalingActivityAnimator2.resume());
-                mButtonSure2.setOnClickListener(v12 -> {
-                    nom_depot.setText(edited_nom_depot.getText().toString());
-                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                    editor.putString("NOM_DEPOT", edited_nom_depot.getText().toString());
-                    editor.apply();
-                    mScalingActivityAnimator2.resume();
-                });
-            }
-            case R.id.code_vendeur_lnr -> {
-                final ScalingActivityAnimator mScalingActivityAnimator1 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
-                View popView1 = mScalingActivityAnimator1.start();
-                final EditText edited_code_vendeur = popView1.findViewById(R.id.edited_prix);
-                edited_code_vendeur.setInputType(InputType.TYPE_CLASS_NUMBER);
-                Button mButtonSure1 = popView1.findViewById(R.id.btn_sure);
-                Button mButtonBack1 = popView1.findViewById(R.id.btn_cancel);
-                edited_code_vendeur.setText(code_vendeur.getText().toString());
-                mButtonBack1.setOnClickListener(v13 -> mScalingActivityAnimator1.resume());
-                mButtonSure1.setOnClickListener(v14 -> {
-                    code_vendeur.setText(edited_code_vendeur.getText().toString());
-                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                    editor.putString("CODE_VENDEUR", edited_code_vendeur.getText().toString());
-                    editor.apply();
-                    mScalingActivityAnimator1.resume();
-                });
-            }
-            case R.id.nom_vendeur_lnr -> {
-                final ScalingActivityAnimator mScalingActivityAnimator3 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
-                View popView3 = mScalingActivityAnimator3.start();
-                final EditText edited_nom_vendeur = popView3.findViewById(R.id.edited_prix);
-                edited_nom_vendeur.setInputType(InputType.TYPE_CLASS_TEXT);
-                Button mButtonSure3 = popView3.findViewById(R.id.btn_sure);
-                Button mButtonBack3 = popView3.findViewById(R.id.btn_cancel);
-                edited_nom_vendeur.setText(nom_vendeur.getText().toString());
-                mButtonBack3.setOnClickListener(v13 -> mScalingActivityAnimator3.resume());
-                mButtonSure3.setOnClickListener(v14 -> {
-                    nom_vendeur.setText(edited_nom_vendeur.getText().toString());
-                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                    editor.putString("NOM_VENDEUR", edited_nom_vendeur.getText().toString());
-                    editor.apply();
-                    mScalingActivityAnimator3.resume();
-                });
-            }
-            case R.id.reset_pda -> ResetDialog();
-            case R.id.backup -> backup_db();
-            case R.id.restore -> restore_db();
-            case R.id.password_change -> {
-                // Start change pwd  activity
-                Intent intent = new Intent(getApplicationContext(), ActivityChangePwd.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                finish();
-            }
+        int viewId = v.getId();
+        if (viewId == R.id.code_depot_lnr) {
+            final ScalingActivityAnimator mScalingActivityAnimator = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
+            View popView = mScalingActivityAnimator.start();
+            final EditText edited_code_depot = popView.findViewById(R.id.edited_prix);
+            edited_code_depot.setInputType(InputType.TYPE_CLASS_NUMBER);
+            Button mButtonSure = popView.findViewById(R.id.btn_sure);
+            Button mButtonBack = popView.findViewById(R.id.btn_cancel);
+            edited_code_depot.setText(code_depot.getText().toString());
+            mButtonBack.setOnClickListener(v1 -> mScalingActivityAnimator.resume());
+            mButtonSure.setOnClickListener(v12 -> {
+                code_depot.setText(edited_code_depot.getText().toString());
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putString("CODE_DEPOT", edited_code_depot.getText().toString());
+                editor.apply();
+                mScalingActivityAnimator.resume();
+            });
+
+        } else if (viewId == R.id.nom_depot_lnr) {
+            final ScalingActivityAnimator mScalingActivityAnimator2 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
+            View popView2 = mScalingActivityAnimator2.start();
+            final EditText edited_nom_depot = popView2.findViewById(R.id.edited_prix);
+            edited_nom_depot.setInputType(InputType.TYPE_CLASS_TEXT);
+            Button mButtonSure2 = popView2.findViewById(R.id.btn_sure);
+            Button mButtonBack2 = popView2.findViewById(R.id.btn_cancel);
+            edited_nom_depot.setText(nom_depot.getText().toString());
+            mButtonBack2.setOnClickListener(v1 -> mScalingActivityAnimator2.resume());
+            mButtonSure2.setOnClickListener(v12 -> {
+                nom_depot.setText(edited_nom_depot.getText().toString());
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putString("NOM_DEPOT", edited_nom_depot.getText().toString());
+                editor.apply();
+                mScalingActivityAnimator2.resume();
+            });
+
+        } else if (viewId == R.id.code_vendeur_lnr) {
+            final ScalingActivityAnimator mScalingActivityAnimator1 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
+            View popView1 = mScalingActivityAnimator1.start();
+            final EditText edited_code_vendeur = popView1.findViewById(R.id.edited_prix);
+            edited_code_vendeur.setInputType(InputType.TYPE_CLASS_NUMBER);
+            Button mButtonSure1 = popView1.findViewById(R.id.btn_sure);
+            Button mButtonBack1 = popView1.findViewById(R.id.btn_cancel);
+            edited_code_vendeur.setText(code_vendeur.getText().toString());
+            mButtonBack1.setOnClickListener(v13 -> mScalingActivityAnimator1.resume());
+            mButtonSure1.setOnClickListener(v14 -> {
+                code_vendeur.setText(edited_code_vendeur.getText().toString());
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putString("CODE_VENDEUR", edited_code_vendeur.getText().toString());
+                editor.apply();
+                mScalingActivityAnimator1.resume();
+            });
+
+        } else if (viewId == R.id.nom_vendeur_lnr) {
+            final ScalingActivityAnimator mScalingActivityAnimator3 = new ScalingActivityAnimator(this, this, R.id.root_view, R.layout.pop_view);
+            View popView3 = mScalingActivityAnimator3.start();
+            final EditText edited_nom_vendeur = popView3.findViewById(R.id.edited_prix);
+            edited_nom_vendeur.setInputType(InputType.TYPE_CLASS_TEXT);
+            Button mButtonSure3 = popView3.findViewById(R.id.btn_sure);
+            Button mButtonBack3 = popView3.findViewById(R.id.btn_cancel);
+            edited_nom_vendeur.setText(nom_vendeur.getText().toString());
+            mButtonBack3.setOnClickListener(v13 -> mScalingActivityAnimator3.resume());
+            mButtonSure3.setOnClickListener(v14 -> {
+                nom_vendeur.setText(edited_nom_vendeur.getText().toString());
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putString("NOM_VENDEUR", edited_nom_vendeur.getText().toString());
+                editor.apply();
+                mScalingActivityAnimator3.resume();
+            });
+
+        } else if (viewId == R.id.reset_pda) {
+            ResetDialog();
+
+        } else if (viewId == R.id.backup) {
+            backup_db();
+
+        } else if (viewId == R.id.restore) {
+            restore_db();
+
+        } else if (viewId == R.id.password_change) {
+            Intent intent = new Intent(getApplicationContext(), ActivityChangePwd.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            finish();
         }
     }
 
@@ -2382,10 +2407,33 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             mProgressDialog.dismiss();
 
             if(result){
-                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Succès...")
-                        .setContentText("Téléchargement terminé")
-                        .show();
+
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                Handler handler = new Handler(Looper.getMainLooper());
+
+                executor.execute(() -> {
+                    boolean success = ConfigFetcher.fetchAndSave(
+                            getApplicationContext(),
+                            prefs.getString("EMAIL_CLOUD", ""),
+                            prefs.getString("PASSWORD_CLOUD", "")
+                    );
+
+                    handler.post(() -> {
+                        if (success) {
+                            new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
+                                    .setTitleText("Succès...")
+                                    .setContentText("Téléchargement de base de données et configuration terminé")
+                                    .show();
+                        }else {
+                            new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Erreur...")
+                                    .setContentText("Base de données téléchargé, erreur dans le téléchargement de configuration !!")
+                                    .show();
+                        }
+
+                    });
+                });
+
             }else{
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Erreur...")
@@ -2902,7 +2950,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         args.putString("TITLE", title);
         dialog.setArguments(args);
         dialog.show(fm, "dialog");
-
     }
     protected void showListVendeur(ArrayList<PostData_Vendeur> vendeurs, String title) {
         android.app.FragmentManager fm = getFragmentManager();
@@ -2989,6 +3036,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                             current_version = String.valueOf(packageInfo.versionName);
                             android_unique_id = getAndroidID(getApplicationContext());
+                            seriel_number = prefs.getString("NUM_SERIE", "0");
 
                         } catch (PackageManager.NameNotFoundException e) {
                             e.printStackTrace();
@@ -3022,7 +3070,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPreExecute() {
             mProgressDialog = new ProgressDialog(ActivitySetting.this);
-            mProgressDialog.setMessage("Sauvegarde cloud ...");
+            mProgressDialog.setMessage("Sauvegarde base de données cloud ...");
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -3052,14 +3100,33 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         protected void onPostExecute(String result) {
 
             mProgressDialog.dismiss();
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(result);
                 if(jsonObject.getString("status").equals("success")){
-                    new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Information...")
-                            .setContentText(jsonObject.getString("message"))
-                            .show();
+
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    Handler handler = new Handler(Looper.getMainLooper());
+
+                    executor.execute(() -> {AllPrefsManager prefsManager = new AllPrefsManager(getApplicationContext());
+
+                        boolean success = ConfigUploader.postConfig(prefsManager.getAllForApi());
+
+                        handler.post(() -> {
+                            if (success) {
+                                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("Information...")
+                                        .setContentText("Configuration uploaded")
+                                        .show();
+                            } else {
+                                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Erreur...")
+                                        .setContentText("Upload failed")
+                                        .show();
+                            }
+                        });
+                    });
+
                 }else{
                     new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Erreur...")
@@ -3165,7 +3232,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                         View customView = getLayoutInflater().inflate(R.layout.cruton_style_loca_connected, null);
                                         Crouton.show(ActivitySetting.this, customView);
 
-                                        restartLocationService();
+
 
                                     } else if (responseCode == 401) {
                                         Crouton.makeText(ActivitySetting.this, "Compte n'exist pas ou mot de passe incorrect!", Style.ALERT).show();
@@ -3188,13 +3255,29 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                             }
                         }
                 );
-                //restartLocationService();
+
             } else {
                 Log.e("PERMISSION", "Location or foreground service permission denied");
             }
         }
     }*/
 
+    /*private void restartLocationService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14
+            if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.FOREGROUND_SERVICE_LOCATION}, 101);
+                return; // Attendre la permission
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 102);
+            return;
+        }
+
+        RestartBroadcastReceiver.scheduleJob(getApplicationContext());
+    }*/
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -3203,4 +3286,26 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         }
     }
+
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(AutoStartService.ACTION_FOO)) {
+                final String param = intent.getStringExtra(AutoStartService.EXTRA_PARAM_A);
+
+                //textView.setText(param);
+            }else if(intent.getAction().equals(FragmentAdminGps.ACTION_LOCATION_SERVICE_STATE)){
+                 boolean param = intent.getBooleanExtra(FragmentAdminGps.PARAM_LOCATION_SERVICE_STATE, false);
+                 if(param){
+                     switch_service_location.setChecked(true);
+                     prefs.edit().putBoolean("PHONE_LOCATION_SERVICE", true).apply();
+                 }else{
+                     switch_service_location.setChecked(false);
+                     prefs.edit().putBoolean("PHONE_LOCATION_SERVICE", false).apply();
+                 }
+
+                //textView.setText(param);
+            }
+        }
+    };
 }

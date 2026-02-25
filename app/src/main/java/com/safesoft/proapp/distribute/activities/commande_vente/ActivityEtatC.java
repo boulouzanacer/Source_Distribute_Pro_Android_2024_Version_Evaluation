@@ -349,28 +349,23 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.synchroniser:
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+        } else if (itemId == R.id.synchroniser) {
 
-                show_select_etatz();
+            show_select_etatz();
 
-                break;
-            case R.id.print:
-                if (result_etatzg.size() > 0) {
+        } else if (itemId == R.id.print) {
+            if (result_etatzg.size() > 0) {
 
-                    Activity bactivity;
-                    bactivity = ActivityEtatC.this;
+                Activity bactivity;
+                bactivity = ActivityEtatC.this;
 
-                    Printing printer = new Printing();
-                    printer.start_print_etat(bactivity, "ETAT_COMMANDE", result_etatzg, c_client, txtv_user.getText().toString(), from_d, to_d);
-                }
+                Printing printer = new Printing();
+                printer.start_print_etat(bactivity, "ETAT_COMMANDE", result_etatzg, c_client, txtv_user.getText().toString(), from_d, to_d);
+            }
 
-                break;
-            default:
-                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -449,10 +444,10 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     }
 
     public int getEtatzgs(String c_client, String from_d, String to_d) {
-        int flag = 0;
-        try {
+        int flag;
 
-      result_etatzg =  controller.select_etatc_from_database( wilaya, commune, c_client,from_d,  to_d);
+        try {
+            result_etatzg =  controller.select_etatc_from_database( wilaya, commune, c_client,from_d,  to_d);
             flag = 1;
         } catch (Exception e) {
             Log.v("TRACKKK", e.getMessage());

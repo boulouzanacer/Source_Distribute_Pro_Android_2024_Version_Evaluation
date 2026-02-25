@@ -1,206 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_root_select_produit"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/selector_listview_client_row"
-    app:cardCornerRadius="5dp"
-    android:layout_marginBottom="10dp"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_root_select_produit"
         android:layout_width="match_parent"
-        android:weightSum="5"
-        android:padding="5dp"
-        android:orientation="horizontal"
-        android:layout_height="160dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/selector_listview_client_row"
-        android:baselineAligned="false">
+        app:cardCornerRadius="5dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_weight="3.5"
-            android:weightSum="3"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/produit"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:layout_weight="2"
-                android:text=" ezdfezf dfvredvrevre erfverfrefre erferferfre erferffdgdsgsd"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-            <LinearLayout
-                android:weightSum="7"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp">
-
-                <LinearLayout
-                    android:layout_weight="3"
-                    android:layout_width="0dp"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textStyle="bold"
-                        android:textSize="9sp"
-                        android:layout_weight="1"
-                        android:text="@string/p_u"
-                        android:gravity="center|bottom"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        tools:ignore="NestedWeights,SmallSp" />
-
-                    <TextView
-                        android:id="@+id/prix_u"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:textColor="@color/emerald"
-                        android:layout_weight="2"
-                        android:text="1500.00"
-                        android:gravity="center|top"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_weight="2"
-                    android:layout_width="0dp"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/colissage_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textStyle="bold"
-                        android:textSize="9sp"
-                        android:layout_weight="1"
-                        android:text="@string/colis"
-                        android:gravity="center|bottom"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        tools:ignore="NestedWeights,SmallSp" />
-
-                    <TextView
-                        android:id="@+id/colissage"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:textColor="@color/lightcoral"
-                        android:layout_weight="2"
-                        android:text="24"
-                        android:gravity="center|top"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_weight="2"
-                    android:layout_width="0dp"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/stock_colis_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textStyle="bold"
-                        android:textSize="9sp"
-                        android:layout_weight="1"
-                        android:text="@string/Stock_colis"
-                        android:gravity="center|bottom"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    <TextView
-                        android:id="@+id/stock_colis"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:textColor="@color/lightcoral"
-                        android:layout_weight="2"
-                        android:text="47"
-                        android:gravity="center|top"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_weight="1.5"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:weightSum="5"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/img_product"
-                android:src="@drawable/ic_camera_24"
-                android:layout_weight="3"
-                android:padding="1dp"
-                android:background="@drawable/produit_item_border"
-                android:layout_width="match_parent"
-                android:layout_height="0dp" />
-
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:layout_height="160dp"
+            android:background="@drawable/selector_listview_client_row"
+            android:baselineAligned="false">
 
             <LinearLayout
-                android:layout_marginTop="5dp"
-                android:layout_weight="2"
+                android:layout_weight="3.5"
                 android:weightSum="3"
+                android:layout_marginEnd="10dp"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/produit"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:layout_weight="1"
-                    android:textColor="@color/white"
-                    android:background="@color/emerald"
-                    android:text="@string/Stock_unite"
+                    android:textSize="18sp"
                     android:gravity="center"
+                    android:layout_weight="2"
+                    android:text=" ezdfezf dfvredvrevre erfverfrefre erferferfre erferffdgdsgsd"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-                <TextView
-                    android:id="@+id/qte_r"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:gravity="center|top"
-                    android:text="120.22"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/color_pme_pro_distribute"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
 
+                <LinearLayout
+                    android:weightSum="7"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="0dp"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:textStyle="bold"
+                            android:textSize="9sp"
+                            android:layout_weight="1"
+                            android:text="@string/p_u"
+                            android:gravity="center|bottom"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            tools:ignore="NestedWeights,SmallSp" />
+
+                        <TextView
+                            android:id="@+id/prix_u"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="@color/emerald"
+                            android:layout_weight="2"
+                            android:text="1500.00"
+                            android:gravity="center|top"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/colissage_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:textStyle="bold"
+                            android:textSize="9sp"
+                            android:layout_weight="1"
+                            android:text="@string/colis"
+                            android:gravity="center|bottom"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            tools:ignore="NestedWeights,SmallSp" />
+
+                        <TextView
+                            android:id="@+id/colissage"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="@color/lightcoral"
+                            android:layout_weight="2"
+                            android:text="24"
+                            android:gravity="center|top"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/stock_colis_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:textStyle="bold"
+                            android:textSize="9sp"
+                            android:layout_weight="1"
+                            android:text="@string/Stock_colis"
+                            android:gravity="center|bottom"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                        <TextView
+                            android:id="@+id/stock_colis"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:textColor="@color/lightcoral"
+                            android:layout_weight="2"
+                            android:text="47"
+                            android:gravity="center|top"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1.5"
+                android:layout_width="0dp"
+                android:weightSum="5"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/img_product"
+                    android:src="@drawable/ic_camera_24"
+                    android:layout_weight="3"
+                    android:padding="1dp"
+                    android:background="@drawable/produit_item_border"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp" />
+
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="2"
+                    android:weightSum="3"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:background="@color/emerald"
+                        android:text="@string/Stock_unite"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                    <TextView
+                        android:id="@+id/qte_r"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:gravity="center|top"
+                        android:text="120.22"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/color_pme_pro_distribute"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</merge>

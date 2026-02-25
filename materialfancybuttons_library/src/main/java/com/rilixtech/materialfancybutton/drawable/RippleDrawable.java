@@ -31,7 +31,7 @@ import com.rilixtech.materialfancybutton.utils.ColorUtil;
 import com.rilixtech.materialfancybutton.utils.ThemeUtil;
 import com.rilixtech.materialfancybutton.utils.ViewUtil;
 
-import cn.pedant.SweetAlert.R;
+import com.rilixtech.materialfancybutton.R;
 
 public class RippleDrawable extends Drawable implements Animatable, OnTouchListener {
 

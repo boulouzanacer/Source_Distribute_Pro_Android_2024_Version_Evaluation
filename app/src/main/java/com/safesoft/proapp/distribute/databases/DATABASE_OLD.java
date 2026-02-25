@@ -4001,7 +4001,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 "BON1.REMISE, " +
                 "BON1.TOT_HT, " +
                 "BON1.TOT_TVA, " +
-                "BON1.TOT_HT + BON1.TOT_TVA AS MONTANT_BON_HT, " +
+                "BON1.TOT_HT + BON1.TOT_TVA AS MONTANT_BON_TTC, " +
                 "0 AS VERSEMENTS_CLIENT, " +
                 "BON1.VERSER AS VERSEMENT_BON, " +
                 "(BON1.TOT_HT - BON1.REMISE) -  BON1.MONTANT_ACHAT AS BENIFICE, " +
@@ -4026,7 +4026,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
         querry1 = querry1 + "SELECT 0 AS REMISE, " +
                 "0 AS TOT_HT, " +
                 "0 AS TOT_TVA, " +
-                "0 AS MONTANT_BON_HT, " +
+                "0 AS MONTANT_BON_TTC, " +
                 "CARNET_C.VERSEMENTS AS VERSEMENTS_CLIENT, " +
                 "0 AS VERSEMENT_BON, " +
                 "0 AS BENIFICE, " +
@@ -4055,7 +4055,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 PostData_Etatv etatv2 = new PostData_Etatv();
 
                 etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
-                etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_HT"));
+                etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_TTC"));
                 etatv2.total_versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
                 etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";
@@ -4258,7 +4258,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 "BON1_TEMP.REMISE, " +
                 "BON1_TEMP.TOT_HT, " +
                 "BON1_TEMP.TOT_TVA, " +
-                "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE AS MONTANT_BON_HT, " +
+                "BON1_TEMP.TOT_HT - BON1_TEMP.REMISE AS MONTANT_BON_TTC, " +
                 "0 AS VERSEMENTS_CLIENT, " +
                 "BON1_TEMP.VERSER AS VERSEMENT_BON, " +
                 "(BON1_TEMP.TOT_HT - BON1_TEMP.REMISE) -  BON1_TEMP.MONTANT_ACHAT AS BENIFICE, " +
@@ -4283,7 +4283,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
         querry1 = querry1 + "SELECT 0 AS REMISE, " +
                 "0 AS TOT_HT, " +
                 "0 AS TOT_TVA, " +
-                "0 AS MONTANT_BON_HT, " +
+                "0 AS MONTANT_BON_TTC, " +
                 "CARNET_C.VERSEMENTS AS VERSEMENTS_CLIENT, " +
                 "0 AS VERSEMENT_BON, " +
                 "0 AS BENIFICE, " +
@@ -4312,7 +4312,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 PostData_Etatv etatv2 = new PostData_Etatv();
 
                 etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
-                etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_HT"));
+                etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_TTC"));
                 etatv2.total_versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
                 etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";

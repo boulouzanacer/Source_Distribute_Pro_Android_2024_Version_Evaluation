@@ -3,10 +3,10 @@ group = 'com.github.ybq'
 version = '1.0'
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 36
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 36
     }
     namespace 'com.github.ybq.android.spinkit'
     compileOptions {

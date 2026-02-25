@@ -1,12 +1,10 @@
 package com.safesoft.proapp.distribute.activities.product;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +14,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,12 +39,9 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.Barcode128;
-import com.itextpdf.text.pdf.BarcodeQRCode;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -54,23 +50,19 @@ import com.safesoft.proapp.distribute.activities.pdf.PdfViewerActivity;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterProduits;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.ProductEvent;
+import com.safesoft.proapp.distribute.exportdata.CsvExporter;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditProduct;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.printing.Printing;
-import com.safesoft.proapp.distribute.utils.ImageUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,7 +73,9 @@ import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityProduits extends AppCompatActivity implements RecyclerAdapterProduits.ItemClick, RecyclerAdapterProduits.ItemLongClick {
+public class ActivityProduits extends AppCompatActivity implements
+        RecyclerAdapterProduits.ItemClick,
+        RecyclerAdapterProduits.ItemLongClick {
 
     private RecyclerView recyclerView;
     private RecyclerAdapterProduits adapter;
@@ -92,12 +86,10 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     private TextView nbr_produit, total_prix;
     private AutoCompleteTextView famille_dropdown;
     private String selected_famile = "Toutes";
-    private EventBus bus;
     private FragmentNewEditProduct fragmentnewproduct;
     private SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
     private boolean hide_stock_moins = true;
-    private boolean show_picture_prod = false;
     private boolean is_scan = false;
 
     @Override
@@ -127,7 +119,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         //toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         // setSupportActionBar(toolbar);
 
-        Toolbar toolbar = findViewById(R.id.myToolbar);
+        Toolbar  toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -135,16 +127,15 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         }
 
         controller = new DATABASE(this);
-        bus = EventBus.getDefault();
-        // Register as a subscriber
-        bus.register(this);
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         hide_stock_moins = prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false);
-        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
+
         initViews();
 
         setRecycle("", false);
+
+        EventBus.getDefault().register(this);
 
     }
 
@@ -155,7 +146,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         total_prix = findViewById(R.id.list_produit_total);
         famille_dropdown = findViewById(R.id.famille_dropdown);
 
-        ArrayList<String> familles = new ArrayList<>();
+        ArrayList<String> familles;
         familles = controller.select_familles_from_database("SELECT * FROM FAMILLES");
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.dropdown_famille_item, familles);
         famille_dropdown.setAdapter(adapter);
@@ -204,7 +195,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                     .setContentText("" + e.getMessage())
                     .show();
         }
-
     }
 
     private double calcule_total() {
@@ -220,7 +210,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     public ArrayList<PostData_Produit> getItems(String querry_search, Boolean isScan) {
 
         ///////////////////////////////////CODE BARRE //////////////////////////////////////
-        ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
+        ArrayList<PostData_Codebarre> codebarres;
 
         String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE != '" + querry_search + "' AND CODE_BARRE_SYN = '" + querry_search + "' ";
         codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
@@ -239,21 +229,10 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         // Trim the trailing space and create the LIKE pattern
         String pattern = queryPattern.toString().trim();
 
-        StringBuilder querry = new StringBuilder();
-
-        if(show_picture_prod){
-            // Initialize StringBuilder for dynamic query construction
-            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        StringBuilder querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT ");
-        }else{
-            // Initialize StringBuilder for dynamic query construction
-            querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT ");
-        }
 
 
         // List to hold query conditions
@@ -290,7 +269,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         querry.append(" ORDER BY PRODUIT");
 
         // Execute the constructed query
-        produits = controller.select_produits_from_database(querry.toString(), show_picture_prod);
+        produits = controller.select_produits_from_database(querry.toString());
 
         return produits;
     }
@@ -304,6 +283,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     public void onClick(View v, int position) {
         Intent intent = new Intent(ActivityProduits.this, ActivityProduitDetail.class);
 
+        intent.putExtra("PRODUCT_ID", produits.get(position).produit_id);
         intent.putExtra("CODE_BARRE", produits.get(position).code_barre);
         intent.putExtra("REF_PRODUIT", produits.get(position).ref_produit);
         intent.putExtra("PRODUIT", produits.get(position).produit);
@@ -332,7 +312,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         intent.putExtra("POSITION_ITEM", position);
 
 
-
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
@@ -357,10 +336,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
 
-                                if (fragmentnewproduct == null)
-                                    fragmentnewproduct = new FragmentNewEditProduct();
 
-                                fragmentnewproduct.showDialogbox(ActivityProduits.this, "EDIT_PRODUCT", produits.get(position));
+                                fragmentnewproduct = FragmentNewEditProduct.newInstance("EDIT_PRODUCT", produits.get(position));
+                                fragmentnewproduct.show(getSupportFragmentManager(), "EDIT_PRODUCT");
                                 sDialog.dismiss();
 
                             }).show();
@@ -407,7 +385,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             }
         });
         builder.show();
-
 
     }
 
@@ -479,10 +456,9 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             startScan();
 
         } else if (item.getItemId() == R.id.new_product) {
-            if (fragmentnewproduct == null)
-                fragmentnewproduct = new FragmentNewEditProduct();
 
-            fragmentnewproduct.showDialogbox(ActivityProduits.this, "NEW_PRODUCT", null);
+            fragmentnewproduct = FragmentNewEditProduct.newInstance("NEW_PRODUCT", null);
+            fragmentnewproduct.show( getSupportFragmentManager(), "NEW_PRODUCT");
         }else if (item.getItemId() == R.id.etat_stock) {
 
             ArrayList<PostData_Produit> produitsWithStock = new ArrayList<>();
@@ -494,6 +470,24 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             }
 
             generatePDF(produitsWithStock);
+        }else if (item.getItemId() == R.id.share_csv) {
+
+            File csvFile = CsvExporter.exportProductsToCache(this, produits);
+
+            if (csvFile != null) {
+                Toast.makeText(this, "CSV created: " + csvFile.getName(), Toast.LENGTH_SHORT).show();
+
+                Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", csvFile);
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/csv");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                startActivity(Intent.createChooser(intent, "Share CSV"));
+
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -502,9 +496,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         try {
 
             // Prepare file
-            File docsFolder = new File(getExternalFilesDir(null), "documents");
-            if (!docsFolder.exists()) docsFolder.mkdirs();
-            File pdfFile = new File(docsFolder, "receipt_invoice.pdf");
+            File pdfFile = new File(getExternalCacheDir(), "receipt_invoice.pdf");
 
             // Document
             Document document = new Document(PageSize.A4, 20, 20, 20, 20);
@@ -517,7 +509,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             Font titleFont = new Font(baseFont, 18, Font.BOLD);
             Font normalFont = new Font(baseFont, 12, Font.NORMAL);
             Font normal_bold_Font = new Font(baseFont, 12, Font.BOLD);
-            Font smallFont = new Font(baseFont, 10, Font.NORMAL);
+            //Font smallFont = new Font(baseFont, 10, Font.NORMAL);
 
             // Header: Company name (example) - you can change it
             Paragraph company = new Paragraph("Etat de stock", titleFont);
@@ -562,7 +554,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             nbrProduitLabel.setBorder(PdfPCell.NO_BORDER);
             nbrProduitLabel.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
 
-            PdfPCell nbrProduitValue = new PdfPCell(new Phrase(nbrProduitStr, normalFont));
+            PdfPCell nbrProduitValue = new PdfPCell(new Phrase(nbrProduitStr + " (stock <> 0)", normalFont));
             nbrProduitValue.setBorder(PdfPCell.NO_BORDER);
             nbrProduitValue.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
 
@@ -584,7 +576,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             document.add(new Paragraph("\n"));
 
             // Product table header: Product | Qty | Achat | Vente | Total Vente (per row) | Total Achat (per row)
-            PdfPTable table = new PdfPTable(new float[]{7f, 2f, 1.4f});
+            PdfPTable table = new PdfPTable(new float[]{4.5f, 1f, 1.5f,  1.5f,  1.5f});
             table.setWidthPercentage(100f);
             table.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
             table.setHeaderRows(1);
@@ -593,20 +585,22 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             PdfPCell hProduct = createHeaderCell("Produit", normalFont);
             PdfPCell hStock = createHeaderCell("stock", normalFont);
             //PdfPCell hAchat = createHeaderCell("achat", normalFont);
-            PdfPCell hVente = createHeaderCell("prix", normalFont);
-            //PdfPCell hTotalVente = createHeaderCell("إجمالي البيع", normalFont);
-            //PdfPCell hTotalAchat = createHeaderCell("إجمالي الشراء", normalFont);
+            PdfPCell hVente1 = createHeaderCell("prix1", normalFont);
+            PdfPCell hVente2 = createHeaderCell("prix2", normalFont);
+            PdfPCell hVente3 = createHeaderCell("prix3", normalFont);
 
             table.addCell(hProduct);
             table.addCell(hStock);
             //table.addCell(hAchat);
-            table.addCell(hVente);
-            //table.addCell(hTotalVente);
-            //table.addCell(hTotalAchat);
+            table.addCell(hVente1);
+            table.addCell(hVente2);
+            table.addCell(hVente3);
 
             // Totals accumulation (use double; formatted when displayed)
             double totalAchat = 0.0;
-            double totalVente = 0.0;
+            double totalVente1 = 0.0;
+            double totalVente2 = 0.0;
+            double totalVente3 = 0.0;
             double totalStock = 0.0;
 
             // Add product rows
@@ -630,36 +624,41 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                 achatCell.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
                 table.addCell(achatCell);*/
 
-                // Vente price per unit
+                // prix1
                 double prix1_ttc = p.pv1_ht * (1 + p.tva / 100);
-                PdfPCell venteCell = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f DA", prix1_ttc), normalFont));
-                venteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                venteCell.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
-                table.addCell(venteCell);
+                PdfPCell vente1Cell = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f DA", prix1_ttc), normalFont));
+                vente1Cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                vente1Cell.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+                table.addCell(vente1Cell);
 
-                // Total vente for this row = qty * ventePrice
-                /*double rowVente = p.stock * p.pv1_ttc;
-                PdfPCell rowVenteCell = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f دج", rowVente), normalFont));
-                rowVenteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                rowVenteCell.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
-                table.addCell(rowVenteCell);
+                // prix2
+                double prix2_ttc = p.pv2_ht * (1 + p.tva / 100);
+                PdfPCell vente2Cell = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f DA", prix2_ttc), normalFont));
+                vente2Cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                vente2Cell.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+                table.addCell(vente2Cell);
 
-                // Total achat for this row = qty * achatPrice
-                double rowAchat = p.stock * p.pa_ttc;
-                PdfPCell rowAchatCell = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f دج", rowAchat), normalFont));
-                rowAchatCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                rowAchatCell.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
-                table.addCell(rowAchatCell);*/
+
+                // prix3
+                double prix3_ttc = p.pv3_ht * (1 + p.tva / 100);
+                PdfPCell vente3Cell = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f DA", prix3_ttc), normalFont));
+                vente3Cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                vente3Cell.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+                table.addCell(vente3Cell);
 
             }
 
 
 
             for(int i = 0; i < productList.size(); i++) {
-                double rowVente = (productList.get(i).pv1_ht * (1 + productList.get(i).tva / 100)) * productList.get(i).stock;
+                double rowVente1 = (productList.get(i).pv1_ht * (1 + productList.get(i).tva / 100)) * productList.get(i).stock;
+                double rowVente2 = (productList.get(i).pv2_ht * (1 + productList.get(i).tva / 100)) * productList.get(i).stock;
+                double rowVente3 = (productList.get(i).pv3_ht * (1 + productList.get(i).tva / 100)) * productList.get(i).stock;
                 double rowAchat = productList.get(i).pamp * productList.get(i).stock;
                 double rowStock = productList.get(i).stock;
-                totalVente += rowVente;
+                totalVente1 += rowVente1;
+                totalVente2 += rowVente2;
+                totalVente3 += rowVente3;
                 totalAchat += rowAchat;
                 totalStock += rowStock;
             }
@@ -695,7 +694,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             document.add(new Paragraph("\n"));
 
             // Totals table (right aligned)
-            PdfPTable totalsTable = new PdfPTable(new float[]{2f, 1f});
+            PdfPTable totalsTable = new PdfPTable(new float[]{2f, 3f});
             totalsTable.setWidthPercentage(50f);
             totalsTable.setHorizontalAlignment(Element.ALIGN_LEFT);
             totalsTable.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
@@ -704,33 +703,58 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             PdfPCell totalAchatLabel = new PdfPCell(new Phrase("Total (achat):", normalFont));
             totalAchatLabel.setBorder(PdfPCell.NO_BORDER);
             totalAchatLabel.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
-            PdfPCell totalAchatValue = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f DA", totalAchat), normalFont));
+            PdfPCell totalAchatValue = new PdfPCell(new Phrase(String.format(Locale.US, "%.1f DA", totalAchat), normalFont));
             totalAchatValue.setBorder(PdfPCell.NO_BORDER);
             totalAchatValue.setHorizontalAlignment(Element.ALIGN_LEFT);
             totalAchatValue.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
 
 
-            PdfPCell totalVenteLabel = new PdfPCell(new Phrase("Total (vente):", normalFont));
-            totalVenteLabel.setBorder(PdfPCell.NO_BORDER);
-            totalVenteLabel.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
-            PdfPCell totalVenteValue = new PdfPCell(new Phrase(String.format(Locale.US, "%.2f DA", totalVente), normalFont));
-            totalVenteValue.setBorder(PdfPCell.NO_BORDER);
-            totalVenteValue.setHorizontalAlignment(Element.ALIGN_LEFT);
-            totalVenteValue.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+            PdfPCell totalVente1Label = new PdfPCell(new Phrase("Total (vente 1):", normalFont));
+            totalVente1Label.setBorder(PdfPCell.NO_BORDER);
+            totalVente1Label.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+            PdfPCell totalVente1Value = new PdfPCell(new Phrase(String.format(Locale.US, "%.1f DA", totalVente1), normalFont));
+            totalVente1Value.setBorder(PdfPCell.NO_BORDER);
+            totalVente1Value.setHorizontalAlignment(Element.ALIGN_LEFT);
+            totalVente1Value.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
 
 
-            if (prefs.getBoolean("SHOW_ACHAT_CLIENT", false)) {
+            PdfPCell totalVente2Label = new PdfPCell(new Phrase("Total (vente 2):", normalFont));
+            totalVente2Label.setBorder(PdfPCell.NO_BORDER);
+            totalVente2Label.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+            PdfPCell totalVente2Value = new PdfPCell(new Phrase(String.format(Locale.US, "%.1f DA", totalVente2), normalFont));
+            totalVente2Value.setBorder(PdfPCell.NO_BORDER);
+            totalVente2Value.setHorizontalAlignment(Element.ALIGN_LEFT);
+            totalVente2Value.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+
+
+            PdfPCell totalVente3Label = new PdfPCell(new Phrase("Total (vente 3):", normalFont));
+            totalVente3Label.setBorder(PdfPCell.NO_BORDER);
+            totalVente3Label.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+            PdfPCell totalVente3Value = new PdfPCell(new Phrase(String.format(Locale.US, "%.1f DA", totalVente3), normalFont));
+            totalVente3Value.setBorder(PdfPCell.NO_BORDER);
+            totalVente3Value.setHorizontalAlignment(Element.ALIGN_LEFT);
+            totalVente3Value.setRunDirection(PdfWriter.RUN_DIRECTION_DEFAULT);
+
+
+            if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
                 totalsTable.addCell(totalAchatLabel);
                 totalsTable.addCell(totalAchatValue);
             }
-            totalsTable.addCell(totalVenteLabel);
-            totalsTable.addCell(totalVenteValue);
+
+            totalsTable.addCell(totalVente1Label);
+            totalsTable.addCell(totalVente1Value);
+
+            totalsTable.addCell(totalVente2Label);
+            totalsTable.addCell(totalVente2Value);
+
+            totalsTable.addCell(totalVente3Label);
+            totalsTable.addCell(totalVente3Value);
 
 
             document.add(totalsTable);
 
             // Spacer
-            document.add(new Paragraph("\n"));
+            /*document.add(new Paragraph("\n"));
 
             // Barcode (Code128) for invoice number
             Barcode128 barcode128 = new Barcode128();
@@ -780,7 +804,7 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
             qrLabelCell.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
             qrTable.addCell(qrLabelCell);
 
-            document.add(qrTable);
+            document.add(qrTable);*/
 
             document.close();
 
@@ -812,9 +836,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
     }
 
     private void startScan() {
-        /**
-         * Build a new MaterialBarcodeScanner
-         */
 
         final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
                 .withActivity(ActivityProduits.this)
@@ -841,11 +862,6 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
         super.onBackPressed();
     }
 
-    @Override
-    protected void onDestroy() {
-        bus.unregister(this);
-        super.onDestroy();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -864,25 +880,12 @@ public class ActivityProduits extends AppCompatActivity implements RecyclerAdapt
                     fragmentnewproduct.setImageFromActivity(inputData);
                 }
             }
-        } else if (requestCode == 4000) {
-            if (resultCode == RESULT_OK) {
-                if (data != null) {
-                    Uri selectedImage = data.getData();
-                    InputStream iStream;
-                    try {
-                        iStream = getContentResolver().openInputStream(selectedImage);
-                        byte[] inputData = ImageUtils.getBytes(iStream);
-                        fragmentnewproduct.setImageFromActivity(inputData);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "An error occured!", Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
         }
     }
-
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
 
 }

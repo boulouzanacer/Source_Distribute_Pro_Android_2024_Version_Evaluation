@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,8 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
     private ItemLongClick itemLongClick;
     private ColorGeneratorModified generator;
 
+    private String PREFS = "ALL_PREFS";
+    private SharedPreferences prefs;
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView FournisseurN;
@@ -52,14 +55,17 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
             Sold_fournisseurN = view.findViewById(R.id.sold_fournisseur);
             image = view.findViewById(R.id.imageId);
             img_pos_fournisseur = view.findViewById(R.id.img_pos_fournisseur);
+
         }
     }
 
 
-    public RecyclerAdapterFournisseurs(Context context, List<PostData_Fournisseur> itemList) {
+    public RecyclerAdapterFournisseurs(Context mContext, List<PostData_Fournisseur> itemList) {
         this.fournisList = itemList;
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
+
+        prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -91,7 +97,12 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
 
         holder.Achats_fournisseurN.setText("Achats :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.achat_montant)));
         holder.Verser_fournisseurN.setText("Verser :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_montant)));
-        holder.Sold_fournisseurN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+
+        if (prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true)) {
+            holder.Sold_fournisseurN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+        } else {
+            holder.Sold_fournisseurN.setText("********");
+        }
 
         if (item.latitude == 0.0) {
             holder.img_pos_fournisseur.setImageResource(R.drawable.ic_baseline_wrong_location_24);

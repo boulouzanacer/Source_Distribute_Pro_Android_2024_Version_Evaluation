@@ -27,7 +27,7 @@ import com.rilixtech.materialfancybutton.utils.FontUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.pedant.SweetAlert.R;
+import com.rilixtech.materialfancybutton.R;
 
 public class MaterialFancyButton extends LinearLayout {
 

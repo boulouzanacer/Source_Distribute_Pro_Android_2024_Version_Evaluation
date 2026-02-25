@@ -199,6 +199,12 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                     .setTextSize(21)
                     .setSlantedLength(80)
                     .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+            case "A" -> holder.blocage.setText("Annuler")
+                    .setTextColor(Color.WHITE)
+                    .setSlantedBackgroundColor(Color.MAGENTA)
+                    .setTextSize(21)
+                    .setSlantedLength(80)
+                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
         }
 
 

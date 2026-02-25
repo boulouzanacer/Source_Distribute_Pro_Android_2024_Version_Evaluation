@@ -2,6 +2,7 @@ package com.safesoft.proapp.distribute.activities.product;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -74,6 +75,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
 
         position_item = getIntent().getIntExtra("POSITION_ITEM", 0);
+        produit.produit_id = getIntent().getStringExtra("PRODUCT_ID");
         produit.code_barre = getIntent().getStringExtra("CODE_BARRE");
         produit.ref_produit = getIntent().getStringExtra("REF_PRODUIT");
         produit.produit = getIntent().getStringExtra("PRODUIT");
@@ -98,12 +100,6 @@ public class ActivityProduitDetail extends AppCompatActivity {
         produit.stock = getIntent().getDoubleExtra("STOCK", 0);
         produit.colissage = getIntent().getDoubleExtra("COLISSAGE", 0);
         produit.stock_ini = getIntent().getDoubleExtra("STOCK_INI", 0);
-
-        try{
-            produit.photo = ActivityProduits.produits.get(position_item).photo;
-        }catch (Exception e){
-            produit.photo = null;
-        }
 
         produit.description = getIntent().getStringExtra("DESCRIPTION");
         produit.promo = getIntent().getIntExtra("PROMO", 0);
@@ -179,8 +175,11 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
 
         if (prefs.getBoolean("SHOW_PROD_PIC", false)) {
-            if (produit.photo != null) {
-                ImgProduit.setImageBitmap(BitmapFactory.decodeByteArray(produit.photo, 0, produit.photo.length));
+            Bitmap bmp  = controller.getProductPhotoBitmap(produit.produit_id.toString());
+            if(bmp != null){
+                ImgProduit.setImageBitmap(bmp);
+            }else{
+                ImgProduit.setImageResource(R.drawable.ic_camera_24);
             }
         }
 
@@ -242,13 +241,13 @@ public class ActivityProduitDetail extends AppCompatActivity {
             // Show Lnr_pvX if conditions are met
             Lnr_pv1.setVisibility(View.VISIBLE); // Always visible in Libre mode
 
-            if (params.prix_2 == 1 && is_app_synchronised_mode) {
+            if (params.prix_2 == 1) {
                 Lnr_pv2.setVisibility(View.VISIBLE);
             } else {
                 Lnr_pv2.setVisibility(View.GONE);
             }
 
-            if (params.prix_3 == 1 && is_app_synchronised_mode) {
+            if (params.prix_3 == 1) {
                 Lnr_pv3.setVisibility(View.VISIBLE);
             } else {
                 Lnr_pv3.setVisibility(View.GONE);

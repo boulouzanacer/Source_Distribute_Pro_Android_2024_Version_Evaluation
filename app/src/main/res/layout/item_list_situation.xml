@@ -1,66 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_root"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:id="@+id/lnr_item_root"
-        android:paddingTop="10sp"
-        android:paddingBottom="10sp"
-        android:paddingStart="5sp"
-        android:orientation="horizontal"
-        android:clickable="true"
-        android:weightSum="10"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/date_versement_value1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:layout_weight="3"
-            android:text="01/01/2023" />
+        <LinearLayout
+            android:id="@+id/lnr_item_root"
+            android:paddingTop="10sp"
+            android:paddingBottom="10sp"
+            android:paddingStart="5sp"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:weightSum="10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/date_versement_value1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_weight="3"
+                android:text="01/01/2023" />
 
 
-        <TextView
-            android:id="@+id/heure_versement_value1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:layout_weight="2"
-            android:text="00:00:00" />
+            <TextView
+                android:id="@+id/heure_versement_value1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_weight="2"
+                android:text="00:00:00" />
 
-        <TextView
-            android:id="@+id/montant_versement_value1"
-            android:layout_marginStart="10dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textStyle="bold"
-            android:gravity="end"
-            android:text="0 DA" />
+            <TextView
+                android:id="@+id/montant_versement_value1"
+                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textStyle="bold"
+                android:gravity="end"
+                android:text="0 DA" />
 
-        <ImageButton
-            android:id="@+id/btn_edit_situation"
-            android:background="@drawable/edit_situation__selector"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/baseline_edit_versement_24"
-            android:layout_height="wrap_content" />
+            <ImageButton
+                android:id="@+id/btn_edit_situation"
+                android:background="@drawable/edit_situation__selector"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/baseline_edit_versement_24"
+                android:layout_height="wrap_content" />
 
-        <ImageButton
-            android:id="@+id/btn_remove_situation"
-            android:background="@drawable/delete_situation_selector"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/ic_baseline_delete_forever_24"
-            android:layout_height="wrap_content" />
+            <ImageButton
+                android:id="@+id/btn_remove_situation"
+                android:background="@drawable/delete_situation_selector"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_baseline_delete_forever_24"
+                android:layout_height="wrap_content" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+</merge>

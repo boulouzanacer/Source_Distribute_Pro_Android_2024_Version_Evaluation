@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 
 import androidx.activity.EdgeToEdge;
@@ -70,6 +69,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -88,7 +88,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class ActivityImportsExport extends AppCompatActivity {
-
     private String Server;
     private String Username, Password;
     private final String PREFS = "ALL_PREFS";
@@ -270,96 +269,93 @@ public class ActivityImportsExport extends AppCompatActivity {
 
     private void switshAction(int id) throws ParseException {
 
-        switch (id) {
-            case R.id.rlt_import_bon_retour -> {
+        if (id == R.id.rlt_import_bon_retour) {
 
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_BON_RETOUR", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
-            }
-            case R.id.rlt_import_fournisseur -> {
+            Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_BON_RETOUR", ActivityImportsExport.this);
+            check_connection_export_data_achat.execute();
 
-                String querry1 = "SELECT RECORDID FROM ACHAT1 WHERE IS_EXPORTED = 0";
+        } else if (id == R.id.rlt_import_fournisseur) {
 
-                if (controller.select_count_from_database(querry1) != 0) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Veuillez exporté les achats avant la synchronisations des fournissseurs")
-                            .show();
-                    return;
-                }
+            String querry1 = "SELECT RECORDID FROM ACHAT1 WHERE IS_EXPORTED = 0";
 
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_FOURNISSEURS", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
+            if (controller.select_count_from_database(querry1) != 0) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Veuillez exporté les achats avant la synchronisations des fournissseurs")
+                        .show();
+                return;
             }
 
-            case R.id.rlt_import_client -> {
+            Check_connection_export_server check_connection_export_data_achat2 = new Check_connection_export_server("IMPORT_FOURNISSEURS", ActivityImportsExport.this);
+            check_connection_export_data_achat2.execute();
 
-                String querry1 = "SELECT RECORDID FROM BON1 WHERE IS_EXPORTED = 0";
-                String querry2 = "SELECT RECORDID FROM CARNET_C WHERE IS_EXPORTED = 0";
-                String querry3 = "SELECT RECORDID FROM BON1_TEMP WHERE IS_EXPORTED = 0";
-                if (controller.select_count_from_database(querry1) != 0) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Veuillez exporté les ventes avant la synchronisations des clients")
-                            .show();
-                    return;
-                }
+        } else if (id == R.id.rlt_import_client) {
 
-                if (controller.select_count_from_database(querry2) != 0) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Veuillez exporté les versement avant la synchronisations des clients")
-                            .show();
-                    return;
-                }
-
-                if (controller.select_count_from_database(querry3) != 0) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Veuillez exporté les commandes avant la synchronisations des clients")
-                            .show();
-                    return;
-                }
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_CLIENTS", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
+            String querry1 = "SELECT RECORDID FROM BON1 WHERE IS_EXPORTED = 0";
+            String querry2 = "SELECT RECORDID FROM CARNET_C WHERE IS_EXPORTED = 0";
+            String querry3 = "SELECT RECORDID FROM BON1_TEMP WHERE IS_EXPORTED = 0";
+            if (controller.select_count_from_database(querry1) != 0) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Veuillez exporté les ventes avant la synchronisations des clients")
+                        .show();
+                return;
             }
 
-            case R.id.rlt_import_produit -> {
-                String querry1 = "SELECT RECORDID FROM BON1 WHERE IS_EXPORTED = 0";
-                String querry3 = "SELECT RECORDID FROM BON1_TEMP WHERE IS_EXPORTED = 0";
-                String querry4 = "SELECT RECORDID FROM ACHAT1 WHERE IS_EXPORTED = 0";
-                if (controller.select_count_from_database(querry1) != 0) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Veuillez exporté les ventes avant la synchronisations des produits")
-                            .show();
-                    return;
-                }
-
-                if (controller.select_count_from_database(querry3) != 0) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Veuillez exporté les commandes avant la synchronisations des produits")
-                            .show();
-                    return;
-                }
-
-                if (controller.select_count_from_database(querry4) != 0) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Veuillez exporté les achats avant la synchronisations des produits")
-                            .show();
-                    return;
-                }
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_PRODUITS", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
+            if (controller.select_count_from_database(querry2) != 0) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Veuillez exporté les versement avant la synchronisations des clients")
+                        .show();
+                return;
             }
 
-            case R.id.rlt_import_produit_ftp ->
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Important !")
-                            .setContentText(" Cette rubrique est en cours de développement !")
-                            .show();
+            if (controller.select_count_from_database(querry3) != 0) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Veuillez exporté les commandes avant la synchronisations des clients")
+                        .show();
+                return;
+            }
+            Check_connection_export_server check_connection_export_data_achat3 = new Check_connection_export_server("IMPORT_CLIENTS", ActivityImportsExport.this);
+            check_connection_export_data_achat3.execute();
+
+        } else if (id == R.id.rlt_import_produit) {
+
+            String querry1 = "SELECT RECORDID FROM BON1 WHERE IS_EXPORTED = 0";
+            String querry3 = "SELECT RECORDID FROM BON1_TEMP WHERE IS_EXPORTED = 0";
+            String querry4 = "SELECT RECORDID FROM ACHAT1 WHERE IS_EXPORTED = 0";
+            if (controller.select_count_from_database(querry1) != 0) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Veuillez exporté les ventes avant la synchronisations des produits")
+                        .show();
+                return;
+            }
+
+            if (controller.select_count_from_database(querry3) != 0) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Veuillez exporté les commandes avant la synchronisations des produits")
+                        .show();
+                return;
+            }
+
+            if (controller.select_count_from_database(querry4) != 0) {
+                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention. !")
+                        .setContentText("Veuillez exporté les achats avant la synchronisations des produits")
+                        .show();
+                return;
+            }
+            Check_connection_export_server check_connection_export_data_achat4 = new Check_connection_export_server("IMPORT_PRODUITS", ActivityImportsExport.this);
+            check_connection_export_data_achat4.execute();
+
+        } else if (id == R.id.rlt_import_produit_ftp) {
+            new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Important !")
+                    .setContentText(" Cette rubrique est en cours de développement !")
+                    .show();
 
               /*  Activity pactivity;
                 pactivity = ActivityImportsExport.this;
@@ -367,27 +363,27 @@ public class ActivityImportsExport extends AppCompatActivity {
                 Ftp_export import_produit_ftp = new Ftp_export();
                 import_produit_ftp.start(pactivity, "TRANSFERT_LIST", "");*/
 
-            case R.id.rlt_import_parametre -> {
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_PARAMETRES", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
-            }
-            case R.id.rlt_import_commandes -> {
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_COMMANDE", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
-            }
-            case R.id.rlt_import_tournees -> {
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("IMPORT_TOURNEE", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
-            }
-            case R.id.rlt_export_achats -> {
-                Check_connection_export_server check_connection_export_data_vente = new Check_connection_export_server("EXPORT_ACHAT", ActivityImportsExport.this);
-                check_connection_export_data_vente.execute();
-            }
-            case R.id.rlt_export_achats_ftp ->
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Important !")
-                            .setContentText(" Cette rubrique est en cours de développement !")
-                            .show();
+        } else if (id == R.id.rlt_import_parametre) {
+            Check_connection_export_server check_connection_export_data_achat5 = new Check_connection_export_server("IMPORT_PARAMETRES", ActivityImportsExport.this);
+            check_connection_export_data_achat5.execute();
+
+        } else if (id == R.id.rlt_import_commandes) {
+            Check_connection_export_server check_connection_export_data_achat6 = new Check_connection_export_server("IMPORT_COMMANDE", ActivityImportsExport.this);
+            check_connection_export_data_achat6.execute();
+
+        } else if (id == R.id.rlt_import_tournees) {
+            Check_connection_export_server check_connection_export_data_achat7 = new Check_connection_export_server("IMPORT_TOURNEE", ActivityImportsExport.this);
+            check_connection_export_data_achat7.execute();
+
+        } else if (id == R.id.rlt_export_achats) {
+            Check_connection_export_server check_connection_export_data_vente = new Check_connection_export_server("EXPORT_ACHAT", ActivityImportsExport.this);
+            check_connection_export_data_vente.execute();
+
+        } else if (id == R.id.rlt_export_achats_ftp) {
+            new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Important !")
+                    .setContentText(" Cette rubrique est en cours de développement !")
+                    .show();
 
                 /*Activity aactivity;
                 aactivity = ActivityImportsExport.this;
@@ -395,74 +391,73 @@ public class ActivityImportsExport extends AppCompatActivity {
                 Ftp_export export_achat_ftp = new Ftp_export();
                 export_achat_ftp.start(aactivity, "ACHAT", "");*/
 
-            case R.id.rlt_export_ventes -> {
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("EXPORT_VENTE", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
-            }
-            case R.id.rlt_export_ventes_ftp -> {
-                Activity vactivity;
-                vactivity = ActivityImportsExport.this;
-                Ftp_export export_vente_ftp = new Ftp_export();
-                export_vente_ftp.start(vactivity, "SALE", "");
-            }
-            case R.id.rlt_export_commandes -> {
-                Check_connection_export_server check_connection_export_data_commande = new Check_connection_export_server("EXPORT_COMMANDE", ActivityImportsExport.this);
-                check_connection_export_data_commande.execute();
-            }
-            case R.id.rlt_export_commandes_ftp -> {
-                Activity cactivity;
-                cactivity = ActivityImportsExport.this;
-                Ftp_export export_commande_ftp = new Ftp_export();
-                export_commande_ftp.start(cactivity, "ORDER", "");
-            }
-            case R.id.rlt_export_inventaires -> {
-                Check_connection_export_server check_connection_export_data_inventaire = new Check_connection_export_server("EXPORT_INVENTAIRE", ActivityImportsExport.this);
-                check_connection_export_data_inventaire.execute();
-            }
-            case R.id.rlt_export_inventaires_ftp -> {
-                Activity iactivity;
-                iactivity = ActivityImportsExport.this;
-                Ftp_export export_inventaire_ftp = new Ftp_export();
-                export_inventaire_ftp.start(iactivity, "INVENTAIRE", "");
-            }
-            case R.id.rlt_export_tournees -> {
-                Check_connection_export_server check_connection_export_data_achat = new Check_connection_export_server("EXPORT_TOURNEE", ActivityImportsExport.this);
-                check_connection_export_data_achat.execute();
-            }
-            case R.id.rlt_exported_achats -> {
-                Intent exported_achats_intent = new Intent(ActivityImportsExport.this, ActivityAchats.class);
-                exported_achats_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
-                startActivity(exported_achats_intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-            case R.id.rlt_exported_ventes -> {
-                Intent exported_ventes_intent = new Intent(ActivityImportsExport.this, ActivityVentes.class);
-                exported_ventes_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
-                startActivity(exported_ventes_intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-            case R.id.rlt_exported_commandes -> {
-                Intent exported_commandes_intent = new Intent(ActivityImportsExport.this, ActivityOrdersClient.class);
-                exported_commandes_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
-                startActivity(exported_commandes_intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-            case R.id.rlt_exported_inventaires -> {
-                Intent exported_inventaire_intent = new Intent(ActivityImportsExport.this, ActivityInventaires.class);
-                exported_inventaire_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
-                startActivity(exported_inventaire_intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-            case R.id.rlt_etatv -> {
-                Intent etat_v_intent = new Intent(ActivityImportsExport.this, ActivityEtatV.class);
-                startActivity(etat_v_intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-            case R.id.rlt_etatc -> {
-                Intent etat_c_intent = new Intent(ActivityImportsExport.this, ActivityEtatC.class);
-                startActivity(etat_c_intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
+        } else if (id == R.id.rlt_export_ventes) {
+            Check_connection_export_server check_connection_export_data_achat8 = new Check_connection_export_server("EXPORT_VENTE", ActivityImportsExport.this);
+            check_connection_export_data_achat8.execute();
+
+        } else if (id == R.id.rlt_export_ventes_ftp) {
+            Activity vactivity;
+            vactivity = ActivityImportsExport.this;
+            Ftp_export export_vente_ftp = new Ftp_export();
+            export_vente_ftp.start(vactivity, "SALE", "");
+
+        } else if (id == R.id.rlt_export_commandes) {
+            Check_connection_export_server check_connection_export_data_commande = new Check_connection_export_server("EXPORT_COMMANDE", ActivityImportsExport.this);
+            check_connection_export_data_commande.execute();
+
+        } else if (id == R.id.rlt_export_commandes_ftp) {
+            Activity cactivity;
+            cactivity = ActivityImportsExport.this;
+            Ftp_export export_commande_ftp = new Ftp_export();
+            export_commande_ftp.start(cactivity, "ORDER", "");
+
+        } else if (id == R.id.rlt_export_inventaires) {
+            Check_connection_export_server check_connection_export_data_inventaire = new Check_connection_export_server("EXPORT_INVENTAIRE", ActivityImportsExport.this);
+            check_connection_export_data_inventaire.execute();
+
+        } else if (id == R.id.rlt_export_inventaires_ftp) {
+            Activity iactivity;
+            iactivity = ActivityImportsExport.this;
+            Ftp_export export_inventaire_ftp = new Ftp_export();
+            export_inventaire_ftp.start(iactivity, "INVENTAIRE", "");
+
+        } else if (id == R.id.rlt_export_tournees) {
+            Check_connection_export_server check_connection_export_data_achat9 = new Check_connection_export_server("EXPORT_TOURNEE", ActivityImportsExport.this);
+            check_connection_export_data_achat9.execute();
+
+        } else if (id == R.id.rlt_exported_achats) {
+            Intent exported_achats_intent = new Intent(ActivityImportsExport.this, ActivityAchats.class);
+            exported_achats_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
+            startActivity(exported_achats_intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+        } else if (id == R.id.rlt_exported_ventes) {
+            Intent exported_ventes_intent = new Intent(ActivityImportsExport.this, ActivityVentes.class);
+            exported_ventes_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
+            startActivity(exported_ventes_intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+        } else if (id == R.id.rlt_exported_commandes) {
+            Intent exported_commandes_intent = new Intent(ActivityImportsExport.this, ActivityOrdersClient.class);
+            exported_commandes_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
+            startActivity(exported_commandes_intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+        } else if (id == R.id.rlt_exported_inventaires) {
+            Intent exported_inventaire_intent = new Intent(ActivityImportsExport.this, ActivityInventaires.class);
+            exported_inventaire_intent.putExtra("SOURCE_EXPORT", "EXPORTED");
+            startActivity(exported_inventaire_intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+        } else if (id == R.id.rlt_etatv) {
+            Intent etat_v_intent = new Intent(ActivityImportsExport.this, ActivityEtatV.class);
+            startActivity(etat_v_intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+        } else if (id == R.id.rlt_etatc) {
+            Intent etat_c_intent = new Intent(ActivityImportsExport.this, ActivityEtatC.class);
+            startActivity(etat_c_intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
 
@@ -738,12 +733,10 @@ public class ActivityImportsExport extends AppCompatActivity {
     //==================== AsyncTask TO export achats to the server
     public class Exporter_achats_to_server_task extends AsyncTask<Void, Integer, Integer> {
 
+        private WeakReference<ActivityImportsExport> activityRef;
         private AlertDialog mProgressDialog_Free;
         private ProgressBar progressBar;
         private TextView progressText;
-        private Context context;
-
-
 
         Connection con;
         int flag = 0;
@@ -759,15 +752,19 @@ public class ActivityImportsExport extends AppCompatActivity {
         List<String> list_fournisseur_not_exported;
         String messageError = "";
 
-        public Exporter_achats_to_server_task(Context context) {
-            this.context = context;
+        public Exporter_achats_to_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogExportation() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Exportation des données...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
             progressText = view.findViewById(R.id.progressText);
 
@@ -1202,61 +1199,69 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
-            }
-            // Problem insert client into database // operation aborded
-            if (integer == 1) {
-                String produit_error = "";
-                String nums_bon_error = "";
-                String versement_error = "";
-                for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
-                    if (i > 0) {
-                        nums_bon_error = nums_bon_error + " ,  ";
+            ActivityImportsExport activity = activityRef.get();
+
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
                     }
-                    nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
                 }
-                if (!list_num_bon_not_exported.isEmpty()) {
-                    nums_bon_error = "\nProblem exportation dans les bons : " + nums_bon_error;
-                }
-                for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
 
-                    if (i > 0) {
-                        versement_error = versement_error + " \n  ";
+                // Problem insert client into database // operation aborded
+                if (integer == 1) {
+                    String produit_error = "";
+                    String nums_bon_error = "";
+                    String versement_error = "";
+                    for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
+                        if (i > 0) {
+                            nums_bon_error = nums_bon_error + " ,  ";
+                        }
+                        nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
                     }
-                    versement_error = versement_error + list_recordid_versement_not_exported.get(i);
-
-                }
-                if (!list_recordid_versement_not_exported.isEmpty()) {
-                    versement_error = "\nProblem exportation dans les versements : \n" + versement_error;
-                }
-
-                for (int i = 0; i < list_produit_not_exported.size(); i++) {
-
-                    if (i > 0) {
-                        produit_error = produit_error + " \n  ";
+                    if (!list_num_bon_not_exported.isEmpty()) {
+                        nums_bon_error = "\nProblem exportation dans les bons : " + nums_bon_error;
                     }
-                    produit_error = produit_error + list_produit_not_exported.get(i);
+                    for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
 
+                        if (i > 0) {
+                            versement_error = versement_error + " \n  ";
+                        }
+                        versement_error = versement_error + list_recordid_versement_not_exported.get(i);
+
+                    }
+                    if (!list_recordid_versement_not_exported.isEmpty()) {
+                        versement_error = "\nProblem exportation dans les versements : \n" + versement_error;
+                    }
+
+                    for (int i = 0; i < list_produit_not_exported.size(); i++) {
+
+                        if (i > 0) {
+                            produit_error = produit_error + " \n  ";
+                        }
+                        produit_error = produit_error + list_produit_not_exported.get(i);
+
+                    }
+                    if (!list_produit_not_exported.isEmpty()) {
+                        produit_error = "\nProblem exportation dans les produits : \n" + produit_error;
+                    }
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Exportation...")
+                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + produit_error + nums_bon_error + versement_error)
+                            .show();
+                } else if (integer == 2) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .show();
+                } else if (integer == 3) {
+                    //  if(ActivityImportsExport. != null)
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Erreur...")
+                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .show();
                 }
-                if (!list_produit_not_exported.isEmpty()) {
-                    produit_error = "\nProblem exportation dans les produits : \n" + produit_error;
-                }
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + produit_error + nums_bon_error + versement_error)
-                        .show();
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .show();
-            } else if (integer == 3) {
-                //  if(ActivityImportsExport. != null)
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Erreur SQL : " + erreurMessage)
-                        .show();
             }
 
             super.onPostExecute(integer);
@@ -1267,9 +1272,7 @@ public class ActivityImportsExport extends AppCompatActivity {
     public class Exporter_ventes_to_server_task extends AsyncTask<Void, Integer, Integer> {
 
         private AlertDialog mProgressDialog_Free;
-        private ProgressBar progressBar;
-        private TextView progressText;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
         Connection con;
         int flag = 0;
@@ -1286,18 +1289,21 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         String messageError = "";
 
-        public Exporter_ventes_to_server_task(Context context) {
-            this.context = context;
+        public Exporter_ventes_to_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogExportation() {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Exportation des données...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
-            progressBar = view.findViewById(R.id.progressBar);
-            progressText = view.findViewById(R.id.progressText);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
+            ProgressBar progressBar = view.findViewById(R.id.progressBar);
+            TextView progressText = view.findViewById(R.id.progressText);
 
             builder.setView(view);
             builder.setCancelable(false);
@@ -1807,73 +1813,82 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
-            }
-            // Problem insert client into database // operation aborded
-            if (integer == 1) {
-                String produit_error = "";
-                String client_error = "";
-                String nums_bon_error = "";
-                String versement_error = "";
+            ActivityImportsExport activity = activityRef.get();
 
-                for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
-                    if (i > 0) {
-                        nums_bon_error = nums_bon_error + " ,  ";
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
                     }
-                    nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
                 }
-                if (!list_num_bon_not_exported.isEmpty()) {
-                    nums_bon_error = "\nProbleme exportation dans les bons : " + nums_bon_error;
-                }
-                for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
 
-                    if (i > 0) {
-                        versement_error = versement_error + " \n  ";
+                // Problem insert client into database // operation aborded
+
+                if (integer == 1) {
+                    String produit_error = "";
+                    String client_error = "";
+                    String nums_bon_error = "";
+                    String versement_error = "";
+
+                    for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
+                        if (i > 0) {
+                            nums_bon_error = nums_bon_error + " ,  ";
+                        }
+                        nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
                     }
-                    versement_error = versement_error + list_recordid_versement_not_exported.get(i);
-
-                }
-                if (!list_recordid_versement_not_exported.isEmpty()) {
-                    versement_error = "\nProbleme exportation dans les versements : \n" + versement_error;
-                }
-                for (int i = 0; i < list_produit_not_exported.size(); i++) {
-
-                    if (i > 0) {
-                        produit_error = produit_error + " \n  ";
+                    if (!list_num_bon_not_exported.isEmpty()) {
+                        nums_bon_error = "\nProbleme exportation dans les bons : " + nums_bon_error;
                     }
-                    produit_error = produit_error + list_produit_not_exported.get(i);
+                    for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
 
-                }
-                if (!list_produit_not_exported.isEmpty()) {
-                    produit_error = "\nProbleme exportation dans les produits : \n" + produit_error;
-                }
-                for (int i = 0; i < list_client_not_exported.size(); i++) {
+                        if (i > 0) {
+                            versement_error = versement_error + " \n  ";
+                        }
+                        versement_error = versement_error + list_recordid_versement_not_exported.get(i);
 
-                    if (i > 0) {
-                        client_error = client_error + " \n  ";
                     }
-                    client_error = client_error + list_client_not_exported.get(i);
+                    if (!list_recordid_versement_not_exported.isEmpty()) {
+                        versement_error = "\nProbleme exportation dans les versements : \n" + versement_error;
+                    }
+                    for (int i = 0; i < list_produit_not_exported.size(); i++) {
 
+                        if (i > 0) {
+                            produit_error = produit_error + " \n  ";
+                        }
+                        produit_error = produit_error + list_produit_not_exported.get(i);
+
+                    }
+                    if (!list_produit_not_exported.isEmpty()) {
+                        produit_error = "\nProbleme exportation dans les produits : \n" + produit_error;
+                    }
+                    for (int i = 0; i < list_client_not_exported.size(); i++) {
+
+                        if (i > 0) {
+                            client_error = client_error + " \n  ";
+                        }
+                        client_error = client_error + list_client_not_exported.get(i);
+
+                    }
+                    if (!list_client_not_exported.isEmpty()) {
+                        client_error = "\nProblem exportation dans les client : \n" + client_error;
+                    }
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Exportation...")
+                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
+                            .show();
+                } else if (integer == 2) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .show();
+                } else if (integer == 3) {
+                    //  if(ActivityImportsExport. != null)
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Erreur...")
+                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .show();
                 }
-                if (!list_client_not_exported.isEmpty()) {
-                    client_error = "\nProblem exportation dans les client : \n" + client_error;
-                }
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
-                        .show();
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .show();
-            } else if (integer == 3) {
-                //  if(ActivityImportsExport. != null)
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Erreur SQL : " + erreurMessage)
-                        .show();
             }
 
             super.onPostExecute(integer);
@@ -1886,9 +1901,7 @@ public class ActivityImportsExport extends AppCompatActivity {
     public class Exporter_commandes_to_server_task extends AsyncTask<Void, Integer, Integer> {
 
         private AlertDialog mProgressDialog_Free;
-        private ProgressBar progressBar;
-        private TextView progressText;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
 
 
@@ -1904,17 +1917,22 @@ public class ActivityImportsExport extends AppCompatActivity {
         List<String> list_num_bon_not_exported;
         List<String> list_recordid_versement_not_exported;
 
-        public Exporter_commandes_to_server_task(Context context) {
-            this.context = context;
+        public Exporter_commandes_to_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogExportation() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Exportation des données...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
-            progressBar = view.findViewById(R.id.progressBar);
-            progressText = view.findViewById(R.id.progressText);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
+            ProgressBar progressBar = view.findViewById(R.id.progressBar);
+            TextView progressText = view.findViewById(R.id.progressText);
 
             builder.setView(view);
             builder.setCancelable(false);
@@ -2410,74 +2428,83 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
+            ActivityImportsExport activity = activityRef.get();
+
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                // Problem insert client into database // operation aborded
+                if (integer == 1) {
+                    String produit_error = "";
+                    String client_error = "";
+                    String nums_bon_error = "";
+                    String versement_error = "";
+                    for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
+                        if (i > 0) {
+                            nums_bon_error = nums_bon_error + " ,  ";
+                        }
+                        nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
+                    }
+                    if (!list_num_bon_not_exported.isEmpty()) {
+                        nums_bon_error = "\nProblem exportation dans les bons de commande : " + nums_bon_error;
+                    }
+                    for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
+
+                        if (i > 0) {
+                            versement_error = versement_error + " \n  ";
+                        }
+                        versement_error = versement_error + list_recordid_versement_not_exported.get(i);
+
+                    }
+                    if (!list_recordid_versement_not_exported.isEmpty()) {
+                        versement_error = "\nProblem exportation dans les versements nums : \n" + versement_error;
+                    }
+
+                    for (int i = 0; i < list_produit_not_exported.size(); i++) {
+
+                        if (i > 0) {
+                            produit_error = produit_error + " \n  ";
+                        }
+                        produit_error = produit_error + list_produit_not_exported.get(i);
+
+                    }
+                    if (!list_produit_not_exported.isEmpty()) {
+                        produit_error = "\nProblem exportation dans les produits : \n" + produit_error;
+                    }
+                    for (int i = 0; i < list_client_not_exported.size(); i++) {
+
+                        if (i > 0) {
+                            client_error = client_error + " \n  ";
+                        }
+                        client_error = client_error + list_client_not_exported.get(i);
+
+                    }
+                    if (!list_client_not_exported.isEmpty()) {
+                        client_error = "\nProblem exportation dans les client : \n" + client_error;
+                    }
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Exportation...")
+                            .setContentText("Exportation terminé \n Nombre de commandes exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
+                            .show();
+                } else if (integer == 2) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .show();
+                } else if (integer == 3) {
+                    //  if(ActivityImportsExport. != null)
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Erreur...")
+                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .show();
+                }
             }
-            // Problem insert client into database // operation aborded
-            if (integer == 1) {
-                String produit_error = "";
-                String client_error = "";
-                String nums_bon_error = "";
-                String versement_error = "";
-                for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
-                    if (i > 0) {
-                        nums_bon_error = nums_bon_error + " ,  ";
-                    }
-                    nums_bon_error = nums_bon_error + list_num_bon_not_exported.get(i);
-                }
-                if (!list_num_bon_not_exported.isEmpty()) {
-                    nums_bon_error = "\nProblem exportation dans les bons de commande : " + nums_bon_error;
-                }
-                for (int i = 0; i < list_recordid_versement_not_exported.size(); i++) {
 
-                    if (i > 0) {
-                        versement_error = versement_error + " \n  ";
-                    }
-                    versement_error = versement_error + list_recordid_versement_not_exported.get(i);
-
-                }
-                if (!list_recordid_versement_not_exported.isEmpty()) {
-                    versement_error = "\nProblem exportation dans les versements nums : \n" + versement_error;
-                }
-
-                for (int i = 0; i < list_produit_not_exported.size(); i++) {
-
-                    if (i > 0) {
-                        produit_error = produit_error + " \n  ";
-                    }
-                    produit_error = produit_error + list_produit_not_exported.get(i);
-
-                }
-                if (!list_produit_not_exported.isEmpty()) {
-                    produit_error = "\nProblem exportation dans les produits : \n" + produit_error;
-                }
-                for (int i = 0; i < list_client_not_exported.size(); i++) {
-
-                    if (i > 0) {
-                        client_error = client_error + " \n  ";
-                    }
-                    client_error = client_error + list_client_not_exported.get(i);
-
-                }
-                if (!list_client_not_exported.isEmpty()) {
-                    client_error = "\nProblem exportation dans les client : \n" + client_error;
-                }
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé \n Nombre de commandes exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
-                        .show();
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .show();
-            } else if (integer == 3) {
-                //  if(ActivityImportsExport. != null)
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Erreur SQL : " + erreurMessage)
-                        .show();
-            }
 
             super.onPostExecute(integer);
         }
@@ -2488,22 +2515,26 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         private AlertDialog mProgressDialog_Free;
         private ProgressBar progressBar;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
 
         Connection con;
         int flag = 0;
         String messageError = "";
 
-        public Import_parametre_from_server_task(Context context) {
-            this.context = context;
+        public Import_parametre_from_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogConfigParamètres() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Synchronisation des paramètres...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout_indeterminate, null);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout_indeterminate, null);
             progressBar = view.findViewById(R.id.progressBar);
 
             builder.setView(view);
@@ -2720,25 +2751,34 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onPostExecute(Integer integer) {
             try {
 
-                if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                    mProgressDialog_Free.dismiss();
-                }
-                if (integer == 1) {
-                    // get all transfert bon of this depot
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Information !...")
-                            .setContentText("Paramètres synchroniser avec succés")
-                            .show();
-                } else if (integer == 2) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Erreur...")
-                            .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
-                            .show();
-                } else {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Erreur...")
-                            .setContentText("Probleme recupération des données : " + messageError)
-                            .show();
+                ActivityImportsExport activity = activityRef.get();
+
+                if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                    if (mProgressDialog_Free != null) {
+                        try {
+                            mProgressDialog_Free.dismiss();
+                        } catch (Exception ignored) {
+                        }
+                    }
+
+                    if (integer == 1) {
+                        // get all transfert bon of this depot
+                        new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Information !...")
+                                .setContentText("Paramètres synchroniser avec succés")
+                                .show();
+                    } else if (integer == 2) {
+                        new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Erreur...")
+                                .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
+                                .show();
+                    } else {
+                        new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Erreur...")
+                                .setContentText("Probleme recupération des données : " + messageError)
+                                .show();
+                    }
+
                 }
 
             }catch (Exception ex){
@@ -2755,7 +2795,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         private AlertDialog mProgressDialog_Free;
         private ProgressBar progressBar;
         private TextView progressText;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
         Connection con;
         int flag = 1;
@@ -2765,15 +2805,19 @@ public class ActivityImportsExport extends AppCompatActivity {
         List<String> list_fournisseur_not_exported;
         String erreurMessage = "";
 
-        public Import_fournisseur_from_server_task(Context context) {
-            this.context = context;
+        public Import_fournisseur_from_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogConfigFournisseur() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Importation fournisseurs...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
             progressText = view.findViewById(R.id.progressText);
 
@@ -2902,25 +2946,36 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
+
+            ActivityImportsExport activity = activityRef.get();
+
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                if (result == 1) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Information. !")
+                            .setContentText("Importation liste fournisseurs bien terminé")
+                            .show();
+                } else if (result == 2) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .show();
+                } else if (result == 3) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                            .show();
+                }
+
             }
-            if (result == 1) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information. !")
-                        .setContentText("Importation la liste des fournisseurs bien terminé")
-                        .show();
-            } else if (result == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .show();
-            } else if (result == 3) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
-                        .show();
-            }
+
             super.onPostExecute(result);
         }
     }
@@ -2932,7 +2987,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         private AlertDialog mProgressDialog_Free;
         private ProgressBar progressBar;
         private TextView progressText;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
 
         Connection con;
@@ -2944,15 +2999,19 @@ public class ActivityImportsExport extends AppCompatActivity {
         String erreurMessage = "";
         List<String> list_client_not_exported;
 
-        public Import_client_from_server_task(Context context) {
-            this.context = context;
+        public Import_client_from_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogConfigClient() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Importation clients...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
             progressText = view.findViewById(R.id.progressText);
 
@@ -3109,25 +3168,34 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
+            ActivityImportsExport activity = activityRef.get();
+
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                if (result == 1) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Information. !")
+                            .setContentText("Importation liste clients bien terminé")
+                            .show();
+                } else if (result == 2) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .show();
+                } else if (result == 3) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                            .show();
+                }
             }
-            if (result == 1) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information. !")
-                        .setContentText("Importation la liste des clients bien terminé")
-                        .show();
-            } else if (result == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .show();
-            } else if (result == 3) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
-                        .show();
-            }
+
             super.onPostExecute(result);
         }
     }
@@ -3139,7 +3207,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         private AlertDialog mProgressDialog_Free;
         private ProgressBar progressBar;
         private TextView progressText;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
 
         Connection con;
@@ -3150,15 +3218,19 @@ public class ActivityImportsExport extends AppCompatActivity {
         String erreurMessage = "";
         List<String> list_produit_not_exported;
 
-        public Import_produit_from_server_task(Context context) {
-            this.context = context;
+        public Import_produit_from_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogConfigProduit() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Importation produits...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
             progressText = view.findViewById(R.id.progressText);
 
@@ -3178,6 +3250,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
+
 
                 ArrayList<PostData_Famille> familles = new ArrayList<>();
                 ArrayList<PostData_Produit> produits = new ArrayList<>();
@@ -3519,41 +3592,47 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
-            }
-            try {
-                if (result == 1) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                    Date currentDateTime = Calendar.getInstance().getTime();
-                    currentDateTimeString = sdf.format(currentDateTime);
-                    prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("date_time", currentDateTimeString);
-                    editor.apply();
+            ActivityImportsExport activity = activityRef.get();
 
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Information. !")
-                            .setContentText("Importation la liste des produits bien terminé")
-                            .show();
-
-                } else if (result == 2) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                            .show();
-                } else if (result == 3) {
-                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
-                            .show();
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
+                    }
                 }
-            }catch (Exception e){
 
+                try {
+                    if (result == 1) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                        Date currentDateTime = Calendar.getInstance().getTime();
+                        currentDateTimeString = sdf.format(currentDateTime);
+                        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("date_time", currentDateTimeString);
+                        editor.apply();
+
+                        new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Information. !")
+                                .setContentText("Importation liste produits bien terminé")
+                                .show();
+
+                    } else if (result == 2) {
+                        new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention. !")
+                                .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                                .show();
+                    } else if (result == 3) {
+                        new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Attention. !")
+                                .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                                .show();
+                    }
+                }catch (Exception e){
+
+                }
             }
-
             super.onPostExecute(result);
-
         }
 
         public String compressImage(byte[] b) {
@@ -3713,10 +3792,10 @@ public class ActivityImportsExport extends AppCompatActivity {
 
     public class Import_commande_client_from_server_task extends AsyncTask<Void, Integer, Integer> {
 
-        private AlertDialog progressDialog;
+        private AlertDialog mProgressDialog_Free;
         private ProgressBar progressBar;
         private TextView progressText;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
         Connection con;
         int flag = 1;
@@ -3726,8 +3805,8 @@ public class ActivityImportsExport extends AppCompatActivity {
         ArrayList<PostData_Client> list_client;
         ArrayList<String> not_imported_client;
 
-        public Import_commande_client_from_server_task(Context context) {
-            this.context = context;
+        public Import_commande_client_from_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         @Override
@@ -3737,18 +3816,23 @@ public class ActivityImportsExport extends AppCompatActivity {
         }
 
         private void progressDialogConfigImportCommandeClient() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Importation bons de commandes clients...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
             progressText = view.findViewById(R.id.progressText);
 
             builder.setView(view);
             builder.setCancelable(false);
 
-            progressDialog = builder.create();
-            progressDialog.show();
+            mProgressDialog_Free = builder.create();
+            mProgressDialog_Free.show();
+
         }
 
         @Override
@@ -3918,26 +4002,39 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
+
+            ActivityImportsExport activity = activityRef.get();
+
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                int alertType = (result == 1) ? SweetAlertDialog.SUCCESS_TYPE : SweetAlertDialog.WARNING_TYPE;
+                String message_not_exported = "";
+                for(int i = 0; not_imported_client.size() > i; i++){
+                    message_not_exported = message_not_exported + "\n"+ not_imported_client.get(i);
+                }
+
+                String message = switch (result) {
+                    case 1 -> "Importation terminée avec succès.\n" + message_not_exported;
+                    case 2 -> "Connexion perdue, vérifiez votre connexion au serveur : " + erreurMessage;
+                    case 3 -> "Problème avec la requête SQL : " + erreurMessage;
+                    case 4 -> "Aucun client trouvé, veuillez synchroniser la liste des clients.";
+                    default -> "";
+                };
+
+                new SweetAlertDialog(activity, alertType)
+                        .setTitleText("Information")
+                        .setContentText(message)
+                        .show();
+
             }
 
-            int alertType = (result == 1) ? SweetAlertDialog.SUCCESS_TYPE : SweetAlertDialog.WARNING_TYPE;
-            String message_not_exported = "";
-            for(int i = 0; not_imported_client.size() > i; i++){
-                message_not_exported = message_not_exported + "\n"+ not_imported_client.get(i);
-            }
-            String message = switch (result) {
-                case 1 -> "Importation terminée avec succès.\n" + message_not_exported;
-                case 2 -> "Connexion perdue, vérifiez votre connexion au serveur : " + erreurMessage;
-                case 3 -> "Problème avec la requête SQL : " + erreurMessage;
-                case 4 -> "Aucun client trouvé, veuillez synchroniser la liste des clients.";
-                default -> "";
-            };
-            new SweetAlertDialog(context, alertType)
-                    .setTitleText("Information")
-                    .setContentText(message)
-                    .show();
+
 
             super.onPostExecute(result);
         }
@@ -3946,10 +4043,10 @@ public class ActivityImportsExport extends AppCompatActivity {
 
     public class Import_tournee_client_from_server_task extends AsyncTask<Void, Integer, Integer> {
 
-        private AlertDialog progressDialog;
+        private WeakReference<ActivityImportsExport> activityRef;
+        private AlertDialog mProgressDialog_Free;
         private ProgressBar progressBar;
         private TextView progressText;
-        private Context context;
 
         Connection con;
         int flag = 1;
@@ -3958,8 +4055,8 @@ public class ActivityImportsExport extends AppCompatActivity {
         String erreurMessage = "";
         ArrayList<PostData_Tournee1> list_tournee;
 
-        public Import_tournee_client_from_server_task(Context context) {
-            this.context = context;
+        public Import_tournee_client_from_server_task(ActivityImportsExport activity) {
+            this.activityRef = new WeakReference<>(activity);
         }
 
         @Override
@@ -3969,18 +4066,21 @@ public class ActivityImportsExport extends AppCompatActivity {
         }
 
         private void progressDialogConfigImportTournee() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Importation tournees clients...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
             progressText = view.findViewById(R.id.progressText);
 
             builder.setView(view);
             builder.setCancelable(false);
 
-            progressDialog = builder.create();
-            progressDialog.show();
+            mProgressDialog_Free = builder.create();
+            mProgressDialog_Free.show();
         }
 
         @Override
@@ -4142,23 +4242,32 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
+
+            ActivityImportsExport activity = activityRef.get();
+
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                int alertType = (result == 1) ? SweetAlertDialog.SUCCESS_TYPE : SweetAlertDialog.WARNING_TYPE;
+                String message = switch (result) {
+                    case 1 -> "Importation terminée avec succès.";
+                    case 2 ->
+                            "Connexion perdue, vérifiez votre connexion au serveur : " + erreurMessage;
+                    case 3 -> "Problème avec la requête SQL : " + erreurMessage;
+                    default -> "";
+                };
+
+                new SweetAlertDialog(activity, alertType)
+                        .setTitleText("Information")
+                        .setContentText(message)
+                        .show();
+
             }
-
-            int alertType = (result == 1) ? SweetAlertDialog.SUCCESS_TYPE : SweetAlertDialog.WARNING_TYPE;
-            String message = switch (result) {
-                case 1 -> "Importation terminée avec succès.";
-                case 2 ->
-                        "Connexion perdue, vérifiez votre connexion au serveur : " + erreurMessage;
-                case 3 -> "Problème avec la requête SQL : " + erreurMessage;
-                default -> "";
-            };
-
-            new SweetAlertDialog(context, alertType)
-                    .setTitleText("Information")
-                    .setContentText(message)
-                    .show();
 
             super.onPostExecute(result);
         }
@@ -4169,9 +4278,7 @@ public class ActivityImportsExport extends AppCompatActivity {
     public class Export_inventaire_to_server_task extends AsyncTask<Void, Void, Integer> {
 
         private AlertDialog mProgressDialog_Free;
-        private ProgressBar progressBar;
-        private TextView progressText;
-        private Context context;
+        private WeakReference<ActivityImportsExport> activityRef;
 
 
         Connection con;
@@ -4192,19 +4299,23 @@ public class ActivityImportsExport extends AppCompatActivity {
         List<String> list_num_inv_not_exported;
 
 
-        public Export_inventaire_to_server_task(boolean all, String num_inv, Context context) {
+        public Export_inventaire_to_server_task(boolean all, String num_inv, ActivityImportsExport activity) {
             this._all = all;
             this._num_inv = num_inv;
-            this.context = context;
+            this.activityRef = new WeakReference<>(activity);
         }
 
         private void progressDialogConfigInventaire() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            ActivityImportsExport activity = activityRef.get();
+            if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Exportation inventaires...");
 
-            View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
-            progressBar = view.findViewById(R.id.progressBar);
-            progressText = view.findViewById(R.id.progressText);
+            View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
+            ProgressBar progressBar = view.findViewById(R.id.progressBar);
+            TextView progressText = view.findViewById(R.id.progressText);
 
             builder.setView(view);
             builder.setCancelable(false);
@@ -4443,28 +4554,35 @@ public class ActivityImportsExport extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
 
-            if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
-            }
+            ActivityImportsExport activity = activityRef.get();
 
-            inventaire_exist = total_inventaire - inventaire_inserer;
+            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                if (mProgressDialog_Free != null) {
+                    try {
+                        mProgressDialog_Free.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                }
 
-            if (integer == 1) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé, Total inventaire : " + total_inventaire + "\n bons inserés : " + inventaire_inserer + "\n bons exists : " + inventaire_exist)
-                        .show();
-            } else if (integer == 2) {
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
-                        .show();
-            } else if (integer == 3) {
-                //  if(ActivityImportsExport. != null)
-                new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Erreur SQL : " + erreurMessage)
-                        .show();
+                inventaire_exist = total_inventaire - inventaire_inserer;
+
+                if (integer == 1) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Exportation...")
+                            .setContentText("Exportation terminé, Total inventaire : " + total_inventaire + "\n bons inserés : " + inventaire_inserer + "\n bons exists : " + inventaire_exist)
+                            .show();
+                } else if (integer == 2) {
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention. !")
+                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .show();
+                } else if (integer == 3) {
+                    //  if(ActivityImportsExport. != null)
+                    new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Erreur...")
+                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .show();
+                }
             }
 
             super.onPostExecute(integer);
@@ -4494,7 +4612,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                 "FROM PRODUIT WHERE ISNEW = 1 ORDER BY PRODUIT";
 
-        postData_produits = controller.select_produits_from_database(querry, true);
+        postData_produits = controller.select_produits_from_database_for_update(querry);
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
@@ -4746,7 +4864,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     "BON1_TEMP.BLOCAGE " +
                     "FROM BON1_TEMP " +
                     "LEFT JOIN CLIENT ON BON1_TEMP.CODE_CLIENT = CLIENT.CODE_CLIENT " +
-                    "WHERE BLOCAGE = 'T' ORDER BY BON1_TEMP.NUM_BON";
+                    "WHERE BLOCAGE = 'T' OR BLOCAGE = 'A' ORDER BY BON1_TEMP.NUM_BON";
 
             bon1s_temp = controller.select_all_bon1_from_database(querry);
 
@@ -4761,7 +4879,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     stmt.executeBatch();
                     con.commit();
                     //controller.update_client_after_export(bon1s_temp.get(i).code_client);
-                    controller.update_transfered_commande(bon1s_temp.get(i).num_bon);
+                    controller.update_transfered_canceled_commande(bon1s_temp.get(i).num_bon);
 
                 } catch (Exception e) {
                     con.rollback();

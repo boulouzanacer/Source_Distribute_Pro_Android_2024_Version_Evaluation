@@ -6,7 +6,6 @@ import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEF
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +13,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,14 +28,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
+import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.ActivitySetting;
-import com.safesoft.proapp.distribute.activities.commande_vente.ActivityEtatC;
 import com.safesoft.proapp.distribute.databases.DATABASE;
-import com.safesoft.proapp.distribute.gps.services.LocationServerConnect;
-import com.safesoft.proapp.distribute.gps.services.ServiceSenderLocation;
+import com.safesoft.proapp.distribute.gps.service_location.LocationServerConnect;
+import com.safesoft.proapp.distribute.gps.service_start.RestartBroadcastReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -48,6 +49,8 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class FragmentAdminGps {
 
+    public static final String ACTION_LOCATION_SERVICE_STATE = "LOCATION_SERVICE_STATE";
+    public static final String PARAM_LOCATION_SERVICE_STATE = "PARAM_LOCATION_SERVICE_STATE";
     MaterialFancyButton btn_valider, btn_cancel;
     Button btn_check_connection;
     private EditText edt_device_name, edt_email, edt_password;
@@ -66,7 +69,6 @@ public class FragmentAdminGps {
     private String deviceId = "123456789";
     private TextView device_id_txtv ;
     private static final int REQUEST_LOCATION_PERMISSION = 100;
-    private Intent intent_location;
 
     private boolean is_connected = false;
 
@@ -87,9 +89,6 @@ public class FragmentAdminGps {
         dialogBuilder.setCancelable(false);
         dialogBuilder.create();
         dialog = dialogBuilder.show();
-
-
-        intent_location = new Intent(mActivity, ServiceSenderLocation.class);
 
         //Specify the length and width through constants
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
@@ -154,18 +153,25 @@ public class FragmentAdminGps {
                         .putBoolean("PHONE_LOCATION_SERVICE", true)
                         .apply();
 
-                restartLocationService();
+                launcheLocationService();
 
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Succès ...!!")
                         .setContentText("Système de localisation activé !")
                         .show();
+
+                broadcastActionBaz(mActivity,true);
             }else{
+
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Attention ...!!")
                         .setContentText("Votre system de localisation n'est pas activé !")
                         .show();
+
+                broadcastActionBaz(mActivity,false);
             }
+
+            dialog.dismiss();
 
         });
 
@@ -177,6 +183,13 @@ public class FragmentAdminGps {
 
 
 
+    }
+
+    public static void broadcastActionBaz(Context context, boolean param) {
+        Intent intent = new Intent(ACTION_LOCATION_SERVICE_STATE);
+        intent.putExtra(PARAM_LOCATION_SERVICE_STATE, param);
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(context);
+        bm.sendBroadcast(intent);
     }
 
 
@@ -235,7 +248,6 @@ public class FragmentAdminGps {
                                 });
 
                                 is_connected = true;
-                                //restartLocationService();
 
                             } else if (responseCode == 401) {
                                 mActivity.runOnUiThread(() -> {
@@ -266,7 +278,7 @@ public class FragmentAdminGps {
         );
     }
 
-    private void restartLocationService() {
+    private void launcheLocationService() {
         LocationManager locationManager = (LocationManager) mActivity.getSystemService(LOCATION_SERVICE);
 
         if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -285,25 +297,35 @@ public class FragmentAdminGps {
             return;
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            PowerManager pm = (PowerManager) mActivity.getSystemService(Context.POWER_SERVICE);
+            boolean ignoring = pm.isIgnoringBatteryOptimizations(mActivity.getPackageName());
 
-        if (isServiceRunning(ServiceSenderLocation.class)) {
-            Intent stopIntent = new Intent(mActivity, ServiceSenderLocation.class);
-            stopIntent.setAction("RESTART_SERVICE");
-            mActivity.startForegroundService(stopIntent);
-        } else {
-            mActivity.startForegroundService(intent_location);
-        }
-
-    }
-
-    private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) mActivity.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
+            if (!ignoring) {
+                mActivity.runOnUiThread(() -> {
+                    new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Distribute pro batterie optimization")
+                            .setContentText(
+                                    "Le service de localisation est activé. Toutefois, l’optimisation de la batterie " +
+                                            "peut empêcher son bon fonctionnement. Souhaitez-vous l’autoriser ?"
+                            )
+                            .setCancelText("Non")
+                            .setConfirmText("Oui")
+                            .showCancelButton(true)
+                            .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                            .setConfirmClickListener(sDialog -> {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:" + mActivity.getPackageName()));
+                                mActivity.startActivity(intent);
+                                sDialog.dismissWithAnimation();
+                            })
+                            .show();
+                });
             }
         }
-        return false;
+
+        RestartBroadcastReceiver.scheduleJob(mActivity);
+
     }
 
 }

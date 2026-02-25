@@ -209,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Model 50 X 30" />
+                android:text="M 50 X 30" />
 
             <RadioButton
                 android:id="@+id/rg_model_ticket_codebarre_40X20"
@@ -217,7 +217,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="Model 40 X 20" />
+                android:text="M 40 X 20" />
+
+            <RadioButton
+                android:id="@+id/rg_model_ticket_codebarre_40X20_without_codebarre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="M 40 X 20 Sans CB" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 

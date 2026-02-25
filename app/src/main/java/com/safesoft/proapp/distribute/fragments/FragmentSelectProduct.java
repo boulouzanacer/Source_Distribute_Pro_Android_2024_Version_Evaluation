@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -54,7 +55,6 @@ public class FragmentSelectProduct {
     final String PREFS = "ALL_PREFS";
     SharedPreferences prefs;
     private boolean hide_stock_moins = true;
-    private boolean show_picture_prod = false;
     private EventBus bus = EventBus.getDefault();
     Activity activity;
     AlertDialog dialog;
@@ -98,7 +98,6 @@ public class FragmentSelectProduct {
 
         prefs = context.getSharedPreferences(PREFS, MODE_PRIVATE);
         hide_stock_moins = prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false);
-        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
 
         initViews(dialogview);
 
@@ -190,8 +189,8 @@ public class FragmentSelectProduct {
         btn_cancel.setOnClickListener(v -> dialog.dismiss());
 
         add_product.setOnClickListener(v -> {
-            FragmentNewEditProduct fragmentnewproduct = new FragmentNewEditProduct();
-            fragmentnewproduct.showDialogbox(this.activity, "NEW_PRODUCT", null);
+            FragmentNewEditProduct fragmentnewproduct = FragmentNewEditProduct.newInstance("NEW_PRODUCT", null);
+            fragmentnewproduct.show( ((AppCompatActivity) activity).getSupportFragmentManager(), "NEW_PRODUCT");
             dialog.dismiss();
         });
     }
@@ -239,21 +238,10 @@ public class FragmentSelectProduct {
             // Trim the trailing space and create the LIKE pattern
             String pattern = queryPattern.toString().trim();
 
-            StringBuilder querry = new StringBuilder();
-
-            if(show_picture_prod){
-                // Initialize StringBuilder for dynamic query construction
-                querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+            StringBuilder querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                         "FROM PRODUIT ");
-            }else{
-                // Initialize StringBuilder for dynamic query construction
-                querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
-                        "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                        "FROM PRODUIT ");
-            }
 
             // List to hold query conditions
             List<String> conditions = new ArrayList<>();
@@ -289,7 +277,7 @@ public class FragmentSelectProduct {
             querry.append(" ORDER BY PRODUIT");
 
             // Execute the constructed query
-            produits = controller.select_produits_from_database(querry.toString(), show_picture_prod);
+            produits = controller.select_produits_from_database(querry.toString());
 
 
         }catch (Exception e){

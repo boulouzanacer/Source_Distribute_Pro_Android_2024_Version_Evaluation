@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -7,11 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
@@ -19,7 +22,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.PowerManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +39,7 @@ import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.safesoft.proapp.distribute.activities.ActivityInfo;
+import com.safesoft.proapp.distribute.activities.ActivitySetting;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.appUpdate.APKUtils;
 import com.safesoft.proapp.distribute.appUpdate.CheckVerRequestTask;
@@ -41,6 +47,7 @@ import com.safesoft.proapp.distribute.appUpdate.UpdateApp;
 import com.safesoft.proapp.distribute.eventsClasses.CheckVersionEvent;
 import com.safesoft.proapp.distribute.eventsClasses.GetServerHashEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentMain;
+import com.safesoft.proapp.distribute.gps.service_start.RestartBroadcastReceiver;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 import com.safesoft.proapp.distribute.utils.Env;
 
@@ -52,6 +59,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -63,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
     final String PREFS = "ALL_PREFS";
-    SharedPreferences pref;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
         }
 
         Toolbar toolbar = findViewById(R.id.toolbardrawer);
-        pref = getSharedPreferences(PREFS, 0);
-        if (pref.getBoolean("APP_ACTIVATED", false)) {
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (prefs.getBoolean("APP_ACTIVATED", false)) {
             toolbar.setSubtitle(Env.APP_VERION_LABEL);
         } else {
             toolbar.setSubtitle(Env.APP_VERION_LABEL + " (Version évaluation)");
@@ -98,11 +106,11 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
         }
 
 
-        if (pref.getString("date_time", null) == null) {
+        if (prefs.getString("date_time", null) == null) {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
             Date currentDateTime = Calendar.getInstance().getTime();
             String currentDateTimeString = sdf.format(currentDateTime);
-            SharedPreferences.Editor editor = pref.edit();
+            SharedPreferences.Editor editor = prefs.edit();
             editor.putString("date_time", currentDateTimeString);
             editor.apply();
         }
@@ -125,8 +133,15 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
+            Executors.newSingleThreadExecutor().execute(this::restartLocationService);
+        }
+    }
 
-   /* public void startActivity(Class clss, int request) {
+    /* public void startActivity(Class clss, int request) {
         Intent intent = new Intent(this, clss);
         intent.putExtra("SOURCE_EXPORT", "NOTEXPORTED");
         startActivityForResult(intent, request);
@@ -186,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
         } else if(item.getItemId() == R.id.show_seriel_number){
             new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
                     .setTitleText("Numéro de série")
-                    .setContentText(pref.getString("NUM_SERIE", "0"))
+                    .setContentText(prefs.getString("NUM_SERIE", "0"))
                     .show();
         } else if (item.getItemId() == R.id.update) {
 
@@ -290,9 +305,9 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
             current_version = String.valueOf(packageInfo.versionName);
             versionCode = String.valueOf(packageInfo.versionCode);
             android_unique_id = getAndroidID(MainActivity.this);
-            seriel_number = pref.getString("NUM_SERIE", "0");
-            activation_code = pref.getInt("CODE_ACTIVATION", 0);
-            revendeur = pref.getString("REVENDEUR", "0");
+            seriel_number = prefs.getString("NUM_SERIE", "0");
+            activation_code = prefs.getInt("CODE_ACTIVATION", 0);
+            revendeur = prefs.getString("REVENDEUR", "0");
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -363,6 +378,81 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
             Crouton.makeText(MainActivity.this, event.getMessage(), Style.ALERT).show();
         }
 
+    }
+
+
+    private void restartLocationService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14
+            if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.FOREGROUND_SERVICE_LOCATION}, 101);
+                return; // Attendre la permission
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 102);
+            return;
+        }
+
+
+        /*try {
+
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
+
+                    runOnUiThread(() -> {
+                        new androidx.appcompat.app.AlertDialog.Builder(this)
+                                .setTitle("GPS désactivé")
+                                .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
+                                .setPositiveButton("Oui", (d, w) -> {
+                                    Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivity(i);
+                                }).setNegativeButton("Non", (d, w) -> d.dismiss()).show();
+                    });
+
+                }
+
+            }
+
+        }catch (Exception e){
+            Log.e("Exception",e.getMessage());
+        }*/
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            boolean ignoring = pm.isIgnoringBatteryOptimizations(getPackageName());
+
+            if (!ignoring) {
+                if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
+                    runOnUiThread(() -> {
+                        new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Distribute pro batterie optimization")
+                                .setContentText(
+                                        "Le service de localisation est activé. Toutefois, l’optimisation de la batterie " +
+                                                "peut empêcher son bon fonctionnement. Souhaitez-vous l’autoriser ?"
+                                )
+                                .setCancelText("Non")
+                                .setConfirmText("Oui")
+                                .showCancelButton(true)
+                                .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                                .setConfirmClickListener(sDialog -> {
+                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    intent.setData(Uri.parse("package:" + getPackageName()));
+                                    startActivity(intent);
+                                    sDialog.dismissWithAnimation();
+                                })
+                                .show();
+                    });
+                }
+
+            }
+        }*/
+
+
+        RestartBroadcastReceiver.scheduleJob(getApplicationContext());
     }
 
     @Override

@@ -4,13 +4,12 @@ android {
     namespace 'com.emmasuzuki.easyform'
 
     compileSdkVersion 34
-    publishNonDefault true
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 34
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     sourceSets {
@@ -22,7 +21,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         android {
         }
@@ -38,8 +37,8 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.powermock:powermock-module-junit4:1.6.4"

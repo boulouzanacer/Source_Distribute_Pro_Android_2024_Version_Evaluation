@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -43,7 +42,7 @@ import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedFournisseurEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentNewEditFournisseur;
 import com.safesoft.proapp.distribute.fragments.FragmentVersementFournisseur;
-import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_f;
 import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import com.safesoft.proapp.distribute.printing.Printing;
@@ -285,7 +284,7 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
         TvVerser.setText(spannableString7);
 
 
-        if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
+        if (prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true)) {
             final BadgeDrawable drawable8 =
                     new BadgeDrawable.Builder()
                             .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
@@ -330,49 +329,43 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
     public void onClick(View v) {
 
-        switch (v.getId()) {
-            case R.id.btnCall:
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fournisseur.tel));
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1000);
-                    return;
-                }
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                break;
+        int viewId = v.getId();
+        if (viewId == R.id.btnCall) {
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fournisseur.tel));
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1000);
+                return;
+            }
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-            case R.id.btnVerser:
-                if(is_app_synchronised_mode){
-                    Crouton.makeText(ActivityFournisseurDetail.this, "Versement fournisseur disponible seulement en mode Mono-Poste !", Style.ALERT).show();
-                }else {
-                    FragmentVersementFournisseur fragmentversementfournisseur = new FragmentVersementFournisseur();
-                    fragmentversementfournisseur.showDialogbox(ActivityFournisseurDetail.this, fournisseur.solde_montant, fournisseur.verser_montant, 0, "", fournisseur.code_frs, false, "");
-                }
+        } else if (viewId == R.id.btnVerser) {
+            if (is_app_synchronised_mode) {
+                Crouton.makeText(ActivityFournisseurDetail.this, "Versement fournisseur disponible seulement en mode Mono-Poste !", Style.ALERT).show();
+            } else {
+                FragmentVersementFournisseur fragmentversementfournisseur = new FragmentVersementFournisseur();
+                fragmentversementfournisseur.showDialogbox(ActivityFournisseurDetail.this, fournisseur.solde_montant, fournisseur.verser_montant, 0, "", fournisseur.code_frs, false, "");
+            }
 
-                break;
+        } else if (viewId == R.id.btnVente) {
 
-            case R.id.btnVente:
-                break;
+        } else if (viewId == R.id.btn_update_pos) {
 
-            case R.id.btn_update_pos:
+            startService(intent_location);
 
-                startService(intent_location);
+            progress = new ProgressDialog(ActivityFournisseurDetail.this);
+            progress.setTitle("Position");
+            progress.setMessage("Recherche position...");
+            progress.setIndeterminate(true);
+            progress.setCancelable(true);
+            progress.show();
 
-                progress = new ProgressDialog(ActivityFournisseurDetail.this);
-                progress.setTitle("Position");
-                progress.setMessage("Recherche position...");
-                progress.setIndeterminate(true);
-                progress.setCancelable(true);
-                progress.show();
+        } else if (viewId == R.id.btn_itenerary) {
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + fournisseur.latitude + "," + fournisseur.longitude);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            startActivity(mapIntent);
 
-                break;
-            case R.id.btn_itenerary:
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + fournisseur.latitude + "," + fournisseur.longitude);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                break;
         }
     }
 
@@ -488,84 +481,79 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
     @Override
     public void onClick(View v, int position, final PostData_Carnet_f carnet_f) {
 
-        switch (v.getId()) {
-            case R.id.btn_edit_situation -> {
+        int viewId = v.getId();
+        if (viewId == R.id.btn_edit_situation) {
 
-                if (carnet_f.is_exported != 0) {
-                    new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention !")
-                            .setContentText("Versement déjà exporté, Modification impossible !")
-                            .show();
-                    return;
-
-                }
-                if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
-                    new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                            .setTitleText("Situation")
-                            .setContentText("Voulez-vous vraiment modifier cette situation?!")
-                            .setCancelText("Non")
-                            .setConfirmText("Modifier")
-                            .showCancelButton(true)
-                            .setCancelClickListener(Dialog::dismiss)
-                            .setConfirmClickListener(sDialog -> {
-
-                                FragmentVersementFournisseur fragmentversementfournisseur = new FragmentVersementFournisseur();
-                                fragmentversementfournisseur.showDialogbox(ActivityFournisseurDetail.this, fournisseur.solde_montant, fournisseur.verser_montant, carnet_f.carnet_versement, carnet_f.carnet_remarque, fournisseur.code_frs, true, carnet_f.recordid);
-
-                                sDialog.dismiss();
-                            }).show();
-                } else {
-                    new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention !")
-                            .setContentText("Vous n'êtes pas autorisé à modifier cette situation !")
-                            .show();
-                }
+            if (carnet_f.is_exported != 0) {
+                new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention !")
+                        .setContentText("Versement déjà exporté, Modification impossible !")
+                        .show();
+                return;
 
             }
-            case R.id.btn_remove_situation -> {
+            if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
+                new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Situation")
+                        .setContentText("Voulez-vous vraiment modifier cette situation?!")
+                        .setCancelText("Non")
+                        .setConfirmText("Modifier")
+                        .showCancelButton(true)
+                        .setCancelClickListener(Dialog::dismiss)
+                        .setConfirmClickListener(sDialog -> {
 
-                if (carnet_f.is_exported != 0) {
-                    new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention !")
-                            .setContentText("Versement déjà exporté, Suppression impossible !")
-                            .show();
-                    return;
+                            FragmentVersementFournisseur fragmentversementfournisseur = new FragmentVersementFournisseur();
+                            fragmentversementfournisseur.showDialogbox(ActivityFournisseurDetail.this, fournisseur.solde_montant, fournisseur.verser_montant, carnet_f.carnet_versement, carnet_f.carnet_remarque, fournisseur.code_frs, true, carnet_f.recordid);
 
-                }
+                            sDialog.dismiss();
+                        }).show();
+            } else {
+                new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention !")
+                        .setContentText("Vous n'êtes pas autorisé à modifier cette situation !")
+                        .show();
+            }
 
-                if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
-                    new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                            .setTitleText("Suppression")
-                            .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_f.recordid + " ?!")
-                            .setCancelText("Anuuler")
-                            .setConfirmText("Supprimer")
-                            .showCancelButton(true)
-                            .setCancelClickListener(Dialog::dismiss)
-                            .setConfirmClickListener(sDialog -> {
+        } else if (viewId == R.id.btn_remove_situation) {
 
-                                if (controller.delete_versement_fournisseur(carnet_f, fournisseur.solde_montant + carnet_f.carnet_versement, fournisseur.verser_montant - carnet_f.carnet_versement)) {
-                                    Crouton.makeText(ActivityFournisseurDetail.this, "Situation fournisseur supprimé !", Style.INFO).show();
-                                } else {
-                                    Crouton.makeText(ActivityFournisseurDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
-                                }
-                                Update_fournisseur_details();
-
-                                sDialog.dismiss();
-
-                            }).show();
-                } else {
-                    new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention !")
-                            .setContentText("Vous n'êtes pas autorisé à supprimer cette situation !")
-                            .show();
-                }
+            if (carnet_f.is_exported != 0) {
+                new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention !")
+                        .setContentText("Versement déjà exporté, Suppression impossible !")
+                        .show();
+                return;
 
             }
 
-            case R.id.lnr_item_root -> {
-                selected_versement = carnet_f;
+            if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
+                new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Suppression")
+                        .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_f.recordid + " ?!")
+                        .setCancelText("Anuuler")
+                        .setConfirmText("Supprimer")
+                        .showCancelButton(true)
+                        .setCancelClickListener(Dialog::dismiss)
+                        .setConfirmClickListener(sDialog -> {
+
+                            if (controller.delete_versement_fournisseur(carnet_f, fournisseur.solde_montant + carnet_f.carnet_versement, fournisseur.verser_montant - carnet_f.carnet_versement)) {
+                                Crouton.makeText(ActivityFournisseurDetail.this, "Situation fournisseur supprimé !", Style.INFO).show();
+                            } else {
+                                Crouton.makeText(ActivityFournisseurDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
+                            }
+                            Update_fournisseur_details();
+
+                            sDialog.dismiss();
+
+                        }).show();
+            } else {
+                new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Attention !")
+                        .setContentText("Vous n'êtes pas autorisé à supprimer cette situation !")
+                        .show();
             }
 
+        } else if (viewId == R.id.lnr_item_root) {
+            selected_versement = carnet_f;
         }
     }
 

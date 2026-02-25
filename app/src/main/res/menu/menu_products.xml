@@ -9,14 +9,20 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/etat_stock"
-        android:title="Etat de stock"
-        android:icon="@drawable/etat_stock_24"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/new_product"
         android:title="@string/produit"
         android:icon="@drawable/ic_add_black_24dp"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/etat_stock"
+        android:title="@string/etat_de_stock"
+        android:icon="@drawable/etat_stock_24"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/share_csv"
+        android:title="@string/partager_list_produits"
+        android:icon="@drawable/baseline_share_24"
+        app:showAsAction="never" />
 </menu>

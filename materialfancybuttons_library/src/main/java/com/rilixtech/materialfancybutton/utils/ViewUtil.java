@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import cn.pedant.SweetAlert.R;
+import com.rilixtech.materialfancybutton.R;
 
 public class ViewUtil {
 	

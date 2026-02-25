@@ -12,26 +12,13 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.11.2'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0'
+        classpath 'com.android.tools.build:gradle:9.0.1'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24'
         classpath 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-}
-
-allprojects {
-    repositories {
-        mavenCentral{ url "https://jcenter.bintray.com/" }
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
-        }
-        maven { url 'https://jitpack.io' }  // ✅ Ajouter ceci
-
-    }
-
 }
 
 tasks.register('clean', Delete) {

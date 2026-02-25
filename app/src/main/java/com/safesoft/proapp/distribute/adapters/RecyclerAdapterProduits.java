@@ -3,6 +3,7 @@ package com.safesoft.proapp.distribute.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
@@ -42,6 +44,7 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     private SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
     private String prix_revendeur;
+    DATABASE controller;
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -81,6 +84,7 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
         mContext = context;
         this.params = params;
         this.prix_revendeur = prix_revendeur;
+        this.controller = new DATABASE(context);
     }
 
     @Override
@@ -191,13 +195,13 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
                 color = generator.getColor(produitList.get(position).produit);
         }
 
-
-        if (item.photo != null) {
-            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
-
-        } else {
-            TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), ContextCompat.getColor(mContext, R.color.blue));
-            holder.image.setImageDrawable(drawable);
+        if (prefs.getBoolean("SHOW_PROD_PIC", false)) {
+            Bitmap bmp  = controller.getProductPhotoBitmap(item.produit_id.toString());
+            if(bmp != null){
+                holder.image.setImageBitmap(bmp);
+            }else{
+                holder.image.setImageResource(R.drawable.ic_camera_24);
+            }
         }
 
 

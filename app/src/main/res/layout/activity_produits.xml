@@ -3,23 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/font_black"
     android:weightSum="20"
     android:orientation="vertical"
     tools:context="com.safesoft.proapp.distribute.activities.product.ActivityProduits">
-
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/myToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/blue"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        tools:layout_constraintEnd_toEndOf="parent"
-        tools:layout_constraintStart_toStartOf="parent"
-        tools:layout_constraintTop_toTopOf="parent"
-        tools:navigationIcon="@drawable/ic_arrow_back_24"
-        tools:titleEnabled="false" />
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:titleTextColor="@color/white"
+        app:titleEnabled="false"
+        app:navigationIcon="@drawable/ic_arrow_back_24" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_produit"

@@ -4,27 +4,26 @@ import static com.safesoft.proapp.distribute.activities.product.ActivityProduits
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowInsetsController;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowCompat;
 
-import com.github.barteksc.pdfviewer.PDFView;
 import com.safesoft.proapp.distribute.R;
-import com.safesoft.proapp.distribute.activities.product.ActivityProduits;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.printing.Printing;
 
 import java.io.File;
 import java.util.ArrayList;
-
+import com.github.barteksc.pdfviewer.PDFView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class PdfViewerActivity extends AppCompatActivity {
@@ -36,11 +35,16 @@ public class PdfViewerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pdf_viewer);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
+        }else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
@@ -49,10 +53,12 @@ public class PdfViewerActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Etat de stock");
         }
 
-        PDFView pdfView = findViewById(R.id.pdfView);
+        PDFView  pdfView = findViewById(R.id.pdfView);
         String path = getIntent().getStringExtra("path");
         selected_famile = getIntent().getStringExtra("selected_famile");
         File file = new File(path);
+        Log.d("PDF", "Exists: " + file.exists());
+        Log.d("PDF", "Size: " + file.length());
         pdfView.fromFile(file).load();
     }
 

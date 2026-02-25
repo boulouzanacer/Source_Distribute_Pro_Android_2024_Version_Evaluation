@@ -1,169 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_root"
-    android:layout_width="match_parent"
-    android:layout_height="120dp"
-    app:cardCornerRadius="5dp"
-    android:layout_margin="2dp"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_root"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:background="@drawable/client_selector"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        tools:ignore="RtlSymmetry">
+        app:cardCornerRadius="5dp"
+        android:layout_margin="2dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/client_selector"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            tools:ignore="RtlSymmetry">
 
 
-        <TextView
-            android:id="@+id/nbr_p"
-            android:layout_width="80dp"
-            android:layout_height="0dp"
-            android:layout_above="@+id/blocage"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="0dp"
-            android:gravity="center|center_horizontal"
-            android:orientation="vertical"
-            android:text="@string/nbre_produit">
+            <TextView
+                android:id="@+id/nbr_p"
+                android:layout_width="80dp"
+                android:layout_height="0dp"
+                android:layout_above="@+id/blocage"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="0dp"
+                android:gravity="center|center_horizontal"
+                android:orientation="vertical"
+                android:text="@string/nbre_produit">
 
 
-        </TextView>
+            </TextView>
 
-        <com.haozhang.lib.SlantedTextView
-            android:id="@+id/blocage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:text="@string/valider"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/vert"
-            android:textSize="21sp"
-            app:slantedBackgroundColor="@color/white"
-            app:slantedLength="40dp"
-            app:slantedMode="right_bottom"
-            app:slantedText="IOS"
-            app:slantedTextColor="@color/white"
-            app:slantedTextSize="16sp" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_marginEnd="0dp"
-            android:layout_toStartOf="@+id/blocage"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            <com.haozhang.lib.SlantedTextView
+                android:id="@+id/blocage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:text="@string/valider"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/vert"
+                android:textSize="21sp"
+                app:slantedBackgroundColor="@color/white"
+                app:slantedLength="40dp"
+                app:slantedMode="right_bottom"
+                app:slantedText="IOS"
+                app:slantedTextColor="@color/white"
+                app:slantedTextSize="16sp" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="0dp"
+                android:layout_toStartOf="@+id/blocage"
+                android:orientation="horizontal"
                 android:weightSum="3">
 
-                <TextView
-                    android:id="@+id/num_inv"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/_000001"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    tools:ignore="NestedWeights" />
-
-                <TextView
-                    android:id="@+id/date_inv"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/_01_01_2022"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/vert_clair"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/heure_inv"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/red_btn_bg_pressed_color"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:weightSum="3"
-                android:orientation="vertical"
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
-
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2">
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:weightSum="3">
 
                     <TextView
-                        android:id="@+id/nom_inv"
+                        android:id="@+id/num_inv"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/nom_inv"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/black_overlay"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="18sp"
+                        android:text="@string/_000001"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:ignore="NestedWeights" />
+
+                    <TextView
+                        android:id="@+id/date_inv"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/_01_01_2022"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/vert_clair"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/heure_inv"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/red_btn_bg_pressed_color"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
 
+
                 <LinearLayout
-
+                    android:weightSum="3"
                     android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
 
-                    <TextView
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2">
+
+                        <TextView
+                            android:id="@+id/nom_inv"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/nom_inv"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/black_overlay"
+                            android:gravity="center"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+
+                        android:orientation="vertical"
                         android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:text="@string/date_d_exportation"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/black"
-                        android:gravity="center"
-                        android:textSize="10sp"
-                        tools:ignore="NestedWeights,SmallSp" />
+                        android:layout_height="0dp">
 
-                    <TextView
-                        android:layout_weight="2"
-                        android:id="@+id/date_exp"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:text="@string/date_d_exportation"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:textSize="10sp"
+                            tools:ignore="NestedWeights,SmallSp" />
 
+                        <TextView
+                            android:layout_weight="2"
+                            android:id="@+id/date_exp"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
                 </LinearLayout>
+
+
             </LinearLayout>
+        </RelativeLayout>
 
+    </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
-    </RelativeLayout>
-
-</androidx.cardview.widget.CardView>
-
+</merge>

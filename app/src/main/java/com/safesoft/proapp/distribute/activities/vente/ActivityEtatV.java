@@ -354,28 +354,23 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.synchroniser:
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+        } else if (itemId == R.id.synchroniser) {
 
-                show_select_etatz();
+            show_select_etatz();
 
-                break;
-            case R.id.print:
-                if (!result_etatzg.isEmpty()) {
+        } else if (itemId == R.id.print) {
+            if (!result_etatzg.isEmpty()) {
 
-                    Activity bactivity;
-                    bactivity = ActivityEtatV.this;
+                Activity bactivity;
+                bactivity = ActivityEtatV.this;
 
-                    Printing printer = new Printing();
-                    printer.start_print_etat(bactivity, "ETAT_VENTE", result_etatzg, c_client, txtv_user.getText().toString(), from_d, to_d);
-                }
+                Printing printer = new Printing();
+                printer.start_print_etat(bactivity, "ETAT_VENTE", result_etatzg, c_client, txtv_user.getText().toString(), from_d, to_d);
+            }
 
-                break;
-            default:
-                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -455,7 +450,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     }
 
     public int getEtatzgs(String c_client, String from_d, String to_d) {
-        int flag = 0;
+        int flag;
 
         try {
             result_etatzg = controller.select_etatv_from_database(wilaya, commune, c_client, from_d, to_d);

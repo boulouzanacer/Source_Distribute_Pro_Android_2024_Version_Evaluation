@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
@@ -44,7 +46,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
     private final AlertDialog dialog;
     private final String SOURCE;
-
+    DATABASE controller;
     SharedPreferences prefs;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -83,6 +85,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         this.SOURCE = SOURCE;
         this.mode_tarif = mode_tarif;
         this.dialog = dialog;
+        this.controller = new DATABASE(context);
         setHasStableIds(true);
     }
 
@@ -145,8 +148,9 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
 
         if (prefs.getBoolean("SHOW_PROD_PIC", false)) {
-            if (item.photo != null) {
-                holder.photopr.setImageBitmap(BitmapFactory.decodeByteArray(item.photo, 0, item.photo.length));
+            Bitmap bmp  = controller.getProductPhotoBitmap(item.produit_id.toString());
+            if(bmp != null){
+                holder.photopr.setImageBitmap(bmp);
             }
         }
 
@@ -171,6 +175,8 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         }
 
     }
+
+
 
     @Override
     public int getItemCount() {

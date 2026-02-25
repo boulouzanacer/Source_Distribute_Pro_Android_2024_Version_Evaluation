@@ -21,7 +21,7 @@ public class FileUploader {
         void onProgressUpdate(int percentage);
     }
 
-    public static String uploadFile(String sourceFileUri,  String seriel_number, String android_id, String version, String email, ProgressListener listener) {
+    public static String uploadFile(String sourceFileUri, String seriel_number, String android_id, String version, String email, ProgressListener listener) {
         String upLoadServerUri = Env.URL_UPLOAD_BDD; // replace with your server URL
         String fileName = sourceFileUri;
         HttpURLConnection conn = null;

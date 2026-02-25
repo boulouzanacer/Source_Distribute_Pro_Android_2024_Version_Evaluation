@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.rilixtech.materialfancybutton.drawable.RippleDrawable;
 
-import cn.pedant.SweetAlert.R;
+import com.rilixtech.materialfancybutton.R;
 
 public final class RippleManager implements View.OnClickListener {
 

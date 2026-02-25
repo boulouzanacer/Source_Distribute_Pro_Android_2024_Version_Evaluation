@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/SpinKitLib" />
+            <option value="$PROJECT_DIR$/android_pdf_viewer" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/easy_form_library" />
             <option value="$PROJECT_DIR$/fancybuttons_library" />
@@ -18,16 +19,16 @@
             <option value="$PROJECT_DIR$/lib_badge" />
             <option value="$PROJECT_DIR$/materialbarcodescanner" />
             <option value="$PROJECT_DIR$/materialfancybuttons_library" />
-            <option value="$PROJECT_DIR$/pdf_viewer_library" />
             <option value="$PROJECT_DIR$/simple_recycler_adapter_library" />
             <option value="$PROJECT_DIR$/slanted_textview_library" />
+            <option value="$PROJECT_DIR$/sweet_alert_dialog_library" />
             <option value="$PROJECT_DIR$/swipe_away_dialog_library" />
             <option value="$PROJECT_DIR$/text_drawable_library" />
             <option value="$PROJECT_DIR$/time_picker_dialog_library" />
+            <option value="$PROJECT_DIR$/toaster" />
             <option value="$PROJECT_DIR$/victor_library" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

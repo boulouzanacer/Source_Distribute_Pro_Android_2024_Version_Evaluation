@@ -4,24 +4,34 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
@@ -42,6 +52,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -52,7 +66,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class FragmentNewEditProduct {
+public class FragmentNewEditProduct extends DialogFragment {
     final String ALLOWED_CHARACTERS_CODEBARRE = "0123456789ABCDEFGHJK";
     final String ALLOWED_CHARACTERS_REFERENCE = "012345678-9RSTUVWXYZ";
     double val_colissage, val_stock_ini,
@@ -86,29 +100,90 @@ public class FragmentNewEditProduct {
             txt_input_prix5_ht, txt_input_prix5_ttc,
             txt_input_prix6_ht, txt_input_prix6_ttc;
     LinearLayout ly_prix_achat;
-    EventBus bus = EventBus.getDefault();
-    Activity activity;
-    AlertDialog dialog;
-    ImageView img_product;
+    private EventBus bus;
+    private Activity mActivity;
+    private AlertDialog dialog;
+    private ImageView img_product;
     private final String PREFS = "ALL_PREFS";
 
-    PostData_Produit created_produit;
-    PostData_Produit old_product;
+    static PostData_Produit created_produit;
+    private PostData_Produit old_product;
     private DATABASE controller;
-    NumberFormat nf, nq;
+    private NumberFormat nf, nq;
     private Barcode barcodeResult;
 
     private PostData_Params params;
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
     private boolean is_app_synchronised_mode = false;
+    private String SOURCE_ACTIVITY ="";
+    private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
+
 
     //PopupWindow display method
 
-    public void showDialogbox(Activity activity, String SOURCE_ACTIVITY, PostData_Produit old_product) {
+    public static FragmentNewEditProduct newInstance(String sourceActivity, @Nullable PostData_Produit _oldProduct) {
+        FragmentNewEditProduct fragment = new FragmentNewEditProduct();
+        Bundle args = new Bundle();
+        args.putString("SOURCE_ACTIVITY", sourceActivity);
+        if (_oldProduct != null) {
+            args.putSerializable("PRODUCT", _oldProduct); // Use Serializable instead of Parcelable
+        }
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-        this.activity = activity;
-        this.controller = new DATABASE(activity);
-        this.old_product = old_product;
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        View view = requireActivity().getLayoutInflater().inflate(R.layout.fragment_add_product, null);
+
+        builder.setView(view);
+        builder.setCancelable(false);
+
+
+        imagePickerLauncher =
+                registerForActivityResult(
+                        new ActivityResultContracts.PickVisualMedia(),
+                        uri -> {
+                            if (uri != null) {
+                                try {
+                                    Bitmap bitmap = uriToBitmap(mActivity, uri);
+                                    img_product.setImageBitmap(bitmap);
+
+                                    Bitmap resizedBitmap = resizeBitmap(bitmap, 800, 800);
+                                    created_produit.photo = bitmapToBytes(resizedBitmap, 100);
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(mActivity, "Unable to load image", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                );
+
+        Bundle args = getArguments();
+        if (args != null) {
+            SOURCE_ACTIVITY = getArguments().getString("SOURCE_ACTIVITY");
+            Serializable serializable = args.getSerializable("PRODUCT");
+            if (serializable instanceof PostData_Produit) {
+                old_product = (PostData_Produit) serializable;
+            }
+        }
+
+
+        mActivity = requireActivity();
+        controller = new DATABASE(mActivity);
+        bus = EventBus.getDefault();
+
+        initViews(view); // move your setup code here
+
+        AlertDialog alertDialog = builder.create();
+        dialog = alertDialog;
+        return alertDialog;
+    }
+
+    public void initViews(View rootview) {
 
         // Declare US print format
         nf = NumberFormat.getInstance(Locale.US);
@@ -117,29 +192,12 @@ public class FragmentNewEditProduct {
         nq = NumberFormat.getInstance(Locale.US);
         ((DecimalFormat) nq).applyPattern("####0.##");
 
-        prefs = activity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
         is_app_synchronised_mode = prefs.getBoolean("APP_SYNCHRONISED_MODE", false);
 
         created_produit = new PostData_Produit();
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater = activity.getLayoutInflater();
-        View dialogview = inflater.inflate(R.layout.fragment_add_product, null);
-        dialogBuilder.setView(dialogview);
-        dialogBuilder.setCancelable(false);
-        dialogBuilder.create();
-        dialog = dialogBuilder.show();
-
-
-        //Specify the length and width through constants
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-        dialog.getWindow().setAttributes(layoutParams);
-
-
-        btn_valider = dialogview.findViewById(R.id.btn_connect);
+        btn_valider = rootview.findViewById(R.id.btn_connect);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
         btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_valider.setTextSize(15);
@@ -147,83 +205,88 @@ public class FragmentNewEditProduct {
         btn_valider.setFontIconSize(30);
 
 
-        btn_cancel = dialogview.findViewById(R.id.btn_cancel);
+        btn_cancel = rootview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
         btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
         btn_cancel.setTextSize(15);
         btn_cancel.setIconPosition(POSITION_LEFT);
         btn_cancel.setFontIconSize(30);
 
-        img_product = dialogview.findViewById(R.id.img_product);
+        img_product = rootview.findViewById(R.id.img_product);
 
-        generate_codebarre = dialogview.findViewById(R.id.generate_codebarre);
-        scan_codebarre = dialogview.findViewById(R.id.scan_codebarre);
+        generate_codebarre = rootview.findViewById(R.id.generate_codebarre);
+        scan_codebarre = rootview.findViewById(R.id.scan_codebarre);
 
-        generate_reference = dialogview.findViewById(R.id.generate_reference);
-        scan_reference = dialogview.findViewById(R.id.scan_reference);
+        generate_reference = rootview.findViewById(R.id.generate_reference);
+        scan_reference = rootview.findViewById(R.id.scan_reference);
 
-        btn_from_gallery = dialogview.findViewById(R.id.btn_select_from_gallery);
-        btn_from_camera = dialogview.findViewById(R.id.btn_select_from_camera);
+        btn_from_gallery = rootview.findViewById(R.id.btn_select_from_gallery);
+        btn_from_camera = rootview.findViewById(R.id.btn_select_from_camera);
 
-        ly_prix_achat = dialogview.findViewById(R.id.ly_prix_achat);
+        ly_prix_achat = rootview.findViewById(R.id.ly_prix_achat);
 
-        lnr_prix1 = dialogview.findViewById(R.id.lnr_prix1);
-        lnr_prix2 = dialogview.findViewById(R.id.lnr_prix2);
-        lnr_prix3 = dialogview.findViewById(R.id.lnr_prix3);
-        lnr_prix4 = dialogview.findViewById(R.id.lnr_prix4);
-        lnr_prix5 = dialogview.findViewById(R.id.lnr_prix5);
-        lnr_prix6 = dialogview.findViewById(R.id.lnr_prix6);
-
-
-        txt_input_prix_ht = dialogview.findViewById(R.id.txt_input_prix_ht);
-        txt_input_tva = dialogview.findViewById(R.id.txt_input_tva);
-        txt_input_prix_ttc = dialogview.findViewById(R.id.txt_input_prix_ttc);
-
-        txt_input_prix1_ht = dialogview.findViewById(R.id.txt_input_prix1_ht);
-        txt_input_prix2_ht = dialogview.findViewById(R.id.txt_input_prix2_ht);
-        txt_input_prix3_ht = dialogview.findViewById(R.id.txt_input_prix3_ht);
-        txt_input_prix4_ht = dialogview.findViewById(R.id.txt_input_prix4_ht);
-        txt_input_prix5_ht = dialogview.findViewById(R.id.txt_input_prix5_ht);
-        txt_input_prix6_ht = dialogview.findViewById(R.id.txt_input_prix6_ht);
+        lnr_prix1 = rootview.findViewById(R.id.lnr_prix1);
+        lnr_prix2 = rootview.findViewById(R.id.lnr_prix2);
+        lnr_prix3 = rootview.findViewById(R.id.lnr_prix3);
+        lnr_prix4 = rootview.findViewById(R.id.lnr_prix4);
+        lnr_prix5 = rootview.findViewById(R.id.lnr_prix5);
+        lnr_prix6 = rootview.findViewById(R.id.lnr_prix6);
 
 
-        txt_input_prix1_ttc = dialogview.findViewById(R.id.txt_input_prix1_ttc);
-        txt_input_prix2_ttc = dialogview.findViewById(R.id.txt_input_prix2_ttc);
-        txt_input_prix3_ttc = dialogview.findViewById(R.id.txt_input_prix3_ttc);
-        txt_input_prix4_ttc = dialogview.findViewById(R.id.txt_input_prix4_ttc);
-        txt_input_prix5_ttc = dialogview.findViewById(R.id.txt_input_prix5_ttc);
-        txt_input_prix6_ttc = dialogview.findViewById(R.id.txt_input_prix6_ttc);
+        txt_input_prix_ht = rootview.findViewById(R.id.txt_input_prix_ht);
+        txt_input_tva = rootview.findViewById(R.id.txt_input_tva);
+        txt_input_prix_ttc = rootview.findViewById(R.id.txt_input_prix_ttc);
+
+        txt_input_prix1_ht = rootview.findViewById(R.id.txt_input_prix1_ht);
+        txt_input_prix2_ht = rootview.findViewById(R.id.txt_input_prix2_ht);
+        txt_input_prix3_ht = rootview.findViewById(R.id.txt_input_prix3_ht);
+        txt_input_prix4_ht = rootview.findViewById(R.id.txt_input_prix4_ht);
+        txt_input_prix5_ht = rootview.findViewById(R.id.txt_input_prix5_ht);
+        txt_input_prix6_ht = rootview.findViewById(R.id.txt_input_prix6_ht);
 
 
-        edt_designation = dialogview.findViewById(R.id.edt_designation);
-        edt_codebarre = dialogview.findViewById(R.id.edt_codebarre);
-        edt_reference = dialogview.findViewById(R.id.edt_reference);
+        txt_input_prix1_ttc = rootview.findViewById(R.id.txt_input_prix1_ttc);
+        txt_input_prix2_ttc = rootview.findViewById(R.id.txt_input_prix2_ttc);
+        txt_input_prix3_ttc = rootview.findViewById(R.id.txt_input_prix3_ttc);
+        txt_input_prix4_ttc = rootview.findViewById(R.id.txt_input_prix4_ttc);
+        txt_input_prix5_ttc = rootview.findViewById(R.id.txt_input_prix5_ttc);
+        txt_input_prix6_ttc = rootview.findViewById(R.id.txt_input_prix6_ttc);
 
-        edt_colissage = dialogview.findViewById(R.id.edt_colissage);
-        edt_stock_ini = dialogview.findViewById(R.id.edt_stock_ini);
 
-        edt_prix_achat_ht = dialogview.findViewById(R.id.edt_prix_achat_ht);
-        edt_tva = dialogview.findViewById(R.id.edt_tva);
-        edt_prix_achat_ttc = dialogview.findViewById(R.id.edt_prix_achat_ttc);
+        edt_designation = rootview.findViewById(R.id.edt_designation);
+        edt_codebarre = rootview.findViewById(R.id.edt_codebarre);
+        edt_reference = rootview.findViewById(R.id.edt_reference);
 
-        edt_prix1_ht = dialogview.findViewById(R.id.edt_prix1_ht);
-        edt_prix2_ht = dialogview.findViewById(R.id.edt_prix2_ht);
-        edt_prix3_ht = dialogview.findViewById(R.id.edt_prix3_ht);
-        edt_prix4_ht = dialogview.findViewById(R.id.edt_prix4_ht);
-        edt_prix5_ht = dialogview.findViewById(R.id.edt_prix5_ht);
-        edt_prix6_ht = dialogview.findViewById(R.id.edt_prix6_ht);
+        edt_colissage = rootview.findViewById(R.id.edt_colissage);
+        edt_stock_ini = rootview.findViewById(R.id.edt_stock_ini);
 
-        edt_prix1_ttc = dialogview.findViewById(R.id.edt_prix1_ttc);
-        edt_prix2_ttc = dialogview.findViewById(R.id.edt_prix2_ttc);
-        edt_prix3_ttc = dialogview.findViewById(R.id.edt_prix3_ttc);
-        edt_prix4_ttc = dialogview.findViewById(R.id.edt_prix4_ttc);
-        edt_prix5_ttc = dialogview.findViewById(R.id.edt_prix5_ttc);
-        edt_prix6_ttc = dialogview.findViewById(R.id.edt_prix6_ttc);
+        edt_prix_achat_ht = rootview.findViewById(R.id.edt_prix_achat_ht);
+        edt_tva = rootview.findViewById(R.id.edt_tva);
+        edt_prix_achat_ttc = rootview.findViewById(R.id.edt_prix_achat_ttc);
+
+        edt_prix1_ht = rootview.findViewById(R.id.edt_prix1_ht);
+        edt_prix2_ht = rootview.findViewById(R.id.edt_prix2_ht);
+        edt_prix3_ht = rootview.findViewById(R.id.edt_prix3_ht);
+        edt_prix4_ht = rootview.findViewById(R.id.edt_prix4_ht);
+        edt_prix5_ht = rootview.findViewById(R.id.edt_prix5_ht);
+        edt_prix6_ht = rootview.findViewById(R.id.edt_prix6_ht);
+
+        edt_prix1_ttc = rootview.findViewById(R.id.edt_prix1_ttc);
+        edt_prix2_ttc = rootview.findViewById(R.id.edt_prix2_ttc);
+        edt_prix3_ttc = rootview.findViewById(R.id.edt_prix3_ttc);
+        edt_prix4_ttc = rootview.findViewById(R.id.edt_prix4_ttc);
+        edt_prix5_ttc = rootview.findViewById(R.id.edt_prix5_ttc);
+        edt_prix6_ttc = rootview.findViewById(R.id.edt_prix6_ttc);
 
 
         if (SOURCE_ACTIVITY.equals("EDIT_PRODUCT")) {
 
-            created_produit.photo = old_product.photo;
+            Bitmap bmp = controller.getProductPhotoBitmap(old_product.produit_id.toString());
+            if (bmp != null){
+                img_product.setImageBitmap(bmp);
+            }else {
+                img_product.setImageResource(R.drawable.ic_camera_24);
+            }
 
             edt_codebarre.setText(old_product.code_barre);
             edt_codebarre.setEnabled(false);
@@ -269,13 +332,13 @@ public class FragmentNewEditProduct {
             edt_prix6_ttc.setText(nf.format(old_product.pv6_ttc));
 
             if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
-                int black_color = ContextCompat.getColor(activity, R.color.black);
+                int black_color = ContextCompat.getColor(mActivity, R.color.black);
                 edt_prix_achat_ttc.setTextColor(black_color);
                 edt_prix_achat_ttc.setEnabled(true);
                 edt_prix_achat_ht.setTextColor(black_color);
                 edt_prix_achat_ht.setEnabled(true);
             }else {
-                int white_color = ContextCompat.getColor(activity, R.color.white);
+                int white_color = ContextCompat.getColor(mActivity, R.color.white);
                 edt_prix_achat_ttc.setTextColor(white_color);
                 edt_prix_achat_ttc.setEnabled(false);
                 edt_prix_achat_ht.setTextColor(white_color);
@@ -318,11 +381,10 @@ public class FragmentNewEditProduct {
             } else {
                 edt_stock_ini.setEnabled(false);
             }
-
         }
 
         ///////////////////
-        prefs = activity.getSharedPreferences(PREFS, MODE_PRIVATE);
+        prefs = mActivity.getSharedPreferences(PREFS, MODE_PRIVATE);
 
         params = new PostData_Params();
         params = controller.select_params_from_database("SELECT * FROM PARAMS");
@@ -342,13 +404,13 @@ public class FragmentNewEditProduct {
         txt_input_prix6_ttc.setHint(params.pv6_titre + " (TTC)");
 
 
-        if (params.prix_2 == 1 && is_app_synchronised_mode) {
+        if (params.prix_2 == 1) {
             lnr_prix2.setVisibility(View.VISIBLE);
         } else {
             lnr_prix2.setVisibility(View.INVISIBLE);
         }
 
-        if (params.prix_3 == 1 && is_app_synchronised_mode) {
+        if (params.prix_3 == 1) {
             lnr_prix3.setVisibility(View.VISIBLE);
         } else {
             lnr_prix3.setVisibility(View.INVISIBLE);
@@ -371,7 +433,6 @@ public class FragmentNewEditProduct {
         } else {
             lnr_prix6.setVisibility(View.INVISIBLE);
         }
-
 
         if (prefs.getBoolean("AFFICHAGE_HT", false)) {
             txt_input_prix_ht.setVisibility(View.VISIBLE);
@@ -613,14 +674,14 @@ public class FragmentNewEditProduct {
 
                 created_produit.pa_ht = Double.parseDouble(Objects.requireNonNull(edt_prix_achat_ht.getText()).toString());
                 created_produit.tva = Double.parseDouble(Objects.requireNonNull(edt_tva.getText()).toString());
-                created_produit.pa_ttc = Double.parseDouble(edt_tva.getText().toString());
+                created_produit.pa_ttc = Double.parseDouble(edt_prix_achat_ttc.getText().toString());
 
                 created_produit.isNew = 1;
 
                 created_produit.pv1_ht = Double.parseDouble(Objects.requireNonNull(edt_prix1_ht.getText()).toString());
                 created_produit.pv1_ttc = created_produit.pv1_ht + (created_produit.pv1_ht * created_produit.tva / 100);
 
-                if (params.prix_2 == 1 && is_app_synchronised_mode) {
+                if (params.prix_2 == 1) {
                     created_produit.pv2_ht = Double.parseDouble(Objects.requireNonNull(edt_prix2_ht.getText()).toString());
                     created_produit.pv2_ttc = created_produit.pv2_ht + (created_produit.pv2_ht * created_produit.tva / 100);
                 } else {
@@ -628,7 +689,7 @@ public class FragmentNewEditProduct {
                     created_produit.pv2_ttc = 0.00;
                 }
 
-                if (params.prix_3 == 1 && is_app_synchronised_mode) {
+                if (params.prix_3 == 1) {
                     created_produit.pv3_ht = Double.parseDouble(edt_prix3_ht.getText().toString());
                     created_produit.pv3_ttc = created_produit.pv3_ht + (created_produit.pv3_ht * created_produit.tva / 100);
                 } else {
@@ -667,14 +728,14 @@ public class FragmentNewEditProduct {
                     try {
                         //update client into database,
                         controller.update_into_produit(created_produit);
-                        Crouton.makeText(activity, "Produit bien modifier", Style.INFO).show();
+                        Crouton.makeText(mActivity, "Produit bien modifier", Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);
 
                         dialog.dismiss();
 
                     }catch (Exception e){
-                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                        new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Attention. !")
                                 .setContentText("Problème mise à jour produit : " + e.getMessage())
                                 .show();
@@ -692,13 +753,13 @@ public class FragmentNewEditProduct {
                         //update client into database,
                         //controller.insert_into_produit(created_produit);
                         controller.ExecuteTransaction_product_codebarre(created_produit, created_codebarre);
-                        Crouton.makeText(activity, "Produit bien ajouté", Style.INFO).show();
+                        Crouton.makeText(mActivity, "Produit bien ajouté", Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);
 
                         dialog.dismiss();
                     }catch (Exception e){
-                        new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+                        new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Attention. !")
                                 .setContentText("Problème insertion : " + e.getMessage())
                                 .show();
@@ -706,7 +767,7 @@ public class FragmentNewEditProduct {
 
                 }
 
-                EventBus.getDefault().unregister(this);
+                bus.unregister(this);
 
             }
 
@@ -929,7 +990,6 @@ public class FragmentNewEditProduct {
 
                     }
                 }
-
             }
         });
 
@@ -1132,13 +1192,13 @@ public class FragmentNewEditProduct {
 
 
         btn_cancel.setOnClickListener(v -> {
-            EventBus.getDefault().unregister(this);
+            bus.unregister(this);
             dialog.dismiss();
         });
 
 
-        EventBus.getDefault().register(this);
     }
+
 
     void onPrixAchatHTChange() {
 
@@ -1250,8 +1310,6 @@ public class FragmentNewEditProduct {
         edt_prix_achat_ht.setText(nq.format(val_prix_achat_ht));
 
     }
-
-
     void onPrix1TTCChange() {
 
         if (edt_prix1_ttc.getText().toString().isEmpty()) {
@@ -1271,7 +1329,6 @@ public class FragmentNewEditProduct {
         edt_prix1_ht.setText(nq.format(val_prix1_ht));
 
     }
-
     void onPrix2TTCChange() {
 
         if (edt_prix2_ttc.getText().toString().isEmpty()) {
@@ -1291,7 +1348,6 @@ public class FragmentNewEditProduct {
         edt_prix2_ht.setText(nq.format(val_prix2_ht));
 
     }
-
     void onPrix3TTCChange() {
 
         if (edt_prix3_ttc.getText().toString().isEmpty()) {
@@ -1311,7 +1367,6 @@ public class FragmentNewEditProduct {
         edt_prix3_ht.setText(nq.format(val_prix3_ht));
 
     }
-
     void onPrix4TTCChange() {
 
         if (edt_prix4_ttc.getText().toString().isEmpty()) {
@@ -1331,7 +1386,6 @@ public class FragmentNewEditProduct {
         edt_prix4_ht.setText(nq.format(val_prix4_ht));
 
     }
-
     void onPrix5TTCChange() {
 
         if (edt_prix5_ttc.getText().toString().isEmpty()) {
@@ -1351,7 +1405,6 @@ public class FragmentNewEditProduct {
         edt_prix5_ht.setText(nq.format(val_prix5_ht));
 
     }
-
     void onPrix6TTCChange() {
 
         if (edt_prix6_ttc.getText().toString().isEmpty()) {
@@ -1392,7 +1445,6 @@ public class FragmentNewEditProduct {
         edt_prix1_ttc.setText(nq.format(val_prix1_ttc));
 
     }
-
     void onPrix2HtChange() {
 
         if (edt_prix2_ht.getText().toString().isEmpty()) {
@@ -1412,7 +1464,6 @@ public class FragmentNewEditProduct {
         edt_prix2_ttc.setText(nq.format(val_prix2_ttc));
 
     }
-
     void onPrix3HtChange() {
 
         if (edt_prix3_ht.getText().toString().isEmpty()) {
@@ -1432,7 +1483,6 @@ public class FragmentNewEditProduct {
         edt_prix3_ttc.setText(nq.format(val_prix3_ttc));
 
     }
-
     void onPrix4HtChange() {
 
         if (edt_prix4_ht.getText().toString().isEmpty()) {
@@ -1452,7 +1502,6 @@ public class FragmentNewEditProduct {
         edt_prix4_ttc.setText(nq.format(val_prix4_ttc));
 
     }
-
     void onPrix5HtChange() {
 
         if (edt_prix5_ht.getText().toString().isEmpty()) {
@@ -1472,7 +1521,6 @@ public class FragmentNewEditProduct {
         edt_prix5_ttc.setText(nq.format(val_prix5_ttc));
 
     }
-
     void onPrix6HtChange() {
 
         if (edt_prix6_ht.getText().toString().isEmpty()) {
@@ -1496,7 +1544,7 @@ public class FragmentNewEditProduct {
     private void startScan(View view) {
 
         final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
-                .withActivity(activity)
+                .withActivity(mActivity)
                 .withEnableAutoFocus(true)
                 .withBleepEnabled(true)
                 .withBackfacingCamera()
@@ -1532,12 +1580,53 @@ public class FragmentNewEditProduct {
 
     void imageChooserCamera() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        activity.startActivityForResult(takePicture, 3000);
+        mActivity.startActivityForResult(takePicture, 3000);
+    }
+
+    public static Bitmap uriToBitmap(@NonNull Context context, @NonNull Uri uri) throws IOException {
+
+        ContentResolver resolver = context.getContentResolver();
+        InputStream inputStream = resolver.openInputStream(uri);
+
+        if (inputStream == null) {
+            throw new IOException("Unable to open InputStream for URI: " + uri);
+        }
+
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+        inputStream.close();
+
+        if (bitmap == null) {
+            throw new IOException("Bitmap decoding failed for URI: " + uri);
+        }
+
+        return bitmap;
+    }
+
+    public static Bitmap resizeBitmap(@NonNull Bitmap bitmap, int maxWidth, int maxHeight) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float ratio = Math.min((float) maxWidth / width, (float) maxHeight / height);
+
+        if (ratio >= 1.0f) {
+            // No need to resize
+            return bitmap;
+        }
+
+        int newWidth = Math.round(width * ratio);
+        int newHeight = Math.round(height * ratio);
+
+        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+    }
+
+    public static byte[] bitmapToBytes(@NonNull Bitmap bitmap, int quality) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream); // quality 0-100
+        return outputStream.toByteArray();
     }
 
     void imageChooserGallery() {
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        activity.startActivityForResult(pickPhoto, 4000);
+        imagePickerLauncher.launch( new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
     }
 
     public void setImageFromActivity(byte[] inputData) {
@@ -1556,4 +1645,5 @@ public class FragmentNewEditProduct {
         img_product.setImageBitmap(bitmap);
         created_produit.photo = inputData_1;
     }
+
 }

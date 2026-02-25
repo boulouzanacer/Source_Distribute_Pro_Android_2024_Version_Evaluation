@@ -1,4 +1,4 @@
-package com.safesoft.proapp.distribute.gps.services;
+package com.safesoft.proapp.distribute.gps.service_location;
 
 import org.json.JSONObject;
 

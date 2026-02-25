@@ -40,7 +40,6 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.textfield.TextInputEditText;
-import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterPanierInventaire;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterCheckProducts;
@@ -49,7 +48,7 @@ import com.safesoft.proapp.distribute.eventsClasses.CheckedPanierEventInventaire
 import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentQteInventaire;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
-import com.safesoft.proapp.distribute.gps.services.ServiceLocation;
+import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
 import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
@@ -94,7 +93,6 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     private ImageButton btn_validate_inv_name;
     private boolean btn_nom_inv_state_isactive = true;
 
-    private boolean show_picture_prod;
     private EventBus bus;
 
     private String NUM_INV;
@@ -160,7 +158,6 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
-        show_picture_prod = prefs.getBoolean("SHOW_PROD_PIC", false);
 
         initViews();
 
@@ -320,8 +317,76 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
     @SuppressLint("NonConstantResourceId")
     public void onClickEvent(View v) throws UnsupportedEncodingException, ParseException {
-        switch (v.getId()) {
-            case R.id.addProduct:
+        int viewId = v.getId();
+        if (viewId == R.id.addProduct) {
+            if (inv1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Cet inventaire est déja validé")
+                        .show();
+                return;
+            }
+
+            if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
+                Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                return;
+            }
+            if (btn_nom_inv_state_isactive) {
+                Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                return;
+            }
+
+            if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
+                        .show();
+
+                return;
+            }
+
+            Activity activity;
+            activity = ActivityInventaire.this;
+
+            FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
+            fragmentSelectProduct.showDialogbox(activity, getBaseContext(), "1", "VENTE");
+
+        } else if (viewId == R.id.valide_inventaire) {
+
+            if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
+
+                Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                return;
+            }
+            if (btn_nom_inv_state_isactive) {
+                Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                return;
+            }
+            if (final_panier.isEmpty()) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Cet inventaire est vide")
+                        .show();
+                return;
+            }
+            if (inv1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Cet inventaire est déja validé")
+                        .show();
+                return;
+            }
+
+            if (controller.validate_inv1_sql("INV1", inv1.num_inv)) {
+                inv1.blocage = "F";
+                validate_theme();
+            }
+
+        } else if (viewId == R.id.btn_scan_produit) {
+            if (ContextCompat.checkSelfPermission(ActivityInventaire.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ActivityInventaire.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+
+            } else {
                 if (inv1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
@@ -329,36 +394,6 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                             .show();
                     return;
                 }
-
-                if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
-                    Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
-                    return;
-                }
-                if (btn_nom_inv_state_isactive) {
-                    Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
-                    return;
-                }
-
-                if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Important !")
-                            .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
-                            .show();
-
-                    return;
-                }
-
-                // Initialize activity
-                Activity activity;
-                // define activity of this class//
-                activity = ActivityInventaire.this;
-
-                FragmentSelectProduct fragmentSelectProduct = new FragmentSelectProduct();
-                fragmentSelectProduct.showDialogbox(activity, getBaseContext(), "1", "VENTE");
-                break;
-
-            case R.id.valide_inventaire:
-
                 if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
 
                     Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
@@ -368,149 +403,102 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                     Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
                     return;
                 }
-                if (final_panier.isEmpty()) {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.SUCCESS_TYPE)
+                startScanProduct();
+            }
+        } else if (viewId == R.id.btn_mofifier_bon) {
+
+            if (!SOURCE_EXPORT.equals("EXPORTED")) {
+                if (inv1.is_exported == 1) {
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
-                            .setContentText("Cet inventaire est vide")
+                            .setContentText("Cet inventaire est déja exporté, modification impossible")
                             .show();
                     return;
                 }
-                if (inv1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire est déja validé")
-                            .show();
-                    return;
-                }
-
-                if (controller.validate_inv1_sql("INV1", inv1.num_inv)) {
-                    inv1.blocage = "F";
-                    validate_theme();
-                }
-
-                break;
-            case R.id.btn_scan_produit:
-                if (ContextCompat.checkSelfPermission(ActivityInventaire.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ActivityInventaire.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-
-                } else {
-                    if (inv1.blocage.equals("F")) {
-                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Cet inventaire est déja validé")
-                                .show();
-                        return;
-                    }
-                    if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
-
-                        Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
-                        return;
-                    }
-                    if (btn_nom_inv_state_isactive) {
-                        Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
-                        return;
-                    }
-                    startScanProduct();
-                }
-                break;
-            case R.id.btn_mofifier_bon:
-
-                if (!SOURCE_EXPORT.equals("EXPORTED")) {
-                    if (inv1.is_exported == 1) {
-                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Cet inventaire est déja exporté, modification impossible")
-                                .show();
-                        return;
-                    }
-                    if (!inv1.blocage.equals("F")) {
-                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Cet inventaire n'est pas encore validé")
-                                .show();
-                        return;
-
-                    } else {
-                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Modification")
-                                .setContentText("Voulez-vous vraiment Modifier cet inventaire ?")
-                                .setCancelText("Non")
-                                .setConfirmText("Oui")
-                                .showCancelButton(true)
-                                .setCancelClickListener(Dialog::dismiss)
-                                .setConfirmClickListener(sDialog -> {
-
-                                    try {
-
-                                        if (controller.modifier_inv1_sql("INV1", inv1.num_inv)) {
-                                            inv1.blocage = "M";
-                                            validate_theme();
-                                        }
-
-
-                                    } catch (Exception e) {
-
-                                        new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                                .setTitleText("Attention!")
-                                                .setContentText("problème lors de Modification d'inventaire : " + e.getMessage())
-                                                .show();
-                                    }
-                                    sDialog.dismiss();
-                                }).show();
-                    }
-                } else {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja exporté")
-                            .show();
-                }
-
-                break;
-            case R.id.btn_imp_bon:
                 if (!inv1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Information!")
                             .setContentText("Cet inventaire n'est pas encore validé")
                             .show();
                     return;
-                }
-                Activity bactivity;
-                bactivity = ActivityInventaire.this;
 
-                PrinterInventaire printer = new PrinterInventaire();
-                printer.start_print_inv(bactivity, final_panier, inv1);
-
-                break;
-            case R.id.btn_valide_inv_name:
-
-                if (inv1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire est déja validé")
-                            .show();
-                    return;
-                }
-
-                if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
-                    Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
-                    return;
-                }
-
-                inv1.nom_inv = edt_nom_inventaire.getText().toString();
-
-                if (btn_nom_inv_state_isactive) {
-                    if (controller.insert_into_Inv1("INV1", inv1)) {
-                        btn_validate_inv_name.setBackgroundResource(R.drawable.baseline_edit_24);
-                        edt_nom_inventaire.setEnabled(false);
-                        btn_nom_inv_state_isactive = false;
-                    }
                 } else {
-                    btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_done_24);
-                    edt_nom_inventaire.setEnabled(true);
-                    btn_nom_inv_state_isactive = true;
-                }
+                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Modification")
+                            .setContentText("Voulez-vous vraiment Modifier cet inventaire ?")
+                            .setCancelText("Non")
+                            .setConfirmText("Oui")
+                            .showCancelButton(true)
+                            .setCancelClickListener(Dialog::dismiss)
+                            .setConfirmClickListener(sDialog -> {
 
-                break;
+                                try {
+
+                                    if (controller.modifier_inv1_sql("INV1", inv1.num_inv)) {
+                                        inv1.blocage = "M";
+                                        validate_theme();
+                                    }
+
+
+                                } catch (Exception e) {
+
+                                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("Attention!")
+                                            .setContentText("problème lors de Modification d'inventaire : " + e.getMessage())
+                                            .show();
+                                }
+                                sDialog.dismiss();
+                            }).show();
+                }
+            } else {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Ce bon est déja exporté")
+                        .show();
+            }
+
+        } else if (viewId == R.id.btn_imp_bon) {
+            if (!inv1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Cet inventaire n'est pas encore validé")
+                        .show();
+                return;
+            }
+            Activity bactivity;
+            bactivity = ActivityInventaire.this;
+
+            PrinterInventaire printer = new PrinterInventaire();
+            printer.start_print_inv(bactivity, final_panier, inv1);
+
+        } else if (viewId == R.id.btn_valide_inv_name) {
+
+            if (inv1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Cet inventaire est déja validé")
+                        .show();
+                return;
+            }
+
+            if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
+                Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                return;
+            }
+
+            inv1.nom_inv = edt_nom_inventaire.getText().toString();
+
+            if (btn_nom_inv_state_isactive) {
+                if (controller.insert_into_Inv1("INV1", inv1)) {
+                    btn_validate_inv_name.setBackgroundResource(R.drawable.baseline_edit_24);
+                    edt_nom_inventaire.setEnabled(false);
+                    btn_nom_inv_state_isactive = false;
+                }
+            } else {
+                btn_validate_inv_name.setBackgroundResource(R.drawable.ic_baseline_done_24);
+                edt_nom_inventaire.setEnabled(true);
+                btn_nom_inv_state_isactive = true;
+            }
 
         }
     }
@@ -591,70 +579,69 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.delete_produit:
-                if (inv1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire est déja validé")
-                            .show();
-                    return true;
-                }
+        int itemId = item.getItemId();
+        if (itemId == R.id.delete_produit) {
+            if (inv1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Suppression")
-                        .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
-                        .setCancelText("Anuuler")
-                        .setConfirmText("Supprimer")
-                        .showCancelButton(true)
-                        .setCancelClickListener(Dialog::dismiss)
-                        .setConfirmClickListener(sDialog -> {
-
-                            try {
-                                SOURCE = "INV2_DELETE";
-                                controller.delete_from_inv2("INV2", final_panier.get(info.position).recordid);
-                                initData();
-                                //PanierAdapter.RefrechPanier(final_panier);
-                                PanierAdapter = new ListViewAdapterPanierInventaire(ActivityInventaire.this, R.layout.transfert2_items, final_panier);
-                                expandableListView.setAdapter(PanierAdapter);
-
-                            } catch (Exception e) {
-
-                                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Attention!")
-                                        .setContentText("problème lors suppression produits! : " + e.getMessage())
-                                        .show();
-                            }
-
-                            sDialog.dismiss();
-                        }).show();
+                        .setTitleText("Information!")
+                        .setContentText("Cet inventaire est déja validé")
+                        .show();
                 return true;
+            }
+            new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Suppression")
+                    .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
+                    .setCancelText("Anuuler")
+                    .setConfirmText("Supprimer")
+                    .showCancelButton(true)
+                    .setCancelClickListener(Dialog::dismiss)
+                    .setConfirmClickListener(sDialog -> {
 
-            case R.id.edit_produit:
-                if (inv1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire est déja validé")
-                            .show();
-                    return true;
-                }
-                try {
-                    SOURCE = "INV2_EDIT";
-                    Activity activity;
-                    activity = ActivityInventaire.this;
-                    FragmentQteInventaire fragmentQteInventaire = new FragmentQteInventaire();
-                    fragmentQteInventaire.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), null);
+                        try {
+                            SOURCE = "INV2_DELETE";
+                            controller.delete_from_inv2("INV2", final_panier.get(info.position).recordid);
+                            initData();
+                            PanierAdapter = new ListViewAdapterPanierInventaire(ActivityInventaire.this, R.layout.transfert2_items, final_panier);
+                            expandableListView.setAdapter(PanierAdapter);
 
-                } catch (Exception e) {
+                        } catch (Exception e) {
 
-                    new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Attention!")
-                            .setContentText("Error : " + e.getMessage())
-                            .show();
-                }
+                            new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention!")
+                                    .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                    .show();
+                        }
 
+                        sDialog.dismiss();
+                    }).show();
+            return true;
+
+        } else if (itemId == R.id.edit_produit) {
+            if (inv1.blocage.equals("F")) {
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Information!")
+                        .setContentText("Cet inventaire est déja validé")
+                        .show();
                 return true;
-            default:
-                return super.onContextItemSelected(item);
+            }
+            try {
+                SOURCE = "INV2_EDIT";
+                Activity activity;
+                activity = ActivityInventaire.this;
+                FragmentQteInventaire fragmentQteInventaire = new FragmentQteInventaire();
+                fragmentQteInventaire.showDialogbox(SOURCE, activity, getBaseContext(), final_panier.get(info.position), null);
+
+            } catch (Exception e) {
+
+                new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Attention!")
+                        .setContentText("Error : " + e.getMessage())
+                        .show();
+            }
+
+            return true;
+        } else {
+            return super.onContextItemSelected(item);
         }
     }
 
@@ -854,20 +841,12 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         }
         ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
-        String querry = "";
-        if(show_picture_prod){
-            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, PHOTO, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
 
-        }else{
-            querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
-                    "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
-                    "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
-        }
-        produits = controller.select_produits_from_database(querry, show_picture_prod);
+        produits = controller.select_produits_from_database(querry);
 
         if (produits.size() == 1) {
 

@@ -452,5 +452,11 @@
     <string name="sychroniser_tous_les_produits">Sychroniser tous les produits</string>
     <string name="code_client">CODE CLIENT</string>
     <string name="suivi_de_t_l_phone">Suivi de téléphone</string>
+    <string name="etat_de_stock">Etat de stock</string>
+    <string name="partager_list_produits">Partager list produits</string>
+    <string name="maps_client">Maps client</string>
+    <string name="nouveau_client">Nouveau client</string>
+    <string name="afficher_masquer_solde_fournisseur">Afficher/Masquer solde fournisseur</string>
+    <string name="param_tres_affichage_solde_fournisseur">Paramètres affichage solde fournisseur</string>
 
 </resources>

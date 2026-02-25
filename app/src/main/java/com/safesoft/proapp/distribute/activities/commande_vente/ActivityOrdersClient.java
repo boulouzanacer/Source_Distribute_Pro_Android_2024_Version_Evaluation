@@ -243,7 +243,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     public void onLongClick(View v, final int position) {
 
         if (bon1s_temp.get(position).blocage.equals("F")) {
-            final CharSequence[] items = {"Supprimer", "Imprimer", "Transferer vers bon vente", "Itineraire client"};
+            final CharSequence[] items = {"Supprimer", "Imprimer", "Transferer vers bon vente", "Itineraire client", "Commande annuler"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
@@ -430,6 +430,25 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                         }catch (Exception e){
                             Crouton.makeText(ActivityOrdersClient.this, "Erreur de navigation : Position client non disponible", Style.ALERT).show();
                         }
+
+                    }
+                    case 4 -> {
+                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Annulation!")
+                                .setContentText("Voulez-vous vraiment annuler cette commande " + bon1s_temp.get(position).num_bon + " ?, Opération non reversible!!!")
+                                .setCancelText("Anuuler")
+                                .setConfirmText("Confirmer")
+                                .showCancelButton(true)
+                                .setCancelClickListener(Dialog::dismiss)
+                                .setConfirmClickListener(sDialog -> {
+
+                                    controller.update_bon1_temp_commande_annuler(bon1s_temp.get(position));
+                                    setRecycle("", false);
+
+                                    sDialog.dismiss();
+
+                                })
+                                .show();
 
                     }
                 }

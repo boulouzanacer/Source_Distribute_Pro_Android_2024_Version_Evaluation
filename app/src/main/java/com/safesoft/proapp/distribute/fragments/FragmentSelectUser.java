@@ -162,7 +162,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
         });
 
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df_affiche = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat df_affiche = new SimpleDateFormat("yyyy-MM-dd");
 
 
         c.add(Calendar.DAY_OF_YEAR, -1);
@@ -196,10 +196,11 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
             }
         });
 
-        long tenYears = 10L * 365 * 1000 * 60 * 60 * 24L;
+        long OneYears = 365 * 1000 * 60 * 60 * 24L;
         long oneday = 1000 * 60 * 60 * 24L;
 
         mDialogAll_first = new TimePickerDialog.Builder()
+                .setType(Type.YEAR_MONTH_DAY)
                 .setCallBack(this)
                 .setCancelStringId("Annuler")
                 .setSureStringId("Valider")
@@ -210,11 +211,11 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
                 //.setHourText("H")
                 //.setMinuteText("mn")
                 .setCyclic(false)
-                .setMinMillseconds(System.currentTimeMillis() - tenYears)
-                .setMaxMillseconds(System.currentTimeMillis() + oneday)
-                .setCurrentMillseconds(System.currentTimeMillis())
+                .setMinMillseconds(System.currentTimeMillis() - OneYears)
+                .setMaxMillseconds(System.currentTimeMillis())
+                .setCurrentMillseconds(System.currentTimeMillis() - oneday)
                 .setThemeColor(getResources().getColor(R.color.nephritis))
-                .setType(Type.YEAR_MONTH_DAY)
+
                 .setWheelItemTextNormalColor(getResources().getColor(R.color.timetimepicker_default_text_color))
                 .setWheelItemTextSelectorColor(getResources().getColor(R.color.timepicker_toolbar_bg))
                 .setWheelItemTextSize(12)
@@ -232,7 +233,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
                 // .setHourText("H")
                 // .setMinuteText("mn")
                 .setCyclic(false)
-                .setMinMillseconds(System.currentTimeMillis() - tenYears)
+                .setMinMillseconds(System.currentTimeMillis() - OneYears)
                 .setMaxMillseconds(System.currentTimeMillis())
                 .setCurrentMillseconds(System.currentTimeMillis())
                 .setThemeColor(getResources().getColor(R.color.nephritis))
@@ -264,7 +265,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
     @Override
     public void onDateSet(TimePickerDialog timePickerView, long millseconds) {
         Date selected_date;
-        SimpleDateFormat df_affiche = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat df_affiche = new SimpleDateFormat("yyyy-MM-dd");
 
         if (timePickerView.getTag().equals("begin")) {
             selected_date = new Date(millseconds);

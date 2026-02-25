@@ -1,6 +1,7 @@
 package com.safesoft.proapp.distribute.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,13 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
     ArrayList<PostData_Fournisseur> list_fournisseurs = new ArrayList<>();
     ArrayList<PostData_Fournisseur> temp_list = new ArrayList<>();
     private static LayoutInflater inflater = null;
-    Context context;
+    Context mContext;
     private final EventBus bus = EventBus.getDefault();
     SelectedFournisseurEvent event = null;
     AlertDialog dialog;
+
+    private String PREFS = "ALL_PREFS";
+    private  SharedPreferences prefs;
 
     public interface ProduitSelectedEventListener {
         void ProduitSelectedEvent(String s, PostData_Fournisseur client);
@@ -41,9 +45,10 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
         // TODO Auto-generated constructor P
         list_fournisseurs = itemList;
         temp_list.addAll(list_fournisseurs);
-        context = mainActivity;
+        mContext = mainActivity;
         this.dialog = dialog;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
     }
 
@@ -69,9 +74,9 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
         TextView txtv_fournisseur;
         TextView code_frs;
         TextView txtv_tel;
-        TextView txtv_achats;
-        TextView txtv_verser;
-        TextView txtv_solde;
+        TextView txtv_achats_frs;
+        TextView txtv_versement_frs;
+        TextView txtv_solde_frs;
     }
 
 
@@ -85,9 +90,9 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
             holder.txtv_fournisseur = convertView.findViewById(R.id.fournisseur);
             // holder.code_frs = (TextView) convertView.findViewById(R.id.co);
             holder.txtv_tel = convertView.findViewById(R.id.tel_fournisseur);
-            holder.txtv_achats = convertView.findViewById(R.id.achat_fournisseur);
-            holder.txtv_verser = convertView.findViewById(R.id.verser_fournisseur);
-            holder.txtv_solde = convertView.findViewById(R.id.sold_fournisseur);
+            holder.txtv_achats_frs = convertView.findViewById(R.id.achat_fournisseur);
+            holder.txtv_versement_frs = convertView.findViewById(R.id.verser_fournisseur);
+            holder.txtv_solde_frs = convertView.findViewById(R.id.sold_fournisseur);
 
             convertView.setTag(holder);
 
@@ -99,9 +104,14 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
         //  holder.code_client.setText(list_clients.get(position).code_client);
         holder.txtv_tel.setText(list_fournisseurs.get(position).tel);
 
-        holder.txtv_achats.setText("ACHATS :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).achat_montant)));
-        holder.txtv_verser.setText("VERSER :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).verser_montant)));
-        holder.txtv_solde.setText("SOLDE :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).solde_montant)));
+        holder.txtv_achats_frs.setText("ACHATS :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).achat_montant)));
+        holder.txtv_versement_frs.setText("VERSER :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).verser_montant)));
+
+        if (prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true)) {
+            holder.txtv_solde_frs.setText("SOLDE :" + new DecimalFormat("##,##0.00").format(Double.valueOf(list_fournisseurs.get(position).solde_montant)));
+        } else {
+            holder.txtv_solde_frs.setText("********");
+        }
 
         // convertView.setBackgroundResource(R.drawable.selector_listview_client_row);
         //On item click event

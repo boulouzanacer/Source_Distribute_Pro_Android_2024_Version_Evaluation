@@ -320,7 +320,7 @@ public class splashScreen extends AppCompatActivity {
         }
 
         //16
-        if (revendeur.equals("ACIDOM TECH")) {
+        if (revendeur.equals("ACIDOMTECH")) {
             logo_revendeur.setImageResource(R.drawable.logo_acidomtech_500_100);
             inforevenedeur1.setText(R.string.INFO_ACIDOMTECH1);
             inforevenedeur2.setText(R.string.INFO_ACIDOMTECH2);
@@ -487,7 +487,7 @@ public class splashScreen extends AppCompatActivity {
 
         //47 INFO_MICRO_DRIEF
         if (revendeur.equals("INFO MICRO DRIEF")) {
-            logo_revendeur.setImageResource(R.drawable.logo_brsoft_500_100);
+            logo_revendeur.setImageResource(R.drawable.info_micro_500_100);
             inforevenedeur1.setText(R.string.INFO_INFO_MICRO1);
             inforevenedeur2.setText(R.string.INFO_INFO_MICRO2);
             inforevenedeur3.setText(R.string.INFO_INFO_MICRO3);

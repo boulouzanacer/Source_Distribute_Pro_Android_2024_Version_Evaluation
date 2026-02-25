@@ -1,20 +1,30 @@
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+
 include ':app',':folding-cell',
         ':lib_badge',
+        ':toaster',
         ':SpinKitLib',
         ':materialbarcodescanner',
-        //':sweet_alert_dialog_library',
+        ':sweet_alert_dialog_library',
         ':text_drawable_library',
         ':swipe_away_dialog_library',
         ':slanted_textview_library',
         ':easy_form_library',
         ':materialfancybuttons_library',
         ':time_picker_dialog_library',
-        ':pdf_viewer_library',
         ':fancybuttons_library',
         ':victor_library',
-        ':simple_recycler_adapter_library'
-
-
+        ':simple_recycler_adapter_library',
+        ':android_pdf_viewer'

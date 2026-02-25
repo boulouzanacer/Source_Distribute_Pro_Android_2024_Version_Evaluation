@@ -148,87 +148,71 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
         }
     }
 
-    @SuppressLint("NonConstantResourceId")
     public void onClick(View v) {
 
         Animation fadeIn = new AlphaAnimation(0, 1);
-        fadeIn.setInterpolator(new AccelerateInterpolator()); //add this
+        fadeIn.setInterpolator(new AccelerateInterpolator());
         fadeIn.setDuration(300);
 
-        switch (v.getId()) {
+        int viewId = v.getId();
 
-            case R.id.btn_clients -> {
-                BtnClient.startAnimation(fadeIn);
-                startActivity(ActivityClients.class, 1);
+        if (viewId == R.id.btn_clients) {
+            BtnClient.startAnimation(fadeIn);
+            startActivity(ActivityClients.class, 1);
+
+        } else if (viewId == R.id.btn_ventes) {
+            if (CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")) {
+                new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText("Veuillez régler les paramètres de VAN ( code, nom depot ) !")
+                        .show();
+            } else {
+                BtnVente.startAnimation(fadeIn);
+                startActivity(ActivityVentes.class, 2);
             }
 
-            case R.id.btn_ventes -> {
-                if (CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")) {
-                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Important !")
-                            .setContentText("Veuillez régler les paramètres de VAN ( code, nom depot ) !")
-                            .show();
-                } else {
-                    BtnVente.startAnimation(fadeIn);
-                    startActivity(ActivityVentes.class, 2);
-                }
+        } else if (viewId == R.id.btn_commande_client) {
+            if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
+                new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Important !")
+                        .setContentText(" Veuillez régler les paramètres de VENDEUR ( code, nom vendeur ) !")
+                        .show();
+            } else {
+                BtnCommandeClient.startAnimation(fadeIn);
+                startActivity(ActivityOrdersClient.class, 3);
             }
 
-            case R.id.btn_commande_client -> {
-                if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
-                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Important !")
-                            .setContentText(" Veuillez régler les paramètres de VENDEUR ( code, nom vendeur ) !")
-                            .show();
-                } else {
-                    BtnCommandeClient.startAnimation(fadeIn);
-                    startActivity(ActivityOrdersClient.class, 3);
-                }
-            }
+        } else if (viewId == R.id.btn_fournisseur) {
+            BtnFournisseur.startAnimation(fadeIn);
+            startActivity(ActivityFournisseurs.class, 4);
 
-            case R.id.btn_fournisseur -> {
-                BtnFournisseur.startAnimation(fadeIn);
-                startActivity(ActivityFournisseurs.class, 4);
-            }
+        } else if (viewId == R.id.btn_achat) {
+            BtnAchat.startAnimation(fadeIn);
+            startActivity(ActivityAchats.class, 5);
 
-            case R.id.btn_achat -> {
-                BtnAchat.startAnimation(fadeIn);
-                startActivity(ActivityAchats.class, 5);
-            }
+        } else if (viewId == R.id.btn_commande_fournisseur) {
+            BtnCommandeFournisseur.startAnimation(fadeIn);
+            startActivity(ActivityOrdersFournisseur.class, 6);
 
-            case R.id.btn_commande_fournisseur -> {
-                BtnCommandeFournisseur.startAnimation(fadeIn);
-                startActivity(ActivityOrdersFournisseur.class, 6);
-            }
-            case R.id.btn_produits -> {
-                BtnProduit.startAnimation(fadeIn);
-                startActivity(ActivityProduits.class, 7);
-            }
+        } else if (viewId == R.id.btn_produits) {
+            BtnProduit.startAnimation(fadeIn);
+            startActivity(ActivityProduits.class, 7);
 
-            case R.id.btn_inventaire -> {
-                BtnInventaire.startAnimation(fadeIn);
-                startActivity(ActivityInventaires.class, 8);
-            }
+        } else if (viewId == R.id.btn_inventaire) {
+            BtnInventaire.startAnimation(fadeIn);
+            startActivity(ActivityInventaires.class, 8);
 
-            case R.id.btn_tournee -> {
-                BtnTournee.startAnimation(fadeIn);
-                startActivity(ActivityTourneesClient.class, 8);
-            }
+        } else if (viewId == R.id.btn_tournee) {
+            BtnTournee.startAnimation(fadeIn);
+            startActivity(ActivityTourneesClient.class, 8);
 
-            case R.id.btn_import_export -> {
-                BtnImportExport.startAnimation(fadeIn);
-                startActivity(ActivityImportsExport.class, 9);
-            }
+        } else if (viewId == R.id.btn_import_export) {
+            BtnImportExport.startAnimation(fadeIn);
+            startActivity(ActivityImportsExport.class, 9);
 
-            case R.id.btn_parametres -> {
-                BtnParametre.startAnimation(fadeIn);
-                startActivity(ActivityLogin.class, 10);
-            }
-
-      /*case R.id.btn_b_reception:
-        //BtnBonReception.playSoundEffect(SoundEffectConstants.CLICK);
-        startActivity(ActivityTransferts.class, REQUEST_ACTIVITY_BON_RECEPTION);
-        break*/
+        } else if (viewId == R.id.btn_parametres) {
+            BtnParametre.startAnimation(fadeIn);
+            startActivity(ActivityLogin.class, 10);
         }
     }
 

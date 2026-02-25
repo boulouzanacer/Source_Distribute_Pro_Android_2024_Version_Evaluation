@@ -121,6 +121,37 @@ public class ActivityHtmlView extends AppCompatActivity {
 
     public void takeScreenshot() {
 
+        webview.post(() -> {
+
+            int width = webview.getWidth();
+            int height = webview.getContentHeight() * (int) webview.getScale();
+
+            if (width <= 0 || height <= 0) {
+                Log.e("SCREENSHOT", "Invalid WebView size: " + width + "x" + height);
+                return;
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            webview.draw(canvas);
+
+            File imageFile = new File(getExternalCacheDir(), "webview_capture1.jpg");
+           //File imageFile = new File(getCacheDir(), "webview_capture.jpg");
+
+            try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+            } catch (IOException e) {
+                Log.e("SCREENSHOT", "Error saving bitmap : " + e.getMessage());
+            }
+
+            bitmap.recycle();
+        });
+    }
+
+
+    /*public void takeScreenshot() {
+
         // do your stuff here
         webview.measure(MeasureSpec.makeMeasureSpec(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         webview.layout(0, 0, webview.getMeasuredWidth(), webview.getMeasuredHeight());
@@ -146,7 +177,7 @@ public class ActivityHtmlView extends AppCompatActivity {
         } catch (IOException e) {
             Log.e("eeeeee", e.getMessage());
         }
-    }
+    }*/
 
 
     String prepareAchatHtml_model1() {

@@ -348,7 +348,7 @@ public class FragmentQteVente {
 
         btn_valider.setOnClickListener(v -> {
 
-            if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_EDIT") || SOURCE_LOCAL.equals("BON2_TEMP_INSERT") || SOURCE_LOCAL.equals("BON2_TEMP_EDIT")) {
+            if (SOURCE_LOCAL.equals("BON2_INSERT") || SOURCE_LOCAL.equals("BON2_EDIT")) {
                 if (!(prefs.getBoolean("STOCK_MOINS", false))) {
                     if (val_qte > val_stock_avant) {
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
