@@ -42,7 +42,7 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
     ProduitSelectedEventListener produitSelectedListener;
 
     public ListViewAdapterListFournisseur(Context mainActivity, ArrayList<PostData_Fournisseur> itemList, AlertDialog dialog) {
-        // TODO Auto-generated constructor P
+
         list_fournisseurs = itemList;
         temp_list.addAll(list_fournisseurs);
         mContext = mainActivity;
@@ -54,23 +54,21 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return list_fournisseurs.size();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return list_fournisseurs.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
     private class ViewHolder {
+
         TextView txtv_fournisseur;
         TextView code_frs;
         TextView txtv_tel;
@@ -82,7 +80,7 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
+
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();

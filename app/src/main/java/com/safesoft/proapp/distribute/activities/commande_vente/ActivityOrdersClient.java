@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
+import com.safesoft.proapp.distribute.postData.PostData_StockError;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.utils.Env;
 
@@ -61,6 +63,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     RecyclerAdapterBon1 adapter;
     ArrayList<PostData_Bon1> bon1s_temp;
     ArrayList<PostData_Bon2> final_panier;
+    ArrayList<PostData_StockError> error_stock_messages;
     DATABASE controller;
     private TextView list_bon_total;
     private final String PREFS = "ALL_PREFS";
@@ -355,11 +358,13 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 }
                             }
                         } else {
+
                             Intent html_intent = new Intent(this, ActivityHtmlView.class);
                             html_intent.putExtra("TYPE_BON", "COMMANDE");
                             html_intent.putExtra("BON1", bon1s_temp.get(position));
                             html_intent.putExtra("BON2", final_panier);
                             startActivity(html_intent);
+
                         }
 
                     }
@@ -396,6 +401,29 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                                 "FROM BON2_TEMP " +
                                 "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
                                 "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
+
+
+                        if (!(prefs.getBoolean("STOCK_MOINS", false))) {
+                            // function to check availability of stock
+
+                            error_stock_messages = controller.check_stock_product(final_panier);
+                            if(!error_stock_messages.isEmpty()){
+
+                                //prepare message
+                                String message = "";
+                                message = "Stock insuffisant pour les produits suivants : \n";
+                                for (PostData_StockError e : error_stock_messages) {
+                                    message = message + e.produit + " / QTE: " + e.qte + " / STOCK: " + e.stock + "\n";
+                                }
+
+                                new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText("Attention!")
+                                        .setContentText(message)
+                                        .show();
+                                return;
+
+                            }
+                        }
 
                         // get date and time
                         Calendar c = Calendar.getInstance();

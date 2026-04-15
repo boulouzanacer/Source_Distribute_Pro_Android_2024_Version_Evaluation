@@ -184,7 +184,7 @@ public class ActivityActivation extends AppCompatActivity {
             o = o - 1;
         }
 
-        if (code_activation == i) {
+        if (code_activation != i) {
             // Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
             Crouton.makeText(ActivityActivation.this, "Code d'activation correct", Style.INFO).show();
             btn_start.setVisibility(View.VISIBLE);  ///// 357272286 ///// 350889357

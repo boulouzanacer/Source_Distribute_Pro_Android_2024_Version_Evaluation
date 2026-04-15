@@ -12,8 +12,8 @@ android {
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
         targetSdkVersion 36
-        versionCode 598
-        versionName "040226"
+        versionCode 602
+        versionName "040326"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)
@@ -31,7 +31,11 @@ android {
 
     buildTypes {
 
+        debug {
+            buildConfigField "boolean", "LICENSE_CHECK_ENABLED", "false"
+        }
         release {
+            buildConfigField "boolean", "LICENSE_CHECK_ENABLED", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -66,6 +70,7 @@ android {
     namespace 'com.safesoft.proapp.distribute'
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     compileOptions {
@@ -82,7 +87,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
-    implementation 'androidx.activity:activity:1.12.2'
+    implementation 'androidx.activity:activity:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.7.0', {
@@ -99,7 +104,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'org.greenrobot:eventbus:3.3.1'
-    implementation 'com.google.android.gms:play-services-maps:19.2.0'
+    implementation 'com.google.android.gms:play-services-maps:20.0.0'
     implementation 'com.google.maps:google-maps-services:2.2.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
@@ -135,6 +140,10 @@ dependencies {
     //implementation 'androidx.multidex:multidex:2.0.1'
 
 
+    implementation "androidx.camera:camera-core:1.6.0"
+    implementation "androidx.camera:camera-camera2:1.6.0"
+    implementation "androidx.camera:camera-lifecycle:1.6.0"
+    implementation "androidx.camera:camera-view:1.6.0"
 
 
     //détecter si une fuites mémoires est disponible

@@ -32,10 +32,12 @@ import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
+import com.safesoft.proapp.distribute.postData.PostData_StockError;
 import com.safesoft.proapp.distribute.postData.PostData_Tournee1;
 import com.safesoft.proapp.distribute.postData.PostData_Tournee2;
 import com.safesoft.proapp.distribute.postData.PostData_commune;
 import com.safesoft.proapp.distribute.postData.PostData_wilaya;
+import com.safesoft.proapp.distribute.postData.StockData;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,6 +53,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -2816,6 +2820,72 @@ public class DATABASE extends SQLiteOpenHelper {
         return executed;
     }
 
+    public ArrayList<PostData_StockError> check_stock_product(ArrayList<PostData_Bon2> final_panier) {
+
+        ArrayList<PostData_StockError> errors = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // 1. Extract all CODE_BARRE
+        HashSet<String> codeBarresSet = new HashSet<>();
+        for (PostData_Bon2 item : final_panier) {
+            if (item.codebarre!= null) {
+                codeBarresSet.add(item.codebarre);
+            }
+        }
+
+        if (codeBarresSet.isEmpty()) return errors;
+
+        // 2. Build IN clause (?, ?, ?...)
+        StringBuilder placeholders = new StringBuilder();
+        String[] args = new String[codeBarresSet.size()];
+
+        int i = 0;
+        for (String code : codeBarresSet) {
+            placeholders.append("?");
+            if (i < codeBarresSet.size() - 1) placeholders.append(",");
+            args[i++] = code;
+        }
+
+        // 3. Query once
+        Cursor cursor = db.rawQuery(
+                "SELECT CODE_BARRE, PRODUIT, IFNULL(STOCK,0) FROM PRODUIT WHERE CODE_BARRE IN (" + placeholders + ")",
+                args
+        );
+
+        // 4. Store in HashMap
+        HashMap<String, StockData> stockMap = new HashMap<>();
+
+        while (cursor.moveToNext()) {
+            String code = cursor.getString(0);
+            String produit = cursor.getString(1);
+            double stock = cursor.getDouble(2);
+
+            stockMap.put(code, new StockData(produit, stock));
+        }
+        cursor.close();
+
+        // 5. Compare with panier
+        for (PostData_Bon2 item : final_panier) {
+
+            String code = item.codebarre;
+            double qte = item.qte;
+
+            StockData data = stockMap.get(code);
+
+            if (data == null) {
+                // product not found
+                errors.add(new PostData_StockError("Produit introuvable (" + code + ")", qte, 0));
+                continue;
+            }
+
+            if (qte > data.stock) {
+                errors.add(new PostData_StockError(data.produit, qte, data.stock));
+            }
+        }
+
+        return errors;
+    }
+
     //=============================== FUNCTION TO INSERT INTO Bon2 TABLE ===============================
     public boolean insert_into_bon2(String _table, String num_bon, String code_depot, PostData_Bon2 list_bon2) {
 
@@ -4213,7 +4283,9 @@ public class DATABASE extends SQLiteOpenHelper {
         double tot_qte = 0.00;
         double tot_montant_par_qte = 0.00;
         double tot_montant_total = 0.00;
-        double total_verser = 0.00;
+        double total_versement_bon = 0.00;
+        double total_versement_client = 0.00;
+        double total_versement = 0.00;
         double tot_remise = 0.00;
         double tot_credit = 0.00;
         double total_benifice = 0.00;
@@ -4223,7 +4295,7 @@ public class DATABASE extends SQLiteOpenHelper {
         String querry = "SELECT " +
                 "BON2.PRODUIT, " +
                 "SUM(BON2.QTE) AS TOT_QTE, " +
-                "BON2.PV_HT, " +
+                "BON2.PV_HT * (1 + BON2.TVA / 100) AS PV_TTC, " +
                 "SUM(BON2.QTE) * (BON2.PV_HT + (BON2.PV_HT * BON2.TVA / 100)) AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -4249,7 +4321,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "SELECT " +
                 "BON2.PRODUIT, " +
                 "SUM(BON2.QTE_GRAT) AS TOT_QTE, " +
-                "0.0 AS PV_HT," +
+                "0.0 AS PV_TTC," +
                 "0.0 AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -4280,7 +4352,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 etatv.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
                 etatv.quantite = cursor.getDouble(cursor.getColumnIndex("TOT_QTE"));
                 etatv.montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
-                etatv.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
+                etatv.pv_ttc = cursor.getDouble(cursor.getColumnIndex("PV_TTC"));
                 etatv.code_parent = "1";
 
                 tot_qte = tot_qte + etatv.quantite;
@@ -4356,7 +4428,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
                 etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_TTC"));
-                etatv2.total_versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
+                etatv2.versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
                 etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";
                 //etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
@@ -4364,7 +4436,9 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 tot_montant_total = tot_montant_total + etatv2.total_par_bon_ht;
                 total_benifice = total_benifice + etatv2.benifice;
-                total_verser = total_verser + (etatv2.total_versement_bon + etatv2.vers_client);
+                total_versement_bon = total_versement_bon + etatv2.versement_bon;
+                total_versement_client = total_versement_client + etatv2.vers_client;
+                total_versement = total_versement + (etatv2.versement_bon + etatv2.vers_client);
 
                 tot_remise = tot_remise + etatv2.total_remise;
 
@@ -4415,8 +4489,20 @@ public class DATABASE extends SQLiteOpenHelper {
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
-        etatv.produit = "TOTAL VERSER :";
-        etatv.montant = total_verser;
+        etatv.produit = "VERSEMENT BONS :";
+        etatv.montant = total_versement_bon;
+        etatv.code_parent = "-6";
+        all_etatv.add(etatv);
+
+        etatv = new PostData_Etatv();
+        etatv.produit = "VERSEMENT CLIENTS :";
+        etatv.montant = total_versement_client;
+        etatv.code_parent = "-6";
+        all_etatv.add(etatv);
+
+        etatv = new PostData_Etatv();
+        etatv.produit = "TOTAL VERSEMENTS :";
+        etatv.montant = total_versement;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 
@@ -4475,7 +4561,9 @@ public class DATABASE extends SQLiteOpenHelper {
         double tot_qte = 0.00;
         double tot_montant_par_qte = 0.00;
         double tot_montant_total = 0.00;
-        double total_verser = 0.00;
+        double total_versement_bon = 0.00;
+        double total_versement_client = 0.00;
+        double total_versement = 0.00;
         double tot_remise = 0.00;
         double tot_credit = 0.00;
         double total_benifice = 0.00;
@@ -4485,7 +4573,7 @@ public class DATABASE extends SQLiteOpenHelper {
         String querry = "SELECT " +
                 "BON2_TEMP.PRODUIT, " +
                 "SUM(BON2_TEMP.QTE) AS TOT_QTE, " +
-                "BON2_TEMP.PV_HT, " +
+                "BON2_TEMP.PV_HT * (1 + BON2_TEMP.TVA / 100) AS PV_TTC, " +
                 "SUM(BON2_TEMP.QTE) * (BON2_TEMP.PV_HT + (BON2_TEMP.PV_HT * BON2_TEMP.TVA / 100)) AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -4509,7 +4597,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "SELECT " +
                 "BON2_TEMP.PRODUIT, " +
                 "SUM(BON2_TEMP.QTE_GRAT) AS TOT_QTE, " +
-                "0.0 AS PV_HT," +
+                "0.0 AS PV_TTC," +
                 "0.0 AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -4540,7 +4628,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 etatv.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
                 etatv.quantite = cursor.getDouble(cursor.getColumnIndex("TOT_QTE"));
                 etatv.montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
-                etatv.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
+                etatv.pv_ttc = cursor.getDouble(cursor.getColumnIndex("PV_TTC"));
                 etatv.code_parent = "1";
 
                 tot_qte = tot_qte + etatv.quantite;
@@ -4615,7 +4703,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
                 etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_TTC"));
-                etatv2.total_versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
+                etatv2.versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
                 etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";
                 //etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
@@ -4623,7 +4711,9 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 tot_montant_total = tot_montant_total + etatv2.total_par_bon_ht;
                 total_benifice = total_benifice + etatv2.benifice;
-                total_verser = total_verser + (etatv2.total_versement_bon + etatv2.vers_client);
+                total_versement_bon = total_versement_bon + etatv2.versement_bon;
+                total_versement_client = total_versement_client + etatv2.vers_client;
+                total_versement = total_versement + (etatv2.versement_bon + etatv2.vers_client);
 
                 tot_remise = tot_remise + etatv2.total_remise;
 
@@ -4675,8 +4765,20 @@ public class DATABASE extends SQLiteOpenHelper {
         all_etatv.add(etatv);
 
         etatv = new PostData_Etatv();
-        etatv.produit = "TOTAL VERSER :";
-        etatv.montant = total_verser;
+        etatv.produit = "VERSEMENT BONS :";
+        etatv.montant = total_versement_bon;
+        etatv.code_parent = "-6";
+        all_etatv.add(etatv);
+
+        etatv = new PostData_Etatv();
+        etatv.produit = "VERSEMENT CLIENTS :";
+        etatv.montant = total_versement_client;
+        etatv.code_parent = "-6";
+        all_etatv.add(etatv);
+
+        etatv = new PostData_Etatv();
+        etatv.produit = "TOTAL VERSEMENTS :";
+        etatv.montant = total_versement;
         etatv.code_parent = "-6";
         all_etatv.add(etatv);
 

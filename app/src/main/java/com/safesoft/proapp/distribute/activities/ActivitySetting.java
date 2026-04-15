@@ -1,17 +1,14 @@
 package com.safesoft.proapp.distribute.activities;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
-import static android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.rt.printerlibrary.enumerate.BarcodeType.CODE128;
 import static com.safesoft.proapp.distribute.MainActivity.getAndroidID;
 
 import android.Manifest;
-//import android.content.Context;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -40,7 +37,6 @@ import android.os.Build;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
@@ -74,7 +70,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-//import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -192,6 +187,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private TextInputLayout username_safe_event_text, password_safe_event_text;
     private EditText username_safe_event, password_safe_event;
     private Spinner type_logiciel_dropdown;
+    private Spinner espace_footer_dropdown;
     private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, langue_ticket_title, model_ticket_title;
     private EditText edt_objectif;
     private Button btntest_connection,
@@ -249,7 +245,6 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private BluetoothAdapter mBluetoothAdapter;
     private List<BluetoothDevice> pairedDeviceList;
-
     @BaseEnum.ConnectType
     private int checkedConType = BaseEnum.CON_WIFI;
     private int checkedImpType = BaseEnum.IMP_TYPE_TICKET;
@@ -543,7 +538,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         ip = findViewById(R.id.ip);
         ip.setFilters(filters);
         pathdatabase = findViewById(R.id.database);
-        type_logiciel_dropdown = findViewById(R.id.type_logiciel);
+        type_logiciel_dropdown = findViewById(R.id.type_logiciel_dropdown);
+        espace_footer_dropdown = findViewById(R.id.espace_footer_dropdown);
 
         username_safe_event_text = findViewById(R.id.username_safe_event_text);
         password_safe_event_text = findViewById(R.id.password_safe_event_text);
@@ -681,17 +677,37 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         param_divers = findViewById(R.id.sub_divers);
         sub_track_phone = findViewById(R.id.sub_track_phone);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_logiciel_list, android.R.layout.simple_spinner_dropdown_item);
-        type_logiciel_dropdown.setAdapter(adapter);
+        ArrayAdapter<CharSequence> adapter_type_logiciel = ArrayAdapter.createFromResource(this, R.array.type_logiciel_list, android.R.layout.simple_spinner_dropdown_item);
+        type_logiciel_dropdown.setAdapter(adapter_type_logiciel);
+
+        ArrayAdapter<CharSequence> adapter_espace_footer = ArrayAdapter.createFromResource(this, R.array.espace_footer_array, android.R.layout.simple_spinner_item);
+        adapter_type_logiciel.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        espace_footer_dropdown.setAdapter(adapter_espace_footer);
 
 
         String TYPE_LOGICIEL = prefs.getString("TYPE_LOGICIEL", "PME PRO");
-        type_logiciel_dropdown.setSelection(adapter.getPosition(TYPE_LOGICIEL));
+        type_logiciel_dropdown.setSelection(adapter_type_logiciel.getPosition(TYPE_LOGICIEL));
         type_logiciel_dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
                 editor.putString("TYPE_LOGICIEL", (String) parent.getItemAtPosition(position));
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        String ESPACE_FOOTER_TICKET = prefs.getString("ESPACE_FOOTER_TICKET", "3 Espace");
+        espace_footer_dropdown.setSelection(adapter_espace_footer.getPosition(ESPACE_FOOTER_TICKET));
+        espace_footer_dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                editor.putString("ESPACE_FOOTER_TICKET", (String) parent.getItemAtPosition(position));
                 editor.apply();
             }
 

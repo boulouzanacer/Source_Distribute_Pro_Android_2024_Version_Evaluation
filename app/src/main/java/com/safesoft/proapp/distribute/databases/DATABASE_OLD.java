@@ -3915,7 +3915,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
         String querry = "SELECT " +
                 "BON2.PRODUIT, " +
                 "SUM(BON2.QTE) AS TOT_QTE, " +
-                "BON2.PV_HT, " +
+                "BON2.PV_HT * (1 + BON2.TVA / 100), " +
                 "SUM(BON2.QTE) * (BON2.PV_HT + (BON2.PV_HT * BON2.TVA / 100)) AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -3940,7 +3940,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 "SELECT " +
                 "BON2.PRODUIT, " +
                 "SUM(BON2.QTE_GRAT) AS TOT_QTE, " +
-                "0.0 AS PV_HT," +
+                "0.0 AS PV_TTC," +
                 "0.0 AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -3971,7 +3971,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 etatv.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
                 etatv.quantite = cursor.getDouble(cursor.getColumnIndex("TOT_QTE"));
                 etatv.montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
-                etatv.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
+                etatv.pv_ttc = cursor.getDouble(cursor.getColumnIndex("PV_TTC"));
                 etatv.code_parent = "1";
 
                 tot_qte = tot_qte + etatv.quantite;
@@ -4056,7 +4056,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
 
                 etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
                 etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_TTC"));
-                etatv2.total_versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
+                etatv2.versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
                 etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";
                 //etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
@@ -4064,7 +4064,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
 
                 tot_montant_total = tot_montant_total + etatv2.total_par_bon_ht;
                 total_benifice = total_benifice + etatv2.benifice;
-                total_verser = total_verser + (etatv2.total_versement_bon + etatv2.vers_client);
+                total_verser = total_verser + (etatv2.versement_bon + etatv2.vers_client);
 
                 tot_remise = tot_remise + etatv2.total_remise;
 
@@ -4173,7 +4173,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
         String querry = "SELECT " +
                 "BON2_TEMP.PRODUIT, " +
                 "SUM(BON2_TEMP.QTE) AS TOT_QTE, " +
-                "BON2_TEMP.PV_HT, " +
+                "BON2_TEMP.PV_HT * (1 + BON2_TEMP.TVA /100), " +
                 "SUM(BON2_TEMP.QTE) * (BON2_TEMP.PV_HT + (BON2_TEMP.PV_HT * BON2_TEMP.TVA / 100)) AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -4197,7 +4197,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 "SELECT " +
                 "BON2_TEMP.PRODUIT, " +
                 "SUM(BON2_TEMP.QTE_GRAT) AS TOT_QTE, " +
-                "0.0 AS PV_HT," +
+                "0.0 AS PV_TTC," +
                 "0.0 AS TOTAL_MONTANT_PRODUIT, " +
                 "CLIENT.WILAYA AS WILAYA, " +
                 "CLIENT.COMMUNE AS COMMUNE " +
@@ -4228,7 +4228,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 etatv.produit = cursor.getString(cursor.getColumnIndex("PRODUIT"));
                 etatv.quantite = cursor.getDouble(cursor.getColumnIndex("TOT_QTE"));
                 etatv.montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_MONTANT_PRODUIT"));
-                etatv.pv_ht = cursor.getDouble(cursor.getColumnIndex("PV_HT"));
+                etatv.pv_ttc = cursor.getDouble(cursor.getColumnIndex("PV_TTC"));
                 etatv.code_parent = "1";
 
                 tot_qte = tot_qte + etatv.quantite;
@@ -4313,7 +4313,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
 
                 etatv2.total_remise = cursor1.getDouble(cursor1.getColumnIndex("REMISE"));
                 etatv2.total_par_bon_ht = cursor1.getDouble(cursor1.getColumnIndex("MONTANT_BON_TTC"));
-                etatv2.total_versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
+                etatv2.versement_bon = cursor1.getDouble(cursor1.getColumnIndex("VERSEMENT_BON"));
                 etatv2.benifice = cursor1.getDouble(cursor1.getColumnIndex("BENIFICE"));
                 etatv2.code_parent = "-6";
                 //etatv.remise = cursor.getString(cursor.getColumnIndex("REMISE"));
@@ -4321,7 +4321,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
 
                 tot_montant_total = tot_montant_total + etatv2.total_par_bon_ht;
                 total_benifice = total_benifice + etatv2.benifice;
-                total_verser = total_verser + (etatv2.total_versement_bon + etatv2.vers_client);
+                total_verser = total_verser + (etatv2.versement_bon + etatv2.vers_client);
 
                 tot_remise = tot_remise + etatv2.total_remise;
 

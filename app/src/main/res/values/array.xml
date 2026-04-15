@@ -21,4 +21,21 @@
         <item>sssss</item>
         <item>zzzzzzzz</item>
     </string-array>
+
+
+    <string-array name="espace_footer_array">
+            <item>1 Espace</item>
+            <item>2 Espace</item>
+            <item>3 Espace</item>
+            <item>4 Espace</item>
+            <item>5 Espace</item>
+            <item>6 Espace</item>
+            <item>7 Espace</item>
+            <item>8 Espace</item>
+            <item>9 Espace</item>
+            <item>10 Espace</item>
+            <item>15 Espace</item>
+            <item>20 Espace</item>
+    </string-array>
+
 </resources>

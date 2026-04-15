@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +50,6 @@ import com.safesoft.proapp.distribute.eventsClasses.LocationEvent;
 import com.safesoft.proapp.distribute.fragments.FragmentQteInventaire;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
-import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
@@ -101,7 +101,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
     private String CODE_DEPOT;
 
 
-    private ExpandableHeightListView expandableListView;
+    private ListView expandableListView;
 
     private NumberFormat nf;
 
@@ -247,11 +247,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             PanierAdapter = new ListViewAdapterPanierInventaire(this, R.layout.transfert2_items, final_panier);
 
             expandableListView = findViewById(R.id.expandable_listview);
-
             expandableListView.setAdapter(PanierAdapter);
-
-            // This actually does the magic
-            expandableListView.setExpanded(true);
+            registerForContextMenu(expandableListView);
 
             registerForContextMenu(expandableListView);
 
@@ -519,14 +516,12 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 // Only initialize adapter once
                 if (PanierAdapter == null) {
                     final_panier = data;
-                    PanierAdapter = new ListViewAdapterPanierInventaire(
-                            ActivityInventaire.this,
-                            R.layout.transfert2_items,
-                            final_panier
-                    );
+
+                    PanierAdapter = new ListViewAdapterPanierInventaire(ActivityInventaire.this, R.layout.transfert2_items, final_panier);
                     expandableListView = findViewById(R.id.expandable_listview);
                     expandableListView.setAdapter(PanierAdapter);
-                    expandableListView.setExpanded(true);
+                    registerForContextMenu(expandableListView);
+
                     registerForContextMenu(expandableListView);
                 } else {
                     // Update existing list

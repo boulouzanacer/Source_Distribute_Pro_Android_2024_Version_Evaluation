@@ -31,10 +31,7 @@ public class RestartBroadcastReceiver extends BroadcastReceiver {
         stopJob(context);
         ComponentName componentName = new ComponentName(context, JobService.class);
 
-        JobInfo jobInfo = new JobInfo.Builder(1, componentName)
-                .setMinimumLatency(1000)
-                .setPersisted(true)
-                .build();
+        JobInfo jobInfo = new JobInfo.Builder(1, componentName).setMinimumLatency(1000).setPersisted(true).build();
 
         jobScheduler.schedule(jobInfo);
         Log.i("LOCATION 2", "Jobs 2 = " + jobScheduler.getAllPendingJobs().size());

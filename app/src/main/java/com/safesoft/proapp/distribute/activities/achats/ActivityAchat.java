@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +62,6 @@ import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.fragments.FragmentTimbre;
 import com.safesoft.proapp.distribute.fragments.FragmentValideBon;
 import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
-import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
@@ -115,7 +115,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
     private PostData_Fournisseur fournisseur_selected;
     private PostData_Achat1 achat1;
     private String SOURCE;
-    private ExpandableHeightListView expandableListView;
+    private ListView expandableListView;
     private NumberFormat nf;
     public static final String BARCODE_KEY = "BARCODE";
     private Barcode barcodeResult;
@@ -286,11 +286,8 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             PanierAdapter = new ListViewAdapterPanierAchat(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
             expandableListView = findViewById(R.id.expandable_listview);
-
             expandableListView.setAdapter(PanierAdapter);
-
-            // This actually does the magic
-            expandableListView.setExpanded(true);
+            registerForContextMenu(expandableListView);
 
             registerForContextMenu(expandableListView);
 
@@ -433,7 +430,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             }
 
             FragmentValideBon fragmentvalider = new FragmentValideBon();
-            fragmentvalider.showDialogbox(ActivityAchat.this, achat1.solde_ancien, achat1.montant_bon, achat1.verser);
+            fragmentvalider.showDialogbox(ActivityAchat.this, achat1.solde_ancien, achat1.montant_bon, achat1.verser, "VALIDATE_ACHAT");
 
         } else if (viewId == R.id.txv_remise_btn) {
             if (achat1.blocage.equals("F")) {
@@ -626,11 +623,9 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         PanierAdapter = new ListViewAdapterPanierAchat(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
         expandableListView = findViewById(R.id.expandable_listview);
-
         expandableListView.setAdapter(PanierAdapter);
+        registerForContextMenu(expandableListView);
 
-        // This actually does the magic
-        expandableListView.setExpanded(true);
         registerForContextMenu(expandableListView);
 
         calcule();
@@ -1086,16 +1081,26 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 3000) {
-            if (resultCode == RESULT_OK) {
-                if (data != null) {
-                    Bundle extras = data.getExtras();
-                    assert extras != null;
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
-                    assert imageBitmap != null;
-                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100 /* Ignored for PNGs */, blob);
-                    byte[] inputData = blob.toByteArray();
-                    bus.post(new ByteDataEvent(inputData));
+            if (resultCode == RESULT_OK && data != null) {
+
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+
+                    Bitmap imageBitmap;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        imageBitmap = extras.getParcelable("data", Bitmap.class);
+                    } else {
+                        imageBitmap = extras.getParcelable("data");
+                    }
+
+                    if (imageBitmap != null) {
+                        ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, blob);
+
+                        byte[] inputData = blob.toByteArray();
+                        bus.post(new ByteDataEvent(inputData));
+                    }
                 }
             }
         } else if (requestCode == 4000) {

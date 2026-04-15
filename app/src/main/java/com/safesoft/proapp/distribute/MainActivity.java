@@ -382,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
 
     private void restartLocationService() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14
             if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.FOREGROUND_SERVICE_LOCATION}, 101);

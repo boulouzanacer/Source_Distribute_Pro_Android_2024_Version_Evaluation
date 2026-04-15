@@ -22,6 +22,8 @@ import com.safesoft.proapp.distribute.eventsClasses.ValidateFactureEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -43,7 +45,7 @@ public class FragmentValideBon {
     SharedPreferences prefs;
 
     //PopupWindow display method
-    public void showDialogbox(Activity activity, double recieve_ancien_solde, double recieve_montant_bon, double recieve_versement) {
+    public void showDialogbox(Activity activity, double recieve_ancien_solde, double recieve_montant_bon, double recieve_versement, String SOURCE_LOCAL) {
 
         this.mactivity = activity;
         // Declare US print format
@@ -91,11 +93,11 @@ public class FragmentValideBon {
         edt_versement = dialogview.findViewById(R.id.versement);
         edt_nouveau_solde = dialogview.findViewById(R.id.nouveau_solde);
 
-        val_ancien_sold = recieve_ancien_solde;
-        val_montant_bon = recieve_montant_bon;
-        val_solde_actuel = recieve_ancien_solde + recieve_montant_bon;
-        val_versement = recieve_versement;
-        val_nouveau_solde = val_solde_actuel - val_versement;
+        val_ancien_sold = round2(recieve_ancien_solde);
+        val_montant_bon = round2(recieve_montant_bon);
+        val_solde_actuel = round2(recieve_ancien_solde + recieve_montant_bon);
+        val_versement = round2(recieve_versement);
+        val_nouveau_solde = round2(val_solde_actuel - val_versement);
 
         edt_ancien_sold.setText(nf.format(val_ancien_sold));
         edt_montant_bon.setText(nf.format(val_montant_bon));
@@ -107,13 +109,16 @@ public class FragmentValideBon {
 
         btn_valider.setOnClickListener(v -> {
 
+
             if (Objects.requireNonNull(edt_versement.getText()).length() > 0) {
 
+                if(SOURCE_LOCAL.equals("VALIDATE_VENTE")){
 
-                if (!prefs.getBoolean("ALLOW_CREDIT_VENTE", true)) {
-                    if (val_versement != val_montant_bon) {
-                        edt_versement.setError("Vous n'avez pas le droit de faire un credit !!");
-                        return;
+                    if (!prefs.getBoolean("ALLOW_CREDIT_VENTE", true)) {
+                        if (round2(val_versement) < round2(val_montant_bon)) {
+                            edt_versement.setError("Vous n'avez pas le droit de faire un credit !!");
+                            return;
+                        }
                     }
 
                 }
@@ -176,9 +181,16 @@ public class FragmentValideBon {
         } else {
             val_versement = Double.parseDouble(edt_versement.getText().toString());
         }
-        val_nouveau_solde = val_solde_actuel - val_versement;
+        val_nouveau_solde = round2(val_solde_actuel - val_versement);
         edt_nouveau_solde.setText(nf.format(val_nouveau_solde));
 
+    }
+
+    public static double round2(double value) {
+        return BigDecimal
+                .valueOf(value)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
 }

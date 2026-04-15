@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View.MeasureSpec;
 import android.view.WindowInsetsController;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
@@ -121,10 +122,11 @@ public class ActivityHtmlView extends AppCompatActivity {
 
     public void takeScreenshot() {
 
+
         webview.post(() -> {
 
             int width = webview.getWidth();
-            int height = webview.getContentHeight() * (int) webview.getScale();
+            int height = (int) (webview.getContentHeight() * webview.getScale());
 
             if (width <= 0 || height <= 0) {
                 Log.e("SCREENSHOT", "Invalid WebView size: " + width + "x" + height);
@@ -1451,6 +1453,12 @@ public class ActivityHtmlView extends AppCompatActivity {
             onBackPressed();
         }
         if (id == R.id.print) {
+            /*webview.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    view.postDelayed(() -> takeScreenshot(), 300); // small delay for layout
+                }
+            });*/
             takeScreenshot();
             Activity bactivity;
             bactivity = ActivityHtmlView.this;

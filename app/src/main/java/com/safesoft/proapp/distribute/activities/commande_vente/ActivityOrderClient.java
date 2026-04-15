@@ -26,6 +26,7 @@ import android.view.WindowInsetsController;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,6 @@ import com.safesoft.proapp.distribute.fragments.FragmentSelectClient;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
-import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
@@ -124,7 +124,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     private String SOURCE;
 
 
-    private ExpandableHeightListView expandableListView;
+    //private ExpandableHeightListView expandableListView;
+    private ListView expandableListView;
 
     private NumberFormat nf;
 
@@ -328,11 +329,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
             expandableListView = findViewById(R.id.expandable_listview);
-
             expandableListView.setAdapter(PanierAdapter);
-
-            // This actually does the magic
-            expandableListView.setExpanded(true);
+            registerForContextMenu(expandableListView);
 
             registerForContextMenu(expandableListView);
 
@@ -832,11 +830,9 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
         expandableListView = findViewById(R.id.expandable_listview);
-
         expandableListView.setAdapter(PanierAdapter);
+        registerForContextMenu(expandableListView);
 
-        // This actually does the magic
-        expandableListView.setExpanded(true);
         registerForContextMenu(expandableListView);
 
         calcule();

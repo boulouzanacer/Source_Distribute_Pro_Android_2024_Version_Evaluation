@@ -5,6 +5,7 @@
     <!-- Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- For Android 12+ -->
@@ -115,12 +116,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Main classes -->
+        </activity>
+
+        <!-- Main classes -->
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-        <activity android:name=".activities.splashscreen.splashScreen" /> <!-- Activation classes -->
-        <activity android:name=".activation.ActivityActivation" /> <!-- Client classes -->
+        <activity android:name=".activities.splashscreen.splashScreen" />
+
+        <!-- Activation classes -->
+        <activity android:name=".activation.ActivityActivation" />
+
+        <!-- Client classes -->
         <activity
             android:name=".activities.client.ActivityClients"
             android:exported="false"
@@ -128,9 +135,15 @@
         <activity
             android:name=".activities.client.ActivityClientDetail"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Produits classes -->
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Produits classes -->
         <activity android:name=".activities.product.ActivityProduits" />
-        <activity android:name=".activities.product.ActivityProduitDetail" /> <!-- Autre classes -->
+        <activity android:name=".activities.achats.InvoiceResultActivity" />
+        <activity android:name=".activities.achats.CaptureInvoiceActivity" />
+        <activity android:name=".activities.product.ActivityProduitDetail" />
+
+        <!-- Autre classes -->
         <activity android:name=".activities.ActivityImportsExport" />
         <activity
             android:name=".activities.ActivitySetting"

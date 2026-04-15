@@ -2,149 +2,145 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="0dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="0dp">
 
+    <!-- Header -->
     <LinearLayout
         android:id="@+id/entete_produit"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="1dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/blue"
             android:maxLines="1"
+            android:text="@string/produits"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:textAlignment="center"
-            android:text="@string/produits" />
+            android:textAlignment="center" />
     </LinearLayout>
 
+    <!-- Divider -->
     <View
         android:id="@+id/view_ddd"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="2dp"
         android:background="@color/vert"
         app:layout_constraintTop_toBottomOf="@+id/entete_produit"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ScrollView
-        android:layout_width="match_parent"
+    <!-- ✅ ListView scrollable (no ScrollView) -->
+    <ListView
+        android:id="@+id/expandable_listview"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/Pied_produit"
+        android:divider="@color/white"
+        android:padding="2dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/view_ddd"
-        tools:layout_editor_absoluteX="2dp">
+        app:layout_constraintBottom_toTopOf="@+id/Pied_produit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/layout_panier_vente" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical">
-
-            <com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView
-                android:id="@+id/expandable_listview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@color/white"
-                android:padding="2dp" />
-
-        </LinearLayout>
-
-    </ScrollView>
-
+    <!-- Footer -->
     <LinearLayout
         android:id="@+id/Pied_produit"
-        android:weightSum="5.5"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/blue"
+        android:weightSum="5.5"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="1dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/nbr_colis"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:textColor="@color/white"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="N.Colis"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lettre_x"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:textColor="@color/white"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
             android:text=" "
             android:textAlignment="center"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/colissage"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="Colis."
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lettre_equal"
-            android:layout_weight="0.25"
             android:layout_width="0dp"
-            android:textStyle="bold"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="0.25"
+            android:gravity="center"
             android:text=" "
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <TextView
-            android:layout_weight="1"
+            android:id="@+id/qt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textStyle="bold"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/qt"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/gratuit"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:textStyle="bold"
-            android:textColor="@color/vert"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/gratuit"
-            android:visibility="visible"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/vert"
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <TextView
-            android:layout_weight="1"
+            android:id="@+id/pu"
             android:layout_width="0dp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/p_u"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

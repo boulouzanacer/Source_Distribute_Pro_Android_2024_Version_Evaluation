@@ -34,6 +34,7 @@ import android.view.WindowInsetsController;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -51,7 +52,6 @@ import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.PrintEvent;
-import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.printing.Printing;
@@ -124,7 +124,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     private PostData_Client client_selected;
     private PostData_Bon1 bon1;
     private String SOURCE;
-    private ExpandableHeightListView expandableListView;
+    //private ExpandableHeightListView expandableListView;
+    private ListView expandableListView;
     private NumberFormat nf;
     public static final String BARCODE_KEY = "BARCODE";
     private Barcode barcodeResult;
@@ -317,11 +318,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
             expandableListView = findViewById(R.id.expandable_listview);
-
             expandableListView.setAdapter(PanierAdapter);
-
-            // This actually does the magic
-            expandableListView.setExpanded(true);
+            registerForContextMenu(expandableListView);
 
             registerForContextMenu(expandableListView);
 
@@ -595,7 +593,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                 return;
             }
             FragmentValideBon fragmentvalider = new FragmentValideBon();
-            fragmentvalider.showDialogbox(ActivityVente.this, bon1.ancien_solde, bon1.montant_bon, bon1.verser);
+            fragmentvalider.showDialogbox(ActivityVente.this, bon1.ancien_solde, bon1.montant_bon, bon1.verser, "VALIDATE_VENTE");
 
         } else if (viewId == R.id.txv_remise_btn) {
             if (bon1.blocage.equals("F")) {
@@ -923,11 +921,9 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         PanierAdapter = new ListViewAdapterPanierVente(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
         expandableListView = findViewById(R.id.expandable_listview);
-
         expandableListView.setAdapter(PanierAdapter);
+        registerForContextMenu(expandableListView);
 
-        // This actually does the magic
-        expandableListView.setExpanded(true);
         registerForContextMenu(expandableListView);
 
         calcule();

@@ -324,6 +324,33 @@
                 android:textAllCaps="false" />
 
         </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Espace footer"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/espace_footer_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
     </LinearLayout>
 
 

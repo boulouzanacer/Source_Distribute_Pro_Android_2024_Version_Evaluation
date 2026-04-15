@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +53,6 @@ import com.safesoft.proapp.distribute.fragments.FragmentRemise;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectFournisseur;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectProduct;
 import com.safesoft.proapp.distribute.gps.service_location.ServiceLocation;
-import com.safesoft.proapp.distribute.libs.expandableheightlistview.ExpandableHeightListView;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
 import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
@@ -77,7 +77,6 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivityOrderFournisseur extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick {
-
 
     ////////////////////////////////////////
     private static final int ACCES_FINE_LOCATION = 2;
@@ -104,7 +103,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
     private String SOURCE;
 
 
-    private ExpandableHeightListView expandableListView;
+    private ListView expandableListView;
 
     private NumberFormat nf;
 
@@ -267,11 +266,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             PanierAdapter = new ListViewAdapterPanierAchat(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
             expandableListView = findViewById(R.id.expandable_listview);
-
             expandableListView.setAdapter(PanierAdapter);
-
-            // This actually does the magic
-            expandableListView.setExpanded(true);
+            registerForContextMenu(expandableListView);
 
             registerForContextMenu(expandableListView);
 
@@ -600,11 +596,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         PanierAdapter = new ListViewAdapterPanierAchat(this, R.layout.transfert2_items, final_panier, TYPE_ACTIVITY);
 
         expandableListView = findViewById(R.id.expandable_listview);
-
         expandableListView.setAdapter(PanierAdapter);
-
-        // This actually does the magic
-        expandableListView.setExpanded(true);
+        registerForContextMenu(expandableListView);
         registerForContextMenu(expandableListView);
 
         calcule();

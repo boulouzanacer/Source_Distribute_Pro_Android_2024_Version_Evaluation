@@ -1034,11 +1034,7 @@ public class Printing {
                     //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
 
 
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getHeaderCmd());//初始化, Initial
-                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    print_espace_footer(cmd);
 
                 } catch (SdkException | IOException e) {
                     e.printStackTrace();
@@ -1359,12 +1355,8 @@ public class Printing {
 
                     //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
 
-
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getHeaderCmd());//初始化, Initial
-                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    //function for adding footer space to  ticket
+                    print_espace_footer(cmd);
 
                 } catch (SdkException | IOException e) {
                     e.printStackTrace();
@@ -1690,11 +1682,7 @@ public class Printing {
                     //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
 
 
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getHeaderCmd());//初始化, Initial
-                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    print_espace_footer(cmd);
 
                 } catch (SdkException | IOException e) {
                     e.printStackTrace();
@@ -2239,10 +2227,10 @@ public class Printing {
                         qte = etats.get(i).quantite;
                         qte_Str = new DecimalFormat("####0.##").format(qte);
 
-                        prix_unit = etats.get(i).pv_ht;
+                        prix_unit = etats.get(i).pv_ttc;
                         prix_unit_Str = new DecimalFormat("####0.##").format(prix_unit);
 
-                        total_par_produit = etats.get(i).pv_ht * etats.get(i).quantite;
+                        total_par_produit = etats.get(i).pv_ttc * etats.get(i).quantite;
                         total_par_produit_str = new DecimalFormat("####0.##").format(total_par_produit);
 
 
@@ -2443,11 +2431,7 @@ public class Printing {
                     //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
 
 
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getHeaderCmd());//初始化, Initial
-                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    print_espace_footer(cmd);
 
                 } catch (SdkException | IOException e) {
                     e.printStackTrace();
@@ -2618,11 +2602,7 @@ public class Printing {
                     //////////////////////////////// IMPRESSION CODE BARRE// ///////////////////////
 
 
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getHeaderCmd());//初始化, Initial
-                    cmd.append(cmd.getLFCRCmd());  // one line space
+                    print_espace_footer(cmd);
 
                 } catch (SdkException | IOException e) {
                     e.printStackTrace();
@@ -2982,7 +2962,7 @@ public class Printing {
 
                     //////////////////////////////// IMPRESSION ANCIEN SOLDE ///////////////////////
 
-                    cmd.append(cmd.getTextCmd(textSetting, "Ce recu est etabli pour servir et valoir ce que de droit."));
+                    cmd.append(cmd.getTextCmd(textSetting, "Ce reçu est etabli pour servir et valoir ce que de droit."));
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     cmd.append(cmd.getLFCRCmd()); // one line space
                     textSetting.setBold(SettingEnum.Enable);
@@ -2994,13 +2974,9 @@ public class Printing {
                     cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
+
+
+                    print_espace_footer(cmd);
 
                 } catch (SdkException | IOException e) {
                     e.printStackTrace();
@@ -3198,12 +3174,8 @@ public class Printing {
                     cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getLFCRCmd());  // one line space
                     cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
-                    cmd.append(cmd.getLFCRCmd());  // one line space
+
+                    print_espace_footer(cmd);
 
                 } catch (SdkException | IOException e) {
                     e.printStackTrace();
@@ -3252,6 +3224,9 @@ public class Printing {
 
                     cmd.append(cmd.getLFCRCmd());
                     cmd.append(cmd.getLFCRCmd());
+
+                    print_espace_footer(cmd);
+
                     if (rtPrinter != null) {
                         rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
                     }
@@ -3324,6 +3299,30 @@ public class Printing {
     String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return sdf.format(new Date());
+    }
+
+    private void print_espace_footer(Cmd cmd){
+        int espace_count = 0 ;
+        String ESPACE_FOOTER_TICKET = prefs.getString("ESPACE_FOOTER_TICKET", "3 Espace");
+        espace_count = switch (ESPACE_FOOTER_TICKET) {
+            case "1 Espace" -> 1;
+            case "2 Espace" -> 2;
+            case "3 Espace" -> 3;
+            case "4 Espace" -> 4;
+            case "5 Espace" -> 5;
+            case "6 Espace" -> 6;
+            case "7 Espace" -> 7;
+            case "8 Espace" -> 8;
+            case "9 Espace" -> 9;
+            case "10 Espace" -> 10;
+            case "15 Espace" -> 15;
+            case "20 Espace" -> 20;
+            default -> espace_count;
+        };
+
+        for (int i = 0; i < espace_count; i++) {
+            cmd.append(cmd.getLFCRCmd());  // one line space
+        }
     }
 
 }

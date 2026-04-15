@@ -6,10 +6,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +36,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Achat2;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.utils.Env;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -415,6 +418,9 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                 startActivity(editIntent,options);
             }
 
+        }else if (item.getItemId() == R.id.import_achat_ia) {
+
+            //startActivity(new Intent(this, CaptureInvoiceActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

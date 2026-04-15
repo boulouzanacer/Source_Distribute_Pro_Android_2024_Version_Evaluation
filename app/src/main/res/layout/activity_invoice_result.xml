@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/myToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        tools:titleEnabled="false"
+        tools:navigationIcon="@drawable/ic_arrow_back_24" />
+
+    <LinearLayout
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Header -->
+
+        <TextView
+            android:id="@+id/tvInvoiceNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Numéro : " />
+
+        <TextView
+            android:id="@+id/tvInvoiceDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date facture : " />
+
+        <TextView
+            android:id="@+id/tvDueDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date échéance : " />
+
+        <TextView
+            android:id="@+id/tvSellerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vendeur : " />
+
+        <TextView
+            android:id="@+id/tvBuyerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Client : " />
+
+        <TextView
+            android:id="@+id/tvBuyerPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Téléphone : " />
+
+        <TextView
+            android:id="@+id/tvCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Devise : "
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Produits"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewItems"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Footer -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:id="@+id/tvSubtotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sous-total : " />
+
+            <TextView
+                android:id="@+id/tvTaxTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Taxe : " />
+
+            <TextView
+                android:id="@+id/tvTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total : "
+                android:textStyle="bold"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

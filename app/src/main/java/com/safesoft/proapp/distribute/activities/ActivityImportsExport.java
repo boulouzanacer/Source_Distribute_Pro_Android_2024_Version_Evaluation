@@ -791,7 +791,6 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 ArrayList<PostData_Achat1> achat1s;
                 ArrayList<PostData_Achat2> achat2s;
-                PostData_Fournisseur fournisseur;
                 list_produit_not_exported = new ArrayList<>();
                 list_fournisseur_not_exported = new ArrayList<>();
                 list_num_bon_not_exported = new ArrayList<>();
@@ -1604,8 +1603,10 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                         }
                     } catch (Exception e) {
-                        con.rollback();
-                        list_num_bon_not_exported.add(bon1s.get(i).num_bon + " / "+ e.getMessage());
+                        if (con != null) {
+                            try { con.rollback(); } catch (SQLException ignored) {}
+                        }
+                        list_num_bon_not_exported.add(bon1s.get(i).num_bon + " / " + e.getMessage());
                         stmt.clearBatch();
                     }
 
@@ -1765,9 +1766,11 @@ public class ActivityImportsExport extends AppCompatActivity {
                         }
 
                     } catch (Exception e) {
-                        con.rollback();
-                        stmt.clearBatch();
+                        if (con != null) {
+                            try { con.rollback(); } catch (SQLException ignored) {}
+                        }
                         list_recordid_versement_not_exported.add(all_versement_client.get(g).carnet_versement + " - " + all_versement_client.get(g).client + " :  " + e.getMessage());
+                        stmt.clearBatch();
                     }
 
                 }
@@ -1776,36 +1779,27 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
             } catch (Exception ex) {
-                if (con != null) {
-                    try {
-                        con.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.e("TRACKKK", "YOU HAVE AN SQL ERROR IN YOUR REQUEST  " + ex.getMessage());
-                if (ex.getMessage().contains("Unable to complete network request to host")) {
-                    flag = 2;
-                    Log.e("TRACKKK", "ENABLE TO CONNECT TO SERVER FIREBIRD DATA STORED IN THE LOCAL DATABASE ");
-                } else {
-                    //not executed with problem in the sql statement
 
+                String msg = (ex.getMessage() != null) ? ex.getMessage() : ex.toString(); // <- important
+
+                Log.e("TRACKKK", "SQL/EXPORT ERROR", ex);
+
+                if (msg.contains("Unable to complete network request to host")) {
+                    flag = 2;
+                } else {
                     flag = 3;
                 }
 
-                try {
-                    con.rollback();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                erreurMessage = ex.getMessage();
-            }finally {
+                erreurMessage = msg;
+
+                // rollback seulement si la connexion existe
                 if (con != null) {
-                    try {
-                        con.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
+                    try { con.rollback(); } catch (SQLException ignored) {}
+                }
+
+            } finally {
+                if (con != null) {
+                    try { con.close(); } catch (SQLException ignored) {}
                 }
             }
             return flag;
