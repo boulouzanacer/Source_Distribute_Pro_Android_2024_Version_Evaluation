@@ -509,7 +509,12 @@ public class ActivityActivation extends AppCompatActivity {
         }
 
         //50 SSG_SERVICES
-
+        if (revendeur.equals("SSG SERVICES")) {
+            inforevenedeur1.setText(R.string.INFO_SSG_SERVICES1);
+            inforevenedeur2.setText(R.string.INFO_SSG_SERVICES2);
+            inforevenedeur3.setText(R.string.INFO_SSG_SERVICES3);
+            inforevenedeur4.setText(R.string.INFO_SSG_SERVICES4);
+        }
     }
 
 }

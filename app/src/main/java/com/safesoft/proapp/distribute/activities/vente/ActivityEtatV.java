@@ -15,6 +15,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.WindowCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +24,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsetsController;
@@ -29,7 +33,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.safesoft.proapp.distribute.adapters.RecyclerAdapterClientsVersement;
 import com.safesoft.proapp.distribute.adapters.model.MyDataObject;
 import com.safesoft.proapp.distribute.adapters.model.WrappedMyDataObject;
 import com.safesoft.proapp.distribute.adapters.viewholder.advanced.AdvancedDataViewHolder;
@@ -39,6 +46,7 @@ import com.safesoft.proapp.distribute.adapters.viewholder.advanced.HeaderViewHol
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.EtatZSelection_Event;
 import com.safesoft.proapp.distribute.fragments.FragmentSelectUser;
+import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.postData.PostData_Etatv;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.printing.Printing;
@@ -50,6 +58,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import eu.inloop.simplerecycleradapter.ItemClickListener;
 import eu.inloop.simplerecycleradapter.ItemLongClickListener;
 import eu.inloop.simplerecycleradapter.SettableViewHolder;
@@ -67,10 +77,11 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     private RelativeLayout empty_data;
     private TextView txtv_debut, txtv_fin, txtv_user, txtv_wilaya, txtv_commune;
     private DATABASE controller;
-    Boolean printer_mode_integrate = true;
+    private Boolean printer_mode_integrate = true;
     private Thread thread;
     private Handler handler;
     private ArrayList<PostData_Etatv> result_etatzg;
+    private ArrayList<PostData_Client> versement_clients;
     private final EventBus bus = EventBus.getDefault();
     private String c_client, client;
     private String from_d;
@@ -80,6 +91,13 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     private final String PREFS = "ALL_PREFS";
     private SharedPreferences prefs;
     private String errorMessage = "";
+    private TextView txtv_etat_centre_status;
+    private FloatingActionButton fab;
+    private View popupContainer;
+    private ImageView btnClosePopup;
+    private RecyclerView recyclerClients;
+    private RecyclerAdapterClientsVersement adapter;
+    private ArrayList<PostData_Client> clients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +126,6 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
         initViews();
 
-
         Toolbar toolbar = findViewById(R.id.myToolbar);
 
         setSupportActionBar(toolbar);
@@ -127,17 +144,166 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                 start_select_etatz(1);
             }
         });
+
+
         controller = new DATABASE(this);
+        versement_clients = new ArrayList<>();
+
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
 
         initAdapter();
 
+        setupFAbButton();
+
+        fab.setOnClickListener(v -> {
+            if(!versement_clients.isEmpty()){
+
+                popupContainer.setVisibility(View.VISIBLE);
+                // init RecyclerView si pas encore fait
+                recyclerClients.setLayoutManager(new LinearLayoutManager(this));
+                recyclerClients.setHasFixedSize(true);
+                recyclerClients.setNestedScrollingEnabled(true);
+                adapter = new RecyclerAdapterClientsVersement(this, versement_clients);
+                // adapter exemple
+                recyclerClients.setAdapter(adapter);
+
+                fab.setOnTouchListener(null);
+
+            }else{
+                Crouton.makeText(ActivityEtatV.this, "Aucun client versé dans la periode séléctionner !", Style.ALERT).show();
+            }
+
+
+        });
+
+        btnClosePopup.setOnClickListener(v -> {
+            popupContainer.setVisibility(View.GONE);
+            setupFAbButton(); // your method
+        });
+
+        popupContainer.setOnClickListener(v -> {
+            popupContainer.setVisibility(View.GONE);
+        });
+
+
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
         printer_mode_integrate = prefs1.getString("PRINTER_CONX", "INTEGRATE").equals("INTEGRATE");
 
+
+        txtv_etat_centre_status.setText("Etat de vente client...");
         super.onStart();
+    }
+
+
+    private void setupFAbButton(){
+
+        final int[] parentW = new int[1];
+        final int[] parentH = new int[1];
+
+        fab.post(() -> {
+            View parent = (View) fab.getParent();
+            parentW[0] = parent.getWidth();
+            parentH[0] = parent.getHeight();
+        });
+
+        float[] startX = new float[1];
+        float[] startY = new float[1];
+        boolean[] isClick = new boolean[]{true};
+
+        VelocityTracker velocityTracker = VelocityTracker.obtain();
+
+        fab.setOnTouchListener(new View.OnTouchListener() {
+
+            float dX, dY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                velocityTracker.addMovement(event);
+
+                switch (event.getActionMasked()) {
+
+                    case MotionEvent.ACTION_DOWN:
+
+                        velocityTracker.clear();
+
+                        dX = v.getX() - event.getRawX();
+                        dY = v.getY() - event.getRawY();
+
+                        startX[0] = event.getRawX();
+                        startY[0] = event.getRawY();
+
+                        isClick[0] = true;
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+
+                        float newX = event.getRawX() + dX;
+                        float newY = event.getRawY() + dY;
+
+                        // clamp écran
+                        newX = Math.max(0, Math.min(newX, parentW[0] - v.getWidth()));
+                        newY = Math.max(0, Math.min(newY, parentH[0] - v.getHeight()));
+
+                        v.setX(newX);
+                        v.setY(newY);
+
+                        if (Math.abs(event.getRawX() - startX[0]) > 10 ||
+                                Math.abs(event.getRawY() - startY[0]) > 10) {
+                            isClick[0] = false;
+                        }
+
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+
+                        if (isClick[0]) {
+                            v.performClick();
+                            return true;
+                        }
+
+                        velocityTracker.computeCurrentVelocity(1000);
+
+                        float velocityX = velocityTracker.getXVelocity();
+
+                        float currentX = v.getX();
+                        float targetX;
+
+                        // 📌 SNAP logique : gauche ou droite
+                        if (velocityX > 0 || currentX > parentW[0] / 2f) {
+                            targetX = parentW[0] - v.getWidth() - 20; // droite
+                        } else {
+                            targetX = 20; // gauche
+                        }
+
+                        float targetY = v.getY();
+
+                        // 🔵 SPRING ANIMATION X
+                        SpringAnimation animX = new SpringAnimation(v, SpringAnimation.X, targetX);
+                        SpringForce springX = new SpringForce(targetX)
+                                .setDampingRatio(SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY)
+                                .setStiffness(SpringForce.STIFFNESS_LOW);
+
+                        animX.setSpring(springX);
+                        animX.start();
+
+                        // 🔵 SPRING ANIMATION Y (léger rebond vertical aussi)
+                        SpringAnimation animY = new SpringAnimation(v, SpringAnimation.Y, targetY);
+                        SpringForce springY = new SpringForce(targetY)
+                                .setDampingRatio(SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY)
+                                .setStiffness(SpringForce.STIFFNESS_LOW);
+
+                        animY.setSpring(springY);
+                        animY.start();
+
+                        return true;
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -147,7 +313,6 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
         //get_etatzg();
     }
-
 
     private void initViews() {
 
@@ -163,9 +328,34 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
         txtv_fin = findViewById(R.id.fin);
         txtv_user = findViewById(R.id.user);
 
+        txtv_etat_centre_status = findViewById(R.id.txtv_etat_centre_status);
+
         txtv_wilaya = findViewById(R.id.txtv_wilaya);
         txtv_commune = findViewById(R.id.txtv_commune);
 
+        fab = findViewById(R.id.fabDraggable);
+        popupContainer = findViewById(R.id.popupContainer);
+        btnClosePopup = findViewById(R.id.btnClosePopup);
+        recyclerClients = findViewById(R.id.recyclerClients);
+
+    }
+
+
+    public ArrayList<PostData_Client> getItems(String qqry) {
+
+        //clients.clear();
+
+        if (!qqry.isEmpty()) {
+            clients = new ArrayList<>();
+            String querry = "SELECT * FROM CLIENT WHERE CODE_CLIENT LIKE '%" + qqry + "%' OR CLIENT LIKE '%" + qqry + "%' OR TEL LIKE '%" + qqry + "%' ORDER BY CLIENT";
+            clients = controller.select_clients_from_database(querry);
+        } else {
+            clients = new ArrayList<>();
+            String querry = "SELECT * FROM CLIENT ORDER BY CLIENT";
+            clients = controller.select_clients_from_database(querry);
+        }
+
+        return clients;
     }
 
     public void show_select_etatz() {
@@ -284,6 +474,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     @Override
     public void onItemClick(@NonNull WrappedMyDataObject item, @NonNull SettableViewHolder<WrappedMyDataObject> viewHolder, @NonNull View view) {
         if (item.getType() == WrappedMyDataObject.ITEM_TYPE_NORMAL) {
+
             MyDataObject dataObject = item.getDataObject();
             int itemPos = viewHolder.getAdapterPosition();
 
@@ -454,6 +645,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
         try {
             result_etatzg = controller.select_etatv_from_database(wilaya, commune, c_client, from_d, to_d);
+            versement_clients = controller.select_versed_list_client_from_database(wilaya, commune, c_client, from_d, to_d);
             flag = 1;
         } catch (Exception e) {
             Log.v("TRACKKK", e.getMessage());

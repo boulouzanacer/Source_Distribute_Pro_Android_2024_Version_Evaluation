@@ -21,21 +21,18 @@ import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 import java.text.DecimalFormat;
 import java.util.List;
 
-/**
- * Created by UK2016 on 02/01/2017.
- */
-
 public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapterClients.MyViewHolder> {
 
-    private final List<PostData_Client> fournisList;
-    private int color = 0;
-    private ItemClick itemClick;
-    private ItemLongClick itemLongClick;
-    private ColorGeneratorModified generator;
+    private final List<PostData_Client> clientList;
     private final Context mContext;
-    private final String PREFS = "ALL_PREFS";
     private final SharedPreferences prefs;
 
+    private final ColorGeneratorModified generator;
+
+    private ItemClick itemClick;
+    private ItemLongClick itemLongClick;
+
+    private final String PREFS = "ALL_PREFS";
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -57,20 +54,25 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
         }
     }
 
+    // ✅ UPDATED constructor (IMPORTANT FIX)
+    public RecyclerAdapterClients(Context context,
+                                  List<PostData_Client> itemList,
+                                  ItemClick click,
+                                  ItemLongClick longClick) {
 
-    public RecyclerAdapterClients(Context context, List<PostData_Client> itemList) {
-        this.fournisList = itemList;
-        if (color == 0)
-            generator = ColorGeneratorModified.MATERIAL;
-        mContext = context;
-        prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        this.clientList = itemList;
+        this.mContext = context;
+        this.itemClick = click;
+        this.itemLongClick = longClick;
+
+        this.prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        this.generator = ColorGeneratorModified.MATERIAL;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clients, parent, false);
-        itemClick = (ItemClick) parent.getContext();
-        itemLongClick = (ItemLongClick) parent.getContext();
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_clients, parent, false);
 
         return new MyViewHolder(v);
     }
@@ -78,7 +80,7 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
 
-        PostData_Client item = fournisList.get(position);
+        PostData_Client item = clientList.get(position);
 
         holder.ClientN.setTextSize(17);
         holder.ClientN.setTypeface(null, Typeface.BOLD);
@@ -86,64 +88,51 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
 
         holder.Tel_clientN.setText("TEL : " + item.tel);
 
-        holder.Sld_clientN.setTypeface(null, Typeface.BOLD);
-        holder.Sld_clientN.setText("Solde : " + item.solde_montant);
-
         if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
-            holder.Sld_clientN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+            holder.Sld_clientN.setText("Solde : " + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
         } else {
             holder.Sld_clientN.setText("********");
         }
 
+        holder.img_pos_client.setImageResource(
+                item.latitude == 0.0
+                        ? R.drawable.ic_baseline_wrong_location_24
+                        : R.drawable.ic_baseline_location_on_24
+        );
 
-        if (item.latitude == 0.0) {
-            holder.img_pos_client.setImageResource(R.drawable.ic_baseline_wrong_location_24);
-        } else {
-            holder.img_pos_client.setImageResource(R.drawable.ic_baseline_location_on_24);
-        }
-
-
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                itemClick.onClick(view, holder.getAdapterPosition());
-            }
+        // ✅ SAFE CLICK HANDLING
+        holder.cardView.setOnClickListener(v -> {
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION || itemClick == null) return;
+            itemClick.onClick(v, pos);
         });
 
+        holder.cardView.setOnLongClickListener(v -> {
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION || itemLongClick == null) return true;
 
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                itemLongClick.onLongClick(v, holder.getAdapterPosition());
-                return true;
-            }
+            itemLongClick.onLongClick(v, pos);
+            return true;
         });
 
-
+        // Avatar initials
         String firstChar = "NO";
-        if (item.client != null) {
-            if (item.client.length() == 1) {
-                firstChar = String.valueOf(item.client.charAt(0));
-            } else if (!item.client.isEmpty()) {
-                firstChar = String.valueOf(item.client.charAt(0)) + item.client.charAt(1);
-            } else {
-                firstChar = "NO";
-            }
-
+        if (item.client != null && !item.client.isEmpty()) {
+            firstChar = item.client.length() == 1
+                    ? String.valueOf(item.client.charAt(0))
+                    : item.client.substring(0, 2);
         }
 
-        if (color == 0) {
-            if (generator != null)
-                color = generator.getColor(fournisList.get(position).client);
-        }
+        int color = generator.getColor(item.client);
+        TextDrawable drawable =
+                TextDrawable.builder().buildRound(firstChar.toUpperCase(), color);
 
-        TextDrawable drawable = TextDrawable.builder().buildRound(firstChar.toUpperCase(), color);
         holder.image.setImageDrawable(drawable);
     }
 
     @Override
     public int getItemCount() {
-        return fournisList.size();
+        return clientList.size();
     }
 
     public interface ItemClick {
@@ -155,8 +144,8 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
     }
 
     public void refresh(List<PostData_Client> new_itemList) {
-        fournisList.clear();
-        fournisList.addAll(new_itemList);
+        clientList.clear();
+        clientList.addAll(new_itemList);
         notifyDataSetChanged();
     }
 }

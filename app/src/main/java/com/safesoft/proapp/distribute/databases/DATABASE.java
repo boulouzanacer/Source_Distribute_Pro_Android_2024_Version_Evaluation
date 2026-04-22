@@ -4390,8 +4390,8 @@ public class DATABASE extends SQLiteOpenHelper {
         if (!Objects.equals(commune, "<Aucune>")) {
             querry1 = querry1 + " AND CLIENT.COMMUNE = '" + commune + "' ";
         }
-        querry1 = querry1 + "  AND BON1.BLOCAGE = 'F' ";
 
+        querry1 = querry1 + "  AND BON1.BLOCAGE = 'F' ";
         querry1 = querry1 + "UNION ALL ";
         querry1 = querry1 + "SELECT 0 AS REMISE, " +
                 "0 AS TOT_HT, " +
@@ -4521,9 +4521,6 @@ public class DATABASE extends SQLiteOpenHelper {
 
 
 
-
-
-
         double objectif;
         SharedPreferences prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         objectif = Double.parseDouble(prefs.getString("OBJECTIF_MONTANT", "0.00"));
@@ -4551,6 +4548,63 @@ public class DATABASE extends SQLiteOpenHelper {
         }
 
         return all_etatv;
+    }
+
+
+
+    @SuppressLint("Range")
+    public ArrayList<PostData_Client> select_versed_list_client_from_database(String wilaya, String commune, String c_client, String from_d, String to_d) {
+
+        ArrayList<PostData_Client> all_clients = new ArrayList<>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String querry = "SELECT " +
+                "CLIENT.CODE_CLIENT, " +
+                "CLIENT.CLIENT, " +
+                "CLIENT.WILAYA, " +
+                "CLIENT.COMMUNE, " +
+                "IFNULL(SUM(CARNET_C.VERSEMENTS), 0) AS TOTAL_VERSEMENTS " +
+                "FROM CLIENT " +
+                "LEFT JOIN CARNET_C ON CLIENT.CODE_CLIENT = CARNET_C.CODE_CLIENT " +
+                "AND date(substr(CARNET_C.DATE_CARNET,7,4)||'-'||substr(CARNET_C.DATE_CARNET,4,2)||'-'||substr(CARNET_C.DATE_CARNET,1,2)) " +
+                "BETWEEN date('" + from_d + "') AND date('" + to_d + "') " +
+                "WHERE 1=1 ";
+
+        if (c_client != null) {
+            querry += " AND CLIENT.CODE_CLIENT = '" + c_client + "' ";
+        }
+        if (!Objects.equals(wilaya, "<Aucune>")) {
+            querry += " AND CLIENT.WILAYA = '" + wilaya + "' ";
+        }
+        if (!Objects.equals(commune, "<Aucune>")) {
+            querry += " AND CLIENT.COMMUNE = '" + commune + "' ";
+        }
+
+        querry += " GROUP BY CLIENT.CODE_CLIENT, CLIENT.CLIENT, CLIENT.WILAYA, CLIENT.COMMUNE ";
+        querry += " HAVING TOTAL_VERSEMENTS > 0";
+
+
+        Cursor cursor = db.rawQuery(querry, null);
+        if (cursor.moveToFirst()) {
+            do {
+
+                PostData_Client client = new PostData_Client();
+
+                client.code_client = cursor.getString(cursor.getColumnIndex("CODE_CLIENT"));
+                client.client = cursor.getString(cursor.getColumnIndex("CLIENT"));
+                client.wilaya = cursor.getString(cursor.getColumnIndex("WILAYA"));
+                client.commune = cursor.getString(cursor.getColumnIndex("COMMUNE"));
+                client.verser_montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_VERSEMENTS"));
+
+                all_clients.add(client);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+
+        return all_clients;
     }
 
     @SuppressLint("Range")

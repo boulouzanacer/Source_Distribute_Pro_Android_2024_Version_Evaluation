@@ -140,7 +140,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapterClients(this, getItems(text_search));
+        adapter = new RecyclerAdapterClients(this, getItems(text_search), this, this);
         recyclerView.setAdapter(adapter);
         nbr_client.setText("Nombre de client : " + clients.size());
 
@@ -188,6 +188,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     public void onLongClick(View v, int position) {
 
         if (v.getId() == R.id.item_root) {
+
             final CharSequence[] items = {"Modifier", "Supprimer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());

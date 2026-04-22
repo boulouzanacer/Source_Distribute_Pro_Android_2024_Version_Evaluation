@@ -270,6 +270,13 @@
     <string name="INFO_INFO_MICRO4"> - </string>
 
 
+    <!--SSG_SERVICES-->
+    <string name="INFO_SSG_SERVICES1">SSG SLIMANE SERVICE GSM</string>
+    <string name="INFO_SSG_SERVICES2"> cite 11 décembre cooperative boumerdes </string>
+    <string name="INFO_SSG_SERVICES3"> WhatsApp 0557491059 </string>
+    <string name="INFO_SSG_SERVICES4"> Facebook: SSG slimane service gsm </string>
+
+
     <string name="LAB_SERIAL" translatable="false">Numéro de serie</string>
     <string name="NUM_SERIAL" translatable="false">8000–1111–2222-3333</string>
     <string name="CODE_ACTIVATION" translatable="false">Code activation</string>
@@ -458,5 +465,6 @@
     <string name="nouveau_client">Nouveau client</string>
     <string name="afficher_masquer_solde_fournisseur">Afficher/Masquer solde fournisseur</string>
     <string name="param_tres_affichage_solde_fournisseur">Paramètres affichage solde fournisseur</string>
+    <string name="versement_client">Versement client</string>
 
 </resources>

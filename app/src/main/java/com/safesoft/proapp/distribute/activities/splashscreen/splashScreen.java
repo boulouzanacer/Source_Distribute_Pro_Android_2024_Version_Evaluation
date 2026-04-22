@@ -514,8 +514,13 @@ public class splashScreen extends AppCompatActivity {
         }
 
         //50 SSG_SERVICES
-
-
+        if (revendeur.equals("SSG SERVICES")) {
+            logo_revendeur.setImageResource(R.drawable.logo_ssg_slimane_gsm_500_100);
+            inforevenedeur1.setText(R.string.INFO_SSG_SERVICES1);
+            inforevenedeur2.setText(R.string.INFO_SSG_SERVICES2);
+            inforevenedeur3.setText(R.string.INFO_SSG_SERVICES3);
+            inforevenedeur4.setText(R.string.INFO_SSG_SERVICES4);
+        }
 
 
     }
