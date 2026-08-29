@@ -1,27 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <integer-array name="indicator_color">
-        <item>@color/tag_blue_bg</item>
-        <item>@color/tag_orange_bg</item>
-        <item>@color/tag_red_bg</item>
-        <item>@color/tag_green_bg</item>
-        <item>@color/tag_blue_light_bg</item>
-    </integer-array>
-
-
     <string-array name="type_logiciel_list">
         <item>PME PRO</item>
         <item>HYPER PRO</item>
     </string-array>
-
-
-    <string-array name="famille">
-        <item>111</item>
-        <item>sssss</item>
-        <item>zzzzzzzz</item>
-    </string-array>
-
 
     <string-array name="espace_footer_array">
             <item>1 Espace</item>

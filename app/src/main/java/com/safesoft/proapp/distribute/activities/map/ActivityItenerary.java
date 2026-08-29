@@ -31,14 +31,14 @@ public class ActivityItenerary extends FragmentActivity implements OnMapReadyCal
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_maps);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.

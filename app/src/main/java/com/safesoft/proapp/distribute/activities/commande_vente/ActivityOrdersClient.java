@@ -1,13 +1,11 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -27,15 +25,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
-import com.safesoft.proapp.distribute.activities.client.TSPActivityMaps;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapterBon1;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
@@ -85,14 +80,14 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ventes);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
@@ -170,6 +165,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 "BON1_TEMP.HEURE_F, " +
                 "BON1_TEMP.MODE_RG, " +
                 "BON1_TEMP.MODE_TARIF, " +
+                "BON1_TEMP.REMARQUE, " +
 
                 "BON1_TEMP.NBR_P, " +
                 "BON1_TEMP.TOT_QTE, " +
@@ -588,21 +584,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
 
-        } else if (item.getItemId() == R.id.routing) {
-            /*//  https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
-            Intent nnn = new Intent(ActivityOrdersClient.this, ActivityMaps.class);
-            startActivity(nnn);*/
-
-            if ((ContextCompat.checkSelfPermission(ActivityOrdersClient.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) || ContextCompat.checkSelfPermission(ActivityOrdersClient.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(ActivityOrdersClient.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3232);
-                ActivityCompat.requestPermissions(ActivityOrdersClient.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 3232);
-            } else {
-                //https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
-                Intent tsp_intent = new Intent(ActivityOrdersClient.this, TSPActivityMaps.class);
-                startActivity(tsp_intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        }else if(item.getItemId() == R.id.delete_all_bon){
+        } else if(item.getItemId() == R.id.delete_all_bon){
             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
                     .setTitleText("Suppression")
                     .setContentText("Voulez-vous vraiment supprimer tous les bon exportés ?!")

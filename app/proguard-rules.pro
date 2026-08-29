@@ -23,3 +23,17 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.safesoft.proapp.distribute.postData.** { *; }
+
+-keep class org.firebirdsql.** { *; }
+-dontwarn org.firebirdsql.**
+
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+
+-dontwarn java.applet.Applet
+-dontwarn org.apache.harmony.kernel.vm.VM
+-dontwarn org.apache.harmony.security.x509.DNParser
+-dontwarn org.apache.log4j.xml.DOMConfigurator

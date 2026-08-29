@@ -77,6 +77,7 @@ public class LocationSender {
                         "BON1.HEURE_F, " +
                         "BON1.MODE_RG, " +
                         "BON1.MODE_TARIF, " +
+                        "BON1.REMARQUE, " +
 
                         "BON1.NBR_P, " +
                         "BON1.TOT_QTE, " +
@@ -142,6 +143,7 @@ public class LocationSender {
                         "BON1_TEMP.HEURE_F, " +
                         "BON1_TEMP.MODE_RG, " +
                         "BON1_TEMP.MODE_TARIF, " +
+                        "BON1_TEMP.REMARQUE, " +
 
                         "BON1_TEMP.NBR_P, " +
                         "BON1_TEMP.TOT_QTE, " +

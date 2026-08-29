@@ -1,19 +1,19 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias libs.plugins.android.library
+}
 
 android {
-    compileSdkVersion 34
+    compileSdk 37
     namespace "com.victor.loading"
 
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 34
+        minSdkVersion 26
+        targetSdkVersion 37
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        android {
         }
     }
     compileOptions {
@@ -24,12 +24,6 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
 }
 
 //apply from: "../bintrayUpload.gradle"

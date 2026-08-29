@@ -2,10 +2,11 @@ package com.safesoft.proapp.distribute.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.LruCache;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -27,12 +28,29 @@ import com.safesoft.proapp.distribute.utils.MyCardView;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by UK2016 on 02/01/2017.
  */
 
 public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapterProduits.MyViewHolder> {
+
+    private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+    private static final ExecutorService PHOTO_EXECUTOR = Executors.newFixedThreadPool(2);
+    private static final LruCache<String, Bitmap> PHOTO_CACHE = createPhotoCache();
+
+    private static LruCache<String, Bitmap> createPhotoCache() {
+        int maxKb = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        int cacheKb = Math.max(1024, maxKb / 16);
+        return new LruCache<String, Bitmap>(cacheKb) {
+            @Override
+            protected int sizeOf(String key, Bitmap value) {
+                return Math.max(1, value.getByteCount() / 1024);
+            }
+        };
+    }
 
     private final List<PostData_Produit> produitList;
     private final PostData_Params params;
@@ -41,10 +59,11 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
     private ItemLongClick itemLongClick;
     private ColorGeneratorModified generator;
     private final Context mContext;
-    private SharedPreferences prefs;
-    private final String PREFS = "ALL_PREFS";
+    private final boolean showProductPictures;
     private String prix_revendeur;
     DATABASE controller;
+    private final DecimalFormat dfStock = new DecimalFormat("##,##0.##");
+    private final DecimalFormat dfMoney = new DecimalFormat("##,##0.00");
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -85,7 +104,10 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
         this.params = params;
         this.prix_revendeur = prix_revendeur;
         this.controller = new DATABASE(context);
+        this.showProductPictures = context.getSharedPreferences("ALL_PREFS", Context.MODE_PRIVATE).getBoolean("SHOW_PROD_PIC", false);
+        setHasStableIds(true);
     }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -97,12 +119,11 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
         return new MyViewHolder(v);
     }
 
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         PostData_Produit item = produitList.get(position);
-
-        prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
         holder.Produit.setTextSize(17);
         holder.Produit.setTypeface(null, Typeface.BOLD);
@@ -120,12 +141,12 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
         } else {
 
             holder.colissage_title.setText(R.string.colis);
-            holder.colissage.setText(" " + new DecimalFormat("##,##0.##").format(item.colissage));
+            holder.colissage.setText(" " + dfStock.format(item.colissage));
 
-            holder.stock_colis.setText(" " + new DecimalFormat("##,##0.##").format(item.stock_colis));
+            holder.stock_colis.setText(" " + dfStock.format(item.stock_colis));
             holder.colis_title.setText(R.string.Stock_colis);
 
-            holder.stock_vrac.setText(" " + new DecimalFormat("##,##0.##").format(item.stock_vrac));
+            holder.stock_vrac.setText(" " + dfStock.format(item.stock_vrac));
             holder.vrac_title.setText(R.string.Stock_vrac);
 
         }
@@ -133,30 +154,30 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
             holder.stock_vrac.setText("");
 
         } else {
-            holder.stock_vrac.setText(" " + new DecimalFormat("##,##0.##").format(item.stock_vrac));
+            holder.stock_vrac.setText(" " + dfStock.format(item.stock_vrac));
         }
-        holder.stock.setText(" " + new DecimalFormat("##,##0.##").format(item.stock));
+        holder.stock.setText(" " + dfStock.format(item.stock));
 
 
 
 
         if (prix_revendeur.equals("Libre")) {
             // Show Lnr_pvX if conditions are met
-            holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv1_ht));
+            holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
 
         } else {
             if((prix_revendeur.equals(params.pv1_titre))){
-                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv1_ht));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv2_titre)){
-                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv2_ht));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv3_titre)){
-                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv3_ht));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv4_titre)){
-                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv4_ht));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv5_titre)){
-                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv5_ht));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv6_titre)){
-                holder.prix_unit.setText(" " + new DecimalFormat("##,##0.00").format(item.pv6_ht));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
             }
         }
 
@@ -195,21 +216,67 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
                 color = generator.getColor(produitList.get(position).produit);
         }
 
-        if (prefs.getBoolean("SHOW_PROD_PIC", false)) {
-            Bitmap bmp  = controller.getProductPhotoBitmap(item.produit_id.toString());
-            if(bmp != null){
-                holder.image.setImageBitmap(bmp);
-            }else{
-                holder.image.setImageResource(R.drawable.ic_camera_24);
-            }
+        bindProductPhoto(holder.image, item.produit_id == null ? null : item.produit_id.toString());
+
+
+    }
+
+    private void bindProductPhoto(ImageView imageView, String produitId) {
+        if (!showProductPictures) {
+            imageView.setImageResource(R.drawable.ic_camera_24);
+            imageView.setTag(null);
+            return;
         }
 
+        if (produitId == null || produitId.isEmpty()) {
+            imageView.setImageResource(R.drawable.ic_camera_24);
+            imageView.setTag(null);
+            return;
+        }
 
+        imageView.setTag(produitId);
+
+        Bitmap cached = PHOTO_CACHE.get(produitId);
+        if (cached != null) {
+            imageView.setImageBitmap(cached);
+            return;
+        }
+
+        imageView.setImageResource(R.drawable.ic_camera_24);
+
+        PHOTO_EXECUTOR.execute(() -> {
+            Bitmap bmp = controller.getProductPhotoBitmap(produitId);
+            if (bmp != null) {
+                PHOTO_CACHE.put(produitId, bmp);
+            }
+            MAIN_HANDLER.post(() -> {
+                Object tag = imageView.getTag();
+                if (!(tag instanceof String) || !produitId.equals(tag)) return;
+                if (bmp != null) {
+                    imageView.setImageBitmap(bmp);
+                } else {
+                    imageView.setImageResource(R.drawable.ic_camera_24);
+                }
+            });
+        });
     }
 
     @Override
     public int getItemCount() {
         return produitList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        PostData_Produit item = produitList.get(position);
+        if (item == null || item.produit_id == null) return RecyclerView.NO_ID;
+        String idStr = item.produit_id.toString();
+        if (idStr.isEmpty()) return RecyclerView.NO_ID;
+        try {
+            return Long.parseLong(idStr);
+        } catch (NumberFormatException ignored) {
+            return idStr.hashCode();
+        }
     }
 
     public interface ItemClick {

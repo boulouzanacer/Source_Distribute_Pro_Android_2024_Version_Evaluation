@@ -60,13 +60,16 @@
     <application
         android:name=".app.BaseApplication"
         android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:resizeableActivity="true">
 
         <activity
             android:name=".activities.pdf.PdfViewerActivity"
@@ -160,6 +163,10 @@
         <activity android:name=".activities.inventaire.ActivityInventaires" /> <!-- Scanner classes -->
         <activity android:name=".scanner.FullScannerActivity" />
         <activity android:name=".scanner.BaseScannerActivity" /> <!-- achat classes -->
+
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            tools:remove="android:screenOrientation" />
         <activity android:name=".activities.achats.ActivityAchats" />
         <activity android:name=".activities.achats.ActivityAchat" /> <!-- vente classes -->
         <activity android:name=".activities.vente.ActivityVente" />

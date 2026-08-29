@@ -79,14 +79,14 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_clients);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         CheckAllPermission();
@@ -182,7 +182,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                         fragmentnewfournisseur.showDialogbox(ActivityFournisseurs.this, getBaseContext(), "EDIT_FOURNISSEUR", fournisseurs.get(position));
                     }
                     case 1 -> {
-                        if (fournisseurs.get(position).isNew == 0) {
+                        if (fournisseurs.get(position).isImported == 1) {
                             new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")
                                     .setContentText("Fournisseur importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")

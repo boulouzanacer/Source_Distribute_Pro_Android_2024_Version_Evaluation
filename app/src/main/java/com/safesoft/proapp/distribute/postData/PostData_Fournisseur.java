@@ -24,4 +24,5 @@ public class PostData_Fournisseur {
 
     public double credit_limit = 0.00;
     public int isNew = 1;
+    public int isImported = 1;
 }

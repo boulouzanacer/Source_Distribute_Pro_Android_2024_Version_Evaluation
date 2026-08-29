@@ -47,7 +47,15 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class FragmentNewEditClient {
 
     Button btn_valider, btn_cancel;
-    TextInputEditText edt_client_code, edt_client_name, edt_client_adress, edt_client_telephone, edt_client_registre, edt_client_nif, edt_client_nis, edt_client_ai, edt_client_solde_init;
+    TextInputEditText edt_client_code,
+            edt_client_name,
+            edt_client_adress,
+            edt_client_telephone,
+            edt_client_registre,
+            edt_client_nif,
+            edt_client_nis,
+            edt_client_ai,
+            edt_client_solde_init;
     Spinner wilayaSpinner, communeSpinner;
     private TextView title_client;
     ImageButton scan_codeclient;
@@ -279,10 +287,12 @@ public class FragmentNewEditClient {
             }
         }
 
+        edt_client_solde_init.setEnabled(prefs.getBoolean("CAN_EDIT_SOLDE_INI", false));
+
         if(SOURCE_ACTIVITY.equals("NEW_CLIENT")){
 
             title_client.setText("Nouveau client");
-            created_client.solde_montant = created_client.solde_ini;
+            created_client.solde_client = created_client.solde_ini;
             if (CODE_DEPOT.equals("000000")) {
                 created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_VENDEUR;
 
@@ -331,7 +341,7 @@ public class FragmentNewEditClient {
 
             //edt_client_solde_init.setText(new DecimalFormat("####0.00").format(old_client.solde_ini));
             edt_client_solde_init.setText(String.valueOf(old_client.solde_ini));
-            edt_client_solde_init.setEnabled(false);
+
 
             radioGroup_mode_tarif.clearCheck();
             if (old_client.mode_tarif.equals("0")) {
@@ -442,7 +452,7 @@ public class FragmentNewEditClient {
 
                 } else {
 
-                    created_client.solde_montant = created_client.solde_ini;
+                    created_client.solde_client = created_client.solde_ini;
 
                     try {
 

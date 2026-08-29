@@ -1,13 +1,16 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias libs.plugins.android.library
+}
 
 android {
     namespace 'com.emmasuzuki.easyform'
 
-    compileSdkVersion 34
+    compileSdk 37
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 34
+        minSdkVersion 26
+        targetSdkVersion 37
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -23,26 +26,24 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        android {
-        }
     }
 
     testOptions {
         unitTests.returnDefaultValues = true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation libs.appcompat
+    implementation libs.material
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.powermock:powermock-module-junit4:1.6.4"
-    testImplementation "org.powermock:powermock-module-junit4-rule:1.6.4"
-    testImplementation "org.powermock:powermock-api-mockito:1.6.4"
-    testImplementation "org.powermock:powermock-classloading-xstream:1.6.4"
+    testImplementation libs.junit
+    testImplementation libs.powermock.module.junit4
+    testImplementation libs.powermock.module.junit4.rule
+    testImplementation libs.powermock.api.mockito
+    testImplementation libs.powermock.classloading.xstream
 }

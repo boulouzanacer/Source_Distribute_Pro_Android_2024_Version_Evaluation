@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -88,14 +89,15 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_clients);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
@@ -135,32 +137,58 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
 
     private void setRecycle(String text_search, Boolean isScan) {
-        if(isScan){
+        if (isScan && searchView != null) {
             searchView.setQuery(text_search, false);
         }
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapterClients(this, getItems(text_search), this, this);
-        recyclerView.setAdapter(adapter);
-        nbr_client.setText("Nombre de client : " + clients.size());
 
+        getItems(text_search);
+
+        if (adapter == null) {
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.setLayoutManager(layoutManager);
+            adapter = new RecyclerAdapterClients(this, clients, this, this);
+            recyclerView.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+
+        nbr_client.setText("Nombre de client : " + clients.size());
     }
 
     public ArrayList<PostData_Client> getItems(String qqry) {
 
         clients.clear();
+        String querry = getString(qqry);
 
-        if (!qqry.isEmpty()) {
-            clients = new ArrayList<>();
-            String querry = "SELECT * FROM CLIENT WHERE CODE_CLIENT LIKE '%" + qqry + "%' OR CLIENT LIKE '%" + qqry + "%' OR TEL LIKE '%" + qqry + "%' ORDER BY CLIENT";
-            clients = controller.select_clients_from_database(querry);
-        } else {
-            clients = new ArrayList<>();
-            String querry = "SELECT * FROM CLIENT ORDER BY CLIENT";
-            clients = controller.select_clients_from_database(querry);
+        try {
+            clients.addAll(controller.select_clients_from_database(querry));
+            return clients;
+
+        } catch (Exception e) {
+
+            Log.e("CLIENTS_QUERY_ERROR", querry, e);
+
+            // fallback safe query
+            clients.addAll(controller.select_clients_from_database("SELECT * FROM CLIENT ORDER BY CLIENT"));
+            return clients;
         }
+    }
 
-        return clients;
+    @NonNull
+    private static String getString(String qqry) {
+        String search = (qqry == null) ? "" : qqry.trim();
+
+        // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+        search = search.replace("'", "''");
+
+        String querry;
+
+        if (!search.isEmpty()) {
+            querry = "SELECT * FROM CLIENT WHERE CODE_CLIENT LIKE '%" + search + "%' OR CLIENT LIKE '%" + search + "%' " + "OR TEL LIKE '%" + search + "%' " + "ORDER BY CLIENT";
+        } else {
+            querry = "SELECT * FROM CLIENT ORDER BY CLIENT";
+        }
+        return querry;
     }
 
 
@@ -173,6 +201,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     public void onClick(View v, int position) {
 
         if (v.getId() == R.id.item_root) {
+            if (position < 0 || position >= clients.size()) return;
 
             Intent intent = new Intent(ActivityClients.this, ActivityClientDetail.class);
 
@@ -188,6 +217,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
     public void onLongClick(View v, int position) {
 
         if (v.getId() == R.id.item_root) {
+            if (position < 0 || position >= clients.size()) return;
 
             final CharSequence[] items = {"Modifier", "Supprimer"};
 
@@ -201,7 +231,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                         fragmentnewclient.showDialogbox(ActivityClients.this, getBaseContext(), "EDIT_CLIENT", clients.get(position));
                     }
                     case 1 -> {
-                        if (clients.get(position).isNew == 0) {
+                        if (clients.get(position).isImported == 1) {
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Attention. !")
                                     .setContentText("Client importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")

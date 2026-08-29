@@ -9,16 +9,13 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View.MeasureSpec;
 import android.view.WindowInsetsController;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Achat1;
@@ -50,19 +47,17 @@ public class ActivityHtmlView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //https://stackoverflow.com/questions/26919262/android-4-4-print-to-pdf-without-user-involvement
-        WebView.enableSlowWholeDocumentDraw();
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_html_view);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
@@ -120,35 +115,76 @@ public class ActivityHtmlView extends AppCompatActivity {
 
     }
 
-    public void takeScreenshot() {
-
-
+    public void takeScreenshot(Runnable onDone) {
         webview.post(() -> {
+            try {
+                WebView.enableSlowWholeDocumentDraw();
+                deleteExistingCaptures();
 
-            int width = webview.getWidth();
-            int height = (int) (webview.getContentHeight() * webview.getScale());
+                int width = webview.getWidth();
+                int fullHeight = (int) (webview.getContentHeight() * webview.getScale());
 
-            if (width <= 0 || height <= 0) {
-                Log.e("SCREENSHOT", "Invalid WebView size: " + width + "x" + height);
-                return;
+                if (width <= 0 || fullHeight <= 0) {
+                    Log.e("SCREENSHOT", "Invalid WebView size: " + width + "x" + fullHeight);
+                    if (onDone != null) onDone.run();
+                    return;
+                }
+
+                int maxChunkHeight = 2048;
+                if (fullHeight <= maxChunkHeight) {
+                    File imageFile = new File(getExternalCacheDir(), "webview_capture1.jpg");
+                    writeWebViewBitmapChunkToFile(width, fullHeight, 0, imageFile);
+                    if (onDone != null) onDone.run();
+                    return;
+                }
+
+                int chunkIndex = 0;
+                for (int top = 0; top < fullHeight; top += maxChunkHeight, chunkIndex++) {
+                    int chunkHeight = Math.min(maxChunkHeight, fullHeight - top);
+                    File imageFile = new File(getExternalCacheDir(), "webview_capture1_" + chunkIndex + ".jpg");
+                    writeWebViewBitmapChunkToFile(width, chunkHeight, top, imageFile);
+                }
+
+                if (onDone != null) onDone.run();
+            } catch (Exception e) {
+                Log.e("SCREENSHOT", "Error capturing webview: " + e.getMessage());
+                if (onDone != null) onDone.run();
             }
-
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            webview.draw(canvas);
-
-            File imageFile = new File(getExternalCacheDir(), "webview_capture1.jpg");
-           //File imageFile = new File(getCacheDir(), "webview_capture.jpg");
-
-            try (FileOutputStream fos = new FileOutputStream(imageFile)) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                fos.flush();
-            } catch (IOException e) {
-                Log.e("SCREENSHOT", "Error saving bitmap : " + e.getMessage());
-            }
-
-            bitmap.recycle();
         });
+    }
+
+    private void writeWebViewBitmapChunkToFile(int width, int chunkHeight, int topOffset, File imageFile) {
+        Bitmap bitmap = Bitmap.createBitmap(width, chunkHeight, Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.translate(0, -topOffset);
+        webview.draw(canvas);
+
+        try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fos);
+            fos.flush();
+        } catch (IOException e) {
+            Log.e("SCREENSHOT", "Error saving bitmap: " + e.getMessage());
+        } finally {
+            bitmap.recycle();
+        }
+    }
+
+    private void deleteExistingCaptures() {
+        File dir = getExternalCacheDir();
+        if (dir == null) return;
+
+        File single = new File(dir, "webview_capture1.jpg");
+        if (single.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            single.delete();
+        }
+
+        for (int i = 0; i < 100; i++) {
+            File chunk = new File(dir, "webview_capture1_" + i + ".jpg");
+            if (!chunk.exists()) break;
+            //noinspection ResultOfMethodCallIgnored
+            chunk.delete();
+        }
     }
 
 
@@ -1459,15 +1495,15 @@ public class ActivityHtmlView extends AppCompatActivity {
                     view.postDelayed(() -> takeScreenshot(), 300); // small delay for layout
                 }
             });*/
-            takeScreenshot();
-            Activity bactivity;
-            bactivity = ActivityHtmlView.this;
+            Activity bactivity = ActivityHtmlView.this;
             Printing printer = new Printing();
-            try {
-                printer.start_print_bon_vente(bactivity, "ARABIC", null, null);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            takeScreenshot(() -> {
+                try {
+                    printer.start_print_bon_vente(bactivity, "ARABIC", null, null);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         return super.onOptionsItemSelected(item);

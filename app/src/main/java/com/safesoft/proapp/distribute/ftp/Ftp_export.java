@@ -256,7 +256,7 @@ public class Ftp_export {
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
                 new PostData_Produit();
                 PostData_Produit postData_produit;
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, IS_IMPORTED, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + bon2s.get(j).codebarre + "'";
@@ -449,6 +449,7 @@ public class Ftp_export {
                 "BON1.HEURE_F, " +
                 "BON1.MODE_RG, " +
                 "BON1.MODE_TARIF, " +
+                "BON1.REMARQUE, " +
 
                 "BON1.NBR_P, " +
                 "BON1.TOT_QTE, " +
@@ -535,12 +536,12 @@ public class Ftp_export {
             ///////////////////////////////////// BON1 ////////////////////////////////////////////
             F_SQL = F_SQL + "INSERT INTO BON1 (RECORDID,NUM_BON,EXPORTATION,CODE_CAISSE,CODE_DEPOT, CODE_VENDEUR, " +
                     "CODE_CLIENT,DATE_BON, HEURE,MODE_RG,BLOCAGE,MODE_TARIF," +
-                    "VERSER, TIMBRE, REMISE, ANCIEN_SOLDE, LATITUDE, LONGITUDE, UTILISATEUR)\n ";
+                    "VERSER, TIMBRE, REMISE, ANCIEN_SOLDE, LATITUDE, LONGITUDE, UTILISATEUR, REF_BON )\n ";
 
 
             F_SQL = F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BON1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BON1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,:CODE_CAISSE:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
             F_SQL = F_SQL + "'" + bon1s.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + bon1s.get(i).heure + "','" + bon1s.get(i).mode_rg + "','" + bon1s.get(i).blocage + "','" + bon1s.get(i).mode_tarif + "',";
-            F_SQL = F_SQL + bon1s.get(i).verser + "," + bon1s.get(i).timbre + "," + bon1s.get(i).remise + "," + bon1s.get(i).ancien_solde + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
+            F_SQL = F_SQL + bon1s.get(i).verser + "," + bon1s.get(i).timbre + "," + bon1s.get(i).remise + "," + bon1s.get(i).ancien_solde + "," + bon1s.get(i).latitude + "," + bon1s.get(i).longitude + ", 'TERMINAL_MOBILE', '" + bon1s.get(i).remarque + "');\n";
 
 
             String querry_select = "SELECT " +
@@ -582,7 +583,7 @@ public class Ftp_export {
                 ///////////////////////////////////PRODUIT ///////////////////////////////////////
                 new PostData_Produit();
                 PostData_Produit postData_produit;
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, IS_IMPORTED, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + bon2s.get(j).codebarre + "'";
@@ -778,6 +779,7 @@ public class Ftp_export {
                 "BON1_TEMP.HEURE_F, " +
                 "BON1_TEMP.MODE_RG, " +
                 "BON1_TEMP.MODE_TARIF, " +
+                "BON1_TEMP.REMARQUE, " +
 
                 "BON1_TEMP.NBR_P, " +
                 "BON1_TEMP.TOT_QTE, " +
@@ -863,12 +865,12 @@ public class Ftp_export {
             ///////////////////////////////////// BON1 ////////////////////////////////////////////
             F_SQL = F_SQL + "INSERT INTO BCC1 (RECORDID,NUM_BON,EXPORTATION,CODE_DEPOT, CODE_VENDEUR, " +
                     "CODE_CLIENT,DATE_BON, HEURE,MODE_RG,BLOCAGE,MODE_TARIF," +
-                    "VERSER, TIMBRE, REMISE, ANCIEN_SOLDE, LATITUDE, LONGITUDE, UTILISATEUR)\n ";
+                    "VERSER, TIMBRE, REMISE, ANCIEN_SOLDE, LATITUDE, LONGITUDE, UTILISATEUR, REF_BON)\n ";
 
 
             F_SQL = F_SQL + " VALUES ( (SELECT GEN_ID(GEN_BCC1_ID,1)    FROM RDB$DATABASE),lpad ((SELECT GEN_ID(GEN_BCC1_ID,0)    FROM RDB$DATABASE) ,6,'000000'), :EXPORTATION:,iif('" + code_depot + "' = '000000', null,'" + code_depot + "'), iif('" + code_vendeur + "' = '000000', null,'" + code_vendeur + "'), ";
             F_SQL = F_SQL + "'" + bon1s_Temp.get(i).code_client.replace("'", "''") + "','" + format2.format(dt) + "','" + bon1s_Temp.get(i).heure + "','" + bon1s_Temp.get(i).mode_rg + "','" + bon1s_Temp.get(i).blocage + "','" + bon1s_Temp.get(i).mode_tarif + "',";
-            F_SQL = F_SQL + bon1s_Temp.get(i).verser + "," + bon1s_Temp.get(i).timbre + "," + bon1s_Temp.get(i).remise + "," + bon1s_Temp.get(i).ancien_solde + "," + bon1s_Temp.get(i).latitude + "," + bon1s_Temp.get(i).longitude + ", 'TERMINAL_MOBILE');\n";
+            F_SQL = F_SQL + bon1s_Temp.get(i).verser + "," + bon1s_Temp.get(i).timbre + "," + bon1s_Temp.get(i).remise + "," + bon1s_Temp.get(i).ancien_solde + "," + bon1s_Temp.get(i).latitude + "," + bon1s_Temp.get(i).longitude + ", 'TERMINAL_MOBILE', '" + bon1s_Temp.get(i).remarque + "');\n";
 
 
             String querry_select = "SELECT " +
@@ -910,7 +912,7 @@ public class Ftp_export {
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
                 new PostData_Produit();
                 PostData_Produit postData_produit;
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, IS_IMPORTED, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + bon2s_Temp.get(j).codebarre + "'";
@@ -1142,7 +1144,7 @@ public class Ftp_export {
                 ///////////////////////////////////PRODUIT /////////////////////////////////////////
                 new PostData_Produit();
                 PostData_Produit postData_produit;
-                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, DESTOCK_TYPE, " +
+                String querry_isnew = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, PHOTO, DETAILLE, FAMILLE, ISNEW, IS_IMPORTED, DESTOCK_TYPE, " +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                         "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC , DESTOCK_QTE " +
                         "FROM PRODUIT WHERE CODE_BARRE = '" + Inv2s.get(j).codebarre + "'";

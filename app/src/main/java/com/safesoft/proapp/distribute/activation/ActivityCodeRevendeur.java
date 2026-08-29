@@ -3,8 +3,10 @@ package com.safesoft.proapp.distribute.activation;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.safesoft.proapp.distribute.R;
@@ -37,7 +39,11 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
             Intent intent = new Intent(ActivityCodeRevendeur.this, splashScreen.class);
             intent.putExtra("REVENDEUR", REVENDEUR);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left);
+            } else {
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
             finish();
         }
 

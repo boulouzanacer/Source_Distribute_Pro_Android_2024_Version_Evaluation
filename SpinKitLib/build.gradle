@@ -1,25 +1,26 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias libs.plugins.android.library
+}
+
 group = 'com.github.ybq'
 version = '1.0'
 
 android {
-    compileSdkVersion 36
+    namespace 'com.github.ybq.android.spinkit'
+    compileSdk 37
+
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 36
     }
-    namespace 'com.github.ybq.android.spinkit'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
     buildTypes {
-        android {
+        release {
+            minifyEnabled false
         }
     }
-    /*kotlinOptions {
-        jvmTarget = '1.8'
-    }*/
 }
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])

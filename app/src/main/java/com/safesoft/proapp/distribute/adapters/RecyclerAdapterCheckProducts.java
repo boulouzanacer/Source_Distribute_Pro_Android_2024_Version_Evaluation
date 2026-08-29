@@ -3,9 +3,10 @@ package com.safesoft.proapp.distribute.adapters;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.LruCache;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -28,12 +29,29 @@ import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by UK2016 on 02/01/2017.
  */
 
 public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerAdapterCheckProducts.MyViewHolder> {
+
+    private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+    private static final ExecutorService PHOTO_EXECUTOR = Executors.newFixedThreadPool(2);
+    private static final LruCache<String, Bitmap> PHOTO_CACHE = createPhotoCache();
+
+    private static LruCache<String, Bitmap> createPhotoCache() {
+        int maxKb = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        int cacheKb = Math.max(1024, maxKb / 16);
+        return new LruCache<String, Bitmap>(cacheKb) {
+            @Override
+            protected int sizeOf(@NonNull String key, @NonNull Bitmap value) {
+                return Math.max(1, value.getByteCount() / 1024);
+            }
+        };
+    }
 
     private final List<PostData_Produit> produitList;
     private int color = 0;
@@ -42,12 +60,11 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     private final Context mContext;
     private final Activity mActivity;
     private final String mode_tarif;
-    private final String PREFS = "ALL_PREFS";
+    private final boolean showProductPictures;
 
     private final AlertDialog dialog;
     private final String SOURCE;
     DATABASE controller;
-    SharedPreferences prefs;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -71,7 +88,6 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
             photopr = view.findViewById(R.id.img_product);
 
             mScalingActivityAnimator = new ScalingActivityAnimator(mContext, mActivity, R.id.root_view, R.layout.pop_view);
-            this.setIsRecyclable(false);
         }
     }
 
@@ -86,6 +102,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         this.mode_tarif = mode_tarif;
         this.dialog = dialog;
         this.controller = new DATABASE(context);
+        this.showProductPictures = context.getSharedPreferences("ALL_PREFS", Context.MODE_PRIVATE).getBoolean("SHOW_PROD_PIC", false);
         setHasStableIds(true);
     }
 
@@ -104,7 +121,6 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
     public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         final PostData_Produit item = produitList.get(position);
 
-        prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         holder.Produit.setText(item.produit);
 
         if (SOURCE.equals("ACHAT")) {
@@ -147,12 +163,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
         holder.Qte_r.setText(new DecimalFormat("##,##0.##").format(item.stock));
 
 
-        if (prefs.getBoolean("SHOW_PROD_PIC", false)) {
-            Bitmap bmp  = controller.getProductPhotoBitmap(item.produit_id.toString());
-            if(bmp != null){
-                holder.photopr.setImageBitmap(bmp);
-            }
-        }
+        bindProductPhoto(holder.photopr, item.produit_id == null ? null : item.produit_id.toString());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +187,46 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
     }
 
+    private void bindProductPhoto(@NonNull ImageView imageView, String produitId) {
+        if (!showProductPictures) {
+            imageView.setImageResource(R.drawable.ic_camera_24);
+            imageView.setTag(null);
+            return;
+        }
+
+        if (produitId == null || produitId.isEmpty()) {
+            imageView.setImageResource(R.drawable.ic_camera_24);
+            imageView.setTag(null);
+            return;
+        }
+
+        imageView.setTag(produitId);
+
+        Bitmap cached = PHOTO_CACHE.get(produitId);
+        if (cached != null) {
+            imageView.setImageBitmap(cached);
+            return;
+        }
+
+        imageView.setImageResource(R.drawable.ic_camera_24);
+
+        PHOTO_EXECUTOR.execute(() -> {
+            Bitmap bmp = controller.getProductPhotoBitmap(produitId);
+            if (bmp != null) {
+                PHOTO_CACHE.put(produitId, bmp);
+            }
+            MAIN_HANDLER.post(() -> {
+                Object tag = imageView.getTag();
+                if (!(tag instanceof String) || !produitId.equals(tag)) return;
+                if (bmp != null) {
+                    imageView.setImageBitmap(bmp);
+                } else {
+                    imageView.setImageResource(R.drawable.ic_camera_24);
+                }
+            });
+        });
+    }
+
 
 
     @Override
@@ -185,7 +236,15 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
     @Override
     public long getItemId(int position) {
-        return position;
+        PostData_Produit item = produitList.get(position);
+        if (item == null || item.produit_id == null) return RecyclerView.NO_ID;
+        String idStr = item.produit_id.toString();
+        if (idStr.isEmpty()) return RecyclerView.NO_ID;
+        try {
+            return Long.parseLong(idStr);
+        } catch (NumberFormatException ignored) {
+            return idStr.hashCode();
+        }
     }
 
     public interface ItemClick {

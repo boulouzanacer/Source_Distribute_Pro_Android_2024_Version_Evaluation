@@ -1,7 +1,9 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias libs.plugins.android.library
+}
 
 android {
-  compileSdk 34
+  compileSdk 37
 
   defaultConfig {
     minSdkVersion 26
@@ -13,8 +15,6 @@ android {
     targetCompatibility JavaVersion.VERSION_17
   }
   buildTypes {
-    android {
-    }
   }
   lint {
     abortOnError false

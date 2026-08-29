@@ -26,6 +26,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
@@ -39,12 +41,11 @@ import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +64,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowInsetsController;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -71,6 +74,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -115,6 +119,8 @@ import com.rt.printerlibrary.setting.CommonSetting;
 import com.rt.printerlibrary.setting.TextSetting;
 import com.safesoft.proapp.distribute.activation.NetClient;
 import com.safesoft.proapp.distribute.activities.login.ActivityChangePwd;
+import com.safesoft.proapp.distribute.activities.vente.ActivityVente;
+import com.safesoft.proapp.distribute.adapters.note_adapter.NotesAdapter;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.cloud.AllPrefsManager;
@@ -146,6 +152,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Depot;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
 import com.safesoft.proapp.distribute.postData.PostData_Vendeur;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
+import com.safesoft.proapp.distribute.utils.Env;
 import com.safesoft.proapp.distribute.utils.ImageUtils;
 import com.safesoft.proapp.distribute.utils.SPUtils;
 import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
@@ -198,6 +205,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             btn_connected_list,
             btn_test_impression,
             btn_clear_logo;
+
     //////////////////////// SharedPreferences /////////////////////
     SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
@@ -225,8 +233,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private RadioButton rdb_scanner_integrete;
     private RadioButton rdb_scanner_camera;
 
-    private LinearLayout param_co, param_ftp, param_impr, param_backup, param_reset, param_divers, sub_track_phone;
-    private LinearLayout lnr_back_up, lnr_restore;
+    private LinearLayout param_co,
+            param_ftp,
+            param_impr,
+            param_backup,
+            param_reset,
+            param_divers,
+            sub_track_phone,
+            lnr_back_up,
+            lnr_restore,
+            lnr_notes;
 
     Button bt1, bt2, bt3, bt4, bt10, bt11, bt12;
     RelativeLayout param_pda;
@@ -238,6 +254,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.READ_MEDIA_IMAGES
     };
 
@@ -272,6 +289,134 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private String numero_serie;
     private Switch switch_service_location;
 
+    private void showNotesDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        float density = getResources().getDisplayMetrics().density;
+        int padding12 = (int) (12 * density);
+        int padding16 = (int) (16 * density);
+
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        root.setBackgroundColor(getResources().getColor(R.color.white));
+
+        RelativeLayout topBar = new RelativeLayout(this);
+        topBar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        topBar.setBackgroundColor(getResources().getColor(R.color.blue));
+        topBar.setPadding(padding16, padding12, padding16, padding12);
+
+        TextView title = new TextView(this);
+        title.setText("Notes");
+        title.setTextColor(getResources().getColor(R.color.white));
+        title.setTextSize(18);
+        RelativeLayout.LayoutParams titleLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        titleLp.addRule(RelativeLayout.ALIGN_PARENT_START);
+        titleLp.addRule(RelativeLayout.CENTER_VERTICAL);
+        title.setLayoutParams(titleLp);
+
+        ImageButton btnClose = new ImageButton(this);
+        btnClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        btnClose.setBackgroundColor(Color.TRANSPARENT);
+        btnClose.setColorFilter(getResources().getColor(R.color.white));
+        RelativeLayout.LayoutParams closeLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        closeLp.addRule(RelativeLayout.ALIGN_PARENT_END);
+        closeLp.addRule(RelativeLayout.CENTER_VERTICAL);
+        btnClose.setLayoutParams(closeLp);
+
+        topBar.addView(title);
+        topBar.addView(btnClose);
+
+        RecyclerView recyclerView = new RecyclerView(this);
+        LinearLayout.LayoutParams rvLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
+        recyclerView.setLayoutParams(rvLp);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        ArrayList<DATABASE.NoteRow> notes = controller.selectNotes();
+        final NotesAdapter adapter = new NotesAdapter(notes);
+        adapter.setOnDeleteClickListener((note, position) -> {
+            if (note == null) return;
+
+            new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Supprimer")
+                    .setContentText("Voulez-vous supprimer cette note ?")
+                    .setCancelText("Non")
+                    .setConfirmText("Oui")
+                    .showCancelButton(true)
+                    .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                    .setConfirmClickListener(sDialog -> {
+                        controller.deleteNote(note.id);
+                        if (position >= 0 && position < notes.size()) {
+                            notes.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, Math.max(0, notes.size() - position));
+                        } else {
+                            notes.clear();
+                            notes.addAll(controller.selectNotes());
+                            adapter.notifyDataSetChanged();
+                        }
+                        sDialog.dismissWithAnimation();
+                    })
+                    .show();
+        });
+        recyclerView.setAdapter(adapter);
+
+        LinearLayout inputRow = new LinearLayout(this);
+        inputRow.setOrientation(LinearLayout.HORIZONTAL);
+        inputRow.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        inputRow.setPadding(padding16, padding12, padding16, padding12);
+
+        EditText edtNote = new EditText(this);
+        LinearLayout.LayoutParams edtLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        edtNote.setLayoutParams(edtLp);
+        edtNote.setHint("Ajouter une note");
+
+        Button btnAdd = new Button(this);
+        LinearLayout.LayoutParams btnLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        btnLp.setMargins(padding12, 0, 0, 0);
+        btnAdd.setLayoutParams(btnLp);
+        btnAdd.setText("Ajouter");
+
+        inputRow.addView(edtNote);
+        inputRow.addView(btnAdd);
+
+        root.addView(topBar);
+        root.addView(recyclerView);
+        root.addView(inputRow);
+
+        dialog.setContentView(root);
+        dialog.setCancelable(true);
+
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        btnAdd.setOnClickListener(v -> {
+            String text = edtNote.getText() == null ? "" : edtNote.getText().toString().trim();
+            if (text.isEmpty()) {
+                new Toaster.Builder(ActivitySetting.this)
+                        .setTitle("Notes")
+                        .setDescription("Veuillez saisir une note")
+                        .setDuration(Toaster.LENGTH_LONG)
+                        .setStatus(Toaster.Status.WARNING)
+                        .show();
+                return;
+            }
+
+            controller.insertNote(text);
+            edtNote.setText("");
+            notes.clear();
+            notes.addAll(controller.selectNotes());
+            adapter.notifyDataSetChanged();
+        });
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        dialog.show();
+    }
+
     private void CheckAllPermission() {
         NO_PERMISSION.clear();
         for (String s : NEED_PERMISSION) {
@@ -292,21 +437,15 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_setting);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.setting_main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         CheckAllPermission();
 
@@ -412,12 +551,14 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         lnr_back_up = findViewById(R.id.backup);
         lnr_restore = findViewById(R.id.restore);
 
+        lnr_notes = findViewById(R.id.lnr_notes);
+
+
         IconSpinnerAdapter iconSpinnerAdapter = new IconSpinnerAdapter(amazingSpinner);
         amazingSpinner.setSpinnerAdapter(iconSpinnerAdapter);
         amazingSpinner.setItems(iconSpinnerItems);
         //amazingSpinner.selectItemByIndex(0);
         amazingSpinner.setLifecycleOwner(this);
-
 
 
         if (is_app_synchronised_mode) {
@@ -449,15 +590,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
 
 
-        amazingSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
-            @Override public void onItemSelected(int oldIndex, @Nullable Object oldItem, int newIndex, Object newItem) {
+        amazingSpinner.setOnSpinnerItemSelectedListener((oldIndex, oldItem, newIndex, newItem) -> {
 
-                selected_prix_revendeur = (IconSpinnerItem) newItem;
-                SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                editor.putString("PRIX_REVENDEUR", selected_prix_revendeur.getText().toString());
-                editor.apply();
+            selected_prix_revendeur = (IconSpinnerItem) newItem;
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putString("PRIX_REVENDEUR", selected_prix_revendeur.getText().toString());
+            editor.apply();
 
-            }
         });
 
 
@@ -483,56 +622,49 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             lnr_restore.setEnabled(false);
         }
 
-        btn_signup_cloud.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentSignUpCloudAccount fragmentSignUpCloudAccount = new FragmentSignUpCloudAccount();
-                fragmentSignUpCloudAccount.showDialogbox(ActivitySetting.this);
-            }
+
+
+        btn_signup_cloud.setOnClickListener(v -> {
+            FragmentSignUpCloudAccount fragmentSignUpCloudAccount = new FragmentSignUpCloudAccount();
+            fragmentSignUpCloudAccount.showDialogbox(ActivitySetting.this);
         });
 
-        btn_login_cloud.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentLoginAccount fragmentLoginAccount = new FragmentLoginAccount();
-                fragmentLoginAccount.showDialogbox(ActivitySetting.this, txtv_email_cloud.getText().toString(), txtv_password_cloud.getText().toString());
-            }
+
+        btn_login_cloud.setOnClickListener(v -> {
+            FragmentLoginAccount fragmentLoginAccount = new FragmentLoginAccount();
+            fragmentLoginAccount.showDialogbox(ActivitySetting.this, txtv_email_cloud.getText().toString(), txtv_password_cloud.getText().toString());
         });
 
-        btn_deconecte_cloud.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Compte cloud")
-                        .setContentText("Voulez-vous vraiment déconecté le compte cloud maintenant ?")
-                        .setCancelText("Non")
-                        .setConfirmText("Oui")
-                        .showCancelButton(true)
-                        .setCancelClickListener(Dialog::dismiss)
-                        .setConfirmClickListener(sDialog -> {
 
-                            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                            editor.putString("EMAIL_CLOUD", "");
-                            editor.putString("PASSWORD_CLOUD", "");
-                            editor.apply();
+        btn_deconecte_cloud.setOnClickListener(v -> new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Compte cloud")
+                .setContentText("Voulez-vous vraiment déconecté le compte cloud maintenant ?")
+                .setCancelText("Non")
+                .setConfirmText("Oui")
+                .showCancelButton(true)
+                .setCancelClickListener(Dialog::dismiss)
+                .setConfirmClickListener(sDialog -> {
 
-                            txtv_email_cloud.setText("");
-                            txtv_password_cloud.setText("");
-                            btn_login_cloud.setEnabled(true);
-                            btn_signup_cloud.setEnabled(true);
-                            btn_deconecte_cloud.setEnabled(false);
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                    editor.putString("EMAIL_CLOUD", "");
+                    editor.putString("PASSWORD_CLOUD", "");
+                    editor.apply();
 
-                            lnr_back_up.setEnabled(false);
-                            lnr_restore.setEnabled(false);
+                    txtv_email_cloud.setText("");
+                    txtv_password_cloud.setText("");
+                    btn_login_cloud.setEnabled(true);
+                    btn_signup_cloud.setEnabled(true);
+                    btn_deconecte_cloud.setEnabled(false);
 
-                            sDialog.dismiss();
-                        })
-                        .setCancelClickListener(Dialog::dismiss)
-                        .show();
+                    lnr_back_up.setEnabled(false);
+                    lnr_restore.setEnabled(false);
 
-            }
-        });
+                    sDialog.dismiss();
+                })
+                .setCancelClickListener(Dialog::dismiss)
+                .show());
+
 
         //EditText
         ip = findViewById(R.id.ip);
@@ -565,12 +697,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         TextInputEditText tel = findViewById(R.id.edt_company_tel);
         TextInputEditText footer = findViewById(R.id.edt_pied_de_page);
 
-        company_logo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageChooserGallery();
-            }
-        });
+
+        company_logo.setOnClickListener(v -> imageChooserGallery());
 
 
         comapny_name.addTextChangedListener(new TextWatcher() {
@@ -929,6 +1057,15 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             if (!isRunning) {
                 if (prefs.getBoolean("USE_SAFE_EVENT", false)) {
 
+                    if (!prefs.getBoolean("APP_ACTIVATED", false)) {
+                        new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Important !")
+                                .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION2)
+                                .show();
+
+                        return;
+                    }
+
                     SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
                     editor.putString("SAFE_EVENT_USER", username_safe_event.getText().toString());
                     editor.putString("SAFE_EVENT_PASS", password_safe_event.getText().toString());
@@ -1043,6 +1180,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         });
 
+        lnr_notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNotesDialog();
+            }
+        });
+
         //TextView
         code_depot = findViewById(R.id.code_depot);
         nom_depot = findViewById(R.id.nom_depot);
@@ -1132,6 +1276,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_edit_stock_ini = findViewById(R.id.switch_edit_stock_ini);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_edit_solde_ini = findViewById(R.id.switch_edit_solde_ini);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_famille = findViewById(R.id.switch_famille);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_filtre_recherche = findViewById(R.id.switch_filtre_recherche);
@@ -1177,6 +1323,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_modifier_bon.setChecked(prefs.getBoolean("AUTORISE_MODIFY_BON", true));
         switch_edit_prix.setChecked(prefs.getBoolean("CAN_EDIT_PRICE", false));
         switch_edit_stock_ini.setChecked(prefs.getBoolean("CAN_EDIT_STOCK_INI", false));
+        switch_edit_solde_ini.setChecked(prefs.getBoolean("CAN_EDIT_SOLDE_INI", false));
         switch_famille.setChecked(prefs.getBoolean("MODE_FAMILLE", false));
         switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
 
@@ -1291,6 +1438,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_edit_stock_ini.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("CAN_EDIT_STOCK_INI", isChecked);
+            editor.apply();
+        });
+
+        switch_edit_solde_ini.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("CAN_EDIT_SOLDE_INI", isChecked);
             editor.apply();
         });
 
@@ -1905,14 +2058,27 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
                     connectBluetooth(bluetoothEdrConfigBean);
                 } else {
-                    if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    /*if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
                         }
                         return;
+                    }*/
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
+                            ActivityCompat.requestPermissions(this, new String[]{
+                                            Manifest.permission.BLUETOOTH_CONNECT,
+                                            Manifest.permission.BLUETOOTH_SCAN
+                                    }, 2);
+                            return;
+                        }
                     }
                     BluetoothDevice device = getDevice();
-                    assert device != null;
+                    if (device == null) {
+                        Log.e("BT", "Device is null");
+                        return;
+                    }
                     BT_VALUE_MAC = device.getAddress();
                     BT_VALUE_NAME = device.getName();
 
@@ -1933,9 +2099,20 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private BluetoothDevice getDevice() {
         BluetoothDevice device = null;
-        if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+        /*if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
             return null;
+        }*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.BLUETOOTH_CONNECT,
+                        Manifest.permission.BLUETOOTH_SCAN
+                }, 2);
+                return null;
+            }
         }
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -2128,10 +2305,20 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         bluetoothDeviceChooseDialog.setOnDeviceItemClickListener(device -> {
 
             // Android 12+ requires BLUETOOTH_CONNECT runtime permission
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (ActivityCompat.checkSelfPermission(ActivitySetting.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(ActivitySetting.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                    return;
+                }
+            }*/
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.BLUETOOTH_CONNECT,
+                            Manifest.permission.BLUETOOTH_SCAN
+                    }, 2);
                     return;
                 }
             }

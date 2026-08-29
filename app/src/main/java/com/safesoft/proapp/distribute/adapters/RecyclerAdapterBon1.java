@@ -240,10 +240,10 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
 
             String inputPattern = "dd/MM/yyyy HH:mm:ss";
             SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
-            Date date_start = null;
+            Date date_start;
             date_start = inputFormat.parse(startDate);
 
-            Date date_end = null;
+            Date date_end;
             date_end = inputFormat.parse(endDate);
 
 

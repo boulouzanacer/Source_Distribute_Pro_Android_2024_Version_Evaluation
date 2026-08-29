@@ -41,11 +41,14 @@ public class ActivityPDF extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pdf);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
-            getWindow().getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            getWindow().getInsetsController().setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         initView();
@@ -64,11 +67,11 @@ public class ActivityPDF extends AppCompatActivity {
             assert SOURCE != null;
             switch (SOURCE) {
                 case "FROM_SALE" ->
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Bon de vente N° " + NUM_BON);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle("Vente N° " + NUM_BON);
                 case "FROM_ORDER" ->
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Bon de commande N° " + NUM_BON);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle("Commande N° " + NUM_BON);
                 case "FROM_ACHAT" ->
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Bon d'achat N° " + NUM_BON);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle("Achat N° " + NUM_BON);
                 case "FROM_TICKET" ->
                         Objects.requireNonNull(getSupportActionBar()).setTitle("TICKET PRODUIT ");
             }

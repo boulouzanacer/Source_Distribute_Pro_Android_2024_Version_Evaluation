@@ -1,8 +1,10 @@
 package com.safesoft.proapp.distribute.activities.splashscreen;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -96,7 +98,13 @@ public class splashScreen extends AppCompatActivity {
 
                 .setCancelClickListener(sDialog -> {
                     startActivity(new Intent(splashScreen.this, MainActivity.class));
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else {
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    }
+
                     finish();
                 })
 
@@ -106,7 +114,12 @@ public class splashScreen extends AppCompatActivity {
                     intent.putExtra(NUM_SERIE, deviceId2);
                     intent.putExtra(revendeur, revendeur);
                     startActivity(intent);
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else {
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    }
                     finish();
                 });
 

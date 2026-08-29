@@ -1,12 +1,14 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias libs.plugins.android.library
+}
 
 android {
     namespace 'cn.pedant.SweetAlert'
-    compileSdk 34
+    compileSdk 37
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 37
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -17,8 +19,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        android {
         }
     }
     lint {
@@ -34,8 +34,3 @@ dependencies {
     implementation 'com.pnikosis:materialish-progress:1.7'
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}

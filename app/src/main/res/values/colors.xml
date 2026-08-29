@@ -16,10 +16,8 @@
     <color name="jaune">#f1c40f</color>
     <color name="violet">#8e44ad</color>
     <color name="gray">#bdc3c7</color>
-    <color name="sandy_brown">#F4A460</color>
 
 
-    <color name="bgContentTop">#594691</color>
     <color name="bgContent">#ffffff</color>
     <color name="contentDividerLine">#e0e0e0</color>
     <color name="contentBadgeTitle">#a9a9a9</color>
@@ -41,14 +39,8 @@
     <color name="primary">#E43F3F</color>
     <color name="color_pme_pro_distribute">#0094d6</color>
 
-    <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-
-    <color name="tag_blue_bg">#5f9cff</color>
-    <color name="tag_orange_bg">#ff9a57</color>
-    <color name="tag_red_bg">#ff6d5f</color>
     <color name="tag_green_bg">#40d189</color>
-    <color name="tag_blue_light_bg">#33befa</color>
 
 
     <!--green gradiant-->

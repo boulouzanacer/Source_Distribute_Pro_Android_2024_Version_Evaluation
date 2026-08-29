@@ -1,20 +1,20 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias libs.plugins.android.library
+}
 //apply plugin: 'com.novoda.bintray-release'
 
 android {
     namespace 'com.labo.kaji.swipeawaydialog'
-    compileSdkVersion 36
+    compileSdk 37
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 36
+        targetSdkVersion 37
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        android {
         }
     }
     compileOptions {
@@ -25,7 +25,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'androidx.appcompat:appcompat:1.7.1'
+    api libs.appcompat
 }
 
 /*

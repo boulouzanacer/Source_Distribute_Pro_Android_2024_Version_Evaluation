@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -26,7 +25,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,7 +47,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.safesoft.proapp.distribute.adapters.RecyclerAdapter_Situation_client;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
@@ -111,14 +108,14 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_client_detail);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
@@ -309,7 +306,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 new BadgeDrawable.Builder()
                         .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
                         .badgeColor(0xff303F9F)
-                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.achat_montant)))
+                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.achat_client)))
                         .text2(" DA ")
                         .build();
         SpannableString spannableString6 = new SpannableString(TextUtils.concat(drawable6.toSpannable()));
@@ -320,7 +317,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 new BadgeDrawable.Builder()
                         .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
                         .badgeColor(0xff303F9F)
-                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.verser_montant)))
+                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.verser_client)))
                         .text2(" DA ")
                         .build();
         SpannableString spannableString7 = new SpannableString(TextUtils.concat(drawable7.toSpannable()));
@@ -332,7 +329,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                     new BadgeDrawable.Builder()
                             .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
                             .badgeColor(0xff303F9F)
-                            .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.solde_montant)))
+                            .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.solde_client)))
                             .text2(" DA ")
                             .build();
             SpannableString spannableString8 = new SpannableString(TextUtils.concat(drawable8.toSpannable()));
@@ -384,7 +381,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
         } else if (viewId == R.id.btnVerser) {
             FragmentVersementClient fragmentversementclient = new FragmentVersementClient();
-            fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, 0, "", client.code_client, false, "");
+            fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_client, client.verser_client, 0, "", client.code_client, false, "");
 
         } else if (viewId == R.id.btnVente) {
 
@@ -589,7 +586,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                         .setConfirmClickListener(sDialog -> {
 
                             FragmentVersementClient fragmentversementclient = new FragmentVersementClient();
-                            fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_montant, client.verser_montant, carnet_c.carnet_versement, carnet_c.carnet_remarque, client.code_client, true, carnet_c.recordid);
+                            fragmentversementclient.showDialogbox(ActivityClientDetail.this, client.solde_client, client.verser_client, carnet_c.carnet_versement, carnet_c.carnet_remarque, client.code_client, true, carnet_c.recordid);
 
                             sDialog.dismiss();
                         }).show();
@@ -621,7 +618,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
 
-                            if (controller.delete_versement_client(carnet_c, client.solde_montant + carnet_c.carnet_versement, client.verser_montant - carnet_c.carnet_versement)) {
+                            if (controller.delete_versement_client(carnet_c, client.solde_client + carnet_c.carnet_versement, client.verser_client - carnet_c.carnet_versement)) {
                                 Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
                             } else {
                                 Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();

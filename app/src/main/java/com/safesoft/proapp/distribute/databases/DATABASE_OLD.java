@@ -705,6 +705,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 values.put("SOLDE", fournisseur.solde_montant);
 
                 values.put("ISNEW", fournisseur.isNew);
+                values.put("IS_IMPORTED", fournisseur.isImported);
                 db.insert("FOURNIS", null, values);
 
                 db.setTransactionSuccessful();
@@ -767,9 +768,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 values.put("NIS", client.nis);
                 values.put("AI", client.ai);
                 values.put("MODE_TARIF", client.mode_tarif);
-                values.put("ACHATS", client.achat_montant);
-                values.put("VERSER", client.verser_montant);
-                values.put("SOLDE", client.solde_montant);
+                values.put("ACHATS", client.achat_client);
+                values.put("VERSER", client.verser_client);
+                values.put("SOLDE", client.solde_client);
                 values.put("SOLDE_INI", client.solde_ini);
                 values.put("LATITUDE", client.latitude);
                 values.put("LONGITUDE", client.longitude);
@@ -1508,6 +1509,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 fournisseur.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
 
                 fournisseur.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                fournisseur.isImported = cursor.getInt(cursor.getColumnIndex("IS_IMPORTED"));
 
                 fournisseurs.add(fournisseur);
             } while (cursor.moveToNext());
@@ -1539,9 +1541,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                     client.mode_tarif = cursor.getString(cursor.getColumnIndex("MODE_TARIF"));
                     client.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
                     client.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
-                    client.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
-                    client.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
-                    client.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
+                    client.achat_client = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
+                    client.verser_client = cursor.getDouble(cursor.getColumnIndex("VERSER"));
+                    client.solde_client = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
                     client.solde_ini = cursor.getDouble(cursor.getColumnIndex("SOLDE_INI"));
                     client.credit_limit = cursor.getDouble(cursor.getColumnIndex("CREDIT_LIMIT"));
                     client.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
@@ -1874,6 +1876,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 fournisseur.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
 
                 fournisseur.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                fournisseur.isImported = cursor.getInt(cursor.getColumnIndex("IS_IMPORTED"));
 
 
             } while (cursor.moveToNext());
@@ -1951,9 +1954,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 client.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
                 client.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
                 client.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
-                client.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
-                client.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
-                client.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
+                client.achat_client = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
+                client.verser_client = cursor.getDouble(cursor.getColumnIndex("VERSER"));
+                client.solde_client = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
                 client.solde_ini = cursor.getDouble(cursor.getColumnIndex("SOLDE_INI"));
                 client.credit_limit = cursor.getDouble(cursor.getColumnIndex("CREDIT_LIMIT"));
                 client.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
@@ -2821,9 +2824,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor1.moveToFirst()) {
                     do {
-                        client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                        client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                        client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                        client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                        client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                        client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                     } while (cursor1.moveToNext());
                 }
@@ -2833,9 +2836,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 //update client
 
                 ContentValues args = new ContentValues();
-                args.put("ACHATS", String.valueOf(client.achat_montant + bon1.montant_bon));
-                args.put("VERSER", String.valueOf(client.verser_montant + bon1.verser));
-                args.put("SOLDE", String.valueOf((client.solde_montant + bon1.montant_bon) - bon1.verser));
+                args.put("ACHATS", String.valueOf(client.achat_client + bon1.montant_bon));
+                args.put("VERSER", String.valueOf(client.verser_client + bon1.verser));
+                args.put("SOLDE", String.valueOf((client.solde_client + bon1.montant_bon) - bon1.verser));
                 String selection = "CODE_CLIENT=?";
                 String[] selectionArgs = {bon1.code_client};
                 db.update("CLIENT", args, selection, selectionArgs);
@@ -2910,9 +2913,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor1.moveToFirst()) {
                     do {
-                        client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                        client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                        client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                        client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                        client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                        client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                     } while (cursor1.moveToNext());
                 }
@@ -2920,9 +2923,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 cursor1.close();
 
                 ContentValues args = new ContentValues();
-                args.put("ACHATS", String.valueOf(client.achat_montant - bon1.montant_bon));
-                args.put("VERSER", String.valueOf(client.verser_montant - bon1.verser));
-                args.put("SOLDE", String.valueOf((client.solde_montant - bon1.montant_bon) + bon1.verser));
+                args.put("ACHATS", String.valueOf(client.achat_client - bon1.montant_bon));
+                args.put("VERSER", String.valueOf(client.verser_client - bon1.verser));
+                args.put("SOLDE", String.valueOf((client.solde_client - bon1.montant_bon) + bon1.verser));
                 String selection = "CODE_CLIENT=?";
                 String[] selectionArgs = {bon1.code_client};
                 db.update("CLIENT", args, selection, selectionArgs);
@@ -3537,9 +3540,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                     // looping through all rows and adding to list
                     if (cursor1.moveToFirst()) {
                         do {
-                            client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                            client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                            client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                            client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                            client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                            client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                         } while (cursor1.moveToNext());
                     }
@@ -3547,9 +3550,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                     cursor1.close();
 
                     ContentValues args = new ContentValues();
-                    args.put("ACHATS", String.valueOf(client.achat_montant - bon1.montant_bon));
-                    args.put("VERSER", String.valueOf(client.verser_montant - bon1.verser));
-                    args.put("SOLDE", String.valueOf((client.solde_montant - bon1.montant_bon) + bon1.verser));
+                    args.put("ACHATS", String.valueOf(client.achat_client - bon1.montant_bon));
+                    args.put("VERSER", String.valueOf(client.verser_client - bon1.verser));
+                    args.put("SOLDE", String.valueOf((client.solde_client - bon1.montant_bon) + bon1.verser));
                     selection = "CODE_CLIENT=?";
                     String[] selectionArgs = {bon1.code_client};
                     db.update("CLIENT", args, selection, selectionArgs);
@@ -3861,9 +3864,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor1.moveToFirst()) {
                     do {
-                        client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                        client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                        client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                        client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                        client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                        client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                     } while (cursor1.moveToNext());
                 }
@@ -3872,8 +3875,8 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
 
                 ContentValues args1 = new ContentValues();
                 //args.put("ACHATS", String.valueOf(Double.valueOf(client.achat_montant) - Double.valueOf(bon1.montant_bon)));
-                args1.put("VERSER", client.verser_montant - carnet_c.carnet_versement);
-                args1.put("SOLDE", client.solde_montant + carnet_c.carnet_versement);
+                args1.put("VERSER", client.verser_client - carnet_c.carnet_versement);
+                args1.put("SOLDE", client.solde_client + carnet_c.carnet_versement);
                 String selection1 = "CODE_CLIENT=?";
                 String[] selectionArgs1 = {carnet_c.code_client};
                 db.update("CLIENT", args1, selection1, selectionArgs1);

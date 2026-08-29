@@ -19,10 +19,12 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsetsController;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -98,15 +100,15 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_SHOW_BARS_BY_SWIPE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
-        }*/
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        }
 
         controller = new DATABASE(this);
         temp_clients = new ArrayList<>();

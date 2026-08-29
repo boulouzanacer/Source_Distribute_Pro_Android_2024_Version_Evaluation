@@ -63,7 +63,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DATABASE extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 17; // Database version
+    private static final int DATABASE_VERSION = 22; // Database version
     public static final String DATABASE_NAME = "safe_distribute_pro"; //Database name
     private final Context mContext;
 
@@ -75,6 +75,7 @@ public class DATABASE extends SQLiteOpenHelper {
         // TODO Auto-generated constructor stub
 
         mContext = context;
+        ensureIndexes();
         // String path = mContext.getDatabasePath(DATABASE_NAME).getPath();
         //  File f = mContext.getDatabasePath(DATABASE_NAME);
 
@@ -83,6 +84,36 @@ public class DATABASE extends SQLiteOpenHelper {
 
         // https://www.youtube.com/watch?v=DV24nJCQR10
 
+    }
+
+    private void ensureIndexes() {
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            String[] queries = new String[]{
+                    "CREATE INDEX IF NOT EXISTS idx_client_code_client ON CLIENT(CODE_CLIENT)",
+                    "CREATE INDEX IF NOT EXISTS idx_bon1_code_client ON BON1(CODE_CLIENT)",
+                    "CREATE INDEX IF NOT EXISTS idx_bon1_temp_code_client ON BON1_TEMP(CODE_CLIENT)",
+                    "CREATE INDEX IF NOT EXISTS idx_bon2_num_bon ON BON2(NUM_BON)",
+                    "CREATE INDEX IF NOT EXISTS idx_bon2_temp_num_bon ON BON2_TEMP(NUM_BON)",
+                    "CREATE INDEX IF NOT EXISTS idx_bon2_code_barre ON BON2(CODE_BARRE)",
+                    "CREATE INDEX IF NOT EXISTS idx_bon2_temp_code_barre ON BON2_TEMP(CODE_BARRE)",
+                    "CREATE INDEX IF NOT EXISTS idx_achat2_num_bon ON ACHAT2(NUM_BON)",
+                    "CREATE INDEX IF NOT EXISTS idx_achat2_temp_num_bon ON ACHAT2_TEMP(NUM_BON)",
+                    "CREATE INDEX IF NOT EXISTS idx_position_num_bon ON POSITION(NUM_BON)",
+                    "CREATE INDEX IF NOT EXISTS idx_carnet_c_code_client ON CARNET_C(CODE_CLIENT)",
+                    "CREATE INDEX IF NOT EXISTS idx_produit_famille ON PRODUIT(FAMILLE)",
+                    "CREATE INDEX IF NOT EXISTS idx_produit_produit ON PRODUIT(PRODUIT)"
+            };
+            for (String q : queries) {
+                try {
+                    db.execSQL(q);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -120,7 +151,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 "D2 VARCHAR, " +
                 "PP1_HT DOUBLE, " +
                 "QTE_PROMO DOUBLE, " +
-                "ISNEW INTEGER " +
+                "ISNEW INTEGER, " +
+                "IS_IMPORTED INTEGER DEFAULT 0" +
                 ")"
         );
 
@@ -149,6 +181,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "AI VARCHAR,  " +
                 "NIS VARCHAR, " +
                 "ISNEW INTEGER, " +
+                "IS_IMPORTED INTEGER DEFAULT 0, " +
                 "CREDIT_LIMIT DOUBLE DEFAULT 0.0, " +
                 "SOLDE_INI DOUBLE DEFAULT 0.0)");
 
@@ -175,6 +208,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "REMISE DOUBLE, " +
                 "MONTANT_ACHAT DOUBLE, " +
                 "ANCIEN_SOLDE DOUBLE, " +
+                "REMARQUE VARCHAR, " +
                 "EXPORTATION VARCHAR, " +
                 "BLOCAGE VARCHAR, " +
                 "VERSER DOUBLE, " +
@@ -231,6 +265,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "REMISE DOUBLE, " +
                 "MONTANT_ACHAT DOUBLE, " +
                 "ANCIEN_SOLDE DOUBLE, " +
+                "REMARQUE VARCHAR, " +
                 "EXPORTATION VARCHAR, " +
                 "BLOCAGE VARCHAR, " +
                 "VERSER DOUBLE, " +
@@ -333,6 +368,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 "IFISCAL VARCHAR, " +
                 "AI VARCHAR,  " +
                 "NIS VARCHAR, " +
+                "IS_IMPORTED INTEGER DEFAULT 0, " +
                 "ISNEW INTEGER)");
 
 
@@ -474,6 +510,12 @@ public class DATABASE extends SQLiteOpenHelper {
 
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_inv2_numinv ON INV2(NUM_INV);");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS NOTES(" +
+                "NOTE_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "NOTE_TEXT TEXT NOT NULL, " +
+                "CREATED_AT INTEGER NOT NULL" +
+                ")");
+
         insert_wilaya_commune_into_database(db);
     }
 
@@ -483,7 +525,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
         Log.v("TRACKKK", "================>  ON UPGRADE EXECUTED");
 
-        String[] list_requet = new String[18];
+        String[] list_requet = new String[24];
 
         list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0";
 
@@ -554,6 +596,21 @@ public class DATABASE extends SQLiteOpenHelper {
 
         list_requet[17] = "CREATE INDEX IF NOT EXISTS idx_inv2_numinv ON INV2(NUM_INV)";
 
+        list_requet[18] = "CREATE TABLE IF NOT EXISTS NOTES(" +
+                "NOTE_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "NOTE_TEXT TEXT NOT NULL, " +
+                "CREATED_AT INTEGER NOT NULL" +
+                ")";
+
+        list_requet[19] = "ALTER TABLE BON1 ADD COLUMN REMARQUE VARCHAR";
+
+        list_requet[20] = "ALTER TABLE BON1_TEMP ADD COLUMN REMARQUE VARCHAR";
+
+        list_requet[21]  = "ALTER TABLE PRODUIT ADD COLUMN IS_IMPORTED INTEGER DEFAULT 0";
+
+        list_requet[22]  = "ALTER TABLE CLIENT ADD COLUMN IS_IMPORTED INTEGER DEFAULT 0";
+        list_requet[23]  = "ALTER TABLE FOURNIS ADD COLUMN IS_IMPORTED INTEGER DEFAULT 0";
+
 
         for (String s : list_requet) {
             try {
@@ -568,6 +625,58 @@ public class DATABASE extends SQLiteOpenHelper {
     ///////////////////////////////////////////////////////////////////////////////
     //////                             Functions                             //////
     ///////////////////////////////////////////////////////////////////////////////
+
+    public static final class NoteRow {
+        public final long id;
+        @NonNull
+        public final String text;
+        public final long createdAt;
+
+        public NoteRow(long id, @NonNull String text, long createdAt) {
+            this.id = id;
+            this.text = text;
+            this.createdAt = createdAt;
+        }
+    }
+
+    public long insertNote(@NonNull String noteText) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("NOTE_TEXT", noteText);
+        values.put("CREATED_AT", System.currentTimeMillis());
+        return db.insert("NOTES", null, values);
+    }
+
+    public int deleteNote(long noteId) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete("NOTES", "NOTE_ID = ?", new String[]{String.valueOf(noteId)});
+    }
+
+    @NonNull
+    public ArrayList<NoteRow> selectNotes() {
+        ArrayList<NoteRow> notes = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT NOTE_ID, NOTE_TEXT, CREATED_AT FROM NOTES ORDER BY NOTE_ID DESC", null);
+            int idxId = cursor.getColumnIndex("NOTE_ID");
+            int idxText = cursor.getColumnIndex("NOTE_TEXT");
+            int idxCreatedAt = cursor.getColumnIndex("CREATED_AT");
+            if (cursor.moveToFirst()) {
+                do {
+                    long id = cursor.isNull(idxId) ? 0 : cursor.getLong(idxId);
+                    String text = cursor.isNull(idxText) ? "" : cursor.getString(idxText);
+                    long createdAt = cursor.isNull(idxCreatedAt) ? 0 : cursor.getLong(idxCreatedAt);
+                    notes.add(new NoteRow(id, text, createdAt));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) cursor.close();
+        }
+        return notes;
+    }
 
     public boolean ResetTableCommandClient() {
         boolean executed = false;
@@ -791,6 +900,8 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("SOLDE", fournisseur.solde_montant);
 
                 values.put("ISNEW", fournisseur.isNew);
+                values.put("IS_IMPORTED", fournisseur.isImported);
+
                 db.insert("FOURNIS", null, values);
 
                 db.setTransactionSuccessful();
@@ -853,14 +964,15 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("NIS", client.nis);
                 values.put("AI", client.ai);
                 values.put("MODE_TARIF", client.mode_tarif);
-                values.put("ACHATS", client.achat_montant);
-                values.put("VERSER", client.verser_montant);
-                values.put("SOLDE", client.solde_montant);
+                values.put("ACHATS", client.achat_client);
+                values.put("VERSER", client.verser_client);
+                values.put("SOLDE", client.solde_client);
                 values.put("SOLDE_INI", client.solde_ini);
                 values.put("LATITUDE", client.latitude);
                 values.put("LONGITUDE", client.longitude);
                 values.put("CREDIT_LIMIT", client.credit_limit);
                 values.put("ISNEW", client.isNew);
+                values.put("IS_IMPORTED", client.isImported);
 
                 db.insert("CLIENT", null, values);
 
@@ -962,6 +1074,7 @@ public class DATABASE extends SQLiteOpenHelper {
         values.put("QTE_PROMO", produit.qte_promo);
 
         values.put("ISNEW", produit.isNew);
+        values.put("IS_IMPORTED", produit.isImported);
 
         db.insert("PRODUIT", null, values);
 
@@ -1587,6 +1700,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 fournisseur.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
 
                 fournisseur.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                fournisseur.isImported = cursor.getInt(cursor.getColumnIndex("IS_IMPORTED"));
 
                 fournisseurs.add(fournisseur);
             } while (cursor.moveToNext());
@@ -1618,12 +1732,13 @@ public class DATABASE extends SQLiteOpenHelper {
                     client.mode_tarif = cursor.getString(cursor.getColumnIndex("MODE_TARIF"));
                     client.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
                     client.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
-                    client.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
-                    client.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
-                    client.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
+                    client.achat_client = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
+                    client.verser_client = cursor.getDouble(cursor.getColumnIndex("VERSER"));
+                    client.solde_client = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
                     client.solde_ini = cursor.getDouble(cursor.getColumnIndex("SOLDE_INI"));
                     client.credit_limit = cursor.getDouble(cursor.getColumnIndex("CREDIT_LIMIT"));
                     client.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                    client.isImported = cursor.getInt(cursor.getColumnIndex("IS_IMPORTED"));
 
                     client.rc = cursor.getString(cursor.getColumnIndex("RC"));
                     client.ifiscal = cursor.getString(cursor.getColumnIndex("IFISCAL"));
@@ -1711,6 +1826,7 @@ public class DATABASE extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
+
         if (cursor.moveToFirst()) {
             do {
                 PostData_Client client = new PostData_Client();
@@ -1953,6 +2069,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 fournisseur.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
 
                 fournisseur.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                fournisseur.isImported = cursor.getInt(cursor.getColumnIndex("IS_IMPORTED"));
 
 
             } while (cursor.moveToNext());
@@ -2020,8 +2137,8 @@ public class DATABASE extends SQLiteOpenHelper {
     public PostData_Client select_client_from_database(String code_client) {
 
         PostData_Client client = new PostData_Client();
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM CLIENT WHERE CODE_CLIENT = '" + code_client + "'", null);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM CLIENT WHERE CODE_CLIENT = ?", new String[]{code_client});
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
@@ -2035,12 +2152,13 @@ public class DATABASE extends SQLiteOpenHelper {
                 client.adresse = cursor.getString(cursor.getColumnIndex("ADRESSE"));
                 client.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
                 client.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
-                client.achat_montant = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
-                client.verser_montant = cursor.getDouble(cursor.getColumnIndex("VERSER"));
-                client.solde_montant = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
+                client.achat_client = cursor.getDouble(cursor.getColumnIndex("ACHATS"));
+                client.verser_client = cursor.getDouble(cursor.getColumnIndex("VERSER"));
+                client.solde_client = cursor.getDouble(cursor.getColumnIndex("SOLDE"));
                 client.solde_ini = cursor.getDouble(cursor.getColumnIndex("SOLDE_INI"));
                 client.credit_limit = cursor.getDouble(cursor.getColumnIndex("CREDIT_LIMIT"));
                 client.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                client.isImported = cursor.getInt(cursor.getColumnIndex("IS_IMPORTED"));
 
                 client.rc = cursor.getString(cursor.getColumnIndex("RC"));
                 client.ifiscal = cursor.getString(cursor.getColumnIndex("IFISCAL"));
@@ -2057,8 +2175,8 @@ public class DATABASE extends SQLiteOpenHelper {
     public PostData_Client select_client_etat_from_database(String clientt) {
 
         PostData_Client client = new PostData_Client();
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT CODE_CLIENT FROM CLIENT WHERE CLIENT = '" + clientt + "'", null);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT CODE_CLIENT FROM CLIENT WHERE CLIENT = ?", new String[]{clientt});
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
@@ -2133,6 +2251,7 @@ public class DATABASE extends SQLiteOpenHelper {
             int idxPp1 = cursor.getColumnIndex("PP1_HT");
             int idxQtePromo = cursor.getColumnIndex("QTE_PROMO");
             int idxIsNew = cursor.getColumnIndex("ISNEW");
+            int idxIsImported = cursor.getColumnIndex("IS_IMPORTED");
 
             if (cursor.moveToFirst()) {
                 do {
@@ -2173,6 +2292,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     produit.pp1_ht = cursor.isNull(idxPp1) ? 0 : cursor.getDouble(idxPp1);
                     produit.qte_promo = cursor.isNull(idxQtePromo) ? 0 : cursor.getDouble(idxQtePromo);
                     produit.isNew = cursor.isNull(idxIsNew) ? 0 : cursor.getInt(idxIsNew);
+                    produit.isImported = cursor.isNull(idxIsNew) ? 0 : cursor.getInt(idxIsImported);
 
                     produits.add(produit);
 
@@ -2235,6 +2355,7 @@ public class DATABASE extends SQLiteOpenHelper {
             int idxPp1 = cursor.getColumnIndex("PP1_HT");
             int idxQtePromo = cursor.getColumnIndex("QTE_PROMO");
             int idxIsNew = cursor.getColumnIndex("ISNEW");
+            int idxIsImported = cursor.getColumnIndex("IS_IMPORTED");
 
             if (cursor.moveToFirst()) {
                 do {
@@ -2278,6 +2399,7 @@ public class DATABASE extends SQLiteOpenHelper {
                     produit.pp1_ht = cursor.isNull(idxPp1) ? 0 : cursor.getDouble(idxPp1);
                     produit.qte_promo = cursor.isNull(idxQtePromo) ? 0 : cursor.getDouble(idxQtePromo);
                     produit.isNew = cursor.isNull(idxIsNew) ? 0 : cursor.getInt(idxIsNew);
+                    produit.isImported = cursor.isNull(idxIsNew) ? 0 : cursor.getInt(idxIsImported);
 
                     produits.add(produit);
 
@@ -2331,7 +2453,7 @@ public class DATABASE extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public PostData_Produit select_one_produit_from_database(String querry) {
         PostData_Produit produit = null;
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -2369,6 +2491,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 produit.qte_promo = cursor.getDouble(cursor.getColumnIndex("QTE_PROMO"));
 
                 produit.isNew = cursor.getInt(cursor.getColumnIndex("ISNEW"));
+                produit.isImported = cursor.getInt(cursor.getColumnIndex("IS_IMPORTED"));
 
             } while (cursor.moveToNext());
         }
@@ -2380,7 +2503,7 @@ public class DATABASE extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public String select_codebarre_from_database(String querry) {
         String code_barre = "";
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -2397,7 +2520,7 @@ public class DATABASE extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public ArrayList<PostData_Codebarre> select_all_codebarre_from_database(String querry) {
         ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         try (Cursor cursor = db.rawQuery(querry, null)) {
             // looping through all rows and adding to list
             if (cursor.moveToFirst()) {
@@ -2420,7 +2543,7 @@ public class DATABASE extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public ArrayList<PostData_Achat1> select_all_achat1_from_database(String querry) {
         ArrayList<PostData_Achat1> bon1s_a_com = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -2469,7 +2592,7 @@ public class DATABASE extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public ArrayList<PostData_Bon1> select_all_bon1_from_database(String querry) {
         ArrayList<PostData_Bon1> bon1s = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -2531,6 +2654,10 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.code_vendeur = cursor.getString(cursor.getColumnIndex("CODE_VENDEUR"));
                 bon1.exportation = cursor.getString(cursor.getColumnIndex("EXPORTATION"));
                 bon1.blocage = cursor.getString(cursor.getColumnIndex("BLOCAGE"));
+                int remarqueIndex = cursor.getColumnIndex("REMARQUE");
+                if (remarqueIndex >= 0) {
+                    bon1.remarque = cursor.getString(remarqueIndex);
+                }
 
                 bon1s.add(bon1);
 
@@ -2544,7 +2671,7 @@ public class DATABASE extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public int select_count_from_database(String querry) {
         //ArrayList<PostData_Bon1> bon1s = new ArrayList<PostData_Bon1>();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         int i = cursor.getCount();
         cursor.close();
@@ -2556,7 +2683,7 @@ public class DATABASE extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public PostData_Bon1 select_bon1_from_database2(String querry) {
         PostData_Bon1 bon1 = new PostData_Bon1();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -2613,6 +2740,10 @@ public class DATABASE extends SQLiteOpenHelper {
                 bon1.code_vendeur = cursor.getString(cursor.getColumnIndex("CODE_VENDEUR"));
                 bon1.exportation = cursor.getString(cursor.getColumnIndex("EXPORTATION"));
                 bon1.blocage = cursor.getString(cursor.getColumnIndex("BLOCAGE"));
+                int remarqueIndex = cursor.getColumnIndex("REMARQUE");
+                if (remarqueIndex >= 0) {
+                    bon1.remarque = cursor.getString(remarqueIndex);
+                }
 
 
             } while (cursor.moveToNext());
@@ -2711,6 +2842,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 ContentValues args1 = new ContentValues();
                 args1.put("CODE_CLIENT", bon1.code_client);
                 args1.put("MODE_TARIF", bon1.mode_tarif);
+                args1.put("REMARQUE", bon1.remarque);
                 db.update(_table, args1, "NUM_BON = ?", new String[]{bon1.num_bon});
             } else {
                 // Insert new record
@@ -2733,6 +2865,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 values.put("TOT_HT", bon1.tot_ht);
                 values.put("TOT_TVA", bon1.tot_tva);
                 values.put("IS_IMPORTED", bon1.is_imported);
+                values.put("REMARQUE", bon1.remarque);
                 values.put("EXPORTATION", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
                 db.insert(_table, null, values);
             }
@@ -3143,9 +3276,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor1.moveToFirst()) {
                     do {
-                        client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                        client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                        client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                        client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                        client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                        client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                     } while (cursor1.moveToNext());
                 }
@@ -3155,9 +3288,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 //update client
 
                 ContentValues args = new ContentValues();
-                args.put("ACHATS", String.valueOf(client.achat_montant + bon1.montant_bon));
-                args.put("VERSER", String.valueOf(client.verser_montant + bon1.verser));
-                args.put("SOLDE", String.valueOf((client.solde_montant + bon1.montant_bon) - bon1.verser));
+                args.put("ACHATS", String.valueOf(client.achat_client + bon1.montant_bon));
+                args.put("VERSER", String.valueOf(client.verser_client + bon1.verser));
+                args.put("SOLDE", String.valueOf((client.solde_client + bon1.montant_bon) - bon1.verser));
                 String selection = "CODE_CLIENT=?";
                 String[] selectionArgs = {bon1.code_client};
                 db.update("CLIENT", args, selection, selectionArgs);
@@ -3232,9 +3365,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor1.moveToFirst()) {
                     do {
-                        client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                        client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                        client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                        client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                        client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                        client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                     } while (cursor1.moveToNext());
                 }
@@ -3242,9 +3375,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 cursor1.close();
 
                 ContentValues args = new ContentValues();
-                args.put("ACHATS", String.valueOf(client.achat_montant - bon1.montant_bon));
-                args.put("VERSER", String.valueOf(client.verser_montant - bon1.verser));
-                args.put("SOLDE", String.valueOf((client.solde_montant - bon1.montant_bon) + bon1.verser));
+                args.put("ACHATS", String.valueOf(client.achat_client - bon1.montant_bon));
+                args.put("VERSER", String.valueOf(client.verser_client - bon1.verser));
+                args.put("SOLDE", String.valueOf((client.solde_client - bon1.montant_bon) + bon1.verser));
                 String selection = "CODE_CLIENT=?";
                 String[] selectionArgs = {bon1.code_client};
                 db.update("CLIENT", args, selection, selectionArgs);
@@ -3727,7 +3860,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args.put("IFISCAL", client.ifiscal);
                 args.put("AI", client.ai);
                 args.put("NIS", client.nis);
-                //args.put("ISNEW", 1);
+                args.put("SOLDE_INI", client.solde_ini);
                 String selection = "CODE_CLIENT=?";
                 String[] selectionArgs = {old_code_client};
                 db.update("CLIENT", args, selection, selectionArgs);
@@ -3765,6 +3898,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 args.put("MODE_RG", bon1.mode_rg);
                 args.put("CODE_VENDEUR", bon1.code_vendeur);
                 args.put("ANCIEN_SOLDE", bon1.ancien_solde);
+                args.put("REMARQUE", bon1.remarque);
 
                 String selection = "NUM_BON=?";
                 String[] selectionArgs = {num_bon};
@@ -3908,9 +4042,9 @@ public class DATABASE extends SQLiteOpenHelper {
                     // looping through all rows and adding to list
                     if (cursor1.moveToFirst()) {
                         do {
-                            client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                            client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                            client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                            client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                            client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                            client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                         } while (cursor1.moveToNext());
                     }
@@ -3918,9 +4052,9 @@ public class DATABASE extends SQLiteOpenHelper {
                     cursor1.close();
 
                     ContentValues args = new ContentValues();
-                    args.put("ACHATS", String.valueOf(client.achat_montant - bon1.montant_bon));
-                    args.put("VERSER", String.valueOf(client.verser_montant - bon1.verser));
-                    args.put("SOLDE", String.valueOf((client.solde_montant - bon1.montant_bon) + bon1.verser));
+                    args.put("ACHATS", String.valueOf(client.achat_client - bon1.montant_bon));
+                    args.put("VERSER", String.valueOf(client.verser_client - bon1.verser));
+                    args.put("SOLDE", String.valueOf((client.solde_client - bon1.montant_bon) + bon1.verser));
                     selection = "CODE_CLIENT=?";
                     String[] selectionArgs = {bon1.code_client};
                     db.update("CLIENT", args, selection, selectionArgs);
@@ -4239,9 +4373,9 @@ public class DATABASE extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor1.moveToFirst()) {
                     do {
-                        client.achat_montant = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
-                        client.verser_montant = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
-                        client.solde_montant = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
+                        client.achat_client = cursor1.getDouble(cursor1.getColumnIndex("ACHATS"));
+                        client.verser_client = cursor1.getDouble(cursor1.getColumnIndex("VERSER"));
+                        client.solde_client = cursor1.getDouble(cursor1.getColumnIndex("SOLDE"));
 
                     } while (cursor1.moveToNext());
                 }
@@ -4250,8 +4384,8 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 ContentValues args1 = new ContentValues();
                 //args.put("ACHATS", String.valueOf(Double.valueOf(client.achat_montant) - Double.valueOf(bon1.montant_bon)));
-                args1.put("VERSER", client.verser_montant - carnet_c.carnet_versement);
-                args1.put("SOLDE", client.solde_montant + carnet_c.carnet_versement);
+                args1.put("VERSER", client.verser_client - carnet_c.carnet_versement);
+                args1.put("SOLDE", client.solde_client + carnet_c.carnet_versement);
                 String selection1 = "CODE_CLIENT=?";
                 String[] selectionArgs1 = {carnet_c.code_client};
                 db.update("CLIENT", args1, selection1, selectionArgs1);
@@ -4595,7 +4729,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 client.client = cursor.getString(cursor.getColumnIndex("CLIENT"));
                 client.wilaya = cursor.getString(cursor.getColumnIndex("WILAYA"));
                 client.commune = cursor.getString(cursor.getColumnIndex("COMMUNE"));
-                client.verser_montant = cursor.getDouble(cursor.getColumnIndex("TOTAL_VERSEMENTS"));
+                client.verser_client = cursor.getDouble(cursor.getColumnIndex("TOTAL_VERSEMENTS"));
 
                 all_clients.add(client);
             } while (cursor.moveToNext());
@@ -5616,7 +5750,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 db.update(_table, args, selection, selectionArgs);
 
                 if (_table.equals("ACHAT1")) {
-                    // you have to ini achat, verser, solde to 0 first time 
+                    // you have to ini achat, verser, solde to 0 first time
                     String sql = "UPDATE FOURNIS SET ACHATS = ACHATS + " + (achat1.tot_ht + achat1.tot_tva + achat1.timbre - achat1.remise) + ", VERSER = VERSER + " + achat1.verser + ", SOLDE = SOLDE + " + ((achat1.tot_ht + achat1.tot_tva + achat1.timbre - achat1.remise) - achat1.verser) + " WHERE CODE_FRS = '" + achat1.code_frs + "'";
                     db.execSQL(sql);
                 }
@@ -5846,7 +5980,7 @@ public class DATABASE extends SQLiteOpenHelper {
         }
     }
 
-    private boolean insert_wilaya_commune_into_database(SQLiteDatabase db) {
+    private void insert_wilaya_commune_into_database(SQLiteDatabase db) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(mContext.getAssets().open("sql_script/script_communes_wilaya.txt"), StandardCharsets.UTF_8))) {
             // do reading, usually loop until end of file reading
             String mLine;
@@ -5854,9 +5988,7 @@ public class DATABASE extends SQLiteOpenHelper {
                 //process line
                 db.execSQL(mLine);
             }
-            return true;
         } catch (IOException e) {
-            return false;
         }
         //log the exception
     }

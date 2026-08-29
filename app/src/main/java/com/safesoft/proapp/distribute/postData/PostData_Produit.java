@@ -51,4 +51,5 @@ public class PostData_Produit implements Serializable {
     public double qte_promo;
 
     public int isNew = 0;
+    public int isImported = 0;
 }

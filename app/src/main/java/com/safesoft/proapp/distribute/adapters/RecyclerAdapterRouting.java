@@ -11,10 +11,8 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
-import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -77,9 +75,9 @@ public class RecyclerAdapterRouting extends RecyclerView.Adapter<RecyclerAdapter
         holder.Tel_clientN.setText("TEL : " + item.tel);
 
         holder.Sld_clientN.setTypeface(null, Typeface.BOLD);
-        holder.Sld_clientN.setText("Solde : " + item.solde_montant);
+        holder.Sld_clientN.setText("Solde : " + item.solde_client);
 
-        holder.Sld_clientN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+        holder.Sld_clientN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_client)));
 
         if (item.latitude == 0.0) {
             holder.img_client_location.setImageResource(R.drawable.ic_baseline_wrong_location_24);

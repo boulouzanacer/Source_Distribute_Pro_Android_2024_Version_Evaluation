@@ -1,17 +1,24 @@
 package com.safesoft.proapp.distribute.activities.product;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.pdf.PdfDocument;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.core.view.WindowCompat;
 
 import android.view.Menu;
@@ -22,8 +29,12 @@ import android.view.WindowInsetsController;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ceylonlabs.imageviewpopup.ImagePopup;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Params;
@@ -31,6 +42,8 @@ import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.printing.Printing;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -60,14 +73,14 @@ public class ActivityProduitDetail extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_produit_detail);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         controller = new DATABASE(this);
@@ -300,7 +313,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.print) {
-            Activity bactivity;
+            /*Activity bactivity;
             bactivity = ActivityProduitDetail.this;
             Printing printer = new Printing();
             prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -308,7 +321,11 @@ public class ActivityProduitDetail extends AppCompatActivity {
                 printer.start_print_etiquette(bactivity, produit);
             } else {
                 printer.start_print_etiquette_code_barre(bactivity, produit);
-            }
+            }*/
+
+            File pdf = createPDF(produit.produit, produit.code_barre, String.valueOf(produit.pv1_ht + (produit.pv1_ht * produit.tva / 100)));
+
+            sendToBarcode4(pdf);
 
 
         } else if (item.getItemId() == R.id.pdf) {
@@ -319,6 +336,192 @@ public class ActivityProduitDetail extends AppCompatActivity {
             generate_pdf.startPDFTicket(mActivity, produit.code_barre, produit.produit, produit.pv1_ht, "FROM_TICKET");
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private File createPDF(
+            String productName,
+            String barcodeText,
+            String price
+    )  {
+
+        File pdfFile = new File(getExternalFilesDir(null), "barcode.pdf");
+
+        int width = (int)(40 * 72 / 25.4);   // 113 pt
+        int height = (int)(20 * 72 / 25.4);  // 56 pt
+
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height, 1).create();
+
+
+        PdfDocument.Page page = document.startPage(pageInfo);
+
+
+        Canvas canvas = page.getCanvas();
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setAntiAlias(true);
+
+        /*
+        Nom produit
+        */
+
+        paint.setTextSize(8);
+
+        canvas.drawText(
+                productName,
+                5,
+                10,
+                paint
+        );
+
+        /*
+        Génération code barre
+        */
+
+        Bitmap barcodeBitmap = generateBarcode(barcodeText);
+
+        Rect src = new Rect(
+                0,
+                0,
+                barcodeBitmap.getWidth(),
+                barcodeBitmap.getHeight()
+        );
+
+
+        Rect dst = new Rect(
+                5,
+                14,
+                108,
+                35
+        );
+
+
+        canvas.drawBitmap(
+                barcodeBitmap,
+                src,
+                dst,
+                paint
+        );
+
+        /*
+        Texte code barre
+    */
+
+        paint.setTextSize(5);
+
+        canvas.drawText(
+                barcodeText,
+                30,
+                40,
+                paint
+        );
+
+
+
+    /*
+        Prix
+    */
+
+        paint.setTextSize(10);
+        paint.setFakeBoldText(true);
+
+
+        canvas.drawText(
+                price + " DA",
+                20,
+                50,
+                paint
+        );
+
+        document.finishPage(page);
+
+        try {
+            FileOutputStream fos = new FileOutputStream(pdfFile);
+            document.writeTo(fos);
+            fos.close();
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        document.close();
+        return pdfFile;
+    }
+
+    private void sendToBarcode4(File pdfFile){
+
+
+        Uri uri = FileProvider.getUriForFile(
+                this,
+                getPackageName()+".provider",
+                pdfFile
+        );
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "application/pdf");
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        // Forcer l'ouverture avec 4Barcode
+        intent.setPackage("com.xinye.barcode4");
+
+        try {
+            startActivity(intent);
+        }
+        catch(Exception e){
+            Toast.makeText(this, "4Barcode non installé", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    private Bitmap generateBarcode(String value)
+    {
+
+        try {
+
+
+            BitMatrix matrix =
+                    new MultiFormatWriter().encode(
+                            value,
+                            BarcodeFormat.CODE_128,
+                            400,
+                            120
+                    );
+
+
+            Bitmap bitmap =
+                    Bitmap.createBitmap(
+                            400,
+                            120,
+                            Bitmap.Config.RGB_565
+                    );
+
+
+            for(int x=0;x<400;x++){
+
+                for(int y=0;y<120;y++){
+
+                    bitmap.setPixel(
+                            x,
+                            y,
+                            matrix.get(x,y)
+                                    ? Color.BLACK
+                                    : Color.WHITE
+                    );
+
+                }
+            }
+
+
+            return bitmap;
+
+
+        }
+        catch(Exception e){
+
+            return null;
+
+        }
+
     }
 
     @Override

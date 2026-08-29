@@ -51,24 +51,15 @@ public class ThemeUtil {
     return getColor(context, android.R.attr.textColorSecondary, defaultValue);
   }
 
-  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   public static int colorControlHighlight(Context context, int defaultValue) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       return getColor(context, android.R.attr.colorControlHighlight, defaultValue);
-    }
 
-    //TODO: Can we use this?
+      //TODO: Can we use this?
     //return getColor(context, R.attr.colorControlHighlight, defaultValue);
-    return getColor(context, android.R.attr.colorControlHighlight, defaultValue);
   }
 
   public static int getType(TypedArray array, int index) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       return array.getType(index);
-    } else {
-      TypedValue value = array.peekValue(index);
-      return value == null ? TypedValue.TYPE_NULL : value.type;
-    }
   }
 
   public static CharSequence getString(TypedArray array, int index, CharSequence defaultValue) {

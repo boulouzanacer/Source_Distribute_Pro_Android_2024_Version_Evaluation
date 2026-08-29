@@ -376,11 +376,7 @@ public class FragmentNewEditProduct extends DialogFragment {
 
             }
 
-            if (prefs.getBoolean("CAN_EDIT_STOCK_INI", false)) {
-                edt_stock_ini.setEnabled(true);
-            } else {
-                edt_stock_ini.setEnabled(false);
-            }
+            edt_stock_ini.setEnabled(prefs.getBoolean("CAN_EDIT_STOCK_INI", false));
         }
 
         ///////////////////

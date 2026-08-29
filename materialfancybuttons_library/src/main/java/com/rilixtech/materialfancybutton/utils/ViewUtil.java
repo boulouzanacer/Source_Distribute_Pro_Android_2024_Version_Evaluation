@@ -146,16 +146,12 @@ public class ViewUtil {
             else if(attr == R.styleable.View_android_paddingBottom)
                 bottomPadding = a.getDimensionPixelSize(attr, -1);
             else if(attr == R.styleable.View_android_paddingStart) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    startPadding = a.getDimensionPixelSize(attr, Integer.MIN_VALUE);
-                    startPaddingDefined = (startPadding != Integer.MIN_VALUE);
-                }
+                startPadding = a.getDimensionPixelSize(attr, Integer.MIN_VALUE);
+                startPaddingDefined = (startPadding != Integer.MIN_VALUE);
             }
             else if(attr == R.styleable.View_android_paddingEnd) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    endPadding = a.getDimensionPixelSize(attr, Integer.MIN_VALUE);
-                    endPaddingDefined = (endPadding != Integer.MIN_VALUE);
-                }
+                endPadding = a.getDimensionPixelSize(attr, Integer.MIN_VALUE);
+                endPaddingDefined = (endPadding != Integer.MIN_VALUE);
             }
             else if(attr == R.styleable.View_android_fadeScrollbars)
                 v.setScrollbarFadingEnabled(a.getBoolean(attr, true));
@@ -168,16 +164,13 @@ public class ViewUtil {
             else if(attr == R.styleable.View_android_requiresFadingEdge)
                 v.setVerticalFadingEdgeEnabled(a.getBoolean(attr, true));
             else if(attr == R.styleable.View_android_scrollbarDefaultDelayBeforeFade) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    v.setScrollBarDefaultDelayBeforeFade(a.getInteger(attr, 0));
+                v.setScrollBarDefaultDelayBeforeFade(a.getInteger(attr, 0));
             }
             else if(attr == R.styleable.View_android_scrollbarFadeDuration) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    v.setScrollBarFadeDuration(a.getInteger(attr, 0));
+                v.setScrollBarFadeDuration(a.getInteger(attr, 0));
             }
             else if(attr == R.styleable.View_android_scrollbarSize) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    v.setScrollBarSize(a.getDimensionPixelSize(attr, 0));
+                v.setScrollBarSize(a.getDimensionPixelSize(attr, 0));
             }
             else if(attr == R.styleable.View_android_scrollbarStyle) {
                 int value = a.getInteger(attr, 0);
@@ -199,56 +192,52 @@ public class ViewUtil {
             else if(attr == R.styleable.View_android_soundEffectsEnabled)
                 v.setSoundEffectsEnabled(a.getBoolean(attr, true));
             else if(attr == R.styleable.View_android_textAlignment){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    int value = a.getInteger(attr, 0);
-                    switch (value){
-                        case 0:
-                            v.setTextAlignment(View.TEXT_ALIGNMENT_INHERIT);
-                            break;
-                        case 1:
-                            v.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
-                            break;
-                        case 2:
-                            v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                            break;
-                        case 3:
-                            v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                            break;
-                        case 4:
-                            v.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                            break;
-                        case 5:
-                            v.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
-                            break;
-                        case 6:
-                            v.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-                            break;
-                    }
+                int value = a.getInteger(attr, 0);
+                switch (value){
+                    case 0:
+                        v.setTextAlignment(View.TEXT_ALIGNMENT_INHERIT);
+                        break;
+                    case 1:
+                        v.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+                        break;
+                    case 2:
+                        v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                        break;
+                    case 3:
+                        v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                        break;
+                    case 4:
+                        v.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        break;
+                    case 5:
+                        v.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                        break;
+                    case 6:
+                        v.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                        break;
                 }
             }
             else if(attr == R.styleable.View_android_textDirection){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    int value = a.getInteger(attr, 0);
-                    switch (value){
-                        case 0:
-                            v.setTextDirection(View.TEXT_DIRECTION_INHERIT);
-                            break;
-                        case 1:
-                            v.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
-                            break;
-                        case 2:
-                            v.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-                            break;
-                        case 3:
-                            v.setTextDirection(View.TEXT_DIRECTION_LTR);
-                            break;
-                        case 4:
-                            v.setTextDirection(View.TEXT_DIRECTION_RTL);
-                            break;
-                        case 5:
-                            v.setTextDirection(View.TEXT_DIRECTION_LOCALE);
-                            break;
-                    }
+                int value = a.getInteger(attr, 0);
+                switch (value){
+                    case 0:
+                        v.setTextDirection(View.TEXT_DIRECTION_INHERIT);
+                        break;
+                    case 1:
+                        v.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+                        break;
+                    case 2:
+                        v.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+                        break;
+                    case 3:
+                        v.setTextDirection(View.TEXT_DIRECTION_LTR);
+                        break;
+                    case 4:
+                        v.setTextDirection(View.TEXT_DIRECTION_RTL);
+                        break;
+                    case 5:
+                        v.setTextDirection(View.TEXT_DIRECTION_LOCALE);
+                        break;
                 }
             }
             else if(attr == R.styleable.View_android_visibility){
@@ -266,22 +255,20 @@ public class ViewUtil {
                 }
             }
             else if(attr == R.styleable.View_android_layoutDirection){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    int value = a.getInteger(attr, 0);
-                    switch (value){
-                        case 0:
-                            v.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-                            break;
-                        case 1:
-                            v.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-                            break;
-                        case 2:
-                            v.setLayoutDirection(View.LAYOUT_DIRECTION_INHERIT);
-                            break;
-                        case 3:
-                            v.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-                            break;
-                    }
+                int value = a.getInteger(attr, 0);
+                switch (value){
+                    case 0:
+                        v.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                        break;
+                    case 1:
+                        v.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                        break;
+                    case 2:
+                        v.setLayoutDirection(View.LAYOUT_DIRECTION_INHERIT);
+                        break;
+                    case 3:
+                        v.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+                        break;
                 }
             }
             else if(attr == R.styleable.View_android_src){

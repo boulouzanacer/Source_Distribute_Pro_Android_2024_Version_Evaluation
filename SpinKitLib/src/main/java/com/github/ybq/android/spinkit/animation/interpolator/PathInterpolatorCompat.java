@@ -45,10 +45,7 @@ public class PathInterpolatorCompat {
      */
     @SuppressWarnings("unused")
     public static Interpolator create(Path path) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            return PathInterpolatorCompatApi21.create(path);
-        }
-        return PathInterpolatorCompatBase.create(path);
+        return PathInterpolatorCompatApi21.create(path);
     }
 
     /**
@@ -61,10 +58,7 @@ public class PathInterpolatorCompat {
      */
     @SuppressWarnings("unused")
     public static Interpolator create(float controlX, float controlY) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            return PathInterpolatorCompatApi21.create(controlX, controlY);
-        }
-        return PathInterpolatorCompatBase.create(controlX, controlY);
+        return PathInterpolatorCompatApi21.create(controlX, controlY);
     }
 
     /**
@@ -79,9 +73,6 @@ public class PathInterpolatorCompat {
      */
     public static Interpolator create(float controlX1, float controlY1,
                                       float controlX2, float controlY2) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            return PathInterpolatorCompatApi21.create(controlX1, controlY1, controlX2, controlY2);
-        }
-        return PathInterpolatorCompatBase.create(controlX1, controlY1, controlX2, controlY2);
+        return PathInterpolatorCompatApi21.create(controlX1, controlY1, controlX2, controlY2);
     }
 }

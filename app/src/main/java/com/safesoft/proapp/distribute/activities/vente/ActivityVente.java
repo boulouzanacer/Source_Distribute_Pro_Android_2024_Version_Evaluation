@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -17,29 +19,34 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowInsetsController;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -50,6 +57,7 @@ import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.safesoft.proapp.distribute.activities.ActivityHtmlView;
 import com.safesoft.proapp.distribute.activities.pdf.GeneratePDF;
+import com.safesoft.proapp.distribute.adapters.note_adapter.NotePickerAdapter;
 import com.safesoft.proapp.distribute.eventsClasses.ByteDataEvent;
 import com.safesoft.proapp.distribute.eventsClasses.PrintEvent;
 import com.safesoft.proapp.distribute.postData.PostData_Codebarre;
@@ -76,6 +84,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.utils.Env;
+import com.safesoft.proapp.distribute.utils.StandardFunctions;
 
 import android.widget.Toast;
 
@@ -139,6 +148,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat heure_format;
     private boolean is_app_synchronised_mode = false;
+    private Toolbar toolbar;
+    private PopupWindow notePopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,14 +157,14 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vente);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         if (savedInstanceState != null) {
@@ -170,7 +181,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         bon1 = new PostData_Bon1();
         final_panier = new ArrayList<>();
 
-        Toolbar toolbar = findViewById(R.id.myToolbar);
+        toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -242,6 +253,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                     "BON1.REMISE, " +
                     "BON1.TOT_HT + BON1.TOT_TVA + BON1.TIMBRE - BON1.REMISE AS MONTANT_BON, " +
                     "BON1.MONTANT_ACHAT, " +
+                    "BON1.REMARQUE, " +
 
                     "BON1.ANCIEN_SOLDE, " +
                     "BON1.VERSER, " +
@@ -339,7 +351,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
 
         if (NUM_BON != null) {
-            getSupportActionBar().setTitle("Bon de vente N°: " + NUM_BON);
+            getSupportActionBar().setTitle("Vente N°: " + NUM_BON);
         }
         getSupportActionBar().setSubtitle(date_time_sub_title);
         validate_theme();
@@ -705,6 +717,9 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     }
 
 
+
+
+
     protected void showListClient() {
         // Initialize activity
         Activity activity;
@@ -716,7 +731,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         fragmentSelectClient.showDialogbox(activity, getBaseContext(), "FROM_VENTE");
 
     }
-
 
     @Subscribe
     public void onClientSelected(SelectedClientEvent clientEvent) {
@@ -743,7 +757,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         sauvegarder();
     }
 
-
     protected void onClientSelected(PostData_Client client_s, boolean isUpdate) {
 
         client_selected = client_s;
@@ -751,7 +764,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
         if (TYPE_ACTIVITY.equals("NEW_SALE") || isUpdate) {
 
-            bon1.ancien_solde = client_selected.solde_montant;  // Modifier le 03/02/2023
+            bon1.ancien_solde = client_selected.solde_client;  // Modifier le 03/02/2023
             bon1.code_client = client_selected.code_client;
             bon1.client = client_selected.client;
             bon1.adresse = client_selected.adresse;
@@ -1031,15 +1044,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
         if (checkBox_timbre.isChecked()) {
             val_total_ttc = (val_total_ht) + val_tva;
-            if (val_total_ttc  <= 300) {
-                val_timbre = 0.00;
-            } else if(val_total_ttc > 300 && val_total_ttc <= 30000) {
-                val_timbre = (val_total_ttc * 0.01);
-            }else if(val_total_ttc > 3000 && val_total_ttc <= 100000){
-                val_timbre = (val_total_ttc * 0.015);
-            }else if(val_total_ttc > 100000){
-                val_timbre = (val_total_ttc * 0.02);
-            }
+            val_timbre = StandardFunctions.getTimbreValue(val_total_ttc);
         } else {
             val_timbre = 0.0;
         }
@@ -1116,10 +1121,20 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
 
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+        }
+        if (id == R.id.action_note) {
+            String note = bon1.remarque == null ? "" : bon1.remarque.trim();
+            if (note.isEmpty()) {
+                showNotesPickerDialog();
+            } else {
+                showSelectedNotePopup();
+            }
+            return true;
         }
         if (id == R.id.generate_pdf) {
 
@@ -1223,6 +1238,10 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         // Unregister
         bus.unregister(this);
         //stopService(intent_location);
+        if (notePopupWindow != null) {
+            notePopupWindow.dismiss();
+            notePopupWindow = null;
+        }
         super.onDestroy();
     }
 
@@ -1362,7 +1381,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         }
         ///////////////////////////////////CODE BARRE //////////////////////////////////////
 
-        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        String querry = "SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, IS_IMPORTED, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS , DESTOCK_CODE_BARRE," +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT  WHERE CODE_BARRE = '" + resultscan + "' OR REF_PRODUIT = '" + resultscan + "'";
@@ -1450,6 +1469,167 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    private void showNotesPickerDialog() {
+        ArrayList<DATABASE.NoteRow> notes = controller.selectNotes();
+        if (notes == null || notes.isEmpty()) {
+            new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Notes")
+                    .setContentText("Aucune note enregistrée")
+                    .show();
+            return;
+        }
+
+        Dialog notesDialog = new Dialog(ActivityVente.this);
+        LinearLayout root = new LinearLayout(ActivityVente.this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setBackgroundColor(Color.WHITE);
+
+        float density = getResources().getDisplayMetrics().density;
+        int padding16 = (int) (16 * density);
+        int padding12 = (int) (12 * density);
+
+        RelativeLayout topBar = new RelativeLayout(ActivityVente.this);
+        topBar.setBackgroundColor(getResources().getColor(R.color.blue));
+        topBar.setPadding(padding16, padding12, padding16, padding12);
+
+        TextView title = new TextView(ActivityVente.this);
+        title.setText("Notes");
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(18);
+        title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
+        RelativeLayout.LayoutParams titleLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        titleLp.addRule(RelativeLayout.CENTER_VERTICAL);
+        title.setLayoutParams(titleLp);
+
+        ImageButton btnClose = new ImageButton(ActivityVente.this);
+        btnClose.setImageResource(R.drawable.met_ic_clear);
+        btnClose.setBackgroundColor(Color.TRANSPARENT);
+        btnClose.setColorFilter(Color.WHITE);
+        RelativeLayout.LayoutParams closeLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        closeLp.addRule(RelativeLayout.ALIGN_PARENT_END);
+        closeLp.addRule(RelativeLayout.CENTER_VERTICAL);
+        btnClose.setLayoutParams(closeLp);
+
+        topBar.addView(title);
+        topBar.addView(btnClose);
+
+        RecyclerView rv = new RecyclerView(ActivityVente.this);
+        rv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+        rv.setLayoutManager(new LinearLayoutManager(ActivityVente.this));
+
+        NotePickerAdapter adapter = new NotePickerAdapter(notes, noteText -> {
+            if (noteText == null) return;
+            bon1.remarque = noteText;
+            if (bon1.num_bon != null) {
+                controller.update_bon1("BON1", bon1.num_bon, bon1);
+            }
+            notesDialog.dismiss();
+            showSelectedNotePopup();
+        });
+        rv.setAdapter(adapter);
+
+        root.addView(topBar);
+        root.addView(rv);
+
+        notesDialog.setContentView(root);
+        notesDialog.setCancelable(true);
+        btnClose.setOnClickListener(v -> notesDialog.dismiss());
+
+        if (notesDialog.getWindow() != null) {
+            notesDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            notesDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        notesDialog.show();
+    }
+
+    private void showSelectedNotePopup() {
+        if (toolbar == null) return;
+
+        if (notePopupWindow != null && notePopupWindow.isShowing()) {
+            notePopupWindow.dismiss();
+        }
+
+        float density = getResources().getDisplayMetrics().density;
+        int padding12 = (int) (12 * density);
+        int padding16 = (int) (16 * density);
+        int radius12 = (int) (12 * density);
+        int elevation8 = (int) (8 * density);
+        int stroke1 = Math.max(1, (int) (1 * density));
+        int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9f);
+
+        LinearLayout root = new LinearLayout(ActivityVente.this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setPadding(padding16, padding12, padding16, padding16);
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(Color.WHITE);
+        bg.setCornerRadius(radius12);
+        bg.setStroke(stroke1, 0x22000000);
+        root.setBackground(bg);
+        root.setElevation(elevation8);
+
+        RelativeLayout header = new RelativeLayout(ActivityVente.this);
+        header.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        TextView title = new TextView(ActivityVente.this);
+        title.setText("Note");
+        title.setTextColor(getResources().getColor(R.color.mainTextColor));
+        title.setTextSize(16);
+        title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
+        RelativeLayout.LayoutParams titleLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        titleLp.addRule(RelativeLayout.ALIGN_PARENT_START);
+        title.setLayoutParams(titleLp);
+
+        ImageButton btnClose = new ImageButton(ActivityVente.this);
+        int closeId = View.generateViewId();
+        btnClose.setId(closeId);
+        btnClose.setImageResource(R.drawable.met_ic_clear);
+        btnClose.setBackgroundColor(Color.TRANSPARENT);
+        btnClose.setColorFilter(getResources().getColor(R.color.mainTextColor));
+        RelativeLayout.LayoutParams closeLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        closeLp.addRule(RelativeLayout.ALIGN_PARENT_END);
+        btnClose.setLayoutParams(closeLp);
+
+        ImageButton btnChange = new ImageButton(ActivityVente.this);
+        btnChange.setImageResource(R.drawable.baseline_edit_24);
+        btnChange.setBackgroundColor(Color.TRANSPARENT);
+        btnChange.setColorFilter(getResources().getColor(R.color.mainTextColor));
+        RelativeLayout.LayoutParams changeLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        changeLp.addRule(RelativeLayout.LEFT_OF, closeId);
+        changeLp.setMarginEnd(padding12);
+        btnChange.setLayoutParams(changeLp);
+
+        header.addView(title);
+        header.addView(btnChange);
+        header.addView(btnClose);
+
+        TextView tvNote = new TextView(ActivityVente.this);
+        LinearLayout.LayoutParams tvLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        tvLp.topMargin = padding12;
+        tvNote.setLayoutParams(tvLp);
+        tvNote.setTextColor(getResources().getColor(R.color.mainTextColor));
+        tvNote.setTextSize(14);
+        tvNote.setMaxLines(6);
+        String note = bon1.remarque == null ? "" : bon1.remarque.trim();
+        tvNote.setText(note.isEmpty() ? "Aucune note sélectionnée" : note);
+
+        root.addView(header);
+        root.addView(tvNote);
+
+        notePopupWindow = new PopupWindow(root, width, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        notePopupWindow.setOutsideTouchable(true);
+        notePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        notePopupWindow.setClippingEnabled(true);
+
+        btnClose.setOnClickListener(v -> notePopupWindow.dismiss());
+        btnChange.setOnClickListener(v -> {
+            notePopupWindow.dismiss();
+            showNotesPickerDialog();
+        });
+
+        notePopupWindow.showAsDropDown(toolbar, 0, 0, Gravity.END);
     }
 
 }

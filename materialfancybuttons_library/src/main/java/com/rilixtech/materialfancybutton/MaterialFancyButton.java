@@ -334,11 +334,7 @@ public class MaterialFancyButton extends LinearLayout {
 
     if (mGhost) {
       // Hollow Background
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         defaultDrawable.setColor(getContext().getColor(android.R.color.transparent));
-      } else {
-        defaultDrawable.setColor(getResources().getColor(android.R.color.transparent));
-      }
     } else {
       defaultDrawable.setColor(mDefaultBackgroundColor);
     }
@@ -373,12 +369,7 @@ public class MaterialFancyButton extends LinearLayout {
     if (!mEnabled) {
       defaultDrawable.setStroke(mBorderWidth, mDisabledBorderColor);
       if (mGhost) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
           disabledDrawable.setColor(getContext().getColor(android.R.color.transparent));
-        } else {
-          //noinspection deprecation
-          disabledDrawable.setColor(getResources().getColor(android.R.color.transparent));
-        }
       }
     }
 
@@ -626,12 +617,8 @@ public class MaterialFancyButton extends LinearLayout {
    * @param drawable : Int resource
    */
   public void setIconResource(int drawable) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       mIconResource = getResources().getDrawable(drawable, getContext().getTheme());
-    } else {
-      mIconResource = getResources().getDrawable(drawable);
-    }
-    if (mIconView == null) setupIconView();
+      if (mIconView == null) setupIconView();
     if (mFontIconView == null) setupFontIconView();
     mIconView.setImageDrawable(mIconResource);
   }

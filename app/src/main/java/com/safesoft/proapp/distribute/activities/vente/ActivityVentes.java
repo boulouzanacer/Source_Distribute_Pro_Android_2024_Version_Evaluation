@@ -69,14 +69,14 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ventes);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         initViews();
@@ -145,6 +145,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                 "BON1.HEURE_F, " +
                 "BON1.MODE_RG, " +
                 "BON1.MODE_TARIF, " +
+                "BON1.REMARQUE, " +
 
                 "BON1.NBR_P, " +
                 "BON1.TOT_QTE, " +

@@ -9,6 +9,8 @@
 
     <include layout="@layout/sub_layout_objectif" />
 
+    <include layout="@layout/sub_layout_notes" />
+
     <include layout="@layout/sub_layout_achat_vente_cmd_inv" />
 
     <include layout="@layout/sub_layout_ht" />
@@ -36,6 +38,8 @@
     <include layout="@layout/sub_layout_edit_prix" />
 
     <include layout="@layout/sub_layout_edit_stock_ini" />
+
+    <include layout="@layout/sub_layout_edit_solde_ini" />
 
     <include layout="@layout/sub_layout_famille" />
 

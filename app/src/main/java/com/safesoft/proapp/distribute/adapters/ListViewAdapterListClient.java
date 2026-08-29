@@ -1,6 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.safesoft.proapp.distribute.activities.ActivityImportsExport;
 import com.safesoft.proapp.distribute.postData.PostData_Client;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.eventsClasses.SelectedClientEvent;
@@ -22,7 +20,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -107,7 +104,7 @@ public class ListViewAdapterListClient extends BaseAdapter {
         holder.code_client.setText(list_clients.get(position).code_client);
 
         if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
-            holder.solde_client.setText(new DecimalFormat("##,##0.00").format(list_clients.get(position).solde_montant));
+            holder.solde_client.setText(new DecimalFormat("##,##0.00").format(list_clients.get(position).solde_client));
         } else {
             holder.solde_client.setText("********");
         }

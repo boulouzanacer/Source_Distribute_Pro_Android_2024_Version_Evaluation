@@ -80,7 +80,7 @@ public class RecyclerAdapterClientsVersement extends RecyclerView.Adapter<Recycl
         holder.Tel_clientN.setText("TEL : " + item.tel);
 
         holder.Total_versement.setTypeface(null, Typeface.BOLD);
-        holder.Total_versement.setText("Versement : " + new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_montant)));
+        holder.Total_versement.setText("Versement : " + new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_client)));
 
         String firstChar = "NO";
         if (item.client != null) {

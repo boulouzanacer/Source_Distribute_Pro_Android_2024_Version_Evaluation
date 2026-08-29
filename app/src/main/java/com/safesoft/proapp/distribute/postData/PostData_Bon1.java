@@ -61,6 +61,7 @@ public class PostData_Bon1 implements Serializable {
     public String code_vendeur;
     public String exportation;
     public String blocage;
+    public String remarque;
 
 
 }

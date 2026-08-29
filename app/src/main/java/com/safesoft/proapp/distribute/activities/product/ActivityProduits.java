@@ -98,14 +98,14 @@ public class ActivityProduits extends AppCompatActivity implements
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_produits);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
             getWindow().getInsetsController().setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
         if (savedInstanceState != null) {
@@ -139,6 +139,7 @@ public class ActivityProduits extends AppCompatActivity implements
 
     }
 
+
     private void initViews() {
 
         recyclerView = findViewById(R.id.recycler_view_produit);
@@ -162,6 +163,9 @@ public class ActivityProduits extends AppCompatActivity implements
             }
         });
     }
+
+
+
 
     private void setRecycle(String text_search, boolean isscan) {
         try {
@@ -212,6 +216,11 @@ public class ActivityProduits extends AppCompatActivity implements
         ///////////////////////////////////CODE BARRE //////////////////////////////////////
         ArrayList<PostData_Codebarre> codebarres;
 
+        querry_search = (querry_search == null) ? "" : querry_search.trim();
+
+        // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+        querry_search = querry_search.replace("'", "''");
+
         String querry_codebarre = "SELECT CODE_BARRE, CODE_BARRE_SYN FROM CODEBARRE WHERE CODE_BARRE != '" + querry_search + "' AND CODE_BARRE_SYN = '" + querry_search + "' ";
         codebarres = controller.select_all_codebarre_from_database(querry_codebarre);
         if(!codebarres.isEmpty()){
@@ -229,7 +238,7 @@ public class ActivityProduits extends AppCompatActivity implements
         // Trim the trailing space and create the LIKE pattern
         String pattern = queryPattern.toString().trim();
 
-        StringBuilder querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, FAMILLE, DESTOCK_TYPE, " +
+        StringBuilder querry = new StringBuilder("SELECT PRODUIT_ID, CODE_BARRE, REF_PRODUIT, PRODUIT, PA_HT, TVA, PAMP, PROMO, D1, D2, PP1_HT, QTE_PROMO, PV1_HT, PV2_HT, PV3_HT, PV4_HT, PV5_HT, PV6_HT, PV_LIMITE, STOCK, COLISSAGE, STOCK_INI, DETAILLE, ISNEW, IS_IMPORTED, FAMILLE, DESTOCK_TYPE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK/PRODUIT.COLISSAGE) ELSE 0 END STOCK_COLIS, DESTOCK_CODE_BARRE, " +
                     "CASE WHEN PRODUIT.COLISSAGE <> 0 THEN  (PRODUIT.STOCK%PRODUIT.COLISSAGE) ELSE 0 END STOCK_VRAC, DESTOCK_QTE " +
                     "FROM PRODUIT ");
@@ -344,7 +353,7 @@ public class ActivityProduits extends AppCompatActivity implements
                             }).show();
                 }
                 case 1 -> {
-                    if (produits.get(position).isNew == 1) {
+                    if (produits.get(position).isImported == 1) {
                         ///// delete product
                         String querry_has_bon2 = "SELECT BON2.CODE_BARRE FROM BON2 LEFT JOIN BON1 ON BON1.NUM_BON == BON2.NUM_BON WHERE BON1.IS_EXPORTED = 0 AND BON2.CODE_BARRE = '" + produits.get(position).code_barre + "'";
                         String querry_has_bon2_temp = "SELECT BON2_TEMP.CODE_BARRE FROM BON2_TEMP LEFT JOIN BON1_TEMP ON BON1_TEMP.NUM_BON == BON2_TEMP.NUM_BON WHERE BON1_TEMP.IS_EXPORTED = 0 AND BON2_TEMP.CODE_BARRE = '" + produits.get(position).code_barre + "'";

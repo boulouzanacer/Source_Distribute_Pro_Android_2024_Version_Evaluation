@@ -58,6 +58,8 @@ import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_f;
 import com.safesoft.proapp.distribute.postData.PostData_Etatv;
+
+import java.io.File;
 import com.safesoft.proapp.distribute.postData.PostData_Produit;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 import com.safesoft.proapp.distribute.utils.TonyUtils;
@@ -3197,38 +3199,72 @@ public class Printing {
             public void run() {
 
                 try {
-                    String fileName = Objects.requireNonNull(mActivity.getExternalCacheDir()).getPath() + "/webview_capture1.jpg";
-                    bitmap = BitmapFactory.decodeFile(fileName);
-
-                } catch (Exception e) {
-                    Log.e("eeeeee", e.getMessage());
-                }
-
-                try {
-                    Thread.sleep(1000);
                     showProgressDialog("Impression...");
 
-                    CmdFactory cmdFactory = new EscFactory();
-                    Cmd cmd = cmdFactory.create();
-                    cmd.append(cmd.getHeaderCmd());
+                    ArrayList<File> files = new ArrayList<>();
+                    File cacheDir = mActivity.getExternalCacheDir();
+                    if (cacheDir == null) {
+                        hideProgressDialog();
+                        return;
+                    }
 
-                    CommonSetting commonSetting = new CommonSetting();
-                    commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                    cmd.append(cmd.getCommonSettingCmd(commonSetting));
+                    for (int attempt = 0; attempt < 20; attempt++) {
+                        files.clear();
 
-                    BitmapSetting bitmapSetting = new BitmapSetting();
+                        for (int i = 0; i < 100; i++) {
+                            File chunk = new File(cacheDir, "webview_capture1_" + i + ".jpg");
+                            if (!chunk.exists()) break;
+                            files.add(chunk);
+                        }
 
-                    bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
-                    //bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
-                    cmd.append(cmd.getBitmapCmd(bitmapSetting, bitmap));
+                        if (files.isEmpty()) {
+                            File single = new File(cacheDir, "webview_capture1.jpg");
+                            if (single.exists()) files.add(single);
+                        }
 
-                    cmd.append(cmd.getLFCRCmd());
-                    cmd.append(cmd.getLFCRCmd());
+                        if (!files.isEmpty()) break;
+                        Thread.sleep(100);
+                    }
 
-                    print_espace_footer(cmd);
+                    if (files.isEmpty()) {
+                        hideProgressDialog();
+                        return;
+                    }
 
-                    if (rtPrinter != null) {
-                        rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                    for (int i = 0; i < files.size(); i++) {
+                        File file = files.get(i);
+
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.RGB_565;
+                        options.inDither = true;
+                        bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                        if (bitmap == null) continue;
+
+                        CmdFactory cmdFactory = new EscFactory();
+                        Cmd cmd = cmdFactory.create();
+                        cmd.append(cmd.getHeaderCmd());
+
+                        CommonSetting commonSetting = new CommonSetting();
+                        commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                        cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                        BitmapSetting bitmapSetting = new BitmapSetting();
+                        bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+                        cmd.append(cmd.getBitmapCmd(bitmapSetting, bitmap));
+
+                        cmd.append(cmd.getLFCRCmd());
+                        cmd.append(cmd.getLFCRCmd());
+
+                        if (i == files.size() - 1) {
+                            print_espace_footer(cmd);
+                        }
+
+                        if (rtPrinter != null) {
+                            rtPrinter.writeMsg(cmd.getAppendCmds());
+                        }
+
+                        bitmap.recycle();
+                        bitmap = null;
                     }
 
                     hideProgressDialog();
@@ -3237,6 +3273,9 @@ public class Printing {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    hideProgressDialog();
                 }
 
             }

@@ -2,11 +2,11 @@ apply plugin: 'com.android.library'
 
 android {
     namespace 'mehdi.sakout.fancybuttons'
-    compileSdkVersion 34
+    compileSdkVersion 37
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 37
     }
     buildTypes {
         release {
@@ -24,12 +24,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.annotation:annotation:1.9.1'
-    api 'androidx.appcompat:appcompat:1.7.1'
+    implementation libs.annotation.v1100
+    api libs.appcompat
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}

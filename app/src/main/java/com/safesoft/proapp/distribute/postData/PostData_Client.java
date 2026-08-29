@@ -15,9 +15,9 @@ public class PostData_Client {
     public double longitude = 0.0;
     public int state = 0;
     public String mode_tarif = "1";
-    public double achat_montant = 0.00;
-    public double verser_montant = 0.00;
-    public double solde_montant = 0.00;
+    public double achat_client = 0.00;
+    public double verser_client = 0.00;
+    public double solde_client = 0.00;
     public double solde_ini = 0.00;
     public String rc;
     public String ifiscal;
@@ -25,6 +25,7 @@ public class PostData_Client {
     public String ai;
     public double credit_limit = 0.00;
     public int isNew = 1;
+    public int isImported = 0;
 
     public String blocage;
 

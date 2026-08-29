@@ -1,5 +1,6 @@
 package com.safesoft.proapp.distribute.activation;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.media.MediaPlayer;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.View;
@@ -184,7 +186,7 @@ public class ActivityActivation extends AppCompatActivity {
             o = o - 1;
         }
 
-        if (code_activation != i) {
+        if (code_activation == i) {
             // Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
             Crouton.makeText(ActivityActivation.this, "Code d'activation correct", Style.INFO).show();
             btn_start.setVisibility(View.VISIBLE);  ///// 357272286 ///// 350889357
@@ -202,7 +204,11 @@ public class ActivityActivation extends AppCompatActivity {
 
     public void onClick_Btn_Start(View view) {
         startActivity(new Intent(ActivityActivation.this, MainActivity.class));
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left);
+        } else {
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
     }
 
     public void saveData() {

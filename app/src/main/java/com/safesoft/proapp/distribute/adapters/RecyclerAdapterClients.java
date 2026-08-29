@@ -89,7 +89,7 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
         holder.Tel_clientN.setText("TEL : " + item.tel);
 
         if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
-            holder.Sld_clientN.setText("Solde : " + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
+            holder.Sld_clientN.setText("Solde : " + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_client)));
         } else {
             holder.Sld_clientN.setText("********");
         }
