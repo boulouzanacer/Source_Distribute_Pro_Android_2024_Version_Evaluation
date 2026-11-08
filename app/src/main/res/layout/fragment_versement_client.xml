@@ -1,201 +1,343 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="center"
-    app:cardBackgroundColor="@color/blue"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F1F5F9"
+    android:fillViewport="true">
 
-    <LinearLayout
-        android:weightSum="6"
-        android:layout_margin="5dp"
-        android:background="@color/white"
-        android:orientation="vertical"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/root_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/blue"
-            android:text="@string/versement"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:typeface="monospace" />
-
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="#F8FAFC"
+        app:cardUseCompatPadding="true"
+        app:strokeColor="#CBD5E1"
+        app:strokeWidth="0.6dp">
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="wrap_content"
+            android:background="#F8FAFC"
+            android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_gravity="center"
-                android:contextClickable="false"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                android:hint="@string/solde_actuel"
-                android:layout_margin="5dp"
-                app:expandedHintEnabled="false"
-                app:helperText="   ">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/solde_actuel"
-                    android:gravity="center"
-                    android:inputType="none"
-                    android:enabled="false"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <!-- HEADER GRADIENT -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contextClickable="false"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                app:hintTextColor="@color/blue"
-                android:layout_margin="5dp"
-                app:expandedHintEnabled="false"
-                app:helperText="   "
-                android:hint="@string/versement">
+                android:minHeight="82dp"
+                android:background="@drawable/bg_header_clients_pro"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/versement"
-                    android:gravity="center"
-                    android:inputType="numberDecimal|numberSigned"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Paiement client"
+                        android:textSize="10sp"
+                        android:textColor="#BFDBFE"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.2"
+                        android:layout_marginBottom="3dp"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💶 Versement"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:fontFamily="sans-serif"
+                        tools:ignore="HardcodedText"/>
 
-        </LinearLayout>
+                </LinearLayout>
 
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <!-- CONTENT -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contextClickable="false"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                app:hintTextColor="@color/blue"
-                android:layout_margin="5dp"
-                app:expandedHintEnabled="false"
-                app:helperText="  "
-                android:hint="@string/nouveau_solde">
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="8dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/nouveau_solde"
-                    android:gravity="center"
-                    android:inputType="none"
-                    android:enabled="false"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
+                <!-- SECTION 1 : SOLDE + VERSEMENT -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="1dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="#BFDBFE"
+                    app:strokeWidth="0.7dp"
+                    app:cardUseCompatPadding="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#EFF6FF"
+                        android:orientation="vertical"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="💶 SOLDE + VERSEMENT"
+                            android:textColor="#1D4ED8"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:fontFamily="sans-serif-medium" />
 
-        <LinearLayout
-            android:layout_weight="1"
-            android:weightSum="1"
-            android:baselineAligned="false"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center"
+                            android:contextClickable="false"
+                            app:boxStrokeColor="#1D4ED8"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:errorMessage="@string/error_message_empty"
+                            app:errorType="empty"
+                            android:hint="@string/solde_actuel"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_marginBottom="8dp"
+                            app:expandedHintEnabled="false"
+                            app:helperText="   ">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                app:errorType="empty"
-                app:hintTextColor="@color/blue"
-                android:layout_margin="5dp"
-                app:expandedHintEnabled="false"
-                app:helperText="  "
-                android:hint="@string/observation">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/solde_actuel"
+                                android:gravity="center"
+                                android:inputType="none"
+                                android:enabled="false"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:layout_gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="#DBEAFE" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/observation"
-                    android:gravity="center"
-                    android:inputType="textMultiLine"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    android:maxLines="3"
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:contextClickable="false"
+                            app:boxStrokeColor="#1D4ED8"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:errorMessage="@string/error_message_empty"
+                            app:errorType="empty"
+                            app:hintTextColor="@color/blue"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_marginBottom="8dp"
+                            app:expandedHintEnabled="false"
+                            app:helperText="   "
+                            android:hint="@string/versement">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/versement"
+                                android:gravity="center"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:layout_gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="#DBEAFE" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:contextClickable="false"
+                            app:boxStrokeColor="#1D4ED8"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:errorMessage="@string/error_message_empty"
+                            app:errorType="empty"
+                            app:hintTextColor="@color/blue"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            app:expandedHintEnabled="false"
+                            app:helperText="  "
+                            android:hint="@string/nouveau_solde">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/nouveau_solde"
+                                android:gravity="center"
+                                android:inputType="none"
+                                android:enabled="false"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:layout_gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="#DBEAFE" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- SECTION 2 : OBSERVATION -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="1dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="#A7F3D0"
+                    app:strokeWidth="0.7dp"
+                    app:cardUseCompatPadding="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ECFDF5"
+                        android:orientation="vertical"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="📝 OBSERVATION"
+                            android:textColor="#047857"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:fontFamily="sans-serif-medium" />
+
+                        <LinearLayout
+                            android:weightSum="1"
+                            android:baselineAligned="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                app:boxStrokeColor="#047857"
+                                app:boxCornerRadiusTopStart="12dp"
+                                app:boxCornerRadiusTopEnd="12dp"
+                                app:boxCornerRadiusBottomStart="12dp"
+                                app:boxCornerRadiusBottomEnd="12dp"
+                                app:errorType="empty"
+                                app:hintTextColor="@color/blue"
+                                android:layout_marginStart="2dp"
+                                android:layout_marginEnd="2dp"
+                                app:expandedHintEnabled="false"
+                                app:helperText="  "
+                                android:hint="@string/observation">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/observation"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine"
+                                    android:layout_gravity="center"
+                                    android:textStyle="bold"
+                                    android:maxLines="3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="#D1FAE5" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- FOOTER BOUTONS -->
+            <LinearLayout
+                android:weightSum="2"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="14dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    android:id="@+id/btn_connect"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:minHeight="52dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/bg_web_button_primary"
+                    app:mfb_icon="@drawable/ic_baseline_check_24"
+                    app:mfb_textSize="16sp"
+                    app:mfb_radius="12dp"
+                    app:mfb_text="Valider"
+                    app:mfb_textColor="#FFFFFF" />
+
+                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:minHeight="52dp"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/bg_web_button_secondary"
+                    app:mfb_icon="@drawable/ic_baseline_delete_forever_24"
+                    app:mfb_textSize="16sp"
+                    app:mfb_radius="12dp"
+                    app:mfb_text="Annuler"
+                    app:mfb_textColor="#FFFFFF" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
 
-        <LinearLayout
-            android:layout_weight="1"
-            android:weightSum="2"
-            android:padding="10dp"
-            android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:layout_height="0dp">
-
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
-                android:id="@+id/btn_connect"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@color/blue"
-                android:layout_marginEnd="5sp"
-                app:mfb_text="Valider"
-                app:mfb_textColor="#FFFFFF" />
-
-
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
-                android:id="@+id/btn_cancel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:background="@color/blue"
-                app:mfb_text="Annuler"
-                app:mfb_textColor="#FFFFFF" />
-
-        </LinearLayout>
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</ScrollView>

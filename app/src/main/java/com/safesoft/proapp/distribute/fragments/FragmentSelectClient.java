@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -54,6 +55,10 @@ public class FragmentSelectClient {
     private AppCompatImageButton btn_scan;
     private AppCompatImageButton btn_cancel;
     private Button add_client;
+    private TextView badgeTotal;
+    private TextView badgeDette;
+    private TextView badgeCredit;
+    private TextView clientsCountLabel;
 
     String SOURCE;
     //PopupWindow display method
@@ -96,6 +101,11 @@ public class FragmentSelectClient {
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
 
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        // Apply immersive mode (hide navigation bar) to the dialog window if enabled.
+        com.safesoft.proapp.distribute.app.BaseApplication.applyImmersiveToDialog(dialog.getWindow());
+
     }
 
     private void initViews(View view) {
@@ -106,6 +116,11 @@ public class FragmentSelectClient {
 
         btn_scan = view.findViewById(R.id.scan);
         btn_cancel = view.findViewById(R.id.cancel);
+
+        badgeTotal = view.findViewById(R.id.badge_total_clients);
+        badgeDette = view.findViewById(R.id.badge_dette_clients);
+        badgeCredit = view.findViewById(R.id.badge_credit_clients);
+        clientsCountLabel = view.findViewById(R.id.clients_count_label);
 
 
         listClient = new ArrayList<>();
@@ -181,7 +196,9 @@ public class FragmentSelectClient {
             if (isScan) {
                 editsearch.setText(text_search);
             }
-            adapter = new ListViewAdapterListClient(mcontext, getItems(text_search, isScan), dialog, SOURCE);
+            ArrayList<PostData_Client> items = getItems(text_search, isScan);
+            updateBadges(items);
+            adapter = new ListViewAdapterListClient(mcontext, items, dialog, SOURCE);
             listview.setAdapter(adapter);
             //bus.register(adapter);
 
@@ -197,9 +214,29 @@ public class FragmentSelectClient {
 
     }
 
+    private void updateBadges(ArrayList<PostData_Client> clients) {
+        if (clients == null) return;
+        int total = clients.size();
+        int dette = 0;
+        int credit = 0;
+        int zero = 0;
+        for (PostData_Client c : clients) {
+            if (c.solde_client < -0.009) dette++;
+            else if (c.solde_client > 0.009) credit++;
+            else zero++;
+        }
+        if (badgeTotal != null) badgeTotal.setText(String.valueOf(total));
+        if (badgeDette != null) badgeDette.setText(String.valueOf(dette));
+        if (badgeCredit != null) badgeCredit.setText(String.valueOf(credit + zero));
+        if (clientsCountLabel != null) clientsCountLabel.setText(String.valueOf(total));
+    }
+
     public ArrayList<PostData_Client> getItems(String querry_search, Boolean isScan) {
 
         listClient.clear();
+
+        // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+        querry_search = (querry_search == null) ? "" : querry_search.replace("'", "''");
 
         if (isScan) {
             String querry = "SELECT * FROM Client WHERE CODE_CLIENT = '" + querry_search + "' ORDER BY CLIENT ";

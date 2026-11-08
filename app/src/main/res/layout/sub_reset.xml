@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="10dp"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:visibility="gone"
     android:id="@+id/param_reset"
@@ -13,78 +10,65 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
         android:text="@string/a_vous_permet_de_changer_le_mot_de_passe_du_param_tres_g_n_ral"
         android:textSize="12sp"
-        android:textColor="@color/gray" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_large_size"
-        android:background="@color/divider" />
+        android:textColor="#64748B" />
 
     <LinearLayout
         android:id="@+id/password_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_background_holo_light"
+        android:background="@drawable/bg_web_section_card"
         android:clickable="true"
         android:focusable="true"
         android:onClick="onClickListener"
         android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingStart="8dip"
+        android:padding="14dp"
         tools:ignore="RtlSymmetry,UsingOnClickInXml">
 
         <TextView
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fadingEdge="horizontal"
-            android:textColor="@color/black"
+            android:textColor="#0F172A"
             android:text="@string/changer_mot_de_passe"
             android:clickable="false"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:textSize="14.5sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="12dp"
         android:text="@string/a_vous_permet_de_r_initialiser_l_appareil_attention_cette_op_ration_va_supprimer_touts_vos_donn_es_sur_l_appareil"
         android:textSize="12sp"
-        android:textColor="@color/gray" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_large_size"
-        android:background="@color/divider" />
+        android:textColor="#64748B" />
 
     <LinearLayout
         android:id="@+id/reset_pda"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_background_holo_light"
+        android:background="@drawable/bg_web_section_card"
         android:clickable="true"
         android:focusable="true"
         android:onClick="onClickListener"
         android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingStart="8dip"
+        android:padding="14dp"
         tools:ignore="RtlSymmetry,UsingOnClickInXml">
 
         <TextView
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:textColor="@color/black"
-            android:singleLine="true"
+            android:textColor="#0F172A"
             android:text="@string/r_initialiser"
             android:clickable="false"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:textSize="14.5sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

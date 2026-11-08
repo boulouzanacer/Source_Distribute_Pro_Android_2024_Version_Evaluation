@@ -22,8 +22,20 @@ public class FileUploader {
     }
 
     public static String uploadFile(String sourceFileUri, String seriel_number, String android_id, String version, String email, ProgressListener listener) {
+        return uploadFile(sourceFileUri, seriel_number, android_id, version, email, null, listener);
+    }
+
+    /**
+     * Uploads the database file to the cloud.
+     *
+     * @param cloudFileName optional desired name of the file on the server. When null, the
+     *                      server keeps naming the file itself (legacy behaviour). When set,
+     *                      the requested name is sent to the server so a dated copy can be kept.
+     */
+    public static String uploadFile(String sourceFileUri, String seriel_number, String android_id, String version, String email, String cloudFileName, ProgressListener listener) {
         String upLoadServerUri = Env.URL_UPLOAD_BDD; // replace with your server URL
         String fileName = sourceFileUri;
+        String formFileName = (cloudFileName == null || cloudFileName.isEmpty()) ? "" : cloudFileName;
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
         String lineEnd = "\r\n";
@@ -79,6 +91,14 @@ public class FileUploader {
             dos.writeBytes("Content-Disposition: form-data; name=\"email\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(email + lineEnd);
+
+            // Optional requested name of the file on the server (used to keep a dated copy).
+            if (!formFileName.isEmpty()) {
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"filename\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(formFileName + lineEnd);
+            }
 
             // Send file data
             dos.writeBytes(twoHyphens + boundary + lineEnd);

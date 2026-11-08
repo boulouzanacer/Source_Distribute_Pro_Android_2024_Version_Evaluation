@@ -33,6 +33,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Bon2;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.postData.PostData_Inv2;
 import com.safesoft.proapp.distribute.utils.Env;
+import com.safesoft.proapp.distribute.utils.LocalNetworkPermission;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -248,10 +249,17 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
                                         @Override
                                         public void onClick(SweetAlertDialog sDialog) {
 
-                                            Check_connection_export_server check_connection_export_data_inventaire = new Check_connection_export_server("INVENTAIRE", inv1s.get(position).num_inv);
-                                            check_connection_export_data_inventaire.execute();
-
                                             sDialog.dismiss();
+
+                                            // Android 17 (API 37) : acces au reseau local obligatoire
+                                            // pour joindre le serveur Firebird.
+                                            LocalNetworkPermission.ensurePermission(ActivityInventaires.this, new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Check_connection_export_server check_connection_export_data_inventaire = new Check_connection_export_server("INVENTAIRE", inv1s.get(position).num_inv);
+                                                    check_connection_export_data_inventaire.execute();
+                                                }
+                                            });
 
                                         }
                                     })
@@ -276,6 +284,12 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LocalNetworkPermission.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
             MenuInflater inflater = getMenuInflater();
@@ -292,7 +306,8 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.new_inventaire) {
-            if (!prefs.getBoolean("APP_ACTIVATED", false) && !inv1s.isEmpty()) {
+
+            /*if (!prefs.getBoolean("APP_ACTIVATED", false) && !inv1s.isEmpty()) {
                 new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Important !")
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
@@ -303,7 +318,13 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
                 editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
                 startActivity(editIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
+            }*/
+
+            Intent editIntent = new Intent(ActivityInventaires.this, ActivityInventaire.class);
+            editIntent.putExtra("TYPE_ACTIVITY", "NEW_INV");
+            editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
+            startActivity(editIntent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         }
         return super.onOptionsItemSelected(item);
@@ -313,7 +334,6 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
     public void onBackPressed() {
         super.onBackPressed();
     }
-
 
     public class Check_connection_export_server extends AsyncTask<Void, Integer, Integer> {
 

@@ -60,6 +60,7 @@ import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Tournee1;
 import com.safesoft.proapp.distribute.postData.PostData_Tournee2;
 import com.safesoft.proapp.distribute.utils.ImageUtils;
+import com.safesoft.proapp.distribute.utils.LocalNetworkPermission;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -86,6 +87,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("deprecation")
 public class ActivityImportsExport extends AppCompatActivity {
     private String Server;
     private String Username, Password;
@@ -257,13 +259,31 @@ public class ActivityImportsExport extends AppCompatActivity {
     }
 
     public void onRelativeClick(View v) throws ParseException {
-        if (prefs.getBoolean("USE_SAFE_EVENT", false)) {
-            GetCurrentIpFromServer get_current_ip_from_server = new GetCurrentIpFromServer(v.getId(), ActivityImportsExport.this);
-            get_current_ip_from_server.execute();
-        } else {
-            switshAction(v.getId());
-        }
+        final int id_action = v.getId();
 
+        // Android 17 (API 37) : l'acces au reseau local (serveur Firebird) est bloque
+        // tant que la permission d'execution ACCESS_LOCAL_NETWORK n'est pas accordee.
+        LocalNetworkPermission.ensurePermission(this, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (prefs.getBoolean("USE_SAFE_EVENT", false)) {
+                        GetCurrentIpFromServer get_current_ip_from_server = new GetCurrentIpFromServer(id_action, ActivityImportsExport.this);
+                        get_current_ip_from_server.execute();
+                    } else {
+                        switshAction(id_action);
+                    }
+                } catch (ParseException e) {
+                    Log.e("ActivityImportsExport", "Erreur de traitement de l'action import/export", e);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LocalNetworkPermission.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
 
@@ -524,7 +544,13 @@ public class ActivityImportsExport extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                mProgressDialog_Free.dismiss();
+                // Si l'activite a ete detruite pendant la tache asynchrone, la fenetre
+                // du dialogue est deja detachee : dismiss() leve une IllegalArgumentException.
+                try {
+                    mProgressDialog_Free.dismiss();
+                } catch (IllegalArgumentException e) {
+                    Log.v("TRACKKK", "dismiss fail: " + e.getMessage());
+                }
             }
 
             if (integer == 1) {
@@ -555,14 +581,9 @@ public class ActivityImportsExport extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
 
@@ -653,7 +674,13 @@ public class ActivityImportsExport extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             if (mProgressDialog_Free != null && mProgressDialog_Free.isShowing()) {
-                   mProgressDialog_Free.dismiss();
+                // Si l'activite a ete detruite pendant la tache asynchrone, la fenetre
+                // du dialogue est deja detachee : dismiss() leve une IllegalArgumentException.
+                try {
+                    mProgressDialog_Free.dismiss();
+                } catch (IllegalArgumentException e) {
+                    Log.v("TRACKKK", "dismiss fail: " + e.getMessage());
+                }
             }
 
             if (integer == 1) {
@@ -744,6 +771,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         int bon_inserted = 0;
         int total_versement = 0;
+        int bon_erreur = 0;
 
         List<String> list_num_bon_not_exported;
         List<String> list_recordid_versement_not_exported;
@@ -1213,6 +1241,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                     String produit_error = "";
                     String nums_bon_error = "";
                     String versement_error = "";
+                    if (list_num_bon_not_exported == null) {
+                        list_num_bon_not_exported = new ArrayList<>();
+                    }
+                    bon_erreur = list_num_bon_not_exported.size();
                     for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
                         if (i > 0) {
                             nums_bon_error = nums_bon_error + " ,  ";
@@ -1247,7 +1279,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + produit_error + nums_bon_error + versement_error)
+                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + produit_error + nums_bon_error + versement_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
@@ -1279,6 +1311,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         int bon_inserted = 0;
         int total_versement = 0;
+        int bon_erreur = 0;
 
         List<String> list_produit_not_exported;
         List<String> list_client_not_exported;
@@ -1847,6 +1880,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                     String nums_bon_error = "";
                     String versement_error = "";
 
+                    if (list_num_bon_not_exported == null) {
+                        list_num_bon_not_exported = new ArrayList<>();
+                    }
+                    bon_erreur = list_num_bon_not_exported.size();
                     for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
                         if (i > 0) {
                             nums_bon_error = nums_bon_error + " ,  ";
@@ -1891,7 +1928,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
+                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
@@ -1927,6 +1964,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         int bon_inserted = 0;
         int total_versement = 0;
+        int bon_erreur = 0;
 
         List<String> list_produit_not_exported;
         List<String> list_client_not_exported;
@@ -2046,7 +2084,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "BON1_TEMP.BLOCAGE " +
                         "FROM BON1_TEMP " +
                         "LEFT JOIN CLIENT ON BON1_TEMP.CODE_CLIENT = CLIENT.CODE_CLIENT " +
-                        "WHERE BLOCAGE = 'F' AND IS_IMPORTED = 0 ORDER BY BON1_TEMP.NUM_BON";
+                        "WHERE BON1_TEMP.BLOCAGE = 'F' AND BON1_TEMP.IS_IMPORTED = 0 ORDER BY BON1_TEMP.NUM_BON";
 
 
                 SimpleDateFormat format_local = new SimpleDateFormat("dd/MM/yyyy");
@@ -2463,6 +2501,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                     String client_error = "";
                     String nums_bon_error = "";
                     String versement_error = "";
+                    if (list_num_bon_not_exported == null) {
+                        list_num_bon_not_exported = new ArrayList<>();
+                    }
+                    bon_erreur = list_num_bon_not_exported.size();
                     for (int i = 0; i < list_num_bon_not_exported.size(); i++) {
                         if (i > 0) {
                             nums_bon_error = nums_bon_error + " ,  ";
@@ -2508,7 +2550,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé \n Nombre de commandes exportés : " + bon_inserted + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
+                            .setContentText("Exportation terminé \n Nombre de commandes exportés : " + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
@@ -3090,7 +3132,14 @@ public class ActivityImportsExport extends AppCompatActivity {
                         "coalesce(CLIENTS.CREDIT_LIMIT , 0) AS CREDIT_LIMIT " +
                         " FROM CLIENTS WHERE coalesce(CLIENTS.SUP , 0) = 0 ";
 
-                if (!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)) {
+                if (prefs.getBoolean("SYNC_CLIENT_PAR_VENDEUR", false)) {
+
+                    if (!code_vendeur.equals("000000") && !code_vendeur.isEmpty()) {
+                        sql12 = sql12 + " AND CODE_VENDEUR = '" + code_vendeur + "' ";
+                        sql0 = sql0 + " AND CODE_VENDEUR = '" + code_vendeur + "' ";
+                    }
+
+                } else if (!prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false)) {
 
                     if (!code_depot.equals("000000")) {
 
@@ -3101,9 +3150,6 @@ public class ActivityImportsExport extends AppCompatActivity {
                             sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
                             sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
                         }
-
-                        //sql12 = sql12 + " AND CODE_DEPOT = '" + code_depot + "'";
-                        //sql0 = sql0 + " AND CODE_DEPOT = '" + code_depot + "'";
 
                     } else if (!code_vendeur.equals("000000")) {
 
@@ -4324,6 +4370,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         int total_inventaire = 0;
         int inventaire_inserer = 0;
         int inventaire_exist = 0;
+        int inventaire_erreur = 0;
 
         String erreurMessage = "";
 
@@ -4387,12 +4434,11 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 if (_all) {
                     invs1.clear();
-                    String querry = "SELECT * FROM INV1 WHERE BLOCAGE = 'F'";
+                    String querry = "SELECT * FROM INV1 WHERE BLOCAGE = 'F' ";
                     if (!code_depot.equals("000000")) {
                         querry = querry + " AND CODE_DEPOT = '" + code_depot + "'";
-                    } else {
-                        querry = querry + " AND (IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
                     }
+                    querry = querry + " AND (IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
 
                     invs1 = controller.select_list_inventaire_from_database(querry);
                     total_inventaire = invs1.size();
@@ -4470,8 +4516,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                             }
 
                         } catch (Exception e) {
-                            con.rollback();
-                            list_num_inv_not_exported.add(invs1.get(i).num_inv);
+                            if (con != null) {
+                                try { con.rollback(); } catch (SQLException ignored) {}
+                            }
+                            list_num_inv_not_exported.add(invs1.get(i).num_inv + " / " + e.getMessage());
                             stmt.clearBatch();
                         }
                     }
@@ -4481,10 +4529,9 @@ public class ActivityImportsExport extends AppCompatActivity {
                     invs1.clear();
                     String querry = "SELECT * FROM INV1 WHERE NUM_INV = '" + _num_inv + "'";
                     if (!code_depot.equals("000000")) {
-                        querry = querry + "WHERE CODE_DEPOT = '" + code_depot + "' AND ( IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
-                    } else {
-                        querry = querry + "WHERE IS_EXPORTED <> 1 OR IS_EXPORTED is null";
+                        querry = querry + " AND CODE_DEPOT = '" + code_depot + "' ";
                     }
+                    querry = querry + " AND (IS_EXPORTED <> 1 OR IS_EXPORTED is null)";
 
                     invs1 = controller.select_list_inventaire_from_database(querry);
                     total_inventaire = invs1.size();
@@ -4544,7 +4591,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                         } catch (Exception e) {
                             con.rollback();
-                            list_num_inv_not_exported.add(invs1.get(i).num_inv);
+                            list_num_inv_not_exported.add(invs1.get(i).num_inv + " / " + e.getMessage());
                             stmt.clearBatch();
                         }
                     }
@@ -4596,12 +4643,26 @@ public class ActivityImportsExport extends AppCompatActivity {
                     }
                 }
 
-                inventaire_exist = total_inventaire - inventaire_inserer;
+                if (list_num_inv_not_exported == null) {
+                    list_num_inv_not_exported = new ArrayList<>();
+                }
+                inventaire_erreur = list_num_inv_not_exported.size();
+                inventaire_exist = total_inventaire - inventaire_inserer - inventaire_erreur;
 
                 if (integer == 1) {
+                    String nums_inv_error = "";
+                    for (int i = 0; i < list_num_inv_not_exported.size(); i++) {
+                        if (i > 0) {
+                            nums_inv_error = nums_inv_error + " \n  ";
+                        }
+                        nums_inv_error = nums_inv_error + list_num_inv_not_exported.get(i);
+                    }
+                    if (!list_num_inv_not_exported.isEmpty()) {
+                        nums_inv_error = "\nProbleme exportation dans les inventaires : \n" + nums_inv_error;
+                    }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé, Total inventaire : " + total_inventaire + "\n bons inserés : " + inventaire_inserer + "\n bons exists : " + inventaire_exist)
+                            .setContentText("Exportation terminé, Total inventaire : " + total_inventaire + "\n bons inserés : " + inventaire_inserer + "\n bons exists : " + inventaire_exist + "\n bons erronés : " + inventaire_erreur + nums_inv_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)

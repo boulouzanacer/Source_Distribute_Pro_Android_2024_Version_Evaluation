@@ -56,6 +56,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.view.inputmethod.InputMethodManager;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -124,6 +125,7 @@ import com.safesoft.proapp.distribute.adapters.note_adapter.NotesAdapter;
 import com.safesoft.proapp.distribute.app.BaseActivity;
 import com.safesoft.proapp.distribute.app.BaseApplication;
 import com.safesoft.proapp.distribute.cloud.AllPrefsManager;
+import com.safesoft.proapp.distribute.cloud.BackupScheduler;
 import com.safesoft.proapp.distribute.cloud.ConfigFetcher;
 import com.safesoft.proapp.distribute.cloud.ConfigUploader;
 import com.safesoft.proapp.distribute.cloud.DownloadBackupTask;
@@ -154,6 +156,8 @@ import com.safesoft.proapp.distribute.postData.PostData_Vendeur;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 import com.safesoft.proapp.distribute.utils.Env;
 import com.safesoft.proapp.distribute.utils.ImageUtils;
+import com.safesoft.proapp.distribute.utils.LocalNetworkPermission;
+import com.safesoft.proapp.distribute.utils.LocaleManager;
 import com.safesoft.proapp.distribute.utils.SPUtils;
 import com.safesoft.proapp.distribute.utils.ScalingActivityAnimator;
 import com.safesoft.proapp.distribute.utils.TonyUtils;
@@ -195,7 +199,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private EditText username_safe_event, password_safe_event;
     private Spinner type_logiciel_dropdown;
     private Spinner espace_footer_dropdown;
-    private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, langue_ticket_title, model_ticket_title;
+    private TextView textView, code_depot, nom_depot, code_vendeur, nom_vendeur, langue_ticket_title, model_ticket_title, mode_app_title;
     private EditText edt_objectif;
     private Button btntest_connection,
             btn_get_all_depot,
@@ -215,6 +219,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     /////////////////// CONFIG WIFI ///////////////////////
     private String WIFI_VALUE_IP = "127.0.0.1";
     private String WIFI_VALUE_PORT = "9100";
+    private String printerAppMode = "SDK";
     //////////////////////// SharedPreferences /////////////////////
     private Boolean isRunning = false;
     private String username;
@@ -223,6 +228,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private ImageView company_logo;
     private FlowRadioGroup rg_connect;
     private FlowRadioGroup rg_type_imprimente;
+    private FlowRadioGroup rg_mode_app;
     private FlowRadioGroup rg_langue_ticket;
     private FlowRadioGroup rg_model_latin_ticket;
     private FlowRadioGroup rg_model_arabe_ticket;
@@ -283,7 +289,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     private TextView txtv_email_cloud, txtv_password_cloud;
     private TextView txtv_status_gps_enabled;
+    private TextView txtv_auto_backup_status;
     private Button btn_signup_cloud, btn_login_cloud, btn_deconecte_cloud;
+    private Switch switch_auto_backup;
 
     private boolean is_app_synchronised_mode = false;
     private String numero_serie;
@@ -622,6 +630,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             lnr_restore.setEnabled(false);
         }
 
+        // ==================== Sauvegarde automatique cloud ====================
+        switch_auto_backup = findViewById(R.id.switch_auto_backup);
+        txtv_auto_backup_status = findViewById(R.id.txtv_auto_backup_status);
+
+        switch_auto_backup.setChecked(BackupScheduler.isEnabled(this));
+        switch_auto_backup.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            BackupScheduler.setEnabled(ActivitySetting.this, isChecked);
+            updateAutoBackupStatus();
+        });
+        updateAutoBackupStatus();
 
 
         btn_signup_cloud.setOnClickListener(v -> {
@@ -1019,6 +1037,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         rg_connect = findViewById(R.id.rg_connect);
         rg_type_imprimente = findViewById(R.id.rg_type_imprimente);
+        rg_mode_app = findViewById(R.id.rg_mode_app);
         rg_langue_ticket = findViewById(R.id.rg_langue_ticket);
         rg_model_latin_ticket = findViewById(R.id.rg_model_latin_ticket);
         rg_model_arabe_ticket = findViewById(R.id.rg_model_arabe_ticket);
@@ -1052,19 +1071,19 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         btn_get_all_depot = findViewById(R.id.get_all_depot);
         btn_get_all_vendeur = findViewById(R.id.get_all_vendeur);
 
-        btntest_connection.setOnClickListener(v -> {
+        btntest_connection.setOnClickListener(v -> LocalNetworkPermission.ensurePermission(this, () -> {
             // SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
             if (!isRunning) {
                 if (prefs.getBoolean("USE_SAFE_EVENT", false)) {
 
-                    if (!prefs.getBoolean("APP_ACTIVATED", false)) {
+                   /* if (!prefs.getBoolean("APP_ACTIVATED", false)) {
                         new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText("Important !")
                                 .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION2)
                                 .show();
 
                         return;
-                    }
+                    }*/
 
                     SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
                     editor.putString("SAFE_EVENT_USER", username_safe_event.getText().toString());
@@ -1083,9 +1102,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             } else {
                 Crouton.showText(ActivitySetting.this, "Demande de connexion est en cours!", Style.INFO);
             }
-        });
+        }));
 
-        btn_get_all_depot.setOnClickListener(v -> {
+        btn_get_all_depot.setOnClickListener(v -> LocalNetworkPermission.ensurePermission(this, () -> {
             // SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
             if (!isRunning) {
                 if (prefs.getBoolean("USE_SAFE_EVENT", false)) {
@@ -1107,9 +1126,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             } else {
                 Crouton.showText(ActivitySetting.this, "Demande de connexion est en cours!", Style.INFO);
             }
-        });
+        }));
 
-        btn_get_all_vendeur.setOnClickListener(v -> {
+        btn_get_all_vendeur.setOnClickListener(v -> LocalNetworkPermission.ensurePermission(this, () -> {
             // SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
             if (!isRunning) {
                 if (prefs.getBoolean("USE_SAFE_EVENT", false)) {
@@ -1131,7 +1150,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             } else {
                 Crouton.showText(ActivitySetting.this, "Demande de connexion est en cours!", Style.INFO);
             }
-        });
+        }));
 
         btn_clear_logo.setOnClickListener(v -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
@@ -1195,6 +1214,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         langue_ticket_title = findViewById(R.id.langue_ticket_title);
         model_ticket_title = findViewById(R.id.model_ticket_title);
+        mode_app_title = findViewById(R.id.mode_app_title);
 
         textView = findViewById(R.id.progress);
         circle = new Circle();
@@ -1266,6 +1286,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_solde_client = findViewById(R.id.switch_solde_client);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_wilaya_commune_obligatoire = findViewById(R.id.switch_wilaya_commune_obligatoire);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_sync_client_par_vendeur = findViewById(R.id.switch_sync_client_par_vendeur);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_solde_fournisseur = findViewById(R.id.switch_solde_fournisseur);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_remise = findViewById(R.id.switch_remise);
@@ -1289,6 +1313,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_son = findViewById(R.id.switch_son);
+
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_hide_navbar = findViewById(R.id.switch_hide_navbar);
 
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_vente_stock_negatif = findViewById(R.id.switch_vente_stock_negatif);
@@ -1318,6 +1345,19 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_benifice.setChecked(prefs.getBoolean("AFFICHAGE_BENIFICE", false));
         switch_stock_moins.setChecked(prefs.getBoolean("AFFICHAGE_STOCK_MOINS", false));
         switch_solde_client.setChecked(prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true));
+        switch_wilaya_commune_obligatoire.setChecked(prefs.getBoolean("WILAYA_COMMUNE_OBLIGATOIRE_CLIENT", false));
+        boolean syncClientParVendeur = prefs.getBoolean("SYNC_CLIENT_PAR_VENDEUR", false);
+        switch_sync_client_par_vendeur.setChecked(syncClientParVendeur);
+        boolean syncTousClients = prefs.getBoolean("SYCHRONISER_TOUS_CLIENT", false);
+        if (syncTousClients) {
+            switch_sync_client_par_vendeur.setChecked(false);
+            switch_sync_client_par_vendeur.setEnabled(false);
+            switch_sync_client_par_vendeur.setAlpha(0.45f);
+        } else {
+            switch_sync_client_par_vendeur.setEnabled(true);
+            switch_sync_client_par_vendeur.setAlpha(1.0f);
+            switch_sync_client_par_vendeur.setChecked(syncClientParVendeur);
+        }
         switch_solde_fournisseur.setChecked(prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true));
         switch_remise.setChecked(prefs.getBoolean("AFFICHAGE_REMISE", true));
         switch_modifier_bon.setChecked(prefs.getBoolean("AUTORISE_MODIFY_BON", true));
@@ -1331,6 +1371,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_service_location.setChecked(prefs.getBoolean("PHONE_LOCATION_SERVICE", false));
 
         switch_son.setChecked(prefs.getBoolean("ENABLE_SOUND", false));
+
+        switch_hide_navbar.setChecked(prefs.getBoolean("HIDE_NAV_BAR", false));
 
         switch_vente_stock_negatif.setChecked(prefs.getBoolean("STOCK_MOINS", false));
         switch_allow_credit_in_vente.setChecked(prefs.getBoolean("ALLOW_CREDIT_VENTE", true));
@@ -1379,6 +1421,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("SYCHRONISER_TOUS_CLIENT", isChecked);
             editor.apply();
+            if (isChecked) {
+                switch_sync_client_par_vendeur.setChecked(false);
+                switch_sync_client_par_vendeur.setEnabled(false);
+                switch_sync_client_par_vendeur.setAlpha(0.45f);
+            } else {
+                SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+                boolean savedSyncClientParVendeur = prefs.getBoolean("SYNC_CLIENT_PAR_VENDEUR", false);
+                switch_sync_client_par_vendeur.setEnabled(true);
+                switch_sync_client_par_vendeur.setAlpha(1.0f);
+                switch_sync_client_par_vendeur.setChecked(savedSyncClientParVendeur);
+            }
         });
 
         switch_sychroniser_produit.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -1408,6 +1461,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_solde_client.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("AFFICHAGE_SOLDE_CLIENT", isChecked);
+            editor.apply();
+        });
+
+        switch_wilaya_commune_obligatoire.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("WILAYA_COMMUNE_OBLIGATOIRE_CLIENT", isChecked);
+            editor.apply();
+        });
+
+        switch_sync_client_par_vendeur.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("SYNC_CLIENT_PAR_VENDEUR", isChecked);
             editor.apply();
         });
 
@@ -1548,6 +1613,32 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
+        switch_hide_navbar.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("HIDE_NAV_BAR", isChecked);
+            editor.apply();
+        });
+
+        // ---- Langue de l'application (Français / Anglais / Arabe) ----
+        final ImageView img_check_fr = findViewById(R.id.img_check_fr);
+        final ImageView img_check_en = findViewById(R.id.img_check_en);
+        final ImageView img_check_ar = findViewById(R.id.img_check_ar);
+        updateLanguageSelection(LocaleManager.getSavedLanguage(this),
+                img_check_fr, img_check_en, img_check_ar);
+
+        View row_lang_fr = findViewById(R.id.row_lang_fr);
+        View row_lang_en = findViewById(R.id.row_lang_en);
+        View row_lang_ar = findViewById(R.id.row_lang_ar);
+        if (row_lang_fr != null) {
+            row_lang_fr.setOnClickListener(v -> changeLanguage(LocaleManager.LANG_FRENCH));
+        }
+        if (row_lang_en != null) {
+            row_lang_en.setOnClickListener(v -> changeLanguage(LocaleManager.LANG_ENGLISH));
+        }
+        if (row_lang_ar != null) {
+            row_lang_ar.setOnClickListener(v -> changeLanguage(LocaleManager.LANG_ARABIC));
+        }
+
 
 
         switch_vente_stock_negatif.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -1619,6 +1710,33 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     }
 
+    /**
+     * Applique la langue choisie via AppCompat. La locale (et le sens RTL pour
+     * l'arabe) est appliquée puis l'activité est recréée automatiquement afin
+     * de rafraîchir toute l'interface.
+     */
+    private void changeLanguage(String code) {
+        if (LocaleManager.normalize(code).equalsIgnoreCase(LocaleManager.getSavedLanguage(this))) {
+            return;
+        }
+        LocaleManager.setLanguage(this, code);
+    }
+
+    /**
+     * Met à jour la coche affichée sur la ligne de la langue actuellement active.
+     */
+    private void updateLanguageSelection(String current, ImageView fr, ImageView en, ImageView ar) {
+        if (fr != null) {
+            fr.setVisibility(LocaleManager.LANG_FRENCH.equals(current) ? View.VISIBLE : View.INVISIBLE);
+        }
+        if (en != null) {
+            en.setVisibility(LocaleManager.LANG_ENGLISH.equals(current) ? View.VISIBLE : View.INVISIBLE);
+        }
+        if (ar != null) {
+            ar.setVisibility(LocaleManager.LANG_ARABIC.equals(current) ? View.VISIBLE : View.INVISIBLE);
+        }
+    }
+
     public void init() {
 
         BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
@@ -1671,14 +1789,17 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             rg_connect.check(R.id.rb_connect_com);
         }
 
+        printerAppMode = prefs.getString("PRINTER_APP_MODE", "SDK");
+        if (Objects.equals(printerAppMode, "APP_4BARCODE")) {
+            rg_mode_app.check(R.id.rb_mode_app_4barcode);
+        } else {
+            rg_mode_app.check(R.id.rb_mode_app_sdk);
+        }
+
         if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_TICKET")) {
             rg_type_imprimente.check(R.id.rb_type_ticket);
-            rg_model_ticket_codebarre.setVisibility(GONE);
-            rg_model_latin_ticket.setVisibility(VISIBLE);
         } else if (Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_CODEBARRE")) {
             rg_type_imprimente.check(R.id.rb_type_codebarre);
-            rg_model_ticket_codebarre.setVisibility(VISIBLE);
-            rg_model_latin_ticket.setVisibility(GONE);
         }
 
         if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
@@ -1709,8 +1830,43 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             rg_model_ticket_codebarre.check(R.id.rg_model_ticket_codebarre_40X20_without_codebarre);
         }
 
+        updatePrinterModeViews();
+
         //EventBus listener
         EventBus.getDefault().register(this);
+    }
+
+    private void updatePrinterModeViews() {
+        boolean isTicket = Objects.equals(prefs.getString("PRINTER_TYPE", "IMP_TICKET"), "IMP_TICKET");
+        boolean isSdkMode = Objects.equals(printerAppMode, "SDK");
+
+        if (isTicket) {
+            mode_app_title.setVisibility(GONE);
+            rg_mode_app.setVisibility(GONE);
+            langue_ticket_title.setVisibility(VISIBLE);
+            rg_langue_ticket.setVisibility(VISIBLE);
+            model_ticket_title.setVisibility(VISIBLE);
+
+            if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
+                rg_model_latin_ticket.setVisibility(VISIBLE);
+                rg_model_arabe_ticket.setVisibility(GONE);
+            } else {
+                rg_model_arabe_ticket.setVisibility(VISIBLE);
+                rg_model_latin_ticket.setVisibility(GONE);
+            }
+
+            rg_model_ticket_codebarre.setVisibility(GONE);
+            return;
+        }
+
+        langue_ticket_title.setVisibility(GONE);
+        rg_langue_ticket.setVisibility(GONE);
+        rg_model_latin_ticket.setVisibility(GONE);
+        rg_model_arabe_ticket.setVisibility(GONE);
+        mode_app_title.setVisibility(VISIBLE);
+        rg_mode_app.setVisibility(VISIBLE);
+        model_ticket_title.setVisibility(isSdkMode ? VISIBLE : GONE);
+        rg_model_ticket_codebarre.setVisibility(isSdkMode ? VISIBLE : GONE);
     }
 
     private void radioButtonCheckListener() {
@@ -1734,30 +1890,28 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                 if (i == R.id.rb_type_ticket) {
-                    langue_ticket_title.setVisibility(VISIBLE);
-                    rg_langue_ticket.setVisibility(VISIBLE);
-                    if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
-                        rg_model_latin_ticket.setVisibility(VISIBLE);
-                        rg_model_arabe_ticket.setVisibility(GONE);
-                    } else if (Objects.equals(prefs.getString("LANGUE_TICKET", "ARABE"), "ARABE")) {
-                        rg_model_arabe_ticket.setVisibility(VISIBLE);
-                        rg_model_latin_ticket.setVisibility(GONE);
-                    }
-                    rg_model_ticket_codebarre.setVisibility(GONE);
-                    rg_langue_ticket.setVisibility(VISIBLE);
                     checkedImpType = BaseEnum.IMP_TYPE_TICKET;
                 } else if (i == R.id.rb_type_codebarre) {
-                    langue_ticket_title.setVisibility(GONE);
-                    rg_langue_ticket.setVisibility(GONE);
-                    rg_model_latin_ticket.setVisibility(GONE);
-                    rg_model_arabe_ticket.setVisibility(GONE);
-                    rg_model_ticket_codebarre.setVisibility(VISIBLE);
                     checkedImpType = BaseEnum.IMP_TYPE_CODEBARRE;
                     checkedTicketModel = BaseEnum.TICKET_LANGUE_LATIN;
                     saveConfigTicketLangue(checkedTicketModel);
                 }
                 saveConfigImpType(checkedImpType);
+                updatePrinterModeViews();
 
+            }
+        });
+
+        rg_mode_app.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i == R.id.rb_mode_app_4barcode) {
+                    printerAppMode = "APP_4BARCODE";
+                } else if (i == R.id.rb_mode_app_sdk) {
+                    printerAppMode = "SDK";
+                }
+                saveConfigPrinterAppMode(printerAppMode);
+                updatePrinterModeViews();
             }
         });
 
@@ -1954,6 +2108,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             case BaseEnum.TICKET_CODEBARRE_40X20_WITHOUT_CODEBARRE -> //ticket model 40X20
                     editor.putString("MODEL_TICKET_CODEBARRE", "TICKET_CODEBARRE_40X20_WITHOUT_CODEBARRE");
         }
+        editor.apply();
+    }
+
+    private void saveConfigPrinterAppMode(String appMode) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        editor.putString("PRINTER_APP_MODE", appMode);
         editor.apply();
     }
 
@@ -2256,6 +2416,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
     }
 
+    @SuppressWarnings("unchecked")
     private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
         PIFactory piFactory = new BluetoothFactory();
         PrinterInterface printerInterface = piFactory.create();
@@ -2268,6 +2429,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void connectWifi(WiFiConfigBean wiFiConfigBean) {
         PIFactory piFactory = new WiFiFactory();
         PrinterInterface printerInterface = piFactory.create();
@@ -2280,6 +2442,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void connectUSB(UsbConfigBean usbConfigBean) {
         UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
         PIFactory piFactory = new UsbFactory();
@@ -2480,6 +2643,34 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
+    /**
+     * Refreshes the status line of the automatic cloud backup card.
+     */
+    private void updateAutoBackupStatus() {
+        if (txtv_auto_backup_status == null) {
+            return;
+        }
+        if (!BackupScheduler.isEnabled(this)) {
+            txtv_auto_backup_status.setText(R.string.sauvegarde_automatique_desc);
+            return;
+        }
+        String email = prefs.getString("EMAIL_CLOUD", "");
+        if (email == null || email.trim().isEmpty()) {
+            txtv_auto_backup_status.setText("Compte cloud non connecté : connectez un compte pour activer la sauvegarde automatique.");
+            return;
+        }
+        SharedPreferences backupPrefs = BackupScheduler.prefs(this);
+        boolean pending = backupPrefs.getBoolean(BackupScheduler.KEY_BACKUP_PENDING, false);
+        String last = backupPrefs.getString(BackupScheduler.KEY_LAST_BACKUP_DATE, "");
+        if (pending) {
+            txtv_auto_backup_status.setText("En attente de connexion — nouvelle tentative automatique dès le retour du réseau...");
+        } else if (last != null && !last.isEmpty()) {
+            txtv_auto_backup_status.setText("Dernière sauvegarde : " + last + "  •  Prochaine copie : dans 3 jours.");
+        } else {
+            txtv_auto_backup_status.setText("Sauvegarde automatique planifiée (une copie chaque 3 jours).");
+        }
+    }
+
     private void backup_db() {
         String currentDBPath = "//data//data//" + mContext.getPackageName() + "//databases//safe_distribute_pro";
 
@@ -2499,6 +2690,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+        // Flush the WAL into the main database file so the uploaded backup
+        // contains all committed data.
+        DATABASE.checkpointWal(getApplicationContext());
 
         new UploadFileTask().execute(currentDBPath, seriel_number, android_unique_id, current_version, txtv_email_cloud.getText().toString());
 
@@ -2625,12 +2820,22 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         if (success) {
                             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
                                     .setTitleText("Succès...")
-                                    .setContentText("Téléchargement de base de données et configuration terminé")
+                                    .setContentText("Restauration de la base de données terminée. L'application va redémarrer pour appliquer les données.")
+                                    .setConfirmText("OK")
+                                    .setConfirmClickListener(sDialog -> {
+                                        sDialog.dismissWithAnimation();
+                                        restartApp();
+                                    })
                                     .show();
                         }else {
                             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Erreur...")
-                                    .setContentText("Base de données téléchargé, erreur dans le téléchargement de configuration !!")
+                                    .setContentText("Base de données restaurée, erreur lors de la récupération de la configuration. L'application va redémarrer.")
+                                    .setConfirmText("OK")
+                                    .setConfirmClickListener(sDialog -> {
+                                        sDialog.dismissWithAnimation();
+                                        restartApp();
+                                    })
                                     .show();
                         }
 
@@ -2965,9 +3170,24 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                 //============================ GET all depot ===========================================
 
-                String sql1 = "SELECT * FROM DEPOT1";
-
-                ResultSet rs1 = stmt.executeQuery(sql1);
+                String[] depotTables = {"DEPOT1", "DEPOT"};
+                ResultSet rs1 = null;
+                for (String tableName : depotTables) {
+                    try {
+                        String sql1 = "SELECT * FROM " + tableName;
+                        rs1 = stmt.executeQuery(sql1);
+                        break;
+                    } catch (SQLException sqlex1) {
+                        String msg1 = (sqlex1.getMessage() != null) ? sqlex1.getMessage().toUpperCase() : "";
+                        if (msg1.contains("TABLE") || msg1.contains("RELATION") || msg1.contains("NOT FOUND") || msg1.contains("N'EXISTE")) {
+                            continue;
+                        }
+                        throw sqlex1;
+                    }
+                }
+                if (rs1 == null) {
+                    throw new SQLException("Table DEPOT1 ou DEPOT introuvable dans la base Firebird");
+                }
 
                 while (rs1.next()) {
                     PostData_Depot depot = new PostData_Depot();
@@ -3011,7 +3231,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             if (integer == 1) {
                 if (!((Activity) mContext).isFinishing()) {
                     //propose list
-                    showListDepot(depots, "List Depots");
+                    showListDepot(depots, "LISTE DES DÉPÔTS");
 
                 }
             } else if (integer == 2) {
@@ -3075,11 +3295,26 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                 Statement stmt = con.createStatement();
 
-                //============================ GET all depot ===========================================
+                //============================ GET all vendeur ===========================================
 
-                String sql1 = "SELECT * FROM VENDEUR";
-
-                ResultSet rs1 = stmt.executeQuery(sql1);
+                String[] vendeurTables = {"VENDEUR", "VENDEUR1"};
+                ResultSet rs1 = null;
+                for (String tableName : vendeurTables) {
+                    try {
+                        String sql1 = "SELECT * FROM " + tableName;
+                        rs1 = stmt.executeQuery(sql1);
+                        break;
+                    } catch (SQLException sqlex1) {
+                        String msg1 = (sqlex1.getMessage() != null) ? sqlex1.getMessage().toUpperCase() : "";
+                        if (msg1.contains("TABLE") || msg1.contains("RELATION") || msg1.contains("NOT FOUND") || msg1.contains("N'EXISTE")) {
+                            continue;
+                        }
+                        throw sqlex1;
+                    }
+                }
+                if (rs1 == null) {
+                    throw new SQLException("Table VENDEUR ou VENDEUR1 introuvable dans la base Firebird");
+                }
 
                 while (rs1.next()) {
                     PostData_Vendeur vendeur = new PostData_Vendeur();
@@ -3128,7 +3363,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             if (integer == 1) {
                 if (!((Activity) mContext).isFinishing()) {
                     //propose list
-                    showListVendeur(vendeurs, "List Vendeurs");
+                    showListVendeur(vendeurs, "LISTE DES VENDEURS");
 
                 }
             } else if (integer == 2) {
@@ -3393,6 +3628,25 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         super.onBackPressed();
     }
 
+    /**
+     * Restarts the whole application. Used after a database restore so that every
+     * activity reopens the freshly restored database instead of reusing the
+     * connections that were still pointing to the old (empty) database.
+     */
+    private void restartApp() {
+        try {
+            Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finishAffinity();
+        Runtime.getRuntime().exit(0);
+    }
+
     public void Sound(int SourceSound) {
         MediaPlayer mp = MediaPlayer.create(this, SourceSound);
         mp.start();
@@ -3481,6 +3735,14 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         RestartBroadcastReceiver.scheduleJob(getApplicationContext());
     }*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Android 17 (API 37) : permission d'acces au reseau local (serveur Firebird)
+        LocalNetworkPermission.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)

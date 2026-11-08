@@ -62,6 +62,9 @@ public class FragmentTimbre {
         //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
 
+        // Apply immersive mode (hide navigation bar) to the dialog window if enabled.
+        com.safesoft.proapp.distribute.app.BaseApplication.applyImmersiveToDialog(dialog.getWindow());
+
 
         btn_timbre = dialogview.findViewById(R.id.btn_timbre);
         btn_timbre.setBackgroundColor(Color.parseColor("#3498db"));

@@ -37,8 +37,11 @@ import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -49,7 +52,13 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     private ArrayList<PostData_Fournisseur> fournisseurs;
     private DATABASE controller;
     private EventBus bus;
-    private TextView nbr_fournisseur;
+    private android.view.View layout_kpi_versement;
+    private TextView kpi_total_versement;
+    private TextView kpi_total_solde;
+    private TextView chip_jour;
+    private TextView chip_semaine;
+    private TextView chip_mois;
+    private int selectedPeriode = 0;
     private final String PREFS = "ALL_PREFS";
     SharedPreferences prefs;
 
@@ -73,11 +82,12 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_clients);
+        setContentView(R.layout.activity_fournisseurs);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
@@ -101,7 +111,8 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("List Fournisseurs");
+            getSupportActionBar().setTitle("Liste Fournisseurs");
+            getSupportActionBar().setSubtitle("0 fournisseur");
         }
 
         initViews();
@@ -110,7 +121,103 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
     private void initViews() {
 
         recyclerView = findViewById(R.id.recycler_view_client);
-        nbr_fournisseur = findViewById(R.id.list_client_nbr_client);
+        layout_kpi_versement = findViewById(R.id.layout_kpi_versement);
+        kpi_total_versement = findViewById(R.id.kpi_total_versement);
+        kpi_total_solde = findViewById(R.id.kpi_total_solde);
+
+        Runnable goVersed = new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(ActivityFournisseurs.this, ActivityVersedFournisseur.class);
+                intent.putExtra(ActivityVersedFournisseur.EXTRA_PERIODE, selectedPeriode);
+                startActivity(intent);
+            }
+        };
+
+        try {
+            if (layout_kpi_versement != null) {
+                layout_kpi_versement.setClickable(true);
+                layout_kpi_versement.setFocusable(true);
+                layout_kpi_versement.setBackgroundResource(R.drawable.bg_web_section_card);
+                try {
+                    int[] attrs = new int[]{android.R.attr.selectableItemBackground};
+                    android.content.res.TypedArray ta = obtainStyledAttributes(attrs);
+                    android.graphics.drawable.Drawable d = ta.getDrawable(0);
+                    if (d != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            layout_kpi_versement.setForeground(d);
+                        }
+                    }
+                    ta.recycle();
+                } catch (Exception ignore) {}
+                layout_kpi_versement.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View v) {
+                        goVersed.run();
+                    }
+                });
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (kpi_total_versement != null) {
+                kpi_total_versement.setClickable(true);
+                kpi_total_versement.setFocusable(false);
+                kpi_total_versement.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View v) {
+                        goVersed.run();
+                    }
+                });
+            }
+        } catch (Exception ignore) {}
+
+        chip_jour = findViewById(R.id.chip_jour);
+        chip_semaine = findViewById(R.id.chip_semaine);
+        chip_mois = findViewById(R.id.chip_mois);
+
+        if (chip_jour != null) chip_jour.setOnClickListener(v -> selectPeriode(0));
+        if (chip_semaine != null) chip_semaine.setOnClickListener(v -> selectPeriode(1));
+        if (chip_mois != null) chip_mois.setOnClickListener(v -> selectPeriode(2));
+        applyChipVisuals(selectedPeriode);
+    }
+
+    private void selectPeriode(int periode) {
+        selectedPeriode = periode;
+        applyChipVisuals(periode);
+        refreshKpisPeriode();
+    }
+
+    private void applyChipVisuals(int periode) {
+        if (chip_jour != null) {
+            chip_jour.setBackgroundResource(periode == 0 ? R.drawable.bg_chip_segmented_selected : R.drawable.bg_chip_segmented_unselected);
+            chip_jour.setTextColor(periode == 0 ? 0xFF0F172A : 0xFF64748B);
+            chip_jour.setTypeface(null, periode == 0 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+        }
+        if (chip_semaine != null) {
+            chip_semaine.setBackgroundResource(periode == 1 ? R.drawable.bg_chip_segmented_selected : R.drawable.bg_chip_segmented_unselected);
+            chip_semaine.setTextColor(periode == 1 ? 0xFF0F172A : 0xFF64748B);
+            chip_semaine.setTypeface(null, periode == 1 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+        }
+        if (chip_mois != null) {
+            chip_mois.setBackgroundResource(periode == 2 ? R.drawable.bg_chip_segmented_selected : R.drawable.bg_chip_segmented_unselected);
+            chip_mois.setTextColor(periode == 2 ? 0xFF0F172A : 0xFF64748B);
+            chip_mois.setTypeface(null, periode == 2 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+        }
+    }
+
+    private String[] computeDateBounds(int periode) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
+        Calendar today = Calendar.getInstance(Locale.FRANCE);
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+        Calendar start = Calendar.getInstance(Locale.FRANCE);
+        start.setTime(today.getTime());
+        if (periode == 1) start.add(Calendar.DAY_OF_YEAR, -6);
+        else if (periode == 2) start.add(Calendar.DAY_OF_YEAR, -29);
+        return new String[]{sdf.format(start.getTime()), sdf.format(today.getTime())};
     }
 
     @Override
@@ -121,17 +228,37 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         super.onResume();
     }
 
+    public void refreshAfterVersement() {
+        setRecycle("");
+    }
+
     private void setRecycle(String text_search) {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterFournisseurs(this, getItems(text_search));
         recyclerView.setAdapter(adapter);
-        nbr_fournisseur.setText("Nombre de fournisseur : " + fournisseurs.size());
+        int count = fournisseurs.size();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(String.format(Locale.FRANCE, "%,d fournisseur%s", count, (count > 1 ? "s" : "")));
+        }
+        refreshKpisPeriode();
+    }
 
+    private void refreshKpisPeriode() {
+        if (controller == null || kpi_total_versement == null || kpi_total_solde == null) return;
+        String[] bounds = computeDateBounds(selectedPeriode);
+        double totVersement = controller.getFournisseurTotalVersementsPeriode(bounds[0], bounds[1]);
+        double totSolde = controller.getFournisseurTotalSoldesPeriode(bounds[0], bounds[1]);
+        kpi_total_versement.setText(String.format(Locale.FRANCE, "%,.2f DA", totVersement));
+        kpi_total_solde.setText(String.format(Locale.FRANCE, "%,.2f DA", totSolde));
     }
 
     public ArrayList<PostData_Fournisseur> getItems(String qqry) {
+
+        // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+        qqry = (qqry == null) ? "" : qqry.replace("'", "''");
+
         if (qqry.length() > 0) {
             fournisseurs = new ArrayList<>();
             String querry = "SELECT * FROM FOURNIS WHERE CODE_FRS LIKE '%" + qqry + "%' OR FOURNIS LIKE '%" + qqry + "%' OR TEL LIKE '%" + qqry + "%' ORDER BY FOURNIS";

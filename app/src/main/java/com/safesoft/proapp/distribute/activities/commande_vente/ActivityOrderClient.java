@@ -460,21 +460,15 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         int viewId = v.getId();
 
         if (viewId == R.id.btn_select_client) {
-            if (bon1_temp.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
             showListClient();
 
         } else if (viewId == R.id.btn_mode_tarif) {
-            if (bon1_temp.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
 
@@ -566,11 +560,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             }
 
         } else if (viewId == R.id.addProduct) {
-            if (bon1_temp.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
             if (bon1_temp.client.isEmpty()) {
@@ -614,15 +605,16 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                         .show();
                 return;
             }
+            if (isBonAnnule()) {
+                showBonLockedAlert(true);
+                return;
+            }
 
             onVersementReceived(null);
 
         } else if (viewId == R.id.txv_remise_btn) {
-            if (bon1_temp.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
 
@@ -637,11 +629,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 ActivityCompat.requestPermissions(ActivityOrderClient.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
 
             } else {
-                if (bon1_temp.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
+                if (isBonVerrouille()) {
+                    showBonLockedAlert(isBonAnnule());
                     return;
                 }
                 if (bon1_temp.client.isEmpty()) {
@@ -652,6 +641,10 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 startScanProduct();
             }
         } else if (viewId == R.id.btn_mofifier_bon) {
+            if (isBonAnnule()) {
+                showBonLockedAlert(true);
+                return;
+            }
             if (!SOURCE_EXPORT.equals("EXPORTED")) {
                 if (!bon1_temp.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
@@ -870,11 +863,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int itemId = item.getItemId();
         if (itemId == R.id.delete_produit) {
-            if (bon1_temp.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return true;
             }
             new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
@@ -906,11 +896,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             return true;
 
         } else if (itemId == R.id.edit_produit) {
-            if (bon1_temp.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return true;
             }
             try {
@@ -1041,6 +1028,10 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             onBackPressed();
         }
         if (id == R.id.action_note) {
+            if (isBonAnnule()) {
+                showBonLockedAlert(true);
+                return true;
+            }
             String note = bon1_temp.remarque == null ? "" : bon1_temp.remarque.trim();
             if (note.isEmpty()) {
                 showNotesPickerDialog();
@@ -1074,14 +1065,12 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
     //Versement
     protected void sauvegarder() {
+        if (isBonAnnule()) return;
 
         bon1_temp.code_client = client_selected.code_client;
         bon1_temp.client = client_selected.client;
         bon1_temp.code_vendeur = "000000";
-        //bon1_temp.mode_tarif = client_selected.mode_tarif;
-        //bon1_temp.solde_ancien = client_selected.solde_montant;
         bon1_temp.nbr_p = final_panier.size();
-
 
         bon1_temp.tot_ht = val_total_ht;
         bon1_temp.tot_tva = val_tva;
@@ -1090,7 +1079,6 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         bon1_temp.remise = val_remise;
         bon1_temp.montant_bon = val_total_ttc_remise;
         bon1_temp.montant_achat = val_total_achat_ht;
-        //update current bon1
         controller.update_bon1("BON1_TEMP", bon1_temp.num_bon, bon1_temp);
 
     }
@@ -1266,19 +1254,46 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
     public void validate_theme() {
         if (bon1_temp.blocage.equals("F")) {
-            //findViewById(R.id.client).setBackgroundColor(Color.LTGRAY);
-            //findViewById(R.id.LayoutButton).setBackgroundColor(Color.LTGRAY);
             findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(Color.LTGRAY);
             findViewById(R.id.tl).setBackgroundColor(Color.LTGRAY);
             getWindow().getDecorView().setBackgroundColor(Color.LTGRAY);
-
+        } else if (bon1_temp.blocage.equals("A")) {
+            int slateGray = Color.parseColor("#475569");
+            int paleBg = Color.parseColor("#94A3B8");
+            findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(slateGray);
+            findViewById(R.id.tl).setBackgroundColor(paleBg);
+            getWindow().getDecorView().setBackgroundColor(paleBg);
+            View root = findViewById(android.R.id.content);
+            if (root != null) root.setAlpha(0.58f);
+            if (expandableListView != null) expandableListView.setEnabled(false);
+            btn_select_client.setEnabled(false);
+            btn_mode_tarif.setEnabled(false);
         } else {
-            //findViewById(R.id.client).setBackgroundColor(Color.WHITE);
-            //findViewById(R.id.LayoutButton).setBackgroundColor(Color.WHITE);
             findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(Color.WHITE);
             findViewById(R.id.tl).setBackgroundColor(Color.WHITE);
             getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+            View root = findViewById(android.R.id.content);
+            if (root != null) root.setAlpha(1.0f);
+            if (expandableListView != null) expandableListView.setEnabled(true);
+            btn_select_client.setEnabled(true);
+            btn_mode_tarif.setEnabled(true);
         }
+    }
+
+    private boolean isBonVerrouille() {
+        return "F".equals(bon1_temp.blocage) || "A".equals(bon1_temp.blocage);
+    }
+
+    private boolean isBonAnnule() {
+        return "A".equals(bon1_temp.blocage);
+    }
+
+    private void showBonLockedAlert(boolean isAnnule) {
+        String msg = isAnnule ? "Ce bon est annulé, aucune modification n'est autorisée." : "Ce bon est déja validé";
+        new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Information!")
+                .setContentText(msg)
+                .show();
     }
 
     private void selectProductFromScan(String resultscan) throws ParseException {

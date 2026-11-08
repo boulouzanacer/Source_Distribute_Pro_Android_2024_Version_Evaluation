@@ -2,21 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:visibility="visible"
-    android:padding="10dp"
+    android:visibility="gone"
     android:id="@+id/sub_track_phone"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/sub_layout_localisation_phone" />
-
-    <TextView
-        android:id="@+id/txtv_status_gps_enabled"
-        android:text="GPS désactiver"
-        android:textColor="@color/red"
-        android:textAlignment="center"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_web_section_card"
+        android:padding="14dp"
+        android:orientation="vertical">
+
+        <include layout="@layout/sub_layout_localisation_phone" />
+
+        <TextView
+            android:id="@+id/txtv_status_gps_enabled"
+            android:text="GPS désactiver"
+            android:textColor="#64748B"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </LinearLayout>

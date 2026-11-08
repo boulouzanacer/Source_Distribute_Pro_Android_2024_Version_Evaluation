@@ -100,6 +100,9 @@ public class FragmentNewEditLocation {
         //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
 
+        // Apply immersive mode (hide navigation bar) to the dialog window if enabled.
+        com.safesoft.proapp.distribute.app.BaseApplication.applyImmersiveToDialog(dialog.getWindow());
+
 
         btn_valider = dialogview.findViewById(R.id.btnSave);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));

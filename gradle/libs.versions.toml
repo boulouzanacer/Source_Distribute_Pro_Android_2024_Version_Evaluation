@@ -1,6 +1,6 @@
 [versions]
 activity = "1.13.0"
-agp = "9.3.2"
+agp = "9.5.1"
 androidimagepopup = "1.2.2"
 annotation = "1.8.1"
 annotationExperimental = "1.4.1"
@@ -46,6 +46,7 @@ powerspinner = "1.2.7"
 retrofit2 = "3.0.0"
 secretsGradlePlugin = "2.0.1"
 viewpager = "1.0.0"
+workManager = "2.10.0"
 zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
@@ -105,6 +106,7 @@ powerspinner = { group = "com.github.skydoves", name = "powerspinner", version.r
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
 secrets-gradle-plugin = { group = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", name = "secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 viewpager = { group = "androidx.viewpager", name = "viewpager", version.ref = "viewpager" }
+work-runtime = { group = "androidx.work", name = "work-runtime", version.ref = "workManager" }
 zxingAndroidEmbedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 
 [plugins]

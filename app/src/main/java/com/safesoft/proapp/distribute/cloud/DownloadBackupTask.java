@@ -40,7 +40,6 @@ public class DownloadBackupTask {
 
             int fileLength = connection.getContentLength();
 
-            File dbFile = context.getDatabasePath(DATABASE.DATABASE_NAME);
             File tempFile = new File(context.getCacheDir(), DATABASE.DATABASE_NAME);
 
             try (InputStream input = connection.getInputStream(); FileOutputStream output = new FileOutputStream(tempFile)) {
@@ -59,12 +58,15 @@ public class DownloadBackupTask {
                 }
             }
 
-            if (dbFile.exists()) {
-                dbFile.delete();
-            }
-            tempFile.renameTo(dbFile);
+            // Replace the current database safely: close the open connection, remove
+            // the -wal/-shm files, copy the downloaded database into place and reopen
+            // it so the schema migration (old version -> current) runs.
+            boolean restored = DATABASE.restoreDatabaseFile(context, tempFile);
 
-            return true;
+            //noinspection ResultOfMethodCallIgnored
+            tempFile.delete();
+
+            return restored;
 
         } catch (Exception e) {
             e.printStackTrace();

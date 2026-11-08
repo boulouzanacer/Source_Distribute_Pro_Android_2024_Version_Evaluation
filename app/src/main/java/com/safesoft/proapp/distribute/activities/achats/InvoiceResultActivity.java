@@ -116,9 +116,4 @@ public class InvoiceResultActivity extends AppCompatActivity {
     private String value(String s) {
         return (s == null || s.trim().isEmpty()) ? "-" : s;
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }

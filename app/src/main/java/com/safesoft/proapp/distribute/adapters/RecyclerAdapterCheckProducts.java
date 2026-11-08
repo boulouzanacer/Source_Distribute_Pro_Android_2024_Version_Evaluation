@@ -171,7 +171,7 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
 
 
                 try {
-                    itemClick.onClick(view, holder.getAdapterPosition(), item);
+                    itemClick.onClick(view, holder.getBindingAdapterPosition(), item);
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }

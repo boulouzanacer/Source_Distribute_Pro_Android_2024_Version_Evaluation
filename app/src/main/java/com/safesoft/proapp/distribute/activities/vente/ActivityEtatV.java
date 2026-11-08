@@ -146,7 +146,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
         });
 
 
-        controller = new DATABASE(this);
+        controller = DATABASE.getInstance(this);
         versement_clients = new ArrayList<>();
 
         mRecyclerView = findViewById(R.id.recyclerView);
@@ -343,6 +343,9 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
     public ArrayList<PostData_Client> getItems(String qqry) {
 
+        // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+        qqry = (qqry == null) ? "" : qqry.replace("'", "''");
+
         //clients.clear();
 
         if (!qqry.isEmpty()) {
@@ -364,30 +367,50 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
     }
 
 
-    @Subscribe
+    @Subscribe(threadMode = org.greenrobot.eventbus.ThreadMode.MAIN)
     public void getEventSelection(EtatZSelection_Event event) {
+        if (event == null) return;
+        try {
+            event_selection = event;
 
-        event_selection = event;
-        txtv_debut.setText("De " + event_selection.getDate_f());
-        txtv_fin.setText("Vers " + event_selection.getDate_t());
-        txtv_wilaya.setText("W : " + event_selection.getWilaya());
-        txtv_commune.setText("Com : " + event_selection.getCommune());
+            String df = event.getDate_f() == null ? "" : event.getDate_f();
+            String dt = event.getDate_t() == null ? "" : event.getDate_t();
+            String w = event.getWilaya() == null ? "" : event.getWilaya();
+            String c = event.getCommune() == null ? "" : event.getCommune();
+            String u = event.getUser() == null ? "%" : event.getUser();
 
-        if (event.getUser().equals("%")) {
-            txtv_user.setText("Tous");
-        } else {
-            txtv_user.setText(" " + event_selection.getUser());
+            txtv_debut.setText("De " + df);
+            txtv_fin.setText("Vers " + dt);
+            txtv_wilaya.setText("W : " + w);
+            txtv_commune.setText("Com : " + c);
+
+            if (u.equals("%")) {
+                txtv_user.setText("Tous");
+            } else {
+                txtv_user.setText(" " + u);
+            }
+
+            client = u;
+            c_client = event.getCode_user();
+
+            from_d = df;
+            to_d = dt;
+            wilaya = w;
+            commune = c;
+
+            if (from_d == null || from_d.isEmpty()) from_d = "1970-01-01";
+            if (to_d == null || to_d.isEmpty()) to_d = "2999-12-31";
+            if (wilaya == null || wilaya.isEmpty()) wilaya = "<Aucune>";
+            if (commune == null || commune.isEmpty()) commune = "<Aucune>";
+
+            get_etatzg();
+        } catch (Exception e) {
+            Log.v("TRACKKK", "ActivityEtatV getEventSelection: " + e.getMessage());
+            new SweetAlertDialog(ActivityEtatV.this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Erreur")
+                    .setContentText(e.getMessage())
+                    .show();
         }
-
-        client = event_selection.getUser();
-        c_client = event_selection.getCode_user();
-
-        from_d = event_selection.getDate_f();
-        to_d = event_selection.getDate_t();
-        wilaya = event_selection.getWilaya();
-        commune = event_selection.getCommune();
-
-        get_etatzg();
     }
 
     public void startProgress() {
@@ -553,13 +576,16 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
             show_select_etatz();
 
         } else if (itemId == R.id.print) {
-            if (!result_etatzg.isEmpty()) {
+            if (result_etatzg != null && !result_etatzg.isEmpty() && from_d != null && to_d != null && txtv_user != null) {
 
-                Activity bactivity;
-                bactivity = ActivityEtatV.this;
+                Activity bactivity = ActivityEtatV.this;
+                String userText = txtv_user.getText() == null ? "" : txtv_user.getText().toString();
+                String clientCode = c_client == null ? "" : c_client;
 
                 Printing printer = new Printing();
-                printer.start_print_etat(bactivity, "ETAT_VENTE", result_etatzg, c_client, txtv_user.getText().toString(), from_d, to_d);
+                printer.start_print_etat(bactivity, "ETAT_VENTE", result_etatzg, clientCode, userText, from_d, to_d);
+            } else {
+                Crouton.makeText(ActivityEtatV.this, "Aucun état de vente à imprimer. Lancez d'abord la synchronisation.", Style.ALERT).show();
             }
 
         }
@@ -569,8 +595,12 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
 
 
     protected void get_etatzg() {
+        if (from_d == null || from_d.isEmpty()) from_d = "1970-01-01";
+        if (to_d == null || to_d.isEmpty()) to_d = "2999-12-31";
+        if (wilaya == null || wilaya.isEmpty()) wilaya = "<Aucune>";
+        if (commune == null || commune.isEmpty()) commune = "<Aucune>";
         //===========
-        handler = new Handler() {
+        handler = new Handler(android.os.Looper.getMainLooper()) {
             public void handleMessage(Message msg) {
                 try {
                     //=====================
@@ -582,21 +612,25 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                             start_select_etatz(2);
                             //here we reset the parents and the children
                             mRecyclerAdapter.clear();
-                            if (result_etatzg.size() > 7) {
+                            if (result_etatzg != null && result_etatzg.size() > 7) {
                                 initData(result_etatzg);
                             }
                             break;
                         case 2:
                             new SweetAlertDialog(ActivityEtatV.this, SweetAlertDialog.ERROR_TYPE)
                                     .setTitleText("Oops...")
-                                    .setContentText("Vous avez un problem au niveau de la requette SQL!: " + errorMessage)
+                                    .setContentText("Vous avez un problem au niveau de la requette SQL!: " + (errorMessage == null ? "" : errorMessage))
                                     .show();
+                            start_select_etatz(3);
+                            break;
+                        default:
                             start_select_etatz(3);
                             break;
                     }
 
                 } catch (Exception ex) {
-
+                    Log.v("TRACKKK", "handleMessage: " + ex.getMessage());
+                    try { start_select_etatz(3); } catch (Exception ignore) {}
                 }
             }
         };
@@ -615,10 +649,13 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                 if (result_etatzg != null) {
                     result_etatzg.clear();
                 }
-
+                if (versement_clients == null) {
+                    versement_clients = new ArrayList<>();
+                } else {
+                    versement_clients.clear();
+                }
 
                 flag = getEtatzgs(c_client, from_d, to_d);
-
 
                 if (flag == 0) {
                     //failed
@@ -628,12 +665,14 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                 } else if (flag == 2) {
                     //problem
                     handler.sendEmptyMessage(2);
+                } else {
+                    handler.sendEmptyMessage(3);
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                errorMessage = e.getMessage();
-                handler.sendEmptyMessage(3);
+                errorMessage = e.getMessage() == null ? "Erreur inconnue" : e.getMessage();
+                try { handler.sendEmptyMessage(3); } catch (Exception ignore) {}
             }
         });
 
@@ -644,12 +683,26 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
         int flag;
 
         try {
-            result_etatzg = controller.select_etatv_from_database(wilaya, commune, c_client, from_d, to_d);
-            versement_clients = controller.select_versed_list_client_from_database(wilaya, commune, c_client, from_d, to_d);
+            if (controller == null) {
+                controller = DATABASE.getInstance(ActivityEtatV.this);
+            }
+            String w = (wilaya == null || wilaya.isEmpty()) ? "<Aucune>" : wilaya;
+            String c = (commune == null || commune.isEmpty()) ? "<Aucune>" : commune;
+            String fd = (from_d == null || from_d.isEmpty()) ? "1970-01-01" : from_d;
+            String td = (to_d == null || to_d.isEmpty()) ? "2999-12-31" : to_d;
+
+            result_etatzg = controller.select_etatv_from_database(w, c, c_client, fd, td);
+            if (result_etatzg == null) result_etatzg = new ArrayList<>();
+
+            versement_clients = controller.select_versed_list_client_from_database(w, c, c_client, fd, td);
+            if (versement_clients == null) versement_clients = new ArrayList<>();
+
             flag = 1;
         } catch (Exception e) {
-            Log.v("TRACKKK", e.getMessage());
-            errorMessage = e.getMessage();
+            Log.v("TRACKKK", "getEtatzgs: " + e.getMessage());
+            errorMessage = e.getMessage() == null ? "Erreur SQL" : e.getMessage();
+            if (result_etatzg == null) result_etatzg = new ArrayList<>();
+            if (versement_clients == null) versement_clients = new ArrayList<>();
             flag = 2;
         }
         return flag;

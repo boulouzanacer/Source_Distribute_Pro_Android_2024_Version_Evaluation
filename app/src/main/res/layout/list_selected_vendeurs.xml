@@ -21,7 +21,7 @@
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="000001"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:id="@+id/code_vendeur" />
 
         <View
@@ -36,7 +36,7 @@
             android:layout_weight="2"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="vendeur 1"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:id="@+id/nom_vendeur" />
     </LinearLayout>
 </LinearLayout>

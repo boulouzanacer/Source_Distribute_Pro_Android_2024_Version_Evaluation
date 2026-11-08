@@ -56,7 +56,7 @@ import java.util.ArrayList;
  */
 public class DATABASE_OLD extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 14; // Database version
+    private static final int DATABASE_VERSION = 16; // Database version
     public static final String DATABASE_NAME = "safe_distribute_pro"; //Database name
     private final Context mContext;
 
@@ -422,9 +422,9 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 "FOREIGN KEY(NUM_TOURNEE) REFERENCES TOURNEE1 (NUM_TOURNEE) ON DELETE CASCADE)");
 
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS WILAYAS (ID INTEGER NOT NULL PRIMARY KEY, NAME VARCHAR NOT NULL, LATITUDE numeric NOT NULL, LONGITUDE numeric NOT NULL )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS WILAYAS (ID INTEGER NOT NULL PRIMARY KEY, NAME VARCHAR NOT NULL, LATITUDE numeric NOT NULL, LONGITUDE numeric NOT NULL, WILAYA_2 VARCHAR )");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS COMMUNES (ID INTEGER NOT NULL PRIMARY KEY, NAME VARCHAR NOT NULL, POST_CODE VARCHAR NOT NULL, WILAYA_ID INTEGER NOT NULL, LATITUDE numeric NOT NULL, LONGITUDE numeric NOT NULL, foreign key(WILAYA_ID) references WILAYAS(ID) on delete cascade)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS COMMUNES (RECORDID INTEGER NOT NULL PRIMARY KEY, CODE_COMMUNE VARCHAR NOT NULL, CODE_WILAYA INTEGER NOT NULL, COMMUNE VARCHAR NOT NULL, foreign key(CODE_WILAYA) references WILAYAS(ID) on delete cascade)");
 
         insert_wilaya_commune_into_database(db);
     }
@@ -435,7 +435,7 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
 
         Log.v("TRACKKK", "================>  ON UPGRADE EXECUTED");
 
-        String[] list_requet = new String[9];
+        String[] list_requet = new String[10];
 
         list_requet[0] = "ALTER TABLE CLIENT ADD COLUMN SOLDE_INI DOUBLE DEFAULT 0, " +
                 " WILAYA VARCHAR, " +
@@ -495,12 +495,97 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
                 "FOREIGN KEY(CODE_CLIENT) REFERENCES CLIENT (CODE_CLIENT) ON DELETE CASCADE," +
                 "FOREIGN KEY(NUM_TOURNEE) REFERENCES TOURNEE1 (NUM_TOURNEE) ON DELETE CASCADE)";
 
+        list_requet[9] = "ALTER TABLE WILAYAS ADD COLUMN WILAYA_2 VARCHAR ";
+
 
         for (String s : list_requet) {
             try {
                 db.execSQL(s);
             } catch (SQLiteException e) {
                 Log.v("TRACKKK", e.getMessage());
+            }
+        }
+
+        // Mise à jour V15 : Remplir WILAYA_2 (identique à la DB principale V23)
+        if (oldVersion < 15) {
+            try {
+                String updateWilayas =
+                    "UPDATE WILAYAS SET WILAYA_2 = CASE " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'ADRAR' OR ID=1 THEN '01 - ADRAR' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'CHLEF' OR ID=2 THEN '02 - CHLEF' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'LAGHOUAT' OR ID=3 THEN '03 - LAGHOUAT' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'OUM EL BOUAGHI%' OR ID=4 THEN '04 - OUM EL BOUAGHI' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'BATNA' OR ID=5 THEN '05 - BATNA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'BEJAI%' OR ID=6 THEN '06 - BEJAIA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'BISKRA' OR ID=7 THEN '07 - BISKRA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'BECHAR' OR ID=8 THEN '08 - BECHAR' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'BLIDA' OR ID=9 THEN '09 - BLIDA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'BOUIRA' OR ID=10 THEN '10 - BOUIRA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'TAMANRASSET' OR ID=11 THEN '11 - TAMANRASET' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'TEBESS%' OR ID=12 THEN '12 - TEBESSA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'TLEMCEN' OR ID=13 THEN '13 - TLEMCEN' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'TIARET' OR ID=14 THEN '14 - TIARET' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'TIZI%OUZOU%' OR ID=15 THEN '15 - TIZI-OUZOU' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'ALGER' OR ID=16 THEN '16 - ALGER' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'DJELFA' OR ID=17 THEN '17 - DJELFA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'JIJEL' OR ID=18 THEN '18 - JIJEL' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'SETIF' OR ID=19 THEN '19 - SETIF' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'SAIDA%' OR UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'SAEFD%' OR ID=20 THEN '20 - SAIDA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'SKIKDA' OR ID=21 THEN '21 - SKIKDA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'SIDI BEL ABB%' OR ID=22 THEN '22 - SIDI BEL ABBES' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'ANNABA' OR ID=23 THEN '23 - ANNABA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'GUELMA' OR ID=24 THEN '24 - GUELMA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'CONSTANTINE' OR ID=25 THEN '25 - CONSTANTINE' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'MEDEA' OR ID=26 THEN '26 - MEDEA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'MOSTAGANEM' OR ID=27 THEN '27 - MOSTAGANEM' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'M%SILA' OR ID=28 THEN '28 - MSILA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'MASCARA' OR ID=29 THEN '29 - MASCARA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'OUARGLA' OR ID=30 THEN '30 - OUARGLA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'ORAN' OR ID=31 THEN '31 - ORAN' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'EL%BAYADH%' OR ID=32 THEN '32 - EL-BAYADH' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'ILLIZI' OR ID=33 THEN '33 - ILLIZI' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'BORDJ%BOUARRIRIDJ%' OR UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'BORDJ%BOU ARRERIDJ%' OR ID=34 THEN '34 - BORDJ BOUARRIRIDJ' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'BOUMERDES' OR ID=35 THEN '35 - BOUMERDES' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'EL%TARF%' OR ID=36 THEN '36 - EL-TARF' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'TINDOUF' OR ID=37 THEN '37 - TINDOUF' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'TISSEMSILT' OR ID=38 THEN '38 - TISSEMSILT' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'EL%OUED%' OR ID=39 THEN '39 - EL-OUED' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'KHENCHELA' OR ID=40 THEN '40 - KHENCHELA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'SOUK%AHRA%' OR ID=41 THEN '41 - SOUK-AHRAS' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'TIPAZA' OR ID=42 THEN '42 - TIPAZA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'MILA' OR ID=43 THEN '43 - MILA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'AIN%DEFLA%' OR ID=44 THEN '44 - AIN-DEFLA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'NAAMA' OR ID=45 THEN '45 - NAAMA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'AIN%TEMOUCHENT%' OR ID=46 THEN '46 - AIN-TEMOUCHENT' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'GHARDA%' OR ID=47 THEN '47 - GHARDAIA' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) = 'RELIZANE' OR ID=48 THEN '48 - RELIZANE' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'TIMIMOUNE%' OR ID=49 THEN '49 - TIMIMOUNE' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'BORDJ BADJI MOKHTAR%' OR ID=50 THEN '50 - BORDJ BADJI MOKHTAR' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'OULED DJELLAL%' OR ID=51 THEN '51 - OULED DJELLAL' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'BENI ABBES%' OR ID=52 THEN '52 - BENI ABBES' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'IN SALAH%' OR ID=53 THEN '53 - IN SALAH' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'IN GUEZZAM%' OR ID=54 THEN '54 - IN GUEZZAM' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'TOUGGOURT%' OR ID=55 THEN '55 - TOUGGOURT' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'DJANET%' OR ID=56 THEN '56 - DJANET' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'EL%MGHAIR%' OR UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'EL%M%GHAIR%' OR ID=57 THEN '57 - EL M''GHAIR' " +
+                    "WHEN UPPER(REPLACE(REPLACE(REPLACE(NAME, '-', ' '), '''', ' '), '  ', ' ')) LIKE 'EL%MENIA%' OR ID=58 THEN '58 - EL MENIA' " +
+                    "ELSE WILAYA_2 END";
+                db.execSQL(updateWilayas);
+            } catch (Exception e) {
+                Log.v("TRACKKK", "Erreur maj WILAYA_2 OLD DB V15: " + e.getMessage());
+            }
+        }
+
+        // Mise à jour V16 : Réordonner WILAYAS 49-58 + régénérer COMMUNES schema nouveau
+        if (oldVersion < 16) {
+            try {
+                db.execSQL("DROP TABLE IF EXISTS COMMUNES");
+                db.execSQL("DROP TABLE IF EXISTS WILAYAS");
+                db.execSQL("CREATE TABLE IF NOT EXISTS WILAYAS (ID INTEGER NOT NULL PRIMARY KEY, NAME VARCHAR NOT NULL, LATITUDE numeric NOT NULL, LONGITUDE numeric NOT NULL, WILAYA_2 VARCHAR )");
+                db.execSQL("CREATE TABLE IF NOT EXISTS COMMUNES (RECORDID INTEGER NOT NULL PRIMARY KEY, CODE_COMMUNE VARCHAR NOT NULL, CODE_WILAYA INTEGER NOT NULL, COMMUNE VARCHAR NOT NULL, foreign key(CODE_WILAYA) references WILAYAS(ID) on delete cascade)");
+                insert_wilaya_commune_into_database(db);
+            } catch (Exception e) {
+                Log.v("TRACKKK", "Erreur maj V16 OLD DB WILAYAS+COMMUNES: " + e.getMessage());
             }
         }
 
@@ -1574,16 +1659,36 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
         PostData_wilaya wilaya_aucune = new PostData_wilaya();
         wilaya_aucune.id = 0;
         wilaya_aucune.wilaya = "<Aucune>";
+        wilaya_aucune.wilaya_2 = "<Aucune>";
         wilaya_aucune.latitude = 0;
         wilaya_aucune.longitude = 0;
         wilayas.add(wilaya_aucune);
+
+        int idxName = -1, idxWil2 = -1;
+        try { idxName = cursor.getColumnIndexOrThrow("NAME"); } catch (Exception ignore) {}
+        try { idxWil2 = cursor.getColumnIndexOrThrow("WILAYA_2"); } catch (Exception ignore) {}
 
         if (cursor.moveToFirst()) {
             do {
                 PostData_wilaya wilaya = new PostData_wilaya();
 
                 wilaya.id = cursor.getInt(cursor.getColumnIndex("ID"));
-                wilaya.wilaya = cursor.getString(cursor.getColumnIndex("NAME"));
+
+                String nameVal = null;
+                if (idxName >= 0 && !cursor.isNull(idxName)) nameVal = cursor.getString(idxName);
+                String wil2Val = null;
+                if (idxWil2 >= 0 && !cursor.isNull(idxWil2)) wil2Val = cursor.getString(idxWil2);
+
+                wilaya.wilaya_2 = wil2Val;
+
+                if (wil2Val != null && !wil2Val.trim().isEmpty()) {
+                    wilaya.wilaya = wil2Val;
+                } else if (nameVal != null && !nameVal.trim().isEmpty()) {
+                    wilaya.wilaya = nameVal;
+                } else {
+                    wilaya.wilaya = "Wilaya " + wilaya.id;
+                }
+
                 wilaya.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
                 wilaya.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
 
@@ -1599,10 +1704,10 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
         ArrayList<PostData_commune> communes = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(querry, null);
-        // looping through all rows and adding to list
 
         PostData_commune commune_aucune = new PostData_commune();
         commune_aucune.id = 0;
+        commune_aucune.code_commune = "";
         commune_aucune.commune = "<Aucune>";
         commune_aucune.post_code = 0;
         commune_aucune.wilaya_id = 0;
@@ -1610,16 +1715,32 @@ public class DATABASE_OLD extends SQLiteOpenHelper {
         commune_aucune.longitude = 0;
         communes.add(commune_aucune);
 
+        int idxId = -1, idxCommune = -1, idxCodeCommune = -1, idxCodeWilaya = -1;
+        int idxNameOld = -1, idxWilayaIdOld = -1, idxPostOld = -1, idxLatOld = -1, idxLonOld = -1;
+        try { idxId = cursor.getColumnIndexOrThrow("RECORDID"); } catch (Exception e) { idxId = -1; }
+        try { idxCodeCommune = cursor.getColumnIndexOrThrow("CODE_COMMUNE"); } catch (Exception e) { idxCodeCommune = -1; }
+        try { idxCodeWilaya = cursor.getColumnIndexOrThrow("CODE_WILAYA"); } catch (Exception e) { idxCodeWilaya = -1; }
+        try { idxCommune = cursor.getColumnIndexOrThrow("COMMUNE"); } catch (Exception e) { idxCommune = -1; }
+        try { idxNameOld = cursor.getColumnIndexOrThrow("NAME"); } catch (Exception e) { idxNameOld = -1; }
+        try { idxWilayaIdOld = cursor.getColumnIndexOrThrow("WILAYA_ID"); } catch (Exception e) { idxWilayaIdOld = -1; }
+        try { idxPostOld = cursor.getColumnIndexOrThrow("POST_CODE"); } catch (Exception e) { idxPostOld = -1; }
+        try { idxLatOld = cursor.getColumnIndexOrThrow("LATITUDE"); } catch (Exception e) { idxLatOld = -1; }
+        try { idxLonOld = cursor.getColumnIndexOrThrow("LONGITUDE"); } catch (Exception e) { idxLonOld = -1; }
+        if (idxId == -1) { try { idxId = cursor.getColumnIndexOrThrow("ID"); } catch (Exception ignore) {} }
+
         if (cursor.moveToFirst()) {
             do {
                 PostData_commune commune = new PostData_commune();
 
-                commune.id = cursor.getInt(cursor.getColumnIndex("ID"));
-                commune.commune = cursor.getString(cursor.getColumnIndex("NAME"));
-                commune.post_code = cursor.getInt(cursor.getColumnIndex("POST_CODE"));
-                commune.latitude = cursor.getDouble(cursor.getColumnIndex("LATITUDE"));
-                commune.longitude = cursor.getDouble(cursor.getColumnIndex("LONGITUDE"));
-                commune.wilaya_id = cursor.getInt(cursor.getColumnIndex("WILAYA_ID"));
+                if (idxId != -1) commune.id = cursor.getInt(idxId);
+                if (idxCodeCommune != -1) commune.code_commune = cursor.getString(idxCodeCommune);
+                if (idxCodeWilaya != -1) commune.wilaya_id = cursor.getInt(idxCodeWilaya);
+                else if (idxWilayaIdOld != -1) commune.wilaya_id = cursor.getInt(idxWilayaIdOld);
+                if (idxCommune != -1) commune.commune = cursor.getString(idxCommune);
+                else if (idxNameOld != -1) commune.commune = cursor.getString(idxNameOld);
+                if (idxPostOld != -1) commune.post_code = cursor.getInt(idxPostOld);
+                if (idxLatOld != -1) commune.latitude = cursor.getDouble(idxLatOld);
+                if (idxLonOld != -1) commune.longitude = cursor.getDouble(idxLonOld);
 
                 communes.add(commune);
             } while (cursor.moveToNext());

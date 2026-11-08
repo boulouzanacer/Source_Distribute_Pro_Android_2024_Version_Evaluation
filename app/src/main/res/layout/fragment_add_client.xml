@@ -1,230 +1,393 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardBackgroundColor="@color/blue"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardBackgroundColor="#F8FAFC"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
     <LinearLayout
-        android:weightSum="13"
-        android:orientation="vertical"
-        android:layout_margin="5dp"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:background="@color/blue"
-            android:layout_height="0dp">
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="18dp">
 
             <TextView
                 android:id="@+id/title_client"
                 android:text="Nouveau client"
                 android:textColor="@color/white"
-                android:gravity="center"
-                android:textSize="23sp"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="22sp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Remplissez les informations du client"
+                android:textColor="#C6E0F7"
+                android:textSize="13sp"
+                android:layout_marginTop="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <ScrollView
-            android:layout_weight="12"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:clipToPadding="false"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
 
             <LinearLayout
-                android:weightSum="12"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_height="wrap_content">
 
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:weightSum="7"
-                    android:orientation="horizontal"
+                <!-- SECTION 1 : IDENTITÉ -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#E5E7EB"
+                    app:strokeWidth="0.8dp"
+                    android:layout_marginBottom="10dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_height="wrap_content"
-                        android:layout_width="0dp"
-                        android:layout_gravity="center"
-                        app:errorMessage="@string/error_message_empty"
-                        app:errorType="empty"
-                        android:layout_weight="6"
-                        android:hint="@string/code_client"
-                        app:expandedHintEnabled="false"
-                        app:helperText="  "
-                        android:layout_margin="5dp">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_code"
-                            android:gravity="center"
-                            android:inputType="text"
+                        <TextView
+                            android:text="IDENTITÉ"
+                            android:textColor="#64748B"
+                            android:textSize="11.5sp"
                             android:textStyle="bold"
-                            android:enabled="false"
-                            android:textColor="@color/black"
-                            android:layout_gravity="center"
+                            android:letterSpacing="0.05"
+                            android:paddingStart="3dp"
+                            android:paddingBottom="6dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <LinearLayout
+                            android:weightSum="7"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                    <ImageButton
-                        android:id="@+id/scan_codeclient"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_codebarre_white_24"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_gravity="center"
+                                app:errorMessage="@string/error_message_empty"
+                                app:errorType="empty"
+                                android:layout_weight="6"
+                                android:hint="@string/code_client"
+                                app:boxCornerRadiusTopStart="10dp"
+                                app:boxCornerRadiusTopEnd="10dp"
+                                app:boxCornerRadiusBottomStart="10dp"
+                                app:boxCornerRadiusBottomEnd="10dp"
+                                app:boxStrokeWidth="0.8dp"
+                                app:boxStrokeWidthFocused="1.2dp"
+                                android:layout_margin="3dp">
 
-                </LinearLayout>
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edt_client_code"
+                                    android:gravity="center"
+                                    android:inputType="text"
+                                    android:textStyle="bold"
+                                    android:enabled="false"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#94A3B8"
+                                    android:layout_gravity="center"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
 
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_gravity="center"
-                        app:errorMessage="@string/error_message_empty"
-                        app:errorType="empty"
-                        android:hint="@string/nom_client"
-                        app:expandedHintEnabled="false"
-                        app:helperText="  "
-                        android:layout_margin="5dp">
+                            <ImageButton
+                                android:id="@+id/scan_codeclient"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_codebarre_white_24"
+                                android:contentDescription="Scan"
+                                android:background="@drawable/bg_web_button_gps"
+                                android:scaleType="fitCenter"
+                                android:padding="10dp"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_margin="3dp" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_name"
-                            android:gravity="center"
-                            android:inputType="text"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_gravity="center"
+                            app:errorMessage="@string/error_message_empty"
+                            app:errorType="empty"
+                            android:hint="@string/nom_client"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            app:boxStrokeWidth="0.8dp"
+                            app:boxStrokeWidthFocused="1.2dp"
+                            android:layout_margin="3dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_client_name"
+                                android:gravity="center"
+                                android:inputType="text"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textColorHint="#94A3B8"
+                                android:layout_gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- SECTION 2 : LOCALISATION -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#E5E7EB"
+                    app:strokeWidth="0.8dp"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="LOCALISATION"
+                            android:textColor="#64748B"
+                            android:textSize="11.5sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:paddingStart="3dp"
+                            android:paddingBottom="6dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <Spinner
+                            android:id="@+id/wilaya_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_web_section_card"
+                            android:textStyle="bold"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:layout_margin="3dp" />
 
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="0dp">
-
-                    <Spinner
-                        android:id="@+id/wilaya_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:background="@android:drawable/btn_dropdown"
-                        android:textStyle="bold"
-                        android:layout_margin="5dp" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="0dp">
-
-                    <Spinner
-                        android:id="@+id/commune_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:drawable/btn_dropdown"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"
-                        android:layout_margin="5dp" />
-
-                </LinearLayout>
+                        <Spinner
+                            android:id="@+id/commune_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_web_section_card"
+                            android:layout_gravity="center"
+                            android:textStyle="bold"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:layout_margin="3dp" />
 
 
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="0dp">
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center"
+                            app:errorMessage="@string/error_message_empty"
+                            app:errorType="empty"
+                            android:hint="@string/phone_client_hint"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            app:boxStrokeWidth="0.8dp"
+                            app:boxStrokeWidthFocused="1.2dp"
+                            android:layout_margin="3dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_gravity="center"
-                        app:errorMessage="@string/error_message_empty"
-                        app:errorType="empty"
-                        android:hint="@string/adresse"
-                        app:expandedHintEnabled="false"
-                        app:helperText="  "
-                        android:layout_margin="5dp">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_client_telephone"
+                                android:gravity="center"
+                                android:inputType="numberDecimal"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textColorHint="#94A3B8"
+                                android:layout_gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_adress"
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center"
+                            app:errorMessage="@string/error_message_empty"
+                            app:errorType="empty"
+                            android:hint="@string/adresse"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            app:boxStrokeWidth="0.8dp"
+                            app:boxStrokeWidthFocused="1.2dp"
+                            android:layout_margin="3dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_client_adress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:inputType="text"
+                                android:textColor="@color/black"
+                                android:textColorHint="#94A3B8"
+                                android:textStyle="bold" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:weightSum="8"
+                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:inputType="text"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
+                            android:baselineAligned="false">
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_weight="3"
+                                android:layout_gravity="center"
+                                app:boxCornerRadiusTopStart="10dp"
+                                app:boxCornerRadiusTopEnd="10dp"
+                                app:boxCornerRadiusBottomStart="10dp"
+                                app:boxCornerRadiusBottomEnd="10dp"
+                                app:boxStrokeWidth="0.8dp"
+                                app:boxStrokeWidthFocused="1.2dp"
+                                app:expandedHintEnabled="false"
+                                android:hint="Latitude"
+                                android:layout_margin="3dp">
 
-                </LinearLayout>
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edt_client_latitude"
+                                    android:gravity="center"
+                                    android:inputType="numberSigned|numberDecimal"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#94A3B8"
+                                    android:textSize="13sp"
+                                    android:layout_gravity="center"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
 
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_weight="3"
+                                android:layout_gravity="center"
+                                app:boxCornerRadiusTopStart="10dp"
+                                app:boxCornerRadiusTopEnd="10dp"
+                                app:boxCornerRadiusBottomStart="10dp"
+                                app:boxCornerRadiusBottomEnd="10dp"
+                                app:boxStrokeWidth="0.8dp"
+                                app:boxStrokeWidthFocused="1.2dp"
+                                app:expandedHintEnabled="false"
+                                android:hint="Longitude"
+                                android:layout_margin="3dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edt_client_longitude"
+                                    android:gravity="center"
+                                    android:inputType="numberSigned|numberDecimal"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#94A3B8"
+                                    android:textSize="13sp"
+                                    android:layout_gravity="center"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <ImageButton
+                                android:id="@+id/btn_get_gps"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_status_green"
+                                android:contentDescription="GPS"
+                                android:background="@drawable/bg_web_button_gps"
+                                android:scaleType="fitCenter"
+                                android:padding="6dp"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_margin="3dp" />
+
+                            <ImageButton
+                                android:id="@+id/btn_view_map"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_map_24"
+                                android:contentDescription="Carte"
+                                android:background="@drawable/bg_web_button_map"
+                                android:scaleType="fitCenter"
+                                android:padding="6dp"
+                                android:enabled="false"
+                                android:alpha="0.4"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_margin="3dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- CHAMPS CACHÉS : RC + AI -->
                 <LinearLayout
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_gravity="center"
-                        app:errorMessage="@string/error_message_empty"
-                        app:errorType="empty"
-                        android:hint="@string/phone_client_hint"
-                        app:expandedHintEnabled="false"
-                        app:helperText="  "
-                        android:layout_margin="5dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_telephone"
-                            android:gravity="center"
-                            android:inputType="numberDecimal"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:layout_gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_weight="1"
+                    android:visibility="gone"
                     android:weightSum="2"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -247,7 +410,6 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
@@ -269,15 +431,15 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-
                 </LinearLayout>
 
+                <!-- CHAMPS CACHÉS : NIF + NIS -->
                 <LinearLayout
-                    android:layout_weight="1"
+                    android:visibility="gone"
                     android:weightSum="2"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -323,152 +485,191 @@
 
                 </LinearLayout>
 
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
+                <!-- SECTION 3 : PARAMÈTRES COMMERCIAUX -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#E5E7EB"
+                    app:strokeWidth="0.8dp"
+                    android:layout_marginBottom="10dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:layout_margin="5dp"
-                        android:layout_gravity="center"
-                        android:hint="Solde init"
-
-                        app:expandedHintEnabled="false"
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_client_solde_init"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:inputType="numberSigned|numberDecimal"
+                        <TextView
+                            android:text="PARAMÈTRES COMMERCIAUX"
+                            android:textColor="#64748B"
+                            android:textSize="11.5sp"
                             android:textStyle="bold"
-                            android:text="0.00"
+                            android:letterSpacing="0.05"
+                            android:paddingStart="3dp"
+                            android:paddingBottom="6dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center"
+                            android:hint="Solde initial"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            app:boxStrokeWidth="0.8dp"
+                            app:boxStrokeWidthFocused="1.2dp"
+                            app:expandedHintEnabled="false"
+                            android:layout_margin="3dp"
+                            android:layout_height="wrap_content">
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_weight="2"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-                    <TextView
-                        android:text="MODE DE TARIF"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/rd_mode_tarif">
-
-                        <TableRow>
-
-                            <RadioButton
-                                android:id="@+id/rb_0"
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_client_solde_init"
+                                android:gravity="center"
+                                android:maxLines="1"
+                                android:inputType="numberSigned|numberDecimal"
+                                android:textStyle="bold"
+                                android:text="0.00"
+                                android:textColor="@color/black"
+                                android:textColorHint="#94A3B8"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Libre" />
+                                android:layout_height="wrap_content" />
 
-                        </TableRow>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <TableRow android:weightSum="3">
+                        <TextView
+                            android:text="MODE DE TARIF"
+                            android:textColor="#64748B"
+                            android:textSize="11.5sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:paddingStart="3dp"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
-                            <RadioButton
-                                android:id="@+id/rb_1"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 1" />
+                        <com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_web_section_card"
+                            android:padding="4dp"
+                            android:id="@+id/rd_mode_tarif">
 
-                            <RadioButton
-                                android:id="@+id/rb_2"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 2" />
+                            <TableRow>
 
-                            <RadioButton
-                                android:id="@+id/rb_3"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 3" />
+                                <RadioButton
+                                    android:id="@+id/rb_0"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="13sp"
+                                    android:text="Libre" />
 
-                        </TableRow>
+                            </TableRow>
 
-                        <TableRow android:weightSum="3">
+                            <TableRow android:weightSum="3">
 
-                            <RadioButton
-                                android:id="@+id/rb_4"
-                                android:layout_weight="1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 4" />
+                                <RadioButton
+                                    android:id="@+id/rb_1"
+                                    android:layout_weight="1"
+                                    android:textSize="13sp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tarif 1" />
 
-                            <RadioButton
-                                android:id="@+id/rb_5"
-                                android:layout_weight="1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 5" />
+                                <RadioButton
+                                    android:id="@+id/rb_2"
+                                    android:layout_weight="1"
+                                    android:textSize="13sp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tarif 2" />
 
-                            <RadioButton
-                                android:id="@+id/rb_6"
-                                android:layout_weight="1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tarif 6" />
+                                <RadioButton
+                                    android:id="@+id/rb_3"
+                                    android:layout_weight="1"
+                                    android:textSize="13sp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tarif 3" />
 
-                        </TableRow>
+                            </TableRow>
 
-                    </com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout>
+                            <TableRow android:weightSum="3">
 
+                                <RadioButton
+                                    android:id="@+id/rb_4"
+                                    android:layout_weight="1"
+                                    android:textSize="13sp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tarif 4" />
 
-                </LinearLayout>
+                                <RadioButton
+                                    android:id="@+id/rb_5"
+                                    android:layout_weight="1"
+                                    android:textSize="13sp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tarif 5" />
 
+                                <RadioButton
+                                    android:id="@+id/rb_6"
+                                    android:layout_weight="1"
+                                    android:textSize="13sp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tarif 6" />
+
+                            </TableRow>
+
+                        </com.safesoft.proapp.distribute.utils.ToggleButtonGroupTableLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- BARRE DE BOUTONS D'ACTION -->
                 <LinearLayout
-                    style="?android:attr/buttonBarStyle"
-                    android:layout_weight="1"
                     android:weightSum="2"
-                    android:padding="10dp"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="8dp">
 
                     <Button
                         android:id="@+id/btn_cancel"
-                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="right"
+                        android:layout_height="54dp"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:layout_marginEnd="5sp"
-                        android:background="@color/transparent"
-                        android:textColor="@color/blue"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_web_button_secondary"
+                        android:textColor="#334155"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
                         android:text="Annuler" />
 
                     <Button
                         android:id="@+id/btn_valider"
-                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/blue"
-                        android:text="Valider" />
-
-
+                        android:layout_height="54dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_web_button_primary"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:text="Valider"
+                        android:layout_marginStart="4dp" />
 
                 </LinearLayout>
 
@@ -476,6 +677,6 @@
 
         </ScrollView>
 
-
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

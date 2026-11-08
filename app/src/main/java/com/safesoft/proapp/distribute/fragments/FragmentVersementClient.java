@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.client.ActivityClientDetail;
+import com.safesoft.proapp.distribute.activities.client.ActivityClients;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.postData.PostData_Carnet_c;
 
@@ -72,6 +73,9 @@ public class FragmentVersementClient {
         //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
 
+        // Apply immersive mode (hide navigation bar) to the dialog window if enabled.
+        com.safesoft.proapp.distribute.app.BaseApplication.applyImmersiveToDialog(dialog.getWindow());
+
 
         btn_valider = dialogview.findViewById(R.id.btn_connect);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
@@ -115,28 +119,66 @@ public class FragmentVersementClient {
 
         btn_valider.setOnClickListener(v -> {
 
-            if (Objects.requireNonNull(edt_versement.getText()).length() > 0) {
-                PostData_Carnet_c carnet_c = new PostData_Carnet_c();
+            String str_versement = Objects.requireNonNull(edt_versement.getText()).toString().trim();
+
+            if (str_versement.isEmpty()) {
+                edt_versement.setError("Montant obligatoire !");
+                edt_versement.requestFocus();
+                new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Montant invalide")
+                        .setContentText("Veuillez saisir un montant de versement.")
+                        .show();
+                return;
+            }
+
+            String str_parse = str_versement.replace(',', '.');
+            try {
+                val_versement = Double.parseDouble(str_parse);
+            } catch (NumberFormatException nfe) {
+                edt_versement.setError("Format numérique invalide !");
+                edt_versement.requestFocus();
+                new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Montant invalide")
+                        .setContentText("Le format du montant saisi est incorrect.")
+                        .show();
+                return;
+            }
+
+            if (val_versement <= 0) {
+                edt_versement.setError("Le montant doit être supérieur à 0 !");
+                edt_versement.requestFocus();
+                new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Montant invalide")
+                        .setContentText("Vous ne pouvez pas enregistrer un versement nul ou négatif.")
+                        .show();
+                return;
+            }
+
+            val_nouveau_solde = val_solde_actuel - val_versement;
+            val_nouveau_versement = val_versement_actuel + val_versement;
+            edt_nouveau_solde.setText(nf.format(val_nouveau_solde));
+
+            PostData_Carnet_c carnet_c = new PostData_Carnet_c();
 
 
-                // get date and time
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df_show = new SimpleDateFormat("dd/MM/yyyy");
-                // SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                String formattedDate = df_show.format(c.getTime());
-                String currentTime = sdf.format(c.getTime());
+            // get date and time
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df_show = new SimpleDateFormat("dd/MM/yyyy");
+            // SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            String formattedDate = df_show.format(c.getTime());
+            String currentTime = sdf.format(c.getTime());
 
-                carnet_c.carnet_date = formattedDate;
-                carnet_c.carnet_heure = currentTime;
-                carnet_c.recordid = recordid;
-                carnet_c.carnet_num_bon = NUM_BON_CARNET_C;
-                carnet_c.code_client = CODE_CLIENT;
-                carnet_c.carnet_achats = val_solde_actuel;
-                carnet_c.carnet_versement = val_versement;
-                carnet_c.carnet_remarque = edt_observation.getText().toString();
+            carnet_c.carnet_date = formattedDate;
+            carnet_c.carnet_heure = currentTime;
+            carnet_c.recordid = recordid;
+            carnet_c.carnet_num_bon = NUM_BON_CARNET_C;
+            carnet_c.code_client = CODE_CLIENT;
+            carnet_c.carnet_achats = val_solde_actuel;
+            carnet_c.carnet_versement = val_versement;
+            carnet_c.carnet_remarque = edt_observation.getText().toString();
 
-                if (!IS_EDIT) {
+            if (!IS_EDIT) {
                     if (controller.insert_into_carnet_c(carnet_c, val_nouveau_solde, val_nouveau_versement)) {
 
                         new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
@@ -144,7 +186,12 @@ public class FragmentVersementClient {
                                 .setContentText(" Versement Ajouté! ")
                                 .show();
 
-                        ((ActivityClientDetail) activity).Update_client_details();
+                        if (activity instanceof ActivityClientDetail) {
+                            ((ActivityClientDetail) activity).Update_client_details();
+                        }
+                        if (activity instanceof ActivityClients) {
+                            ((ActivityClients) activity).refreshAfterVersement();
+                        }
 
                     } else {
                         // message erreur
@@ -162,7 +209,12 @@ public class FragmentVersementClient {
                                 .setContentText(" Versement Modifié! ")
                                 .show();
 
-                        ((ActivityClientDetail) activity).Update_client_details();
+                        if (activity instanceof ActivityClientDetail) {
+                            ((ActivityClientDetail) activity).Update_client_details();
+                        }
+                        if (activity instanceof ActivityClients) {
+                            ((ActivityClients) activity).refreshAfterVersement();
+                        }
 
                     } else {
                         // message erreur
@@ -173,22 +225,7 @@ public class FragmentVersementClient {
                     }
                 }
 
-                dialog.dismiss();
-            } else {
-                edt_versement.setError("Montant obligatoire!!");
-            }
-            /*if(edt_versement.getText().length() > 0){
-
-               // RemiseEventRemiseEvent remise_data = new RemiseEvent(val_remise, val_taux, val_apres_remise);
-                ValidateFactureEvent Valider_bon_versement = new ValidateFactureEvent( val_versement);
-                // Post the event
-                bus.post(Valider_bon_versement);
-
-                dialog.dismiss();
-
-            }else {
-                edt_versement.setError("Montant versement obligatoire!!");
-            }*/
+            dialog.dismiss();
         });
 
         btn_cancel.setOnClickListener(v -> {

@@ -42,7 +42,7 @@ public class BookView extends View {
 
     private void initView() {
         paint = new Paint();
-        paint.setColor(getResources().getColor(R.color.book_loading_book));
+        paint.setColor(getResources().getColor(R.color.book_loading_book, null));
         paint.setStrokeWidth(getResources().getDimension(R.dimen.book_border));
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);

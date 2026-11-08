@@ -14,8 +14,8 @@ public class Env {
     public static final String URL_SAVE_CONFIG = URL_BASE +"backup_cloud/save_config.php";
     public static final String URL_GET_CONFIG = URL_BASE +"backup_cloud/get_config.php";
     public static final String hashAlgorithm = "SHA-256";  // Hash algorithm to use
-    public static final String APP_VERION = "220426";
-    public static final String APP_VERION_LABEL = "V : 22.04.26-2";
+    public static final String APP_VERION = "041126";
+    public static final String APP_VERION_LABEL = "V : 04.11.26";
 
     public static final String MESSAGE_DEMANDE_ACTIVITATION = "Vous êtes en mode évaluation, veuillez activer l'application";
     public static final String MESSAGE_DEMANDE_ACTIVITATION2 = "Connexion via internet ne pas autorisée," +

@@ -216,7 +216,16 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
         String bestProvider = locationManager.getBestProvider(criteria, true);
 
-        assert bestProvider != null;
+        // getBestProvider() retourne null quand aucun fournisseur ne correspond aux
+        // criteres (localisation desactivee) : isProviderEnabled(null) leverait une
+        // IllegalArgumentException. Une assertion ne suffit pas, elles sont desactivees
+        // a l'execution sur Android.
+        if (bestProvider == null) {
+            Toast.makeText(this, "No location provider enabled!", Toast.LENGTH_LONG).show();
+            Log.i(MYTAG, "No location provider enabled!");
+            return null;
+        }
+
         boolean enabled = locationManager.isProviderEnabled(bestProvider);
 
         if (!enabled) {

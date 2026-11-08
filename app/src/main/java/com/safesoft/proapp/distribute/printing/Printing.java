@@ -35,6 +35,7 @@ import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
 import com.rt.printerlibrary.enumerate.BarcodeType;
 import com.rt.printerlibrary.enumerate.BmpPrintMode;
 import com.rt.printerlibrary.enumerate.CommonEnum;
+import com.rt.printerlibrary.enumerate.ConnectStateEnum;
 import com.rt.printerlibrary.enumerate.PrintDirection;
 import com.rt.printerlibrary.enumerate.PrintRotation;
 import com.rt.printerlibrary.enumerate.SettingEnum;
@@ -102,6 +103,7 @@ public class Printing {
     private ArrayList<PostData_Etatv> etats;
     private String code_client_etat, client_etat, date_debut_etat, date_fin_etat;
     private String type_print;
+    private int print_copies = 1;
 
     /////////////////////////////////////// IMPRIMER BON ///////////////////////////////////////////
     public void start_print_bon_vente(Activity activity, String type_print, ArrayList<PostData_Bon2> final_panier, PostData_Bon1 bon1) throws UnsupportedEncodingException {
@@ -228,11 +230,12 @@ public class Printing {
     }
 
     /////////////////////////////////// IMPRIMER ETIQUETTE /////////////////////////////////////////
-    public void start_print_etiquette(Activity activity, PostData_Produit produit) {
+    public void start_print_etiquette(Activity activity, PostData_Produit produit, int copies) {
 
         mActivity = activity;
         this.produit = produit;
         this.type_print = "ETIQUETTE";
+        this.print_copies = copies > 0 ? copies : 1;
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
@@ -419,11 +422,12 @@ public class Printing {
         }
     }
 
-    public void start_print_etiquette_code_barre(Activity activity, PostData_Produit produit) {
+    public void start_print_etiquette_code_barre(Activity activity, PostData_Produit produit, int copies) {
 
         mActivity = activity;
         this.produit = produit;
         this.type_print = "ETIQUETTE_CODEBARRE";
+        this.print_copies = copies > 0 ? copies : 1;
 
         AsyncTask<Void, Void, Boolean> runningTask;
 
@@ -644,6 +648,7 @@ public class Printing {
 
 
         @Override
+        @SuppressWarnings("unchecked")
         protected Boolean doInBackground(Void... params) {
 
             try {
@@ -666,7 +671,11 @@ public class Printing {
                         rtPrinter.connect(wiFiConfigBean);
                     }
 
-                    Thread.sleep(1500);
+                    // Connexion asynchrone : connect() lance un thread qui ouvre le socket
+                    // (BluetoothSocket.connect). Tant que le socket n'est pas etabli, l'OutputStream
+                    // interne de la librairie est null et writeMsg/writeMsgAsync abandonnent la trame
+                    // silencieusement. On attend donc l'etat "Connected" au lieu d'un delai fixe.
+                    waitUntilPrinterReady(8000);
 
                 } else {
                     rtPrinter = BaseApplication.getInstance().getRtPrinter();
@@ -677,6 +686,34 @@ public class Printing {
                 return false;
             }
             return true;
+        }
+
+        /**
+         * Attend que l'interface imprimante signale un socket reellement connecte.
+         * getConnectState() ne renvoie Connected que si BluetoothSocket.isConnected(),
+         * soit exactement quand l'OutputStream est pret a recevoir la trame.
+         */
+        private void waitUntilPrinterReady(long timeoutMs) {
+            long deadline = System.currentTimeMillis() + timeoutMs;
+            while (System.currentTimeMillis() < deadline) {
+                try {
+                    if (rtPrinter != null
+                            && rtPrinter.getPrinterInterface() != null
+                            && rtPrinter.getConnectState() == ConnectStateEnum.Connected) {
+                        Log.v("PRINTER_CONX", "Imprimante connectee, envoi de la trame");
+                        return;
+                    }
+                } catch (Exception e) {
+                    Log.e("TRACKKK", "waitUntilPrinterReady: " + e);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+            Log.e("TRACKKK", "waitUntilPrinterReady: timeout, imprimante non connectee");
         }
 
 
@@ -1515,7 +1552,11 @@ public class Printing {
                         gte_gratuit = final_panier_vente.get(i).gratuit;
                         gte_gratuit_Str = new DecimalFormat("####0.##").format(gte_gratuit);
 
-                        prix_unit = final_panier_vente.get(i).pv_ht;
+                        if (prefs.getBoolean("AFFICHAGE_HT", false)) {
+                            prix_unit = final_panier_vente.get(i).pv_ht;
+                        }else{
+                            prix_unit = final_panier_vente.get(i).pv_ht * (1 + (final_panier_vente.get(i).tva/100));
+                        }
                         prix_unit_Str = new DecimalFormat("####0.00").format(prix_unit);
 
                         total_par_produit = final_panier_vente.get(i).pv_ht * final_panier_vente.get(i).qte;
@@ -2099,7 +2140,10 @@ public class Printing {
                     e.printStackTrace();
                 }
                 if (rtPrinter != null) {
-                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                    // Impression du nombre de tickets demandes.
+                    for (int i = 0; i < print_copies; i++) {
+                        rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                    }
                 }
                 hideProgressDialog();
             }
@@ -2665,7 +2709,7 @@ public class Printing {
                     byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
                     tscCmd.append(barcodeCmd);
 
-                    tscCmd.append(tscCmd.getPrintCopies(1));
+                    tscCmd.append(tscCmd.getPrintCopies(print_copies));
                     tscCmd.append(tscCmd.getEndCmd());
                     if (rtPrinter != null) {
                         rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
@@ -2725,7 +2769,7 @@ public class Printing {
                     byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
                     tscCmd.append(barcodeCmd);
 */
-                    tscCmd.append(tscCmd.getPrintCopies(1));
+                    tscCmd.append(tscCmd.getPrintCopies(print_copies));
                     tscCmd.append(tscCmd.getEndCmd());
                     if (rtPrinter != null) {
                         rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
@@ -2749,22 +2793,48 @@ public class Printing {
                 showProgressDialog("Impression...");
 
                 BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_TSC);
+
+                // Sans interface, writeMsg/writeMsgAsync ne font rien du tout (echec silencieux).
+                if (rtPrinter == null || rtPrinter.getPrinterInterface() == null) {
+                    Log.e("TRACKKK", "print_etiquette_code_barre_50_X_30 : imprimante non connectee");
+                    final Activity activity = mActivity;
+                    if (activity != null) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Crouton.makeText(activity, "Aucune imprimante est connecté", Style.ALERT).show();
+                            }
+                        });
+                    }
+                    hideProgressDialog();
+                    return;
+                }
+
                 try {
 
                     CmdFactory tscFac = new TscFactory();
                     Cmd tscCmd = tscFac.create();
 
-                    tscCmd.append(tscCmd.getHeaderCmd());
+                    // Imprimante d'etiquettes TSPL : ne jamais envoyer l'initialisation ESC/POS
+                    // (0x1B 0x40) dans la meme trame, cela fait basculer les imprimantes a double
+                    // emulation en mode ESC/POS et plus rien ne s'imprime.
+                    tscCmd.append(tscCmd.getHeaderCmd()); // CLS
 
-                    rtPrinter.writeMsg(TonyUtils.InitPrinter());
-                    TonyUtils.Tsc_InitLabelPrint(rtPrinter);
-                    rtPrinter.writeMsg(TonyUtils.SetSize("50", "30").getBytes());
-                    String strPrintTxtproduit = TonyUtils.printText("10", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
-                    rtPrinter.writeMsg(strPrintTxtproduit.getBytes("GBK"));
+                    // Remplace TonyUtils.Tsc_InitLabelPrint (80 x 40 mm en dur) et le second
+                    // "SIZE" : en TSPL le SIZE n'est pris en compte qu'avec le GAP qui le suit.
+                    CommonSetting commonSetting = new CommonSetting();
+                    commonSetting.setLableSizeBean(new LableSizeBean(45, 35));
+                    commonSetting.setLabelGap(3);
+                    commonSetting.setPrintDirection(PrintDirection.NORMAL);
+                    tscCmd.append(tscCmd.getCommonSettingCmd(commonSetting));
+
+                    // Le texte doit etre dans le meme flux que le CLS, sinon le CLS l'efface.
+                    String strPrintTxtproduit = TonyUtils.printText("20", "20", "TSS24.BF2", "0", "1", "1", produit + ";");
+                    tscCmd.append(strPrintTxtproduit.getBytes("GBK"));
 
                     String prix_vente_str = new DecimalFormat("####0.00").format(prix_vente_ttc) + " DA";
-                    String strPrintTxtPrix = TonyUtils.printText("10", "60", "TSS24.BF2", "0", "2", "2", prix_vente_str + ";");
-                    rtPrinter.writeMsg(strPrintTxtPrix.getBytes("GBK"));
+                    String strPrintTxtPrix = TonyUtils.printText("20", "90", "TSS24.BF2", "0", "2", "2", prix_vente_str + ";");
+                    tscCmd.append(strPrintTxtPrix.getBytes("GBK"));
 
 
                     BarcodeSetting barcodeSetting = new BarcodeSetting();
@@ -2773,20 +2843,19 @@ public class Printing {
                     barcodeSetting.setHeightInDot(48);//bar height setting
                     barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
                     barcodeSetting.setPrintRotation(PrintRotation.Rotate0);
-                    int x = 10, y = 120;
+                    int x = 20, y = 140;
                     barcodeSetting.setPosition(new Position(x, y));
 
+                    tscCmd.append(tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent));
 
-                    byte[] barcodeCmd = tscCmd.getBarcodeCmd(CODE128, barcodeSetting, barcodeContent);
-                    tscCmd.append(barcodeCmd);
-
-                    tscCmd.append(tscCmd.getPrintCopies(1));
+                    tscCmd.append(tscCmd.getPrintCopies(print_copies));
                     tscCmd.append(tscCmd.getEndCmd());
-                    if (rtPrinter != null) {
-                        rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
-                    }
+
+                    // Une seule ecriture : l'ordre des commandes TSPL est ainsi garanti.
+                    rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
                 } catch (Exception e) {
-                    e.getMessage();
+                    Log.e("TRACKKK", "print_etiquette_code_barre_50_X_30 fail: " + e, e);
+                    e.printStackTrace();
                 }
                 hideProgressDialog();
             }
@@ -3307,11 +3376,21 @@ public class Printing {
 
 
     public void showProgressDialog(final String str) {
-        mActivity.runOnUiThread(new Runnable() {
+        final Activity activity = mActivity;
+        if (activity == null) {
+            return;
+        }
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                // L'impression est asynchrone : l'activite peut etre fermee entre-temps.
+                // Dans ce cas la fenetre n'a plus de token valide et show() leve une
+                // BadTokenException.
+                if (activity.isFinishing() || activity.isDestroyed()) {
+                    return;
+                }
                 if (progressDialog == null) {
-                    progressDialog = new ProgressDialog(mActivity);
+                    progressDialog = new ProgressDialog(activity);
                 }
                 if (!TextUtils.isEmpty(str)) {
                     progressDialog.setMessage(str);
@@ -3325,11 +3404,27 @@ public class Printing {
     }
 
     public void hideProgressDialog() {
-        mActivity.runOnUiThread(new Runnable() {
+        final Activity activity = mActivity;
+        if (activity == null) {
+            return;
+        }
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
+                if (progressDialog == null) {
+                    return;
+                }
+                // Si l'activite a ete detruite, sa fenetre est deja detachee du
+                // WindowManager : dismiss() leve alors une IllegalArgumentException.
+                if (activity.isFinishing() || activity.isDestroyed()) {
+                    return;
+                }
+                if (progressDialog.isShowing()) {
+                    try {
+                        progressDialog.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        Log.v("TRACKKK", "hideProgressDialog fail: " + e.getMessage());
+                    }
                 }
             }
         });

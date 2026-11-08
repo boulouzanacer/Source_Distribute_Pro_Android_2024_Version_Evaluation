@@ -3,12 +3,15 @@ package com.safesoft.proapp.distribute.fragments;
 import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -30,6 +33,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
@@ -67,6 +71,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class FragmentNewEditProduct extends DialogFragment {
+    private static final int REQUEST_CAMERA_PERMISSION = 1010;
     final String ALLOWED_CHARACTERS_CODEBARRE = "0123456789ABCDEFGHJK";
     final String ALLOWED_CHARACTERS_REFERENCE = "012345678-9RSTUVWXYZ";
     double val_colissage, val_stock_ini,
@@ -117,6 +122,8 @@ public class FragmentNewEditProduct extends DialogFragment {
     private boolean is_app_synchronised_mode = false;
     private String SOURCE_ACTIVITY ="";
     private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
+    private ActivityResultLauncher<String> galleryFallbackLauncher;
+    private ActivityResultLauncher<String> cameraPermissionLauncher;
 
 
     //PopupWindow display method
@@ -145,19 +152,39 @@ public class FragmentNewEditProduct extends DialogFragment {
         imagePickerLauncher =
                 registerForActivityResult(
                         new ActivityResultContracts.PickVisualMedia(),
-                        uri -> {
-                            if (uri != null) {
-                                try {
-                                    Bitmap bitmap = uriToBitmap(mActivity, uri);
-                                    img_product.setImageBitmap(bitmap);
+                        this::applyPickedImage
+                );
 
-                                    Bitmap resizedBitmap = resizeBitmap(bitmap, 800, 800);
-                                    created_produit.photo = bitmapToBytes(resizedBitmap, 100);
+        // Repli utilise si le selecteur systeme (Photo Picker) est indisponible ou
+        // refuse : sur certaines ROM, lancer l'intent du Photo Picker leve une
+        // SecurityException (composant non exporte) et faisait planter l'application.
+        galleryFallbackLauncher =
+                registerForActivityResult(
+                        new ActivityResultContracts.GetContent(),
+                        this::applyPickedImage
+                );
 
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(mActivity, "Unable to load image", Toast.LENGTH_SHORT).show();
-                                }
+        cameraPermissionLauncher =
+                registerForActivityResult(
+                        new ActivityResultContracts.RequestPermission(),
+                        granted -> {
+                            if (granted) {
+                                launchCameraCapture();
+                            } else if (!ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA)) {
+                                new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Caméra indisponible")
+                                        .setContentText("Vous avez refusé la permission caméra. Pour prendre la photo du produit, allez dans Paramètres > Applications > Distribute Pro > Autorisations et activez Caméra.")
+                                        .setConfirmText("Aller aux paramètres")
+                                        .setConfirmClickListener(sweetAlertDialog -> {
+                                            sweetAlertDialog.dismissWithAnimation();
+                                            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                            Uri uri = Uri.fromParts("package", mActivity.getPackageName(), null);
+                                            intent.setData(uri);
+                                            mActivity.startActivity(intent);
+                                        })
+                                        .setCancelText("Annuler")
+                                        .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                                        .show();
                             }
                         }
                 );
@@ -199,18 +226,15 @@ public class FragmentNewEditProduct extends DialogFragment {
 
         btn_valider = rootview.findViewById(R.id.btn_connect);
         btn_valider.setBackgroundColor(Color.parseColor("#3498db"));
-        btn_valider.setFocusBackgroundColor(Color.parseColor("#5474b8"));
-        btn_valider.setTextSize(15);
-        btn_valider.setIconPosition(POSITION_LEFT);
-        btn_valider.setFontIconSize(30);
-
+        btn_valider.setFocusBackgroundColor(Color.parseColor("#2980b9"));
+        btn_valider.setTextSize(16);
+        btn_valider.setFontIconSize(0);
 
         btn_cancel = rootview.findViewById(R.id.btn_cancel);
         btn_cancel.setBackgroundColor(Color.parseColor("#3498db"));
-        btn_cancel.setFocusBackgroundColor(Color.parseColor("#5474b8"));
-        btn_cancel.setTextSize(15);
-        btn_cancel.setIconPosition(POSITION_LEFT);
-        btn_cancel.setFontIconSize(30);
+        btn_cancel.setFocusBackgroundColor(Color.parseColor("#2980b9"));
+        btn_cancel.setTextSize(16);
+        btn_cancel.setFontIconSize(0);
 
         img_product = rootview.findViewById(R.id.img_product);
 
@@ -523,18 +547,25 @@ public class FragmentNewEditProduct extends DialogFragment {
 
         btn_valider.setOnClickListener(v -> {
             boolean hasError = false;
+            CharSequence cbCs = edt_codebarre.getText();
+            CharSequence rfCs = edt_reference.getText();
+            CharSequence dsCs = edt_designation.getText();
+            CharSequence stCs = edt_stock_ini.getText();
+            CharSequence clCs = edt_colissage.getText();
+            CharSequence paCs = edt_prix_achat_ttc.getText();
+            CharSequence p1Cs = edt_prix1_ttc.getText();
 
-            if (edt_codebarre.getText().length() <= 0) {
+            if (cbCs == null || cbCs.length() <= 0) {
                 edt_codebarre.setError("Code a barre est obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_reference.getText().length() <= 0) {
+            if (rfCs == null || rfCs.length() <= 0) {
                 edt_reference.setError("Reference est obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_designation.getText().length() <= 0) {
+            if (dsCs == null || dsCs.length() <= 0) {
 
                 edt_designation.setError("Nom de produit est obligatoire!!");
                 hasError = true;
@@ -542,70 +573,87 @@ public class FragmentNewEditProduct extends DialogFragment {
 
             //===================================================================
 
-            if (edt_stock_ini.getText().length() <= 0) {
+            if (stCs == null || stCs.length() <= 0) {
                 edt_stock_ini.setText("0");
                 val_stock_ini = 0;
             } else {
-                val_stock_ini = Double.parseDouble(edt_stock_ini.getText().toString());
+                try {
+                    val_stock_ini = Double.parseDouble(stCs.toString());
+                } catch (NumberFormatException nfe) {
+                    edt_stock_ini.setError("Stock invalide");
+                    hasError = true;
+                    val_stock_ini = 0;
+                }
             }
 
-            if (edt_colissage.getText().length() <= 0) {
+            if (clCs == null || clCs.length() <= 0) {
                 edt_colissage.setText("0");
                 val_colissage = 0;
             } else {
-                val_colissage = Double.parseDouble(edt_colissage.getText().toString());
+                try {
+                    val_colissage = Double.parseDouble(clCs.toString());
+                } catch (NumberFormatException nfe) {
+                    edt_colissage.setError("Colisage invalide");
+                    hasError = true;
+                    val_colissage = 0;
+                }
             }
 
             //===================================================================
 
-            if (edt_prix_achat_ttc.getText().length() <= 0) {
+            if (paCs == null || paCs.length() <= 0) {
                 edt_prix_achat_ttc.setError("Prix achat (TTC) est obligatoire!!");
                 hasError = true;
             }
 
-            if (edt_prix1_ttc.getText().length() <= 0) {
+            if (p1Cs == null || p1Cs.length() <= 0) {
                 edt_prix1_ttc.setError(params.pv1_titre + " (TTC) est obligatoire!!");
                 hasError = true;
             }
 
             if (params.prix_2 == 1) {
-                if (edt_prix2_ttc.getText().length() <= 0) {
+                CharSequence cs = edt_prix2_ttc.getText();
+                if (cs == null || cs.length() <= 0) {
                     edt_prix2_ttc.setError(params.pv2_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
             if (params.prix_3 == 1) {
-                if (edt_prix3_ttc.getText().length() <= 0) {
+                CharSequence cs = edt_prix3_ttc.getText();
+                if (cs == null || cs.length() <= 0) {
                     edt_prix3_ttc.setError(params.pv3_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
             if (params.prix_4 == 1) {
-                if (edt_prix4_ttc.getText().length() <= 0) {
+                CharSequence cs = edt_prix4_ttc.getText();
+                if (cs == null || cs.length() <= 0) {
                     edt_prix4_ttc.setError(params.pv4_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
             if (params.prix_5 == 1) {
-                if (edt_prix5_ttc.getText().length() <= 0) {
+                CharSequence cs = edt_prix5_ttc.getText();
+                if (cs == null || cs.length() <= 0) {
                     edt_prix5_ttc.setError(params.pv5_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
             if (params.prix_6 == 1) {
-                if (edt_prix6_ttc.getText().length() <= 0) {
+                CharSequence cs = edt_prix6_ttc.getText();
+                if (cs == null || cs.length() <= 0) {
                     edt_prix6_ttc.setError(params.pv6_titre + " (TTC) est obligatoire!!");
                     hasError = true;
                 }
             }
 
             if (prefs.getBoolean("AFFICHAGE_HT", false)) {
-
-                if (Objects.requireNonNull(edt_prix_achat_ht.getText()).length() <= 0) {
+                CharSequence pahtCs = edt_prix_achat_ht.getText();
+                if (pahtCs == null || pahtCs.length() <= 0) {
                     edt_prix_achat_ht.setError("Prix achat HT est obligatoire!!");
                     hasError = true;
                 }
@@ -615,41 +663,47 @@ public class FragmentNewEditProduct extends DialogFragment {
                     hasError = true;
                 }*/
 
-                if (Objects.requireNonNull(edt_prix1_ht.getText()).length() <= 0) {
+                CharSequence p1htCs = edt_prix1_ht.getText();
+                if (p1htCs == null || p1htCs.length() <= 0) {
                     edt_prix1_ht.setError("Prix 1 HT est obligatoire!!");
                     hasError = true;
                 }
 
                 if (params.prix_2 == 1) {
-                    if (Objects.requireNonNull(edt_prix2_ht.getText()).length() <= 0) {
+                    CharSequence cs = edt_prix2_ht.getText();
+                    if (cs == null || cs.length() <= 0) {
                         edt_prix2_ht.setError("Prix 2 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_3 == 1) {
-                    if (Objects.requireNonNull(edt_prix3_ht.getText()).length() <= 0) {
+                    CharSequence cs = edt_prix3_ht.getText();
+                    if (cs == null || cs.length() <= 0) {
                         edt_prix3_ht.setError("Prix 3 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_4 == 1) {
-                    if (Objects.requireNonNull(edt_prix4_ht.getText()).length() <= 0) {
+                    CharSequence cs = edt_prix4_ht.getText();
+                    if (cs == null || cs.length() <= 0) {
                         edt_prix4_ht.setError("Prix 4 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_5 == 1) {
-                    if (Objects.requireNonNull(edt_prix5_ht.getText()).length() <= 0) {
+                    CharSequence cs = edt_prix5_ht.getText();
+                    if (cs == null || cs.length() <= 0) {
                         edt_prix5_ht.setError("Prix 5 HT est obligatoire!!");
                         hasError = true;
                     }
                 }
 
                 if (params.prix_6 == 1) {
-                    if (Objects.requireNonNull(edt_prix6_ht.getText()).length() <= 0) {
+                    CharSequence cs = edt_prix6_ht.getText();
+                    if (cs == null || cs.length() <= 0) {
                         edt_prix6_ht.setError("Prix 6 HT est obligatoire!!");
                         hasError = true;
                     }
@@ -668,17 +722,47 @@ public class FragmentNewEditProduct extends DialogFragment {
                 created_produit.stock_ini = val_stock_ini;
                 created_produit.colissage = val_colissage;
 
-                created_produit.pa_ht = Double.parseDouble(Objects.requireNonNull(edt_prix_achat_ht.getText()).toString());
-                created_produit.tva = Double.parseDouble(Objects.requireNonNull(edt_tva.getText()).toString());
-                created_produit.pa_ttc = Double.parseDouble(edt_prix_achat_ttc.getText().toString());
+                CharSequence pahtCs = edt_prix_achat_ht.getText();
+                CharSequence tvaCs = edt_tva.getText();
+                CharSequence pattc = edt_prix_achat_ttc.getText();
+                double parsedPaHt = 0.0;
+                double parsedTva = 0.0;
+                double parsedPaTtc = 0.0;
+                try {
+                    String pahtStr = pahtCs != null ? pahtCs.toString().trim() : "";
+                    String tvaStr = tvaCs != null ? tvaCs.toString().trim() : "";
+                    String pattcStr = pattc != null ? pattc.toString().trim() : "";
+                    parsedPaHt = pahtStr.isEmpty() ? 0.0 : Double.parseDouble(pahtStr);
+                    parsedTva = tvaStr.isEmpty() ? 0.0 : Double.parseDouble(tvaStr);
+                    parsedPaTtc = pattcStr.isEmpty() ? 0.0 : Double.parseDouble(pattcStr);
+                } catch (NumberFormatException nfe) {
+                    hasError = true;
+                }
+                if (hasError) {
+                    new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Attention !")
+                            .setContentText("Vérifiez les prix (chiffres invalides)")
+                            .show();
+                    return;
+                }
+                created_produit.pa_ht = parsedPaHt;
+                created_produit.tva = parsedTva;
+                created_produit.pa_ttc = parsedPaTtc;
 
                 created_produit.isNew = 1;
 
-                created_produit.pv1_ht = Double.parseDouble(Objects.requireNonNull(edt_prix1_ht.getText()).toString());
+                java.util.function.Function<CharSequence, Double> parseDoubleSafe = cs -> {
+                    if (cs == null) return 0.0;
+                    String s = cs.toString().trim();
+                    if (s.isEmpty()) return 0.0;
+                    try { return Double.parseDouble(s); } catch (NumberFormatException nfe) { return 0.0; }
+                };
+
+                created_produit.pv1_ht = parseDoubleSafe.apply(edt_prix1_ht.getText());
                 created_produit.pv1_ttc = created_produit.pv1_ht + (created_produit.pv1_ht * created_produit.tva / 100);
 
                 if (params.prix_2 == 1) {
-                    created_produit.pv2_ht = Double.parseDouble(Objects.requireNonNull(edt_prix2_ht.getText()).toString());
+                    created_produit.pv2_ht = parseDoubleSafe.apply(edt_prix2_ht.getText());
                     created_produit.pv2_ttc = created_produit.pv2_ht + (created_produit.pv2_ht * created_produit.tva / 100);
                 } else {
                     created_produit.pv2_ht = 0.00;
@@ -686,7 +770,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 }
 
                 if (params.prix_3 == 1) {
-                    created_produit.pv3_ht = Double.parseDouble(edt_prix3_ht.getText().toString());
+                    created_produit.pv3_ht = parseDoubleSafe.apply(edt_prix3_ht.getText());
                     created_produit.pv3_ttc = created_produit.pv3_ht + (created_produit.pv3_ht * created_produit.tva / 100);
                 } else {
                     created_produit.pv3_ht = 0.00;
@@ -694,7 +778,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 }
 
                 if (params.prix_4 == 1) {
-                    created_produit.pv4_ht = Double.parseDouble(edt_prix4_ht.getText().toString());
+                    created_produit.pv4_ht = parseDoubleSafe.apply(edt_prix4_ht.getText());
                     created_produit.pv4_ttc = created_produit.pv4_ht + (created_produit.pv4_ht * created_produit.tva / 100);
                 } else {
                     created_produit.pv4_ht = 0.00;
@@ -702,7 +786,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 }
 
                 if (params.prix_5 == 1) {
-                    created_produit.pv5_ht = Double.parseDouble(edt_prix5_ht.getText().toString());
+                    created_produit.pv5_ht = parseDoubleSafe.apply(edt_prix5_ht.getText());
                     created_produit.pv5_ttc = created_produit.pv5_ht + (created_produit.pv5_ht * created_produit.tva / 100);
                 } else {
                     created_produit.pv5_ht = 0.00;
@@ -710,7 +794,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 }
 
                 if (params.prix_6 == 1) {
-                    created_produit.pv6_ht = Double.parseDouble(edt_prix6_ht.getText().toString());
+                    created_produit.pv6_ht = parseDoubleSafe.apply(edt_prix6_ht.getText());
                     created_produit.pv6_ttc = created_produit.pv6_ht + (created_produit.pv6_ht * created_produit.tva / 100);
                 } else {
                     created_produit.pv6_ht = 0.00;
@@ -1538,6 +1622,46 @@ public class FragmentNewEditProduct extends DialogFragment {
     }
 
     private void startScan(View view) {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA)) {
+                new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Permission caméra requise")
+                        .setContentText("L'application a besoin d'accéder à la caméra pour scanner les codes-barres.")
+                        .setConfirmText("Autoriser")
+                        .setConfirmClickListener(sweetAlertDialog -> {
+                            sweetAlertDialog.dismissWithAnimation();
+                            ActivityCompat.requestPermissions(mActivity,
+                                    new String[]{Manifest.permission.CAMERA},
+                                    REQUEST_CAMERA_PERMISSION);
+                        })
+                        .setCancelText("Annuler")
+                        .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                        .show();
+            } else {
+                boolean deniedPermanently = !ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA);
+                if (deniedPermanently) {
+                    new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Caméra indisponible")
+                            .setContentText("Vous avez refusé définitivement la permission caméra. Pour activer le scanner, allez dans Paramètres > Applications > Distribute Pro > Autorisations et activez Caméra.")
+                            .setConfirmText("Aller aux paramètres")
+                            .setConfirmClickListener(sweetAlertDialog -> {
+                                sweetAlertDialog.dismissWithAnimation();
+                                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", mActivity.getPackageName(), null);
+                                intent.setData(uri);
+                                mActivity.startActivity(intent);
+                            })
+                            .setCancelText("Annuler")
+                            .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                            .show();
+                } else {
+                    ActivityCompat.requestPermissions(mActivity,
+                            new String[]{Manifest.permission.CAMERA},
+                            REQUEST_CAMERA_PERMISSION);
+                }
+            }
+            return;
+        }
 
         final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
                 .withActivity(mActivity)
@@ -1575,8 +1699,47 @@ public class FragmentNewEditProduct extends DialogFragment {
     }
 
     void imageChooserCamera() {
+        // Depuis Android 11, lancer ACTION_IMAGE_CAPTURE echoue avec une
+        // SecurityException si l'application declare la permission CAMERA sans
+        // qu'elle soit accordee. Il faut donc la demander avant d'ouvrir l'appareil photo.
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Permission caméra requise")
+                    .setContentText("L'application a besoin d'accéder à la caméra pour prendre la photo du produit.")
+                    .setConfirmText("Autoriser")
+                    .setConfirmClickListener(sweetAlertDialog -> {
+                        sweetAlertDialog.dismissWithAnimation();
+                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+                    })
+                    .setCancelText("Annuler")
+                    .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                    .show();
+            return;
+        }
+        launchCameraCapture();
+    }
+
+    private void launchCameraCapture() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        mActivity.startActivityForResult(takePicture, 3000);
+        if (takePicture.resolveActivity(mActivity.getPackageManager()) == null) {
+            new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Appareil photo indisponible")
+                    .setContentText("Aucune application appareil photo ne peut traiter cette action sur cet appareil.")
+                    .setConfirmText("Fermer")
+                    .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation)
+                    .show();
+            return;
+        }
+        try {
+            mActivity.startActivityForResult(takePicture, 3000);
+        } catch (ActivityNotFoundException | SecurityException e) {
+            new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Ouverture de l'appareil photo impossible")
+                    .setContentText(String.valueOf(e.getMessage()))
+                    .setConfirmText("Fermer")
+                    .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation)
+                    .show();
+        }
     }
 
     public static Bitmap uriToBitmap(@NonNull Context context, @NonNull Uri uri) throws IOException {
@@ -1622,7 +1785,40 @@ public class FragmentNewEditProduct extends DialogFragment {
     }
 
     void imageChooserGallery() {
-        imagePickerLauncher.launch( new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
+        try {
+            imagePickerLauncher.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        } catch (SecurityException | ActivityNotFoundException e) {
+            // Photo Picker inutilisable sur cet appareil : repli sur le selecteur classique.
+            try {
+                galleryFallbackLauncher.launch("image/*");
+            } catch (SecurityException | ActivityNotFoundException e2) {
+                new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Galerie indisponible")
+                        .setContentText(String.valueOf(e2.getMessage()))
+                        .setConfirmText("Fermer")
+                        .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation)
+                        .show();
+            }
+        }
+    }
+
+    private void applyPickedImage(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        try {
+            Bitmap bitmap = uriToBitmap(mActivity, uri);
+            img_product.setImageBitmap(bitmap);
+
+            Bitmap resizedBitmap = resizeBitmap(bitmap, 800, 800);
+            created_produit.photo = bitmapToBytes(resizedBitmap, 100);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(mActivity, "Unable to load image", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setImageFromActivity(byte[] inputData) {

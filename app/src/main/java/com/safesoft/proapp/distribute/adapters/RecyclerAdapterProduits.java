@@ -169,15 +169,15 @@ public class RecyclerAdapterProduits extends RecyclerView.Adapter<RecyclerAdapte
             if((prix_revendeur.equals(params.pv1_titre))){
                 holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv2_titre)){
-                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv2_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv3_titre)){
-                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv3_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv4_titre)){
-                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv4_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv5_titre)){
-                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv5_ht * (1 + item.tva / 100)));
             }else if(prix_revendeur.equals(params.pv6_titre)){
-                holder.prix_unit.setText(" " + dfMoney.format(item.pv1_ht * (1 + item.tva / 100)));
+                holder.prix_unit.setText(" " + dfMoney.format(item.pv6_ht * (1 + item.tva / 100)));
             }
         }
 

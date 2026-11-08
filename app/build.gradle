@@ -12,8 +12,8 @@ android {
         applicationId "com.safesoft.proapp.distribute"
         minSdkVersion 26
         targetSdkVersion 37
-        versionCode 604
-        versionName "220426"
+        versionCode 617
+        versionName "041126"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true //important
         //setProperty("archivesBaseName", "distribute_pro" + versionName)
@@ -84,6 +84,11 @@ android {
     }
 }
 
+// Relève le plafond d'affichage des warnings javac (100 par défaut) pour un relevé complet.
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-Xmaxwarns", "10000"]
+}
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -149,6 +154,7 @@ dependencies {
     implementation libs.powerspinner
     implementation libs.retrofit
     implementation libs.converter.gson
+    implementation libs.work.runtime
 
     implementation libs.itextg   // For generating PDF
     //implementation 'com.tom-roush:pdfbox-android:2.0.27.0'
@@ -195,8 +201,10 @@ dependencies {
 
     implementation libs.zxingAndroidEmbedded
 
-    //Commande pour afficher les warrning en details c tt
+    //Warnings détaillés : 'unchecked' uniquement. 'deprecation' désactivé car le
+    //code legacy utilise volontairement des API obsolètes (817 usages : AsyncTask,
+    //ProgressDialog, Camera, Fragment APIs...). Réactiver si besoin d'un audit.
     tasks.withType(JavaCompile).configureEach {
-        options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:-deprecation"
     }
 }

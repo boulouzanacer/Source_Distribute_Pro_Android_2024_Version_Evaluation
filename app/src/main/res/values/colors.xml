@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#3498db</color>
 
     <color name="carot">#e67e22</color>
     <color name="white">#FFFFFF</color>
@@ -52,4 +52,12 @@
     <color name="blue_white_1">#4C4CFF</color>
     <color name="blue_white_2">#7F7FFF</color>
     <color name="blue_white_3">#B2B2FF</color>
+
+    <!-- Solde badges couleurs -->
+    <color name="solde_debiteur_text">#991B1B</color>
+    <color name="solde_debiteur_stroke">#FCA5A5</color>
+    <color name="solde_crediteur_text">#064E3B</color>
+    <color name="solde_crediteur_stroke">#6EE7B7</color>
+    <color name="solde_zero_text">#1E3A8A</color>
+    <color name="solde_zero_stroke">#93C5FD</color>
 </resources>

@@ -155,6 +155,9 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                 "LEFT JOIN FOURNIS ON (ACHAT1_TEMP.CODE_FRS = FOURNIS.CODE_FRS)";
 
 
+        // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+        text_search = (text_search == null) ? "" : text_search.replace("'", "''");
+
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
             querry = querry + " WHERE IS_EXPORTED = 0 AND (ACHAT1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR ACHAT1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR FOURNIS.FOURNIS LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(ACHAT1_TEMP.DATE_BON, 7, 4) || '-' || SUBSTR(ACHAT1_TEMP.DATE_BON, 4, 2) || '-' || SUBSTR(ACHAT1_TEMP.DATE_BON, 1, 2)) DESC ";
         } else {

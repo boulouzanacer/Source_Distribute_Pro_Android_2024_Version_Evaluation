@@ -333,14 +333,14 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 return;
             }
 
-            if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
+            /*if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Important !")
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
 
                 return;
-            }
+            }*/
 
             Activity activity;
             activity = ActivityInventaire.this;

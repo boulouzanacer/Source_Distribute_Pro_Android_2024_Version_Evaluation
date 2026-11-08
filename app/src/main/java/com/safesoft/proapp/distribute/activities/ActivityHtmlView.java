@@ -45,6 +45,7 @@ public class ActivityHtmlView extends AppCompatActivity {
     private String type_print;
 
     @Override
+    @SuppressWarnings({"deprecation", "unchecked"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -115,6 +116,7 @@ public class ActivityHtmlView extends AppCompatActivity {
 
     }
 
+    @SuppressWarnings("deprecation")
     public void takeScreenshot(Runnable onDone) {
         webview.post(() -> {
             try {
@@ -1486,7 +1488,7 @@ public class ActivityHtmlView extends AppCompatActivity {
         int id = item.getItemId();
 
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         }
         if (id == R.id.print) {
             /*webview.setWebViewClient(new WebViewClient() {

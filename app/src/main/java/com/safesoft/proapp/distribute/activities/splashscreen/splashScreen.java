@@ -32,6 +32,7 @@ public class splashScreen extends AppCompatActivity {
     private final String PREFS = "ALL_PREFS";
     //public static final String NUM_SERIE = "INFO_ACTIVATION";
     public static final String NUM_SERIE = "INFO_ACTIVATION";
+    public static final String EXTRA_REVENDEUR = "REVENDEUR";
 
     public static String revendeur = "SAFE SOFT";
 
@@ -59,10 +60,11 @@ public class splashScreen extends AppCompatActivity {
         slide_in_from_left = AnimationUtils.loadAnimation(this, R.anim.slide_in_left);
         slide_in_from_right = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
 
-        if (getIntent() != null) {
-            revendeur = getIntent().getStringExtra("REVENDEUR");
+        // Ne remplacer le revendeur par defaut que si l'extra est reellement fourni :
+        // un lancement normal (sans extra) ecrasait la valeur "SAFE SOFT" par null.
+        if (getIntent() != null && getIntent().getStringExtra(EXTRA_REVENDEUR) != null) {
+            revendeur = getIntent().getStringExtra(EXTRA_REVENDEUR);
         }
-        revendeur = getIntent().getStringExtra("REVENDEUR");
 
         info_revendeur1();
         imagesplash.setAnimation(slide_in_from_left);
@@ -112,7 +114,7 @@ public class splashScreen extends AppCompatActivity {
                     ////// GO TO REVENDEUR SCREEN ////////////////
                     Intent intent = new Intent(splashScreen.this, ActivityActivation.class);
                     intent.putExtra(NUM_SERIE, deviceId2);
-                    intent.putExtra(revendeur, revendeur);
+                    intent.putExtra(EXTRA_REVENDEUR, revendeur);
                     startActivity(intent);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

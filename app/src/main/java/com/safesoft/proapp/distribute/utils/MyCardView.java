@@ -32,12 +32,37 @@ public class MyCardView extends RelativeLayout {
     public MyCardView(Context context, int item_product_select) {
         super(context);
         initialize(context);
-        EventBus.getDefault().register(this);
     }
 
     private void initialize(Context context) {
         View root = inflate(context, R.layout.item_list, this);
         cardView = root.findViewById(R.id.item_root);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            try { EventBus.getDefault().register(this); } catch (Throwable ignore) {}
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        try {
+            if (increaseAnimation != null) increaseAnimation.cancel();
+        } catch (Throwable ignore) {}
+        try {
+            if (decreaseAnimation != null) decreaseAnimation.cancel();
+        } catch (Throwable ignore) {}
+        increaseAnimation = null;
+        decreaseAnimation = null;
+        try {
+            if (EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().unregister(this);
+            }
+        } catch (Throwable ignore) {}
+        super.onDetachedFromWindow();
     }
 
     @Subscribe

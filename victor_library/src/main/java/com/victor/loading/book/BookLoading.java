@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -148,6 +149,7 @@ public class BookLoading extends FrameLayout {
         private WeakReference<BookLoading> weakReference;
 
         public BookHandler(BookLoading bookLoading) {
+            super(Looper.getMainLooper());
             weakReference = new WeakReference<>(bookLoading);
         }
 

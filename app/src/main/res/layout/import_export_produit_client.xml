@@ -4,243 +4,447 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_bon"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="gone"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+        android:orientation="vertical"
+        android:background="@drawable/bg_web_section_card"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
 
-        <TextView
-            android:id="@+id/importt_bon_txt"
+        <!-- LIGNE CARD 1 : rlt_import_bon (gone par défaut) -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_bon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Importation bons transfers"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="gone"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_top_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp">
 
-        <TextView
-            android:id="@+id/descrip_import_bon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
-            android:layout_below="@+id/importt_bon_txt"
-            android:textSize="12sp"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_gps"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Bons"
+                    android:src="@drawable/ic_baseline_storage_24" />
+            </LinearLayout>
 
-        <View
-            android:id="@+id/view"
-            android:layout_marginTop="5dp"
-            android:background="@color/gray"
-            android:layout_below="@+id/descrip_import_bon"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp" />
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_bon_retour"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="gone"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+                <TextView
+                    android:id="@+id/importt_bon_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Importation bons transfers"
+                    android:textColor="#0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/importt_bon_txt_retour"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Importation bons de retour"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/descrip_import_bon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
+                    android:textSize="12.5sp"
+                    android:textColor="#64748B"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/descrip_import_bon_retour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
-            android:layout_below="@+id/importt_bon_txt_retour"
-            android:textSize="12sp"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_below="@+id/descrip_import_bon_retour"
-            android:layout_marginTop="5dp"
-            android:background="@color/gray" />
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_fournisseur"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
-
-        <TextView
-            android:id="@+id/importt_fournisseur_txt"
+        <!-- LIGNE CARD 2 : rlt_import_bon_retour (gone par défaut) -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_bon_retour"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Synchronisation fournisseurs"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="gone"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer la liste des fournisseur depuis le serveur distant"
-            android:layout_below="@+id/importt_fournisseur_txt"
-            android:textSize="12sp"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_map"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Bons de retour"
+                    android:src="@drawable/ic_baseline_edit_note_24" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/importt_bon_txt_retour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Importation bons de retour"
+                    android:textColor="#0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_client"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+                <TextView
+                    android:id="@+id/descrip_import_bon_retour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
+                    android:textSize="12.5sp"
+                    android:textColor="#64748B"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/importt_client_txt"
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- LIGNE CARD 3 : SYNC FOURNISSEURS -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_fournisseur"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Synchronisation clients"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer la liste des clients depuis le serveur distant"
-            android:layout_below="@+id/importt_client_txt"
-            android:textSize="12sp"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
 
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="Synchronisation fournisseurs"
+                    android:src="@drawable/synch_fournisseur_24" />
 
-    </RelativeLayout>
+            </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_produit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/importt_produit_txt"
+                <TextView
+                    android:id="@+id/importt_fournisseur_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Synchronisation fournisseurs"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'importer la liste des fournisseurs depuis le serveur distant"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- LIGNE CARD 4 : SYNC CLIENTS -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_client"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Synchronisation des produits"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer la liste des produits depuis le serveur distant ( Local)"
-            android:layout_below="@+id/importt_produit_txt"
-            android:textSize="12sp"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
 
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Clients"
+                    android:src="@drawable/synch_client_24" />
 
-    </RelativeLayout>
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_produit_ftp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="gone"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+                <TextView
+                    android:id="@+id/importt_client_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Synchronisation clients"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/importt_produit_txt_ftp"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'importer la liste des clients depuis le serveur distant"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- LIGNE CARD 5 : SYNC PRODUITS -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_produit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Synchronisation des produits depuis serveur (FTP)"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer la liste des produits depuis le serveur distant (FTP)"
-            android:layout_below="@+id/importt_produit_txt_ftp"
-            android:textSize="12sp"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
 
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="Synchronisation des produits"
+                    android:src="@drawable/synch_produit_24" />
 
-    </RelativeLayout>
+            </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_parametre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/import_parametre_txt"
+                <TextView
+                    android:id="@+id/importt_produit_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Synchronisation des produits"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'importer la liste des produits depuis le serveur distant (Local)"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- LIGNE CARD 6 : SYNC PRODUITS FTP (gone) -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_produit_ftp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/synchronisation_des_param_tres"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="gone"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Produits FTP"
+                    android:tint="#1F2937"
+                    android:src="@drawable/ic_baseline_inventory_2_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/importt_produit_txt_ftp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Synchronisation des produits depuis serveur (FTP)"
+                    android:textColor="#0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'importer la liste des produits depuis le serveur distant (FTP)"
+                    android:textSize="12.5sp"
+                    android:textColor="#64748B"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- LIGNE CARD 7 (LAST) : SYNC PARAMÈTRES -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_parametre"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/desciption_sync_des_parametres"
-            android:layout_below="@+id/import_parametre_txt"
-            android:textSize="12sp"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            android:clickable="true"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_bottom_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Paramètres"
+                    android:src="@drawable/synch_setting_24" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/import_parametre_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/synchronisation_des_param_tres"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/desciption_sync_des_parametres"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

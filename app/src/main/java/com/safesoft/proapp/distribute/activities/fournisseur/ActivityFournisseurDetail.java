@@ -240,7 +240,9 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
                 "FROM CARNET_F " +
                 "LEFT JOIN FOURNIS ON " +
                 "CARNET_F.CODE_FRS = FOURNIS.CODE_FRS " +
-                "WHERE CARNET_F.CODE_FRS = '" + fournisseur.code_frs + "' ORDER BY CARNET_F.HEURE DESC";
+                "WHERE CARNET_F.CODE_FRS = '" + fournisseur.code_frs + "' " +
+                "AND COALESCE(CARNET_F.IS_EXPORTED, 0) = 0 " +
+                "ORDER BY CARNET_F.HEURE DESC";
 
 
         // querry = "SELECT * FROM Events";
@@ -262,44 +264,16 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
             TvAchat.setVisibility(View.GONE);
         }
 
-        final BadgeDrawable drawable6 =
-                new BadgeDrawable.Builder()
-                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-                        .badgeColor(0xff303F9F)
-                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(fournisseur.achat_montant)))
-                        .text2(" DA ")
-                        .build();
-        SpannableString spannableString6 = new SpannableString(TextUtils.concat(drawable6.toSpannable()));
-        TvAchat.setText(spannableString6);
-
-
-        final BadgeDrawable drawable7 =
-                new BadgeDrawable.Builder()
-                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-                        .badgeColor(0xff303F9F)
-                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(fournisseur.verser_montant)))
-                        .text2(" DA ")
-                        .build();
-        SpannableString spannableString7 = new SpannableString(TextUtils.concat(drawable7.toSpannable()));
-        TvVerser.setText(spannableString7);
-
+        TvAchat.setText(String.format(Locale.FRANCE, "%,.2f", fournisseur.achat_montant));
+        TvVerser.setText(String.format(Locale.FRANCE, "%,.2f", fournisseur.verser_montant));
 
         if (prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true)) {
-            final BadgeDrawable drawable8 =
-                    new BadgeDrawable.Builder()
-                            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-                            .badgeColor(0xff303F9F)
-                            .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(fournisseur.solde_montant)))
-                            .text2(" DA ")
-                            .build();
-            SpannableString spannableString8 = new SpannableString(TextUtils.concat(drawable8.toSpannable()));
-            TvSolde.setText(spannableString8);
+            TvSolde.setText(String.format(Locale.FRANCE, "%,.2f", fournisseur.solde_montant));
         } else {
             TvSolde.setText("********");
         }
-
-
     }
+
 
     private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap> {
         ImageView bmImage;
@@ -392,10 +366,28 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
         } else if (item.getItemId() == R.id.edit_client) {
             FragmentNewEditFournisseur fragment_new_edit_fournisseur = new FragmentNewEditFournisseur();
-            fragment_new_edit_fournisseur.showDialogbox(ActivityFournisseurDetail.this, getBaseContext(), "EDIT_FOURNISSEUR", fournisseur);
+            fragment_new_edit_fournisseur.showDialogbox(ActivityFournisseurDetail.this, getBaseContext(), "EDIT_FOURNISSEUR", fournisseur,
+                    savedOk -> {
+                        if (Boolean.TRUE.equals(savedOk)) {
+                            refreshDetailFournisseurAfterEdit();
+                        }
+                    });
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refreshDetailFournisseurAfterEdit() {
+        getFournisseur();
+        CODE_FRS = fournisseur.code_frs != null ? fournisseur.code_frs : CODE_FRS;
+        if (imgv_fournisseur_map != null) {
+            if (fournisseur.latitude != 0 || fournisseur.longitude != 0) {
+                setStaticMap(fournisseur.latitude, fournisseur.longitude);
+            } else {
+                imgv_fournisseur_map.setImageResource(R.mipmap.noimg);
+            }
+        }
+        setRecycle();
     }
 
 

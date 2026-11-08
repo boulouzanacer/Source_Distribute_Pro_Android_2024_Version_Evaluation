@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#F1F5F9"
     tools:context="com.safesoft.proapp.distribute.activities.ActivityImportsExport">
 
     <androidx.appcompat.widget.Toolbar
@@ -15,78 +16,169 @@
         tools:titleEnabled="false"
         tools:navigationIcon="@drawable/ic_arrow_back_24" />
 
+    <!-- BANDEAU INTRO : Synchronisation / Import Export -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/blue"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="18dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Import / Export"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:includeFontPadding="false"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Synchronisez vos données : clients, fournisseurs, produits, achats, ventes, commandes, inventaires et tournées."
+            android:textColor="#CFE3FB"
+            android:textSize="13sp"
+            android:lineSpacingExtra="2dp"
+            android:includeFontPadding="false"/>
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingTop="14dp"
+        android:paddingBottom="24dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
+            <!-- BOUTON SECTION : SYNCHRONISATION GLOBALE (Bt1) -->
             <Button
                 android:id="@+id/bt1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/parametre_rounded"
+                android:layout_height="54dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_web_button_primary"
                 android:text="@string/syncronisation"
-                android:textColor="@color/accent"
-                android:textStyle="italic" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_baseline_sync_24"
+                android:gravity="center|start"/>
 
             <include layout="@layout/import_export_produit_client" />
 
+            <!-- BOUTON SECTION : ACHATS (Bt2) -->
             <Button
                 android:id="@+id/bt2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/parametre_rounded"
+                android:layout_height="54dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_web_button_primary"
                 android:text="@string/achats"
-                android:textColor="@color/accent"
-                android:textStyle="italic" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_baseline_local_mall_24"
+                android:gravity="center|start"/>
 
             <include layout="@layout/import_export_achat" />
 
+            <!-- BOUTON SECTION : VENTES (Bt3) -->
             <Button
                 android:id="@+id/bt3"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/parametre_rounded"
+                android:layout_height="54dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_web_button_primary"
                 android:text="@string/vente"
-                android:textColor="@color/accent"
-                android:textStyle="italic" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_baseline_shopping_cart_24"
+                android:gravity="center|start"/>
 
             <include layout="@layout/import_export_vente" />
 
+            <!-- BOUTON SECTION : COMMANDES (Bt4) -->
             <Button
                 android:id="@+id/bt4"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/parametre_rounded"
+                android:layout_height="54dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_web_button_primary"
                 android:text="@string/commande"
-                android:textColor="@color/accent"
-                android:textStyle="italic" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_baseline_receipt_long_24"
+                android:gravity="center|start"/>
 
             <include layout="@layout/import_export_commande" />
 
+            <!-- BOUTON SECTION : INVENTAIRE (Bt5) -->
             <Button
                 android:id="@+id/bt5"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/parametre_rounded"
+                android:layout_height="54dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_web_button_primary"
                 android:text="@string/inventaire"
-                android:textColor="@color/accent"
-                android:textStyle="italic" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_baseline_inventory_2_24"
+                android:gravity="center|start"/>
 
             <include layout="@layout/import_export_inventaire" />
 
+            <!-- BOUTON SECTION : TOURNEE (Bt6) -->
             <Button
                 android:id="@+id/bt6"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/parametre_rounded"
+                android:layout_height="54dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_web_button_primary"
                 android:text="TOURNEE"
-                android:textColor="@color/accent"
-                android:textStyle="italic" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_baseline_route_24"
+                android:gravity="center|start"/>
 
             <include layout="@layout/import_export_tournee" />
 

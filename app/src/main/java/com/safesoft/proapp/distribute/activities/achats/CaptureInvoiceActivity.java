@@ -98,6 +98,7 @@ public class CaptureInvoiceActivity extends AppCompatActivity {
         }, mainExecutor);
     }
 
+    @SuppressWarnings("deprecation")
     private void captureAndSend() {
         if (imageCapture == null) {
             Toast.makeText(this, "Caméra non prête", Toast.LENGTH_SHORT).show();

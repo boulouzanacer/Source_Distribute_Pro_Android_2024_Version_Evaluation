@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,8 +52,10 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
         TextView Heure_bon;
         TextView Versement;
         CardView cardView;
-        SlantedTextView blocage;
+        TextView blocage;
         LinearLayout lnr_versement;
+        LinearLayout bgPanel;
+        ImageView icCalBon;
 
         MyViewHolder(View view) {
             super(view);
@@ -67,6 +70,8 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
             Versement = view.findViewById(R.id.versement_bon);
             blocage = view.findViewById(R.id.blocage);
             lnr_versement = view.findViewById(R.id.lnr_versement);
+            bgPanel = view.findViewById(R.id.item_bg_panel);
+            icCalBon = view.findViewById(R.id.ic_cal_bon);
         }
     }
 
@@ -121,27 +126,31 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
         holder.nbrProduit.setText(spannableString1);
         holder.Date_bon.setText(item.date_bon);
         holder.Heure_bon.setText(item.heure);
-        holder.cardView.setOnClickListener(view -> itemClick.onClick(view, holder.getAdapterPosition()));
+        holder.cardView.setOnClickListener(view -> itemClick.onClick(view, holder.getBindingAdapterPosition()));
         holder.cardView.setOnLongClickListener(v -> {
-            itemLongClick.onLongClick(v, holder.getAdapterPosition());
+            itemLongClick.onLongClick(v, holder.getBindingAdapterPosition());
             return true;
         });
 
 
-        if (item.blocage.equals("F")) {
-            holder.blocage.setText("Validé")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.GREEN)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+        final int COLOR_EMERAUDE = Color.parseColor("#10B981");
+        final int COLOR_ROUGE = Color.parseColor("#EF4444");
+
+        String blocageValue = (item.blocage == null) ? "M" : item.blocage;
+        if (blocageValue.equals("F")) {
+            holder.blocage.setText("Validé");
+            holder.blocage.setTextColor(Color.WHITE);
+            holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
+            holder.blocage.setTextSize(14);
+            holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_achat);
+            if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_EMERAUDE, android.graphics.PorterDuff.Mode.SRC_IN);
         } else {
-            holder.blocage.setText("En attente")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.RED)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+            holder.blocage.setText("En attente");
+            holder.blocage.setTextColor(Color.WHITE);
+            holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_red);
+            holder.blocage.setTextSize(14);
+            holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_achat_pending_rouge);
+            if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_ROUGE, android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
 

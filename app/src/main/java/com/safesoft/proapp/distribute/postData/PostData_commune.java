@@ -6,6 +6,7 @@ package com.safesoft.proapp.distribute.postData;
 public class PostData_commune {
 
     public int id;
+    public String code_commune;
     public String commune;
     public double latitude;
     public double longitude;

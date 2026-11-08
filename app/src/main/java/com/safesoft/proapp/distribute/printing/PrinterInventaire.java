@@ -178,6 +178,7 @@ public class PrinterInventaire {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         protected Boolean doInBackground(Void... params) {
 
             try {

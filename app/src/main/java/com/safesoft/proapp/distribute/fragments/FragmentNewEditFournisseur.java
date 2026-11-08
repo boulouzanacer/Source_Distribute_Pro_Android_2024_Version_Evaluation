@@ -21,6 +21,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Fournisseur;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.function.Consumer;
 import java.util.concurrent.TimeUnit;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -43,15 +44,23 @@ public class FragmentNewEditFournisseur {
     PostData_Fournisseur created_fournisseur;
     private DATABASE controller;
     private PostData_Fournisseur old_fournisseur;
+    private boolean savedSuccessfully = false;
+    private Consumer<Boolean> onClosedCallback = null;
 
-    //PopupWindow display method
-
+    //Compatibilité : ancienne signature (SANS callback)
     public void showDialogbox(Activity activity, Context context, String SOURCE_ACTIVITY, PostData_Fournisseur old_fournisseur) {
+        showDialogbox(activity, context, SOURCE_ACTIVITY, old_fournisseur, null);
+    }
+
+    //Nouvelle signature avec callback (savedOk = true si mise à jour/insert OK)
+    public void showDialogbox(Activity activity, Context context, String SOURCE_ACTIVITY, PostData_Fournisseur old_fournisseur, Consumer<Boolean> onClosed) {
 
         this.mContext = context;
         this.activity = activity;
         this.controller = new DATABASE(activity);
         this.old_fournisseur = old_fournisseur;
+        this.onClosedCallback = onClosed;
+        this.savedSuccessfully = false;
 
         created_fournisseur = new PostData_Fournisseur();
 
@@ -70,6 +79,16 @@ public class FragmentNewEditFournisseur {
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         //layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
+
+        // Apply immersive mode (hide navigation bar) to the dialog window if enabled.
+        com.safesoft.proapp.distribute.app.BaseApplication.applyImmersiveToDialog(dialog.getWindow());
+
+        dialog.setOnDismissListener(dlg -> {
+            if (onClosedCallback != null) {
+                final boolean didSave = savedSuccessfully;
+                activity.runOnUiThread(() -> onClosedCallback.accept(didSave));
+            }
+        });
 
 
         btn_valider = dialogview.findViewById(R.id.btn_connect);
@@ -154,6 +173,7 @@ public class FragmentNewEditFournisseur {
                         SelectedFournisseurEvent added_fournisseur = new SelectedFournisseurEvent(created_fournisseur);
                         bus.post(added_fournisseur);
 
+                        savedSuccessfully = true;
                         dialog.dismiss();
 
                     } else {
@@ -177,6 +197,7 @@ public class FragmentNewEditFournisseur {
                         SelectedFournisseurEvent added_fournisseur = new SelectedFournisseurEvent(created_fournisseur);
                         bus.post(added_fournisseur);
 
+                        savedSuccessfully = true;
                         dialog.dismiss();
 
                     } else {

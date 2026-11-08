@@ -7,56 +7,50 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="visible"
-    android:layout_marginBottom="20dp">
+    android:visibility="gone"
+    android:layout_marginBottom="20dp"
+    android:paddingHorizontal="12dp">
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginStart="20dp"
-        android:textColor="@color/black"
-        android:alpha="0.5"
-        android:text="@string/s_l_ctionnez_l_imprimente_qui_vous_permetra_d_imprimer_les_tickets" />
-
-    <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_large_size"
-        android:background="@color/divider" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:textColor="#64748B"
+        android:textSize="12sp"
+        android:text="@string/s_l_ctionnez_l_imprimente_qui_vous_permetra_d_imprimer_les_tickets" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_background_holo_light"
-        android:clickable="true"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingStart="8dip"
-        android:focusable="true"
+        android:background="@drawable/bg_web_section_card"
         android:orientation="vertical"
-        android:layout_marginBottom="10dp"
-        tools:ignore="RtlSymmetry">
+        android:layout_marginBottom="14dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadingEdge="horizontal"
-            android:textColor="@color/black"
-            android:text="@string/s_l_ctionner_imprimente"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_height="wrap_content"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:text="@string/s_l_ctionner_imprimente" />
 
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
             android:id="@+id/rg_connect"
             android:weightSum="4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
 
             <RadioButton
                 android:id="@+id/rb_connect_bluetooth"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Bluetooth" />
+                android:text="Bluetooth"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rb_connect_wifi"
@@ -64,7 +58,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="WiFi" />
+                android:text="WiFi"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rb_connect_usb"
@@ -72,6 +68,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="USB"
+                android:textSize="12sp"
+                android:textColor="#0F172A"
                 android:visibility="visible" />
 
             <RadioButton
@@ -80,26 +78,28 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="COM"
+                android:textSize="12sp"
+                android:textColor="#0F172A"
                 android:visibility="visible" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
-
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadingEdge="horizontal"
-            android:textColor="@color/black"
-            android:text="@string/model_imprimente"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:layout_height="wrap_content"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:text="@string/model_imprimente" />
 
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
             android:id="@+id/rg_type_imprimente"
             android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
 
             <RadioButton
                 android:id="@+id/rb_type_ticket"
@@ -107,7 +107,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Impriment ticket " />
+                android:text="Impriment ticket "
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rb_type_codebarre"
@@ -115,21 +117,64 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="Impriment codebarre " />
+                android:text="Impriment codebarre "
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
+        <TextView
+            android:id="@+id/mode_app_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:text="Mode app"
+            android:visibility="gone" />
+
+        <com.safesoft.proapp.distribute.view.FlowRadioGroup
+            android:id="@+id/rg_mode_app"
+            android:weightSum="2"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
+
+            <RadioButton
+                android:id="@+id/rb_mode_app_4barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Via app 4Barcode"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
+
+            <RadioButton
+                android:id="@+id/rb_mode_app_sdk"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Via SDK"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
+
+        </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
         <TextView
             android:id="@+id/langue_ticket_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadingEdge="horizontal"
-            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
             android:text="Langue ticket"
-            android:visibility="visible"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:visibility="visible" />
 
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
             android:id="@+id/rg_langue_ticket"
@@ -137,7 +182,8 @@
             android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
 
             <RadioButton
                 android:id="@+id/rb_langue_latin"
@@ -145,7 +191,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Ticket latin " />
+                android:text="Ticket latin "
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rb_langue_arabe"
@@ -153,20 +201,22 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="Ticket arabe" />
+                android:text="Ticket arabe"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
         <TextView
             android:id="@+id/model_ticket_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadingEdge="horizontal"
-            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
             android:text="@string/model_ticket"
-            android:visibility="visible"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:visibility="visible" />
 
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
             android:id="@+id/rg_model_latin_ticket"
@@ -174,7 +224,8 @@
             android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="14dp">
 
             <RadioButton
                 android:id="@+id/rb_model_latin_1"
@@ -182,7 +233,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Model latin 1" />
+                android:text="Model latin 1"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rb_model_latin_2"
@@ -190,18 +243,20 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="Model latin 2" />
+                android:text="Model latin 2"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
-
         <com.safesoft.proapp.distribute.view.FlowRadioGroup
             android:id="@+id/rg_model_ticket_codebarre"
-            android:weightSum="2"
+            android:weightSum="3"
             android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="14dp">
 
             <RadioButton
                 android:id="@+id/rg_model_ticket_codebarre_50X30"
@@ -209,7 +264,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="M 50 X 30" />
+                android:text="M 50 X 30"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rg_model_ticket_codebarre_40X20"
@@ -217,7 +274,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="M 40 X 20" />
+                android:text="M 40 X 20"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rg_model_ticket_codebarre_40X20_without_codebarre"
@@ -225,7 +284,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="M 40 X 20 Sans CB" />
+                android:text="M 40 X 20 Sans CB"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
@@ -235,7 +296,8 @@
             android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
 
             <RadioButton
                 android:id="@+id/rb_model_arabe_1"
@@ -243,7 +305,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Model arabe 1" />
+                android:text="Model arabe 1"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
             <RadioButton
                 android:id="@+id/rb_model_arabe_2"
@@ -251,7 +315,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:text="Model arabe 2" />
+                android:text="Model arabe 2"
+                android:textSize="12sp"
+                android:textColor="#0F172A" />
 
         </com.safesoft.proapp.distribute.view.FlowRadioGroup>
 
@@ -259,317 +325,308 @@
             android:id="@+id/btn_connected_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
             android:textAllCaps="false"
+            android:textSize="13sp"
+            android:paddingVertical="10dp"
+            android:backgroundTint="#2563EB"
+            android:textColor="@color/white"
             android:text="Choisissez un périphérique à connecté" />
 
         <TextView
             android:id="@+id/tv_device_selected"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="14dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/gray"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_web_section_card"
             android:gravity="center"
-            android:padding="10dp"
-            android:tag="-1"
-            android:textSize="18sp" />
-
+            android:padding="14dp"
+            android:textSize="13sp"
+            android:textColor="#0F172A"
+            android:tag="-1" />
 
         <ProgressBar
             android:id="@+id/pb_connect"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp"
             android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
 
             <Button
                 android:id="@+id/btn_disConnect_printer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:enabled="false"
                 android:textAllCaps="false"
+                android:textSize="13sp"
+                android:paddingVertical="10dp"
+                android:backgroundTint="#EF4444"
+                android:textColor="@color/white"
                 android:text="Déconnecter" />
 
             <Button
                 android:id="@+id/btn_connect_printer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:textAllCaps="false"
+                android:textSize="13sp"
+                android:paddingVertical="10dp"
+                android:backgroundTint="#2563EB"
+                android:textColor="@color/white"
                 android:text="Connecter" />
 
         </LinearLayout>
 
-        <TableRow
+        <Button
+            android:id="@+id/btn_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:text="Tester impression"
+            android:enabled="false"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:paddingVertical="10dp"
+            android:backgroundTint="#10B981"
+            android:textColor="@color/white" />
 
-            <Button
-                android:id="@+id/btn_test"
-                android:layout_weight="1"
-                android:text="Tester impression"
-                android:enabled="false"
-                android:textAllCaps="false" />
-
-        </TableRow>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/divider" />
-
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical">
+            android:text="Espace footer"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Espace footer"
-                android:textStyle="bold"
-                android:paddingBottom="4dp"/>
+        <Spinner
+            android:id="@+id/espace_footer_dropdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:paddingHorizontal="12dp"
+            android:background="@drawable/bg_web_section_card"
+            android:spinnerMode="dropdown" />
 
-            <Spinner
-                android:id="@+id/espace_footer_dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_dropdown"
-                android:spinnerMode="dropdown" />
-
-        </LinearLayout>
     </LinearLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/divider" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_background_holo_light"
+        android:background="@drawable/bg_web_section_card"
         android:orientation="vertical"
-        android:clickable="true"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:focusable="true"
-        tools:ignore="RtlSymmetry">
+        android:padding="14dp"
+        android:layout_marginBottom="14dp">
 
         <TextView
             android:text="@string/affichez_l_entete_de_soci_t_sur_le_bon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
             android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_marginBottom="14dp" />
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ImageView
+            android:id="@+id/comapny_logo"
+            android:layout_gravity="center"
+            android:src="@mipmap/user_profile"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:fadingEdge="horizontal"
-            android:padding="5dp"
-            android:visibility="visible"
-            android:textAppearance="?android:attr/textAppearanceMedium">
+            android:layout_height="150dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_web_section_card"
+            android:padding="8dp"
+            android:scaleType="centerInside" />
 
-            <LinearLayout
-                android:orientation="vertical"
+        <Button
+            android:id="@+id/btn_clear_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:paddingVertical="10dp"
+            android:backgroundTint="#64748B"
+            android:textColor="@color/white"
+            android:text="Effacer logo" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:hint="Nom d'entreprise"
+            app:expandedHintEnabled="false"
+            app:helperText="  "
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="#E5E7EB"
+            app:boxStrokeErrorColor="#EF4444"
+            app:hintTextColor="#64748B"
+            android:layout_marginBottom="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_company_name"
+                android:gravity="start"
+                android:inputType="text"
+                android:textColor="#0F172A"
+                android:textSize="13sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/comapny_logo"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/user_profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp" />
-
-
-                <Button
-                    android:id="@+id/btn_clear_logo"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:textAllCaps="false"
-                    android:text="Effacer logo" />
-            </LinearLayout>
-
-
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
+                android:paddingVertical="12dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:hint="L'activité"
+            app:expandedHintEnabled="false"
+            app:helperText="  "
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="#E5E7EB"
+            app:boxStrokeErrorColor="#EF4444"
+            app:hintTextColor="#64748B"
+            android:layout_marginBottom="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_activity_name"
+                android:gravity="start"
+                android:inputType="text"
+                android:textColor="#0F172A"
+                android:textSize="13sp"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                android:hint="Nom d'entreprise"
-                app:expandedHintEnabled="false"
-                app:helperText="  ">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_company_name"
-                    android:gravity="center"
-                    android:inputType="text"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
+                android:paddingVertical="12dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:hint="L'adresse de l'entreprise"
+            app:expandedHintEnabled="false"
+            app:helperText="  "
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="#E5E7EB"
+            app:boxStrokeErrorColor="#EF4444"
+            app:hintTextColor="#64748B"
+            android:layout_marginBottom="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_company_adresse"
+                android:gravity="start"
+                android:inputType="text"
+                android:textColor="#0F172A"
+                android:textSize="13sp"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                android:hint="L'activité"
-                app:expandedHintEnabled="false"
-                app:helperText="  ">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_activity_name"
-                    android:gravity="center"
-                    android:inputType="text"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
+                android:paddingVertical="12dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:hint="Téléphone d'entreprise"
+            app:expandedHintEnabled="false"
+            app:helperText="  "
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="#E5E7EB"
+            app:boxStrokeErrorColor="#EF4444"
+            app:hintTextColor="#64748B">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_company_tel"
+                android:gravity="start"
+                android:inputType="text"
+                android:textColor="#0F172A"
+                android:textSize="13sp"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                android:hint="L'adresse de l'entreprise'"
-                app:expandedHintEnabled="false"
-                app:helperText="  ">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_company_adresse"
-                    android:gravity="center"
-                    android:inputType="text"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_gravity="center"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                android:hint="Téléphone d'entreprise'"
-                app:expandedHintEnabled="false"
-                app:helperText="  ">
+                android:paddingVertical="12dp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_company_tel"
-                    android:gravity="center"
-                    android:inputType="text"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_background_holo_light"
+        android:background="@drawable/bg_web_section_card"
         android:orientation="vertical"
-        android:clickable="true"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingStart="8dip"
-        android:focusable="true"
-        tools:ignore="RtlSymmetry">
+        android:padding="14dp">
 
         <TextView
             android:text="@string/affichez_le_footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
             android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_marginBottom="14dp" />
 
-        <LinearLayout
-            android:orientation="vertical"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:fadingEdge="horizontal"
-            android:padding="5dp"
-            android:textAppearance="?android:attr/textAppearanceMedium">
+            app:errorMessage="@string/error_message_empty"
+            app:errorType="empty"
+            android:hint="Pied de page"
+            app:expandedHintEnabled="false"
+            app:helperText="  "
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="#E5E7EB"
+            app:boxStrokeErrorColor="#EF4444"
+            app:hintTextColor="#64748B">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_height="wrap_content"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_pied_de_page"
+                android:gravity="start"
+                android:inputType="text"
+                android:textColor="#0F172A"
+                android:textSize="13sp"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
-                app:errorMessage="@string/error_message_empty"
-                app:errorType="empty"
-                android:hint="Pied de page"
-                app:expandedHintEnabled="false"
-                app:helperText="  ">
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_pied_de_page"
-                    android:gravity="center"
-                    android:inputType="text"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-        </LinearLayout>
-
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

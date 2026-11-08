@@ -4,179 +4,318 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/rlt_export_commandes"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="visible"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+        android:orientation="vertical"
+        android:background="@drawable/bg_web_section_card"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
 
-        <TextView
-            android:id="@+id/exportt_commande"
+        <!-- L1 TOP : Export commandes Réseaux IP -->
+        <RelativeLayout
+            android:id="@+id/rlt_export_commandes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="Exportation commandes (Réseaux IP)"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="visible"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_top_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'exporter les bons de commandes vers le serveur distant"
-            android:layout_below="@+id/exportt_commande"
-            android:textSize="12sp"
-            android:clickable="false"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Export commandes"
+                    android:src="@drawable/exportation_24" />
+            </LinearLayout>
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/exportt_commande"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Exportation commandes (Réseaux IP)"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
 
-    <RelativeLayout
-        android:id="@+id/rlt_export_commandes_ftp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="visible"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'exporter les bons de commandes vers le serveur distant"
+                    android:textColor="#64748B"
+                    android:textSize="11sp"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/exportt_commande_ftp"
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- L2 MID : Export commandes FTP -->
+        <RelativeLayout
+            android:id="@+id/rlt_export_commandes_ftp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="Exportation commandes (Serveur FTP)"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="visible"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Vous permet d'exporter les bons de commandes et les versements clients vers le serveur FTP"
-            android:layout_below="@+id/exportt_commande_ftp"
-            android:textSize="12sp"
-            android:clickable="false"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Export commandes FTP"
+                    android:src="@drawable/exportation_ftp_24" />
+            </LinearLayout>
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/exportt_commande_ftp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Exportation commandes (Serveur FTP)"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
 
-    <RelativeLayout
-        android:id="@+id/rlt_import_commandes"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="visible"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Vous permet d'exporter les bons de commandes et les versements clients vers le serveur FTP"
+                    android:textColor="#64748B"
+                    android:textSize="11sp"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/importt_commande"
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- L3 MID : Import commandes client -->
+        <RelativeLayout
+            android:id="@+id/rlt_import_commandes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="Importation commandes (Réseaux IP)"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="visible"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ça vous permet d'importer les bons de commandes client depuis le serveur distant"
-            android:layout_below="@+id/importt_commande"
-            android:textSize="12sp"
-            android:clickable="false"
-            android:textColor="@color/gray"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Import commandes"
+                    android:src="@drawable/importation_command_24" />
+            </LinearLayout>
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rlt_exported_commandes"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="visible"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+                <TextView
+                    android:id="@+id/importt_commande"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Importation commandes (Réseaux IP)"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'importer les bons de commandes client depuis le serveur distant"
+                    android:textColor="#64748B"
+                    android:textSize="11sp"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/exportted_commande"
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- L4 MID : Commandes exportées -->
+        <RelativeLayout
+            android:id="@+id/rlt_exported_commandes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="Bons de commandes exportés"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="visible"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/exportted_commande"
-            android:layout_alignParentStart="true"
-            android:clickable="false"
-            android:text="ça vous permet d'afficher les bons de commandes déja exportés avec la possibilité de suppression"
-            android:textColor="@color/gray"
-            android:textSize="12sp" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Commandes exportées"
+                    android:src="@drawable/bon_exporte_24" />
+            </LinearLayout>
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/exportted_commande"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bons de commandes exportés"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
 
-    <RelativeLayout
-        android:id="@+id/rlt_etatc"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="visible"
-        android:onClick="onRelativeClick"
-        android:background="@drawable/import_export_selector"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet d'afficher les bons de commandes déja exportés avec la possibilité de suppression"
+                    android:textColor="#64748B"
+                    android:textSize="11sp"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
 
-        <TextView
-            android:id="@+id/etat_c"
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- L5 BOTTOM : Etat commande -->
+        <RelativeLayout
+            android:id="@+id/rlt_etatc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="Etat de commande"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black_overlay"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:visibility="visible"
+            android:onClick="onRelativeClick"
+            android:background="@drawable/bg_import_row_bottom_selector"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="-0.8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/etat_c"
-            android:layout_alignParentStart="true"
-            android:clickable="false"
-            android:text="ça vous permet de consulter la quantité des produits commandés entre deux date données ansi que le montant total, remise total, ...."
-            android:textColor="@color/gray"
-            android:textSize="12sp" />
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="État commande"
+                    android:src="@drawable/etat_vente_24" />
+            </LinearLayout>
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/etat_c"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Etat de commande"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ça vous permet de consulter la quantité des produits commandés entre deux date données ansi que le montant total, remise total, ...."
+                    android:textColor="#64748B"
+                    android:textSize="11sp"
+                    android:lineSpacingExtra="1dp"
+                    android:includeFontPadding="false"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

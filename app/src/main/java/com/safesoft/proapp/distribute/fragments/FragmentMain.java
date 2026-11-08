@@ -12,12 +12,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ImageButton;
-import android.media.MediaPlayer;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.achats.ActivityAchats;
@@ -54,6 +51,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
             BtnTournee,
             BtnImportExport,
             BtnParametre;
+    private View BtnHeaderSetting;
+    private TextView headerValueDepot;
+    private TextView headerValueVendeur;
 
     public FragmentMain() {
 
@@ -80,6 +80,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
         BtnImportExport.setOnClickListener(this);
         BtnParametre.setOnClickListener(this);
+        BtnHeaderSetting.setOnClickListener(this);
 
         return v;
     }
@@ -103,6 +104,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
         BtnImportExport = v.findViewById(R.id.btn_import_export);
         BtnParametre = v.findViewById(R.id.btn_parametres);
+        BtnHeaderSetting = v.findViewById(R.id.header_settings_btn);
+        headerValueDepot = v.findViewById(R.id.header_value_depot);
+        headerValueVendeur = v.findViewById(R.id.header_value_vendeur);
     }
 
     @Override
@@ -113,6 +117,14 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
         CODE_DEPOT = prefs.getString("CODE_DEPOT", "000000");
         CODE_VENDEUR = prefs.getString("CODE_VENDEUR", "000000");
+
+        String nomDepot = prefs.getString("NOM_DEPOT", CODE_DEPOT);
+        if (nomDepot == null || nomDepot.trim().isEmpty()) nomDepot = CODE_DEPOT;
+        String nomVendeur = prefs.getString("NOM_VENDEUR", CODE_VENDEUR);
+        if (nomVendeur == null || nomVendeur.trim().isEmpty()) nomVendeur = CODE_VENDEUR;
+
+        if (headerValueDepot != null) headerValueDepot.setText(nomDepot);
+        if (headerValueVendeur != null) headerValueVendeur.setText(nomVendeur);
 
 
         //Show btn
@@ -150,14 +162,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
 
     public void onClick(View v) {
 
-        Animation fadeIn = new AlphaAnimation(0, 1);
-        fadeIn.setInterpolator(new AccelerateInterpolator());
-        fadeIn.setDuration(300);
-
         int viewId = v.getId();
 
         if (viewId == R.id.btn_clients) {
-            BtnClient.startAnimation(fadeIn);
             startActivity(ActivityClients.class, 1);
 
         } else if (viewId == R.id.btn_ventes) {
@@ -167,7 +174,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
                         .setContentText("Veuillez régler les paramètres de VAN ( code, nom depot ) !")
                         .show();
             } else {
-                BtnVente.startAnimation(fadeIn);
                 startActivity(ActivityVentes.class, 2);
             }
 
@@ -178,40 +184,31 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
                         .setContentText(" Veuillez régler les paramètres de VENDEUR ( code, nom vendeur ) !")
                         .show();
             } else {
-                BtnCommandeClient.startAnimation(fadeIn);
                 startActivity(ActivityOrdersClient.class, 3);
             }
 
         } else if (viewId == R.id.btn_fournisseur) {
-            BtnFournisseur.startAnimation(fadeIn);
             startActivity(ActivityFournisseurs.class, 4);
 
         } else if (viewId == R.id.btn_achat) {
-            BtnAchat.startAnimation(fadeIn);
             startActivity(ActivityAchats.class, 5);
 
         } else if (viewId == R.id.btn_commande_fournisseur) {
-            BtnCommandeFournisseur.startAnimation(fadeIn);
             startActivity(ActivityOrdersFournisseur.class, 6);
 
         } else if (viewId == R.id.btn_produits) {
-            BtnProduit.startAnimation(fadeIn);
             startActivity(ActivityProduits.class, 7);
 
         } else if (viewId == R.id.btn_inventaire) {
-            BtnInventaire.startAnimation(fadeIn);
             startActivity(ActivityInventaires.class, 8);
 
         } else if (viewId == R.id.btn_tournee) {
-            BtnTournee.startAnimation(fadeIn);
             startActivity(ActivityTourneesClient.class, 8);
 
         } else if (viewId == R.id.btn_import_export) {
-            BtnImportExport.startAnimation(fadeIn);
             startActivity(ActivityImportsExport.class, 9);
 
-        } else if (viewId == R.id.btn_parametres) {
-            BtnParametre.startAnimation(fadeIn);
+        } else if (viewId == R.id.btn_parametres || viewId == R.id.header_settings_btn) {
             startActivity(ActivityLogin.class, 10);
         }
     }

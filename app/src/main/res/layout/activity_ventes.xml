@@ -18,13 +18,117 @@
         tools:titleEnabled="false"
         tools:navigationIcon="@drawable/ic_arrow_back_24" />
 
+    <LinearLayout
+        android:id="@+id/filter_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/blue"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp">
+
+        <LinearLayout
+            android:id="@+id/filter_segment_bar"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            android:background="@drawable/bg_filter_pill_segment_bar"
+            android:baselineAligned="false">
+
+            <TextView
+                android:id="@+id/btn_pill_all"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:gravity="center"
+                android:text="Tous"
+                android:textColor="#0F172A"
+                android:textStyle="bold"
+                android:textSize="12.5sp"
+                android:background="@drawable/bg_filter_pill_selected"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btn_pill_valid"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:gravity="center"
+                android:text="Validé"
+                android:textColor="#475569"
+                android:textStyle="normal"
+                android:textSize="12.5sp"
+                android:background="@drawable/bg_filter_pill_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btn_pill_pending"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:gravity="center"
+                android:text="En attente"
+                android:textColor="#475569"
+                android:textStyle="normal"
+                android:textSize="12.5sp"
+                android:background="@drawable/bg_filter_pill_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btn_pill_transferred"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:gravity="center"
+                android:text="Transféré"
+                android:textColor="#475569"
+                android:textStyle="normal"
+                android:textSize="12.5sp"
+                android:background="@drawable/bg_filter_pill_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btn_pill_cancelled"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:gravity="center"
+                android:text="Annulé"
+                android:textColor="#475569"
+                android:textStyle="normal"
+                android:textSize="12.5sp"
+                android:background="@drawable/bg_filter_pill_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:id="@+id/recycler_view_vente"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="19"
+        android:layout_weight="18"
         android:scrollbars="vertical" />
 
     <LinearLayout

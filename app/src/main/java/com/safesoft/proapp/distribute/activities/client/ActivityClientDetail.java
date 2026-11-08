@@ -265,7 +265,9 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 "FROM CARNET_C " +
                 "LEFT JOIN CLIENT ON " +
                 "CARNET_C.CODE_CLIENT = CLIENT.CODE_CLIENT " +
-                "WHERE CARNET_C.CODE_CLIENT = '" + client.code_client + "' ORDER BY CARNET_C.HEURE DESC";
+                "WHERE CARNET_C.CODE_CLIENT = '" + client.code_client + "' " +
+                "AND COALESCE(CARNET_C.IS_EXPORTED, 0) = 0 " +
+                "ORDER BY CARNET_C.HEURE DESC";
 
 
         // querry = "SELECT * FROM Events";
@@ -298,44 +300,18 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
         if (prefs.getBoolean("SHOW_ACHAT_CLIENT", false)) {
             TvAchat.setVisibility(View.VISIBLE);
+            TvAchat.setText(String.format(Locale.FRANCE, "%,.2f DA", client.achat_client));
         } else {
-            TvAchat.setVisibility(View.GONE);
+            TvAchat.setVisibility(View.VISIBLE);
+            TvAchat.setText("**** DA");
         }
 
-        final BadgeDrawable drawable6 =
-                new BadgeDrawable.Builder()
-                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-                        .badgeColor(0xff303F9F)
-                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.achat_client)))
-                        .text2(" DA ")
-                        .build();
-        SpannableString spannableString6 = new SpannableString(TextUtils.concat(drawable6.toSpannable()));
-        TvAchat.setText(spannableString6);
-
-
-        final BadgeDrawable drawable7 =
-                new BadgeDrawable.Builder()
-                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-                        .badgeColor(0xff303F9F)
-                        .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.verser_client)))
-                        .text2(" DA ")
-                        .build();
-        SpannableString spannableString7 = new SpannableString(TextUtils.concat(drawable7.toSpannable()));
-        TvVerser.setText(spannableString7);
-
+        TvVerser.setText(String.format(Locale.FRANCE, "%,.2f DA", client.verser_client));
 
         if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
-            final BadgeDrawable drawable8 =
-                    new BadgeDrawable.Builder()
-                            .type(BadgeDrawable.TYPE_WITH_TWO_TEXT_COMPLEMENTARY)
-                            .badgeColor(0xff303F9F)
-                            .text1(new DecimalFormat("##,##0.00").format(Double.valueOf(client.solde_client)))
-                            .text2(" DA ")
-                            .build();
-            SpannableString spannableString8 = new SpannableString(TextUtils.concat(drawable8.toSpannable()));
-            TvSolde.setText(spannableString8);
+            TvSolde.setText(String.format(Locale.FRANCE, "%,.2f DA", client.solde_client));
         } else {
-            TvSolde.setText("********");
+            TvSolde.setText("******** DA");
         }
 
 
@@ -425,10 +401,28 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
         } else if (item.getItemId() == R.id.edit_client) {
             FragmentNewEditClient fragmentnewclient = new FragmentNewEditClient();
-            fragmentnewclient.showDialogbox(ActivityClientDetail.this, getBaseContext(), "EDIT_CLIENT", client);
+            fragmentnewclient.showDialogbox(ActivityClientDetail.this, getBaseContext(), "EDIT_CLIENT", client,
+                    savedOk -> {
+                        if (Boolean.TRUE.equals(savedOk)) {
+                            refreshDetailClientAfterEdit();
+                        }
+                    });
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refreshDetailClientAfterEdit() {
+        getClient();
+        CODE_CLIENT = client.code_client != null ? client.code_client : CODE_CLIENT;
+        if (imgv_client_map != null) {
+            if (client.latitude != 0 || client.longitude != 0) {
+                setStaticMap(client.latitude, client.longitude);
+            } else {
+                imgv_client_map.setImageResource(R.mipmap.noimg);
+            }
+        }
+        setRecycle();
     }
 
 

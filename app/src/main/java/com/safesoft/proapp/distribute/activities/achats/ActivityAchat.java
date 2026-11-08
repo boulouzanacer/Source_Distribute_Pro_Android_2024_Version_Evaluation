@@ -132,6 +132,14 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat heure_format;
 
+    @SuppressWarnings("deprecation")
+    private Barcode getRestoredBarcode(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return savedInstanceState.getParcelable(BARCODE_KEY, Barcode.class);
+        }
+        return savedInstanceState.getParcelable(BARCODE_KEY);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,7 +165,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         }
 
         if (savedInstanceState != null) {
-            Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
+            Barcode restoredBarcode = getRestoredBarcode(savedInstanceState);
             if (restoredBarcode != null) {
                 //  result.setText(restoredBarcode.rawValue);
                 Toast.makeText(ActivityAchat.this, restoredBarcode.rawValue, Toast.LENGTH_SHORT).show();
@@ -811,7 +819,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
         int id = item.getItemId();
 
         if (item.getItemId() == android.R.id.home) {
-                onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         }
         if (id == R.id.generate_pdf) {
 
@@ -863,13 +871,6 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
             startService(new Intent(this, ServiceLocation.class));
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-
 
     @Subscribe
     public void onEventLocation(LocationEvent event) {
@@ -1077,6 +1078,7 @@ public class ActivityAchat extends AppCompatActivity implements RecyclerAdapterC
 
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 

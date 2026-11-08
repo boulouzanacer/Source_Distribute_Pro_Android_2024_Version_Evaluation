@@ -5,7 +5,8 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/gray</item>
-        <item name="colorAccent">@color/gray</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="colorControlHighlight">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
         <item name="android:typeface">sans</item>
 
@@ -78,6 +79,10 @@
         <item name="colorSecondary">@color/blue</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Ripple / highlight totalement désactivés -->
+        <item name="colorAccent">@color/blue</item>
+        <item name="colorControlHighlight">@android:color/transparent</item>
 
         <!-- Customize your theme here. -->
         <item name="android:textColorPrimary">@color/black</item>  <!-- field text color. -->

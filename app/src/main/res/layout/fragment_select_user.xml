@@ -1,158 +1,355 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_marginTop="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="20dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <TextView
-                android:text="12/12/2012 12:12"
-                android:clickable="true"
-                android:background="@drawable/selector_date_hours"
-                android:id="@+id/beginsession_date"
-                android:textSize="15sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="12dp"
-                android:layout_marginEnd="12dp" />
-
-            <TextView
-                android:text="Debut session"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_marginLeft="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:paddingTop="10dp"
-            android:paddingBottom="20dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/endsession_date"
-                android:text="12/12/2015 15:15"
-                android:textSize="15sp"
-                android:clickable="true"
-                android:background="@drawable/selector_date_hours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="11dp"
-                android:layout_marginEnd="11dp" />
-
-            <TextView
-                android:text="Fin session"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_marginLeft="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true" />
-        </RelativeLayout>
-    </LinearLayout>
-
+    android:layout_height="match_parent"
+    android:background="#F1F5F9"
+    android:fillViewport="true"
+    android:padding="14dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
-        <TextView
-            android:text="Séléctionner client Svp"
-            android:textSize="15sp"
-            android:textColor="@color/carot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-            android:id="@+id/client_spinner"
+        <!-- ============================================================
+             HEADER BLEU
+             ============================================================ -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Client : "
-            android:textColorHint="#05ab9a"
-            app:met_floatingLabel="normal" />
-    </LinearLayout>
+            android:minHeight="64dp"
+            android:background="@drawable/bg_web_header_blue"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Sélection tournée / session"
+                android:textColor="#FFFFFF"
+                android:textSize="19.5sp"
+                android:textStyle="bold" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:padding="5dp"
-        android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:alpha="0.82"
+                android:gravity="center"
+                android:text="Définissez la période, le client et la localisation"
+                android:textColor="#FFFFFF"
+                android:textSize="12.5sp" />
+        </LinearLayout>
 
-        <TextView
-            android:text="Séléctionner wilaya Svp"
-            android:textSize="15sp"
-            android:textColor="@color/tag_green_bg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Spinner
-            android:id="@+id/wilaya_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/btn_dropdown"
-            app:met_floatingLabel="normal" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:padding="5dp"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:text="Séléctionner commune Svp"
-            android:textSize="15sp"
-            android:textColor="@color/blue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Spinner
-            android:id="@+id/commune_spinner"
+        <!-- ============================================================
+             CARTE 1 - PERIODE (BLEU PASTEL)
+             ============================================================ -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/btn_dropdown"
-            app:met_floatingLabel="normal" />
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_section_card_periode_blue"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="16dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <FrameLayout
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_icon_badge_blue"
+                    android:foregroundGravity="center">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_baseline_calendar_today_24"
+                        android:tint="#FFFFFF"
+                        android:contentDescription="periode" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:text="Période"
+                    android:textColor="#1E3A8A"
+                    android:textSize="16.5sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#2563EB"
+                app:boxStrokeWidth="1dp"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
+                app:startIconTint="#2563EB"
+                app:endIconDrawable="@drawable/ic_baseline_arrow_drop_down_circle_24"
+                app:endIconTint="#3B82F6">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/beginsession_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Début session"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textSize="14.5sp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#64748B"
+                    android:paddingVertical="10dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#2563EB"
+                app:boxStrokeWidth="1dp"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
+                app:startIconTint="#2563EB"
+                app:endIconDrawable="@drawable/ic_baseline_arrow_drop_down_circle_24"
+                app:endIconTint="#3B82F6">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/endsession_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Fin session"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textSize="14.5sp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#64748B"
+                    android:paddingVertical="10dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- ============================================================
+             CARTE 2 - CLIENT (VERT ÉMERAUDE PASTEL)
+             ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_section_card_client_emerald"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <FrameLayout
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_icon_badge_emerald"
+                    android:foregroundGravity="center">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_baseline_person_24"
+                        android:tint="#FFFFFF"
+                        android:contentDescription="client" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:text="Client"
+                    android:textColor="#064E3B"
+                    android:textSize="16.5sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/client_spinner_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#059669"
+                app:boxStrokeWidth="1dp"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_baseline_local_mall_24"
+                app:startIconTint="#059669"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/client_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textAutoComplete"
+                    android:hint="Sélectionner un client"
+                    android:textSize="14.5sp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#64748B"
+                    android:completionThreshold="0"
+                    android:paddingVertical="10dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- ============================================================
+             CARTE 3 - LOCALISATION (VIOLET PASTEL)
+             ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_section_card_loc_violet"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <FrameLayout
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_icon_badge_violet"
+                    android:foregroundGravity="center">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_baseline_location_on_24"
+                        android:tint="#FFFFFF"
+                        android:contentDescription="localisation" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:text="Localisation"
+                    android:textColor="#4C1D95"
+                    android:textSize="16.5sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#7C3AED"
+                app:boxStrokeWidth="1dp"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_baseline_location_on_24"
+                app:startIconTint="#7C3AED"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/wilaya_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Wilaya"
+                    android:inputType="textAutoComplete"
+                    android:textSize="14.5sp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#64748B"
+                    android:completionThreshold="0"
+                    android:paddingVertical="10dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#7C3AED"
+                app:boxStrokeWidth="1dp"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_baseline_pin_drop_24"
+                app:startIconTint="#7C3AED"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/commune_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Commune"
+                    android:inputType="textAutoComplete"
+                    android:textSize="14.5sp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#64748B"
+                    android:completionThreshold="0"
+                    android:paddingVertical="10dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- ============================================================
+             BOUTON VALIDER (BLEU SOLIDE 52dp)
+             ============================================================ -->
+        <Button
+            android:id="@+id/valid"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:minHeight="52dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/bg_web_button_primary"
+            android:text="VALIDER"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp" />
     </LinearLayout>
-
-
-    <Button
-        android:id="@+id/valid"
-        android:text="Valider"
-        android:background="?actionModeBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+</ScrollView>

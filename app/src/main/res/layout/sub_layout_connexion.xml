@@ -5,66 +5,79 @@
     android:id="@+id/param_co"
     android:visibility="visible"
     android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="5dp">
+        android:orientation="vertical"
+        android:background="@drawable/bg_web_section_card"
+        android:padding="5dp"
+        android:layout_marginBottom="2dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connexion base de données"
+            android:textColor="#0F172A"
+            android:textSize="14.5sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:includeFontPadding="false"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ip_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:contextClickable="false"
             android:hint="@string/adress_ip"
             app:errorMessage="@string/error_message_empty"
             app:errorType="empty"
             app:expandedHintEnabled="false"
             app:hintTextColor="@color/blue"
+            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             app:startIconDrawable="@drawable/baseline_http_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:gravity="center"
                 android:inputType="number|numberDecimal"
                 android:digits="0123456789."
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:backgroundTintMode="src_in"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:id="@+id/database_text"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:contextClickable="false"
             app:errorMessage="@string/error_message_empty"
             app:errorType="empty"
             app:hintTextColor="@color/blue"
             app:startIconDrawable="@drawable/outline_folder_open_24"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             app:expandedHintEnabled="false"
-            android:layout_below="@+id/ip_text"
+            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             android:hint="@string/database">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -74,105 +87,121 @@
                 android:textStyle="bold"
                 android:textSize="15sp"
                 android:textColor="@color/black"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <Spinner
-            android:id="@+id/type_logiciel_dropdown"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/database_text"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
+            android:orientation="vertical"
+            android:background="#F8FAFC"
+            android:padding="10dp"
+            android:layout_marginBottom="8dp">
 
+            <Spinner
+                android:id="@+id/type_logiciel_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
 
         <CheckBox
             android:id="@+id/chkbx_safe_event"
-            android:layout_below="@+id/type_logiciel_dropdown"
             android:text="@string/connexion_instantan"
             android:checked="false"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"
+            android:textSize="13.5sp"
+            android:textColor="#1E293B"
+            android:paddingTop="2dp"
+            android:paddingBottom="8dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username_safe_event_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:contextClickable="false"
-            android:visibility="visible"
-            android:layout_below="@+id/chkbx_safe_event"
+            android:visibility="gone"
             android:hint="@string/utilisateur"
             app:errorMessage="@string/error_message_empty"
             app:errorType="empty"
             app:expandedHintEnabled="false"
             app:hintTextColor="@color/blue"
+            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             app:startIconDrawable="@drawable/outline_person_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/username_event"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:gravity="center"
                 android:inputType="text"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:id="@+id/password_safe_event_text"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:contextClickable="false"
             app:errorMessage="@string/error_message_empty"
             app:errorType="empty"
-            android:visibility="visible"
+            android:visibility="gone"
             app:hintTextColor="@color/blue"
             app:startIconDrawable="@drawable/outline_password_24"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/blue"
+            android:layout_marginBottom="4dp"
             app:expandedHintEnabled="false"
-            android:layout_below="@+id/username_safe_event_text"
+            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             android:hint="@string/mot_de_passe">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_event"
                 android:gravity="center"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:text=""
                 android:textStyle="bold"
                 android:textSize="15sp"
                 android:textColor="@color/black"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/white"
-        android:orientation="horizontal">
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp">
 
         <TextView
             android:id="@+id/progress"
@@ -188,225 +217,302 @@
 
     <View
         android:id="@+id/view"
-        android:layout_marginTop="5dp"
-        android:background="@color/gray"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp" />
+        android:layout_height="0dp"
+        android:visibility="gone"/>
 
-
-    <Button
-        android:id="@+id/btntest_connection"
-        style="@style/dialog_blue_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
-        android:text="@string/tester_la_connexion" />
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:clickable="true"
-        android:background="@color/white"
-        android:paddingEnd="10dp"
-        android:paddingTop="10dp"
-        android:focusable="true">
-
-
-        <TextView
-            android:id="@+id/descrip_code_depot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/saisissez_ici_le_code_depot_pour_cette_appareil_veuillez_bien_confirmer_le_code_pour_viter_plutard_le_conflis_entre_les_depots"
-            android:textSize="12sp"
-            android:textColor="@color/black"
-            android:layout_alignParentStart="true" />
-
-        <LinearLayout
-            android:id="@+id/code_depot_lnr"
-            android:layout_below="@+id/descrip_code_depot"
-            android:padding="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClickListener"
-            android:background="@drawable/import_export_selector"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="UsingOnClickInXml">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/code_depot"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-            <TextView
-                android:id="@+id/code_depot"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/_000001"
-                android:textAlignment="center"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/nom_depot_lnr"
-            android:layout_below="@+id/code_depot_lnr"
-            android:padding="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClickListener"
-            android:background="@drawable/import_export_selector"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="UsingOnClickInXml">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/nom_depot_van"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-            <TextView
-                android:id="@+id/nom_depot"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:textAlignment="center"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-        </LinearLayout>
+        android:gravity="end"
+        android:paddingTop="4dp"
+        android:paddingBottom="10dp"
+        android:layout_marginBottom="4dp">
 
         <Button
-            android:id="@+id/get_all_depot"
+            android:id="@+id/btntest_connection"
             style="@style/dialog_blue_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:visibility="visible"
-            android:layout_below="@+id/nom_depot_lnr"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="5dp"
-            android:text="Depots" />
+            android:text="@string/tester_la_connexion" />
 
+    </LinearLayout>
 
-        <View
-            android:id="@+id/vieww"
-            android:layout_marginTop="5dp"
-            android:background="@color/gray"
-            android:layout_below="@+id/get_all_depot"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_web_section_card"
+        android:padding="14dp">
+
+        <TextView
+            android:id="@+id/descrip_code_depot"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp" />
-
+            android:layout_height="wrap_content"
+            android:text="@string/saisissez_ici_le_code_depot_pour_cette_appareil_veuillez_bien_confirmer_le_code_pour_viter_plutard_le_conflis_entre_les_depots"
+            android:textSize="12sp"
+            android:textColor="#64748B"
+            android:lineSpacingExtra="1dp"
+            android:layout_marginBottom="10dp"/>
 
         <LinearLayout
-            android:id="@+id/code_vendeur_lnr"
-            android:layout_below="@+id/vieww"
-            android:padding="10dp"
+            android:id="@+id/code_depot_lnr"
+            android:padding="14dp"
             android:clickable="true"
             android:focusable="true"
             android:onClick="onClickListener"
-            android:background="@drawable/import_export_selector"
+            android:background="@drawable/bg_import_row_top_selector"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="UsingOnClickInXml">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/code_vendeur"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/bg_web_button_secondary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Code dépôt"
+                    android:src="@drawable/ic_baseline_home_24"/>
+            </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/code_vendeur"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/_000001"
-                android:textAlignment="center"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/code_depot"
+                    android:textSize="12.5sp"
+                    android:textColor="#64748B"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:id="@+id/code_depot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_000001"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F172A"
+                    android:layout_marginTop="2dp"
+                    android:includeFontPadding="false"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/nom_depot_lnr"
+            android:padding="14dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClickListener"
+            android:background="@drawable/bg_import_row_mid_selector"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-0.8dp"
+            tools:ignore="UsingOnClickInXml">
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/bg_web_button_map"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Nom dépôt"
+                    android:src="@drawable/ic_baseline_done_24"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nom_depot_van"
+                    android:textSize="12.5sp"
+                    android:textColor="#64748B"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:id="@+id/nom_depot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F172A"
+                    android:layout_marginTop="2dp"
+                    android:includeFontPadding="false"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+
+            <Button
+                android:id="@+id/get_all_depot"
+                style="@style/dialog_blue_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:text="Depots" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vieww"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/code_vendeur_lnr"
+            android:padding="14dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClickListener"
+            android:background="@drawable/bg_import_row_top_selector"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="UsingOnClickInXml">
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/bg_web_button_gps"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Code vendeur"
+                    android:src="@drawable/ic_baseline_person_24"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/code_vendeur"
+                    android:textSize="12.5sp"
+                    android:textColor="#64748B"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:id="@+id/code_vendeur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_000001"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F172A"
+                    android:layout_marginTop="2dp"
+                    android:includeFontPadding="false"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/nom_vendeur_lnr"
-            android:layout_below="@+id/code_vendeur_lnr"
-            android:padding="10dp"
+            android:padding="14dp"
             android:clickable="true"
             android:focusable="true"
             android:onClick="onClickListener"
-            android:background="@drawable/import_export_selector"
+            android:background="@drawable/bg_import_row_bottom_selector"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-0.8dp"
             tools:ignore="UsingOnClickInXml">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/nom_vendeur"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/bg_web_button_primary"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Nom vendeur"
+                    android:src="@drawable/ic_baseline_check_24"/>
+            </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/nom_vendeur"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="..."
-                android:textAlignment="center"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nom_vendeur"
+                    android:textSize="12.5sp"
+                    android:textColor="#64748B"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:id="@+id/nom_vendeur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F172A"
+                    android:layout_marginTop="2dp"
+                    android:includeFontPadding="false"/>
+            </LinearLayout>
+
         </LinearLayout>
 
-        <Button
-            android:id="@+id/get_all_vendeur"
-            style="@style/dialog_blue_button"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:visibility="visible"
-            android:layout_below="@+id/nom_vendeur_lnr"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="5dp"
-            android:text="Vendeurs" />
+            android:gravity="end"
+            android:paddingTop="6dp">
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/get_all_vendeur"
+                style="@style/dialog_blue_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:text="Vendeurs" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <View
-        android:layout_marginTop="5dp"
-        android:background="@color/gray"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp" />
-
+        android:layout_height="0dp"
+        android:visibility="gone"/>
 
 </LinearLayout>

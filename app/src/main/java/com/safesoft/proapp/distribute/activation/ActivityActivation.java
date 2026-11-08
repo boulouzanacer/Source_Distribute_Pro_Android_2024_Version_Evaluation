@@ -63,7 +63,13 @@ public class ActivityActivation extends AppCompatActivity {
 
         Intent intent = getIntent();
         deviceId2 = intent.getStringExtra(splashScreen.NUM_SERIE);
-        revendeur = intent.getStringExtra(splashScreen.revendeur);
+        revendeur = intent.getStringExtra(splashScreen.EXTRA_REVENDEUR);
+        // Extra absent (relance apres mort du processus, lancement direct) : on retombe
+        // sur le revendeur par defaut au lieu de laisser un null qui ferait planter
+        // les comparaisons de info_revendeur2().
+        if (revendeur == null) {
+            revendeur = splashScreen.revendeur;
+        }
         info_revendeur2();
 
         TextView tv = findViewById(R.id.NUM_SERIAL);
@@ -202,6 +208,7 @@ public class ActivityActivation extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void onClick_Btn_Start(View view) {
         startActivity(new Intent(ActivityActivation.this, MainActivity.class));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

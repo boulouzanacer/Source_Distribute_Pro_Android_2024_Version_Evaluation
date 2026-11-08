@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,12 +33,18 @@ public class ScalingActivityAnimator {
      * @param mainViewId      main layout id
      * @param displayLayoutId displayLayoutId
      */
+    @SuppressWarnings("deprecation")
     public ScalingActivityAnimator(Context context, Activity act, int mainViewId, int displayLayoutId) {
         this.mActivity = act;
         this.mMainView = act.findViewById(mainViewId);
         this.mPopupView = LayoutInflater.from(context).inflate(displayLayoutId, null);
         Point outSize = new Point();
-        mActivity.getWindowManager().getDefaultDisplay().getSize(outSize);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            android.graphics.Rect bounds = mActivity.getWindowManager().getCurrentWindowMetrics().getBounds();
+            outSize.set(bounds.width(), bounds.height());
+        } else {
+            mActivity.getWindowManager().getDefaultDisplay().getSize(outSize);
+        }
         screenHeight = outSize.y;
         popHeight = screenHeight / 2;
     }
@@ -80,7 +87,7 @@ public class ScalingActivityAnimator {
 
     private void showPopupWindow() {
         mPopupWindow = new PopupWindow(mPopupView, ViewGroup.LayoutParams.MATCH_PARENT, popHeight, true);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(mActivity.getResources(), (android.graphics.Bitmap) null));
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.setAnimationStyle(R.style.showScalingAnimation);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {

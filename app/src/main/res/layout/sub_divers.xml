@@ -1,64 +1,426 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:visibility="gone"
     android:id="@+id/sub_divers"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/sub_layout_objectif" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_web_section_card"
+        android:padding="14dp"
+        android:orientation="vertical">
 
-    <include layout="@layout/sub_layout_notes" />
+        <!-- ============================================================ -->
+        <!-- 1. 🔵 CLIENTS                                               -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_client"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
 
-    <include layout="@layout/sub_layout_achat_vente_cmd_inv" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_person_24"
+                android:tint="#1D4ED8" />
 
-    <include layout="@layout/sub_layout_ht" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Clients"
+                android:textColor="#1E3A8A"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
 
-    <include layout="@layout/sub_layout_pa" />
+        <include layout="@layout/sub_layout_achat_client" />
 
-    <include layout="@layout/sub_layout_achat_client" />
+        <include layout="@layout/sub_layout_solde_client" />
 
-    <include layout="@layout/sub_layout_sychronisation_client" />
+        <include layout="@layout/sub_layout_wilaya_commune_client" />
 
-    <include layout="@layout/sub_layout_sychronisation_produit" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
 
-    <include layout="@layout/sub_layout_benifice" />
+        <!-- ============================================================ -->
+        <!-- 2. 🟠 FOURNISSEURS                                          -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_fournisseur"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
 
-    <include layout="@layout/sub_layout_stock_moins" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_warehouse_24"
+                android:tint="#C2410C" />
 
-    <include layout="@layout/sub_layout_solde_client" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Fournisseurs"
+                android:textColor="#9A3412"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
 
-    <include layout="@layout/sub_layout_solde_fournisseur" />
+        <include layout="@layout/sub_layout_solde_fournisseur" />
 
-    <include layout="@layout/sub_layout_remise" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
 
-    <include layout="@layout/sub_layout_modifier_bon" />
+        <!-- ============================================================ -->
+        <!-- 3. 🟢 VENTES                                                -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_vente"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
 
-    <include layout="@layout/sub_layout_edit_prix" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_point_of_sale_24"
+                android:tint="#047857" />
 
-    <include layout="@layout/sub_layout_edit_stock_ini" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Ventes"
+                android:textColor="#064E3B"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
 
-    <include layout="@layout/sub_layout_edit_solde_ini" />
+        <include layout="@layout/sub_layout_vente_stock_moins"/>
 
-    <include layout="@layout/sub_layout_famille" />
+        <include layout="@layout/sub_layout_allow_credit_vente"/>
 
-    <include layout="@layout/sub_layout_filtre" />
+        <include layout="@layout/sub_layout_prix_vendeur" />
 
-    <include layout="@layout/sub_layout_gps" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
 
-    <include layout="@layout/sub_layout_sound" />
+        <!-- ============================================================ -->
+        <!-- 4. 🧩 MODULES (affichage global sections app)               -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_modules"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
 
-    <include layout="@layout/zpref_scanner" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_view_module_24"
+                android:tint="#0369A1" />
 
-    <include layout="@layout/sub_layout_allow_credit_vente"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Modules"
+                android:textColor="#0C4A6E"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
 
-    <include layout="@layout/sub_layout_combin_products"/>
+        <include layout="@layout/sub_layout_achat_vente_cmd_inv" />
 
-    <include layout="@layout/sub_layout_vente_stock_moins"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
 
-    <include layout="@layout/sub_layout_show_photo_produit"/>
+        <!-- ============================================================ -->
+        <!-- 5. 🟡 PRODUITS & STOCK                                      -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_stock"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
 
-    <include layout="@layout/sub_layout_prix_vendeur" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_inventory_2_24"
+                android:tint="#B45309" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Produits &amp; Stock"
+                android:textColor="#78350F"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
+
+        <include layout="@layout/sub_layout_stock_moins" />
+
+        <include layout="@layout/sub_layout_edit_stock_ini" />
+
+        <include layout="@layout/sub_layout_edit_solde_ini" />
+
+        <include layout="@layout/sub_layout_famille" />
+
+        <include layout="@layout/sub_layout_combin_products"/>
+
+        <include layout="@layout/sub_layout_show_photo_produit"/>
+
+        <include layout="@layout/sub_layout_filtre" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <!-- ============================================================ -->
+        <!-- 6. 🟣 FINANCIER : PRIX, TVA, REMISE, BÉNÉFICE               -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_securite"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_wallet_24"
+                android:tint="#6D28D9" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Tarifs &amp; Financier"
+                android:textColor="#4C1D95"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
+
+        <include layout="@layout/sub_layout_ht" />
+
+        <include layout="@layout/sub_layout_pa" />
+
+        <include layout="@layout/sub_layout_edit_prix" />
+
+        <include layout="@layout/sub_layout_benifice" />
+
+        <include layout="@layout/sub_layout_remise" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <!-- ============================================================ -->
+        <!-- 7. 🔷 SYNCHRONISATION                                       -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_synchro"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_sync_24"
+                android:tint="#4338CA" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Synchronisation"
+                android:textColor="#312E81"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
+
+        <include layout="@layout/sub_layout_sychronisation_client" />
+
+        <include layout="@layout/sub_layout_sync_client_par_vendeur" />
+
+        <include layout="@layout/sub_layout_sychronisation_produit" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <!-- ============================================================ -->
+        <!-- 8. 🔒 SÉCURITÉ & AUTORISATIONS                              -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_general"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_settings_24"
+                android:tint="#334155" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Sécurité &amp; Autorisations"
+                android:textColor="#0F172A"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
+
+        <include layout="@layout/sub_layout_modifier_bon" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <!-- ============================================================ -->
+        <!-- 9. ⚙️ GÉNÉRAL & OBJECTIFS                                  -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_general"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_tune_24"
+                android:tint="#334155" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Général, GPS, Scanner, Sons"
+                android:textColor="#0F172A"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
+
+        <include layout="@layout/sub_layout_objectif" />
+
+        <include layout="@layout/sub_layout_notes" />
+
+        <include layout="@layout/sub_layout_gps" />
+
+        <include layout="@layout/sub_layout_sound" />
+
+        <include layout="@layout/zpref_scanner" />
+
+        <include layout="@layout/sub_layout_navbar" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <!-- ============================================================ -->
+        <!-- 10. 🌐 LANGUE                                               -->
+        <!-- ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_section_modules"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_language_24"
+                android:tint="#0369A1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/langue_section_title"
+                android:textColor="#0C4A6E"
+                android:textStyle="bold"
+                android:textSize="14.5sp" />
+        </LinearLayout>
+
+        <include layout="@layout/sub_layout_language" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -111,6 +111,9 @@ public class FragmentSelectProduct {
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
 
+        // Apply immersive mode (hide navigation bar) to the dialog window if enabled.
+        com.safesoft.proapp.distribute.app.BaseApplication.applyImmersiveToDialog(dialog.getWindow());
+
 
     }
 
@@ -218,6 +221,9 @@ public class FragmentSelectProduct {
 
         try {
 
+            // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+            querry_search = (querry_search == null) ? "" : querry_search.replace("'", "''");
+
             ///////////////////////////////////CODE BARRE //////////////////////////////////////
             ArrayList<PostData_Codebarre> codebarres = new ArrayList<>();
 
@@ -248,7 +254,8 @@ public class FragmentSelectProduct {
 
             // Add condition for selected family
             if (!selected_famile.equals("Toutes")) {
-                conditions.add("FAMILLE = '" + selected_famile + "'");
+                // 🔥 Escape simple des apostrophes (une famille du type "EAU D'OR" casserait la requete)
+                conditions.add("FAMILLE = '" + selected_famile.replace("'", "''") + "'");
             }
 
             // Add conditions based on hide_stock_moins and isScan

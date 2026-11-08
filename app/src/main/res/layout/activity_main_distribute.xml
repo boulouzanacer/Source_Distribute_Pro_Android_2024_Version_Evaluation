@@ -1,199 +1,952 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/font_black"
-    android:padding="7dp">
+    android:background="#F1F5F9"
+    android:fillViewport="true">
 
-    <!-- LIGNE 1 -->
     <LinearLayout
-        android:id="@+id/lnr_vente_commande"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/lnr_achat"
-        app:layout_constraintHeight_percent="0.25">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-        <ImageButton
-            android:id="@+id/btn_clients"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/green_white_1"
-            android:onClick="onClick"
-            android:src="@mipmap/client"
-            android:contentDescription="client" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#10B981"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="100dp"
+            android:gravity="center_horizontal">
 
-        <ImageButton
-            android:id="@+id/btn_ventes"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/green_white_2"
-            android:onClick="onClick"
-            android:src="@mipmap/vente"
-            android:layout_weight="1"
-            android:contentDescription="vente" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/btn_commande_client"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/green_white_3"
-            android:onClick="onClick"
-            android:src="@mipmap/commande"
-            android:layout_weight="1"
-            android:contentDescription="commande" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_header_info_chip"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp">
+
+                        <FrameLayout
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/bg_header_icon_container"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_warehouse_24"
+                                app:tint="#FFFFFF" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/header_label_depot"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dépôt"
+                                android:textColor="#FFFFFF"
+                                android:alpha="0.7"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.05"
+                                android:textSize="9.5sp" />
+
+                            <TextView
+                                android:id="@+id/header_value_depot"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:layout_marginTop="0.5dp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_header_info_chip"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp">
+
+                        <FrameLayout
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/bg_header_icon_container"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_person_24"
+                                app:tint="#FFFFFF" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/header_label_vendeur"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Vendeur"
+                                android:textColor="#FFFFFF"
+                                android:alpha="0.7"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.05"
+                                android:textSize="9.5sp" />
+
+                            <TextView
+                                android:id="@+id/header_value_vendeur"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:layout_marginTop="0.5dp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/header_settings_btn"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:foregroundGravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@android:color/transparent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_baseline_settings_24"
+                        android:contentDescription="Paramètres" />
+
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-80dp"
+            android:background="@drawable/bg_home_card_white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="0dp"
+            android:paddingBottom="32dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginRight="24dp"
+                android:gravity="start"
+                android:text="Modules"
+                android:textColor="#111827"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/lnr_vente_commande"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginRight="24dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
+
+                        <ImageButton
+                            android:id="@+id/btn_clients"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:contentDescription="Clients"
+                            android:foreground="@android:color/transparent"
+                            android:scaleType="fitCenter" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tile_menu_white"
+                            android:clickable="false"
+                            android:descendantFocusability="blocksDescendants"
+                            android:focusable="false"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:background="@drawable/bg_tile_orange"
+                                android:foregroundGravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_baseline_person_24"
+                                    app:tint="@color/icon_orange" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Clients"
+                                android:textColor="#111827"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Gestion portefeuille"
+                                android:textColor="#6B7280"
+                                android:textSize="13.5sp" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
+
+                        <ImageButton
+                            android:id="@+id/btn_ventes"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:contentDescription="Ventes"
+                            android:foreground="@android:color/transparent"
+                            android:scaleType="fitCenter" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tile_menu_white"
+                            android:clickable="false"
+                            android:descendantFocusability="blocksDescendants"
+                            android:focusable="false"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:background="@drawable/bg_tile_rose"
+                                android:foregroundGravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_baseline_point_of_sale_24"
+                                    app:tint="@color/icon_rose" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Ventes"
+                                android:textColor="#111827"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Bons de livraison"
+                                android:textColor="#6B7280"
+                                android:textSize="13.5sp" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lnr_achat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="24dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
+
+                        <ImageButton
+                            android:id="@+id/btn_fournisseur"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:contentDescription="Fournisseurs"
+                            android:foreground="@android:color/transparent"
+                            android:scaleType="fitCenter" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tile_menu_white"
+                            android:clickable="false"
+                            android:descendantFocusability="blocksDescendants"
+                            android:focusable="false"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:background="@drawable/bg_tile_blue"
+                                android:foregroundGravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_baseline_warehouse_24"
+                                    app:tint="@color/icon_blue" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Fournisseurs"
+                                android:textColor="#111827"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Carnet fournisseurs"
+                                android:textColor="#6B7280"
+                                android:textSize="13.5sp" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
+
+                        <ImageButton
+                            android:id="@+id/btn_achat"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:contentDescription="Achats"
+                            android:foreground="@android:color/transparent"
+                            android:scaleType="fitCenter" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tile_menu_white"
+                            android:clickable="false"
+                            android:descendantFocusability="blocksDescendants"
+                            android:focusable="false"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:background="@drawable/bg_tile_emerald"
+                                android:foregroundGravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_baseline_shopping_cart_24"
+                                    app:tint="@color/icon_emerald" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Achats"
+                                android:textColor="#111827"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Bons d'achat"
+                                android:textColor="#6B7280"
+                                android:textSize="13.5sp" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone">
+
+                    <ImageButton
+                        android:id="@+id/btn_commande_fournisseur"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:contentDescription="Commandes Fournisseurs"
+                        android:foreground="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tile_menu_white"
+                        android:clickable="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="gone">
+
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_tile_amber"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_local_mall_24"
+                                app:tint="@color/icon_amber" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Cde Fourn."
+                            android:textColor="#111827"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Commandes fournisseurs"
+                            android:textColor="#6B7280"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="24dp"
+                android:baselineAligned="false"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btn_commande_client"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:contentDescription="Commandes Clients"
+                        android:foreground="@android:color/transparent"
+                        android:scaleType="fitCenter" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tile_menu_white"
+                        android:clickable="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_tile_violet"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_receipt_long_24"
+                                app:tint="@color/icon_violet" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Commandes"
+                            android:textColor="#111827"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Commandes clients"
+                            android:textColor="#6B7280"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btn_produits"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:contentDescription="Produits"
+                        android:foreground="@android:color/transparent"
+                        android:scaleType="fitCenter" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tile_menu_white"
+                        android:clickable="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_tile_red"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_inventory_2_24"
+                                app:tint="@color/icon_red" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Produits"
+                            android:textColor="#111827"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Catalogue produits"
+                            android:textColor="#6B7280"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="24dp"
+                android:baselineAligned="false"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btn_import_export"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:contentDescription="Synchronisation"
+                        android:foreground="@android:color/transparent"
+                        android:scaleType="fitCenter" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tile_menu_white"
+                        android:clickable="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_tile_cyan"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_sync_24"
+                                app:tint="@color/icon_cyan" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Sync"
+                            android:textColor="#111827"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Import / Export"
+                            android:textColor="#6B7280"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btn_inventaire"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:contentDescription="Inventaires"
+                        android:foreground="@android:color/transparent"
+                        android:scaleType="fitCenter" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tile_menu_white"
+                        android:clickable="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_tile_yellow"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_storage_24"
+                                app:tint="@color/icon_yellow" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Inventaires"
+                            android:textColor="#111827"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Stock et inventaire"
+                            android:textColor="#6B7280"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="24dp"
+                android:baselineAligned="false"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btn_tournee"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:contentDescription="Tournées"
+                        android:foreground="@android:color/transparent"
+                        android:scaleType="fitCenter" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tile_menu_white"
+                        android:clickable="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="gone">
+
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_tile_pink"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_route_24"
+                                app:tint="@color/icon_pink" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Tournées"
+                            android:textColor="#111827"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Planification routes"
+                            android:textColor="#6B7280"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btn_parametres"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:contentDescription="Paramètres"
+                        android:foreground="@android:color/transparent"
+                        android:scaleType="fitCenter" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tile_menu_white"
+                        android:clickable="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="gone">
+
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_tile_indigo"
+                            android:foregroundGravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_settings_24"
+                                app:tint="@color/icon_indigo" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Paramètres"
+                            android:textColor="#111827"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Configuration app"
+                            android:textColor="#6B7280"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
-
-    <!-- LIGNE 2 -->
-    <LinearLayout
-        android:id="@+id/lnr_achat"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@id/lnr_vente_commande"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/group3"
-        app:layout_constraintHeight_percent="0.25">
-
-        <ImageButton
-            android:id="@+id/btn_commande_fournisseur"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/blue_white_3"
-            android:onClick="onClick"
-            android:src="@mipmap/commande"
-            android:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/btn_achat"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/blue_white_1"
-            android:onClick="onClick"
-            android:src="@mipmap/achats"
-            android:contentDescription="achat" />
-
-        <ImageButton
-            android:id="@+id/btn_fournisseur"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/blue_white_2"
-            android:onClick="onClick"
-            android:src="@mipmap/fournisseurs"
-            android:contentDescription="fournisseur" />
-    </LinearLayout>
-
-    <!-- LIGNE 3 -->
-    <LinearLayout
-        android:id="@+id/group3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@id/lnr_achat"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/group4"
-        app:layout_constraintHeight_percent="0.25">
-
-        <ImageButton
-            android:id="@+id/btn_produits"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/rouge"
-            android:onClick="onClick"
-            android:src="@mipmap/produit"
-            android:contentDescription="produit" />
-
-        <ImageButton
-            android:id="@+id/btn_inventaire"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/gray"
-            android:onClick="onClick"
-            android:src="@mipmap/inventaire"
-            android:contentDescription="inventaire" />
-
-        <ImageButton
-            android:id="@+id/btn_tournee"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/jaune"
-            android:onClick="onClick"
-            android:src="@mipmap/tournee"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:contentDescription="tournee" />
-    </LinearLayout>
-
-    <!-- LIGNE 5 -->
-    <LinearLayout
-        android:id="@+id/group4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@id/group3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.25">
-
-        <ImageButton
-            android:id="@+id/btn_import_export"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/violet"
-            android:onClick="onClick"
-            android:src="@mipmap/import_export"
-            android:contentDescription="import/export" />
-
-        <ImageButton
-            android:id="@+id/btn_parametres"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/imagebutton_rounded"
-            android:backgroundTint="@color/colorAccent"
-            android:onClick="onClick"
-            android:src="@mipmap/parametre"
-            android:contentDescription="parametre" />
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -35,9 +35,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsetsController;
+import android.text.InputType;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,6 +49,9 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -456,22 +463,16 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         int viewId = v.getId();
 
         if (viewId == R.id.btn_select_client) {
-            if (bon1.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
             showListClient();
 
         } else if (viewId == R.id.btn_mode_tarif) {
 
-            if (bon1.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
 
@@ -558,11 +559,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             }
 
         } else if (viewId == R.id.addProduct) {
-            if (bon1.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
 
@@ -604,15 +602,16 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                         .show();
                 return;
             }
+            if (isBonAnnule()) {
+                showBonLockedAlert(true);
+                return;
+            }
             FragmentValideBon fragmentvalider = new FragmentValideBon();
             fragmentvalider.showDialogbox(ActivityVente.this, bon1.ancien_solde, bon1.montant_bon, bon1.verser, "VALIDATE_VENTE");
 
         } else if (viewId == R.id.txv_remise_btn) {
-            if (bon1.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return;
             }
 
@@ -626,11 +625,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                 ActivityCompat.requestPermissions(ActivityVente.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
 
             } else {
-                if (bon1.blocage.equals("F")) {
-                    new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
-                            .show();
+                if (isBonVerrouille()) {
+                    showBonLockedAlert(isBonAnnule());
                     return;
                 }
                 if (bon1.client.isEmpty()) {
@@ -642,6 +638,10 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             }
 
         } else if (viewId == R.id.btn_mofifier_bon) {
+            if (isBonAnnule()) {
+                showBonLockedAlert(true);
+                return;
+            }
             if (!bon1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Information!")
@@ -958,11 +958,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int itemId = item.getItemId();
         if (itemId == R.id.delete_produit) {
-            if (bon1.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return true;
             }
             new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
@@ -994,11 +991,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             return true;
 
         } else if (itemId == R.id.edit_produit) {
-            if (bon1.blocage.equals("F")) {
-                new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
-                        .show();
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
                 return true;
             }
             try {
@@ -1128,6 +1122,10 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             onBackPressed();
         }
         if (id == R.id.action_note) {
+            if (isBonVerrouille()) {
+                showBonLockedAlert(isBonAnnule());
+                return true;
+            }
             String note = bon1.remarque == null ? "" : bon1.remarque.trim();
             if (note.isEmpty()) {
                 showNotesPickerDialog();
@@ -1161,6 +1159,9 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
     //Versement
     protected void sauvegarder() {
+        if (isBonAnnule()) {
+            return;
+        }
 
         bon1.code_client = client_selected.code_client;
         bon1.client = client_selected.client;
@@ -1351,19 +1352,46 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
     public void validate_theme() {
         if (bon1.blocage.equals("F")) {
-            //findViewById(R.id.client).setBackgroundColor(Color.LTGRAY);
-            //findViewById(R.id.LayoutButton).setBackgroundColor(Color.LTGRAY);
             findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(Color.LTGRAY);
             findViewById(R.id.tl).setBackgroundColor(Color.LTGRAY);
             getWindow().getDecorView().setBackgroundColor(Color.LTGRAY);
-
+        } else if (bon1.blocage.equals("A")) {
+            int slateGray = Color.parseColor("#475569");
+            int paleBg = Color.parseColor("#94A3B8");
+            findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(slateGray);
+            findViewById(R.id.tl).setBackgroundColor(paleBg);
+            getWindow().getDecorView().setBackgroundColor(paleBg);
+            View root = findViewById(android.R.id.content);
+            if (root != null) root.setAlpha(0.58f);
+            if (expandableListView != null) expandableListView.setEnabled(false);
+            btn_select_client.setEnabled(false);
+            btn_mode_tarif.setEnabled(false);
         } else {
-            //findViewById(R.id.client).setBackgroundColor(Color.WHITE);
-            //findViewById(R.id.LayoutButton).setBackgroundColor(Color.WHITE);
             findViewById(R.id.Linear_Layout_Header_bon).setBackgroundColor(Color.WHITE);
             findViewById(R.id.tl).setBackgroundColor(Color.WHITE);
             getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+            View root = findViewById(android.R.id.content);
+            if (root != null) root.setAlpha(1.0f);
+            if (expandableListView != null) expandableListView.setEnabled(true);
+            btn_select_client.setEnabled(true);
+            btn_mode_tarif.setEnabled(true);
         }
+    }
+
+    private boolean isBonVerrouille() {
+        return "F".equals(bon1.blocage) || "A".equals(bon1.blocage);
+    }
+
+    private boolean isBonAnnule() {
+        return "A".equals(bon1.blocage);
+    }
+
+    private void showBonLockedAlert(boolean isAnnule) {
+        String msg = isAnnule ? "Ce bon est annulé, aucune modification n'est autorisée." : "Ce bon est déja validé";
+        new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Information!")
+                .setContentText(msg)
+                .show();
     }
 
 
@@ -1473,13 +1501,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
     private void showNotesPickerDialog() {
         ArrayList<DATABASE.NoteRow> notes = controller.selectNotes();
-        if (notes == null || notes.isEmpty()) {
-            new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Notes")
-                    .setContentText("Aucune note enregistrée")
-                    .show();
-            return;
-        }
+        if (notes == null) notes = new ArrayList<>();
 
         Dialog notesDialog = new Dialog(ActivityVente.this);
         LinearLayout root = new LinearLayout(ActivityVente.this);
@@ -1489,6 +1511,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         float density = getResources().getDisplayMetrics().density;
         int padding16 = (int) (16 * density);
         int padding12 = (int) (12 * density);
+        int radius12 = (int) (12 * density);
 
         RelativeLayout topBar = new RelativeLayout(ActivityVente.this);
         topBar.setBackgroundColor(getResources().getColor(R.color.blue));
@@ -1515,23 +1538,179 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         topBar.addView(title);
         topBar.addView(btnClose);
 
-        RecyclerView rv = new RecyclerView(ActivityVente.this);
-        rv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
-        rv.setLayoutManager(new LinearLayoutManager(ActivityVente.this));
+        LinearLayout editorWrap = new LinearLayout(ActivityVente.this);
+        editorWrap.setOrientation(LinearLayout.VERTICAL);
+        editorWrap.setPadding(padding16, padding12, padding16, 0);
 
-        NotePickerAdapter adapter = new NotePickerAdapter(notes, noteText -> {
+        TextInputLayout tilNew = new TextInputLayout(ActivityVente.this);
+        tilNew.setHint("Nouvelle note ou modifier une existante…");
+        tilNew.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        tilNew.setBoxCornerRadii(radius12, radius12, radius12, radius12);
+        tilNew.setPadding(0, padding12, 0, 0);
+        LinearLayout.LayoutParams tilLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        tilNew.setLayoutParams(tilLp);
+
+        TextInputEditText etNew = new TextInputEditText(tilNew.getContext());
+        etNew.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        etNew.setMaxLines(3);
+        etNew.setMinLines(2);
+        etNew.setImeOptions(EditorInfo.IME_ACTION_NONE);
+        etNew.setTextSize(15);
+        String currentNote = bon1.remarque == null ? "" : bon1.remarque;
+        if (!currentNote.isEmpty()) {
+            etNew.setText(currentNote);
+            etNew.setSelection(currentNote.length());
+        }
+        tilNew.addView(etNew, new TextInputLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        editorWrap.addView(tilNew);
+
+        LinearLayout btnRow = new LinearLayout(ActivityVente.this);
+        btnRow.setOrientation(LinearLayout.HORIZONTAL);
+        btnRow.setGravity(Gravity.END);
+        LinearLayout.LayoutParams btnRowLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        btnRowLp.topMargin = padding12;
+        btnRow.setLayoutParams(btnRowLp);
+
+        GradientDrawable btnOutlinedBg = new GradientDrawable();
+        btnOutlinedBg.setColor(Color.WHITE);
+        btnOutlinedBg.setCornerRadius(radius12);
+        btnOutlinedBg.setStroke(Math.max(1, (int)(1.5 * density)), getResources().getColor(R.color.blue));
+
+        Button btnUseDirect = new Button(ActivityVente.this);
+        btnUseDirect.setText("Utiliser");
+        btnUseDirect.setTextColor(getResources().getColor(R.color.blue));
+        btnUseDirect.setTextSize(14);
+        btnUseDirect.setTypeface(btnUseDirect.getTypeface(), android.graphics.Typeface.BOLD);
+        btnUseDirect.setBackground(btnOutlinedBg);
+        LinearLayout.LayoutParams btnDirectLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (int)(44 * density));
+        btnDirectLp.setMarginEnd(padding12);
+        btnUseDirect.setLayoutParams(btnDirectLp);
+        btnUseDirect.setPadding((int)(16 * density), 0, (int)(16 * density), 0);
+
+        GradientDrawable btnSaveBg = new GradientDrawable();
+        btnSaveBg.setColor(getResources().getColor(R.color.blue));
+        btnSaveBg.setCornerRadius(radius12);
+
+        Button btnSaveUse = new Button(ActivityVente.this);
+        btnSaveUse.setText("Enregistrer & choisir");
+        btnSaveUse.setTextColor(Color.WHITE);
+        btnSaveUse.setTextSize(14);
+        btnSaveUse.setTypeface(btnSaveUse.getTypeface(), android.graphics.Typeface.BOLD);
+        btnSaveUse.setBackground(btnSaveBg);
+        LinearLayout.LayoutParams btnSaveLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (int)(44 * density));
+        btnSaveUse.setLayoutParams(btnSaveLp);
+        btnSaveUse.setPadding((int)(16 * density), 0, (int)(16 * density), 0);
+
+        btnRow.addView(btnUseDirect);
+        btnRow.addView(btnSaveUse);
+        editorWrap.addView(btnRow);
+
+        TextView tvSubList = new TextView(ActivityVente.this);
+        tvSubList.setText("Ou choisir parmi les notes enregistrées :");
+        tvSubList.setTextColor(getResources().getColor(R.color.mainTextColor));
+        tvSubList.setTextSize(13);
+        LinearLayout.LayoutParams subLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        subLp.topMargin = padding16;
+        subLp.setMarginStart(padding16);
+        tvSubList.setLayoutParams(subLp);
+
+        FrameLayout frameRv = new FrameLayout(ActivityVente.this);
+        LinearLayout.LayoutParams frameLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
+        frameLp.topMargin = padding12 / 2;
+        frameLp.bottomMargin = padding12;
+        frameRv.setLayoutParams(frameLp);
+
+        RecyclerView rv = new RecyclerView(ActivityVente.this);
+        rv.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        rv.setLayoutManager(new LinearLayoutManager(ActivityVente.this));
+        frameRv.addView(rv);
+
+        TextView tvEmpty = new TextView(ActivityVente.this);
+        tvEmpty.setText("Aucune note enregistrée");
+        tvEmpty.setTextColor(0xFF94A3B8);
+        tvEmpty.setTextSize(14);
+        tvEmpty.setGravity(Gravity.CENTER);
+        FrameLayout.LayoutParams emptyLp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        emptyLp.gravity = Gravity.CENTER;
+        tvEmpty.setLayoutParams(emptyLp);
+        if (notes.isEmpty()) {
+            frameRv.addView(tvEmpty);
+        }
+
+        final ArrayList<DATABASE.NoteRow> finalNotes = notes;
+        NotePickerAdapter adapter = new NotePickerAdapter(finalNotes, noteText -> {
             if (noteText == null) return;
+            etNew.setText(noteText);
+            etNew.setSelection(noteText.length());
             bon1.remarque = noteText;
             if (bon1.num_bon != null) {
                 controller.update_bon1("BON1", bon1.num_bon, bon1);
             }
             notesDialog.dismiss();
             showSelectedNotePopup();
+        }, (noteId, position) -> {
+            new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Supprimer la note ?")
+                    .setContentText("Cette action est irréversible.")
+                    .setConfirmText("Supprimer")
+                    .setConfirmClickListener(sDialog -> {
+                        controller.deleteNote(noteId);
+                        finalNotes.remove(position);
+                        NotePickerAdapter ad = (NotePickerAdapter) rv.getAdapter();
+                        if (ad != null) ad.notifyItemRemoved(position);
+                        if (finalNotes.isEmpty() && frameRv.indexOfChild(tvEmpty) < 0) {
+                            frameRv.addView(tvEmpty);
+                        }
+                        sDialog.dismissWithAnimation();
+                    })
+                    .setCancelText("Annuler")
+                    .setCancelClickListener(sd -> sd.dismissWithAnimation())
+                    .show();
         });
         rv.setAdapter(adapter);
 
+        btnUseDirect.setOnClickListener(v -> {
+            String txt = etNew.getText() == null ? "" : etNew.getText().toString().trim();
+            if (txt.isEmpty()) {
+                Crouton.makeText(ActivityVente.this, "Saisissez une note ou choisissez-en une.", Style.ALERT).show();
+                return;
+            }
+            bon1.remarque = txt;
+            if (bon1.num_bon != null) {
+                controller.update_bon1("BON1", bon1.num_bon, bon1);
+            }
+            notesDialog.dismiss();
+            showSelectedNotePopup();
+        });
+
+        btnSaveUse.setOnClickListener(v -> {
+            String txt = etNew.getText() == null ? "" : etNew.getText().toString().trim();
+            if (txt.isEmpty()) {
+                Crouton.makeText(ActivityVente.this, "Saisissez une note pour l'enregistrer.", Style.ALERT).show();
+                return;
+            }
+            boolean alreadySaved = false;
+            for (DATABASE.NoteRow n : finalNotes) {
+                if (txt.equalsIgnoreCase(n.text == null ? "" : n.text.trim())) {
+                    alreadySaved = true;
+                    break;
+                }
+            }
+            if (!alreadySaved) {
+                controller.insertNote(txt);
+            }
+            bon1.remarque = txt;
+            if (bon1.num_bon != null) {
+                controller.update_bon1("BON1", bon1.num_bon, bon1);
+            }
+            notesDialog.dismiss();
+            showSelectedNotePopup();
+        });
+
         root.addView(topBar);
-        root.addView(rv);
+        root.addView(editorWrap);
+        root.addView(tvSubList);
+        root.addView(frameRv);
 
         notesDialog.setContentView(root);
         notesDialog.setCancelable(true);
@@ -1593,6 +1772,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         btnClose.setLayoutParams(closeLp);
 
         ImageButton btnChange = new ImageButton(ActivityVente.this);
+        int changeId = View.generateViewId();
+        btnChange.setId(changeId);
         btnChange.setImageResource(R.drawable.baseline_edit_24);
         btnChange.setBackgroundColor(Color.TRANSPARENT);
         btnChange.setColorFilter(getResources().getColor(R.color.mainTextColor));
@@ -1605,18 +1786,33 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         header.addView(btnChange);
         header.addView(btnClose);
 
+        String note = bon1.remarque == null ? "" : bon1.remarque.trim();
         TextView tvNote = new TextView(ActivityVente.this);
         LinearLayout.LayoutParams tvLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tvLp.topMargin = padding12;
         tvNote.setLayoutParams(tvLp);
         tvNote.setTextColor(getResources().getColor(R.color.mainTextColor));
         tvNote.setTextSize(14);
-        tvNote.setMaxLines(6);
-        String note = bon1.remarque == null ? "" : bon1.remarque.trim();
+        tvNote.setMaxLines(8);
         tvNote.setText(note.isEmpty() ? "Aucune note sélectionnée" : note);
+
+        GradientDrawable btnBg = new GradientDrawable();
+        btnBg.setColor(getResources().getColor(R.color.blue));
+        btnBg.setCornerRadius(radius12);
+
+        Button btnEditDirect = new Button(ActivityVente.this);
+        btnEditDirect.setText("Modifier la note");
+        btnEditDirect.setTextColor(Color.WHITE);
+        btnEditDirect.setTextSize(14);
+        btnEditDirect.setTypeface(btnEditDirect.getTypeface(), android.graphics.Typeface.BOLD);
+        btnEditDirect.setBackground(btnBg);
+        LinearLayout.LayoutParams btnEditLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)(44 * density));
+        btnEditLp.topMargin = padding16;
+        btnEditDirect.setLayoutParams(btnEditLp);
 
         root.addView(header);
         root.addView(tvNote);
+        root.addView(btnEditDirect);
 
         notePopupWindow = new PopupWindow(root, width, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         notePopupWindow.setOutsideTouchable(true);
@@ -1625,6 +1821,10 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
         btnClose.setOnClickListener(v -> notePopupWindow.dismiss());
         btnChange.setOnClickListener(v -> {
+            notePopupWindow.dismiss();
+            showNotesPickerDialog();
+        });
+        btnEditDirect.setOnClickListener(v -> {
             notePopupWindow.dismiss();
             showNotesPickerDialog();
         });

@@ -1,226 +1,372 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="#F1F5F9"
+    android:fillViewport="true"
+    android:padding="12dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        tools:context=".MainActivity">
+        android:layout_gravity="center"
+        android:background="@drawable/bg_web_section_card"
+        android:orientation="vertical">
 
-        <!-- Numéro Tournée -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tourneeLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Numéro Tournée"
-            app:boxStrokeColor="@color/black"
-            app:endIconMode="clear_text"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/numeroTournee"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Date Passage -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/dateLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Date Passage"
-            app:layout_constraintTop_toBottomOf="@id/tourneeLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:endIconMode="clear_text">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/datePassage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="date"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Heure Passage -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/heureLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Heure Passage"
-            app:layout_constraintTop_toBottomOf="@id/dateLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:endIconMode="clear_text">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/heurePassage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="time"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Code Client -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/codeClientLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Code Client"
-            app:layout_constraintTop_toBottomOf="@id/heureLayout"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/codeClient"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Status Indicator (Green/Red) -->
         <LinearLayout
-            android:id="@+id/indicatorLayout"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:weightSum="2"
-            app:layout_constraintTop_toBottomOf="@id/codeClientLayout"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
+            android:background="@drawable/bg_web_header_blue"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp">
 
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:weightSum="10"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/img_statusIndicator"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/ic_status_red"/>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_weight="9"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/txtv_latitude"
-                        android:text="0"
-                        android:layout_weight="2"
-                        android:textSize="10dp"
-                        android:textColor="@color/black"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/txtv_longitude"
-                        android:text="0"
-                        android:layout_weight="2"
-                        android:textSize="10dp"
-                        android:textColor="@color/black"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:gravity="center_vertical|end"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/ic_distance"/>
-
-                <TextView
-                    android:id="@+id/txtv_distance_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Distance : "/>
-
-                <TextView
-                    android:id="@+id/txtv_distance_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/blue"
-                    android:text="0 km"/>
-            </LinearLayout>
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Passage tournée"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- Map Frame (Static Image) -->
-        <ImageView
-            android:id="@+id/img_mapView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="16dp"
-            android:scaleType="fitXY"
-            android:src="@mipmap/static_map_no_location"
-            app:layout_constraintTop_toBottomOf="@id/indicatorLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <!-- Observation -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/observationLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Observation"
-            app:layout_constraintTop_toBottomOf="@id/img_mapView"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/observation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Buttons Save & Cancel -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#EFF6FF"
+                android:orientation="vertical"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📋 INFORMATIONS PASSAGE"
+                    android:textColor="#1D4ED8"
+                    android:textSize="12.5sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="3dp"
+                    android:paddingStart="2dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tourneeLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Numéro Tournée"
+                    app:boxStrokeColor="#1D4ED8"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:endIconMode="clear_text"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="3dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/numeroTournee"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#DBEAFE" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dateLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Date Passage"
+                    app:boxStrokeColor="#1D4ED8"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:endIconMode="clear_text"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="3dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datePassage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="date"
+                        android:backgroundTint="#DBEAFE" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/heureLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Heure Passage"
+                    app:boxStrokeColor="#1D4ED8"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:endIconMode="clear_text"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="3dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/heurePassage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="time"
+                        android:backgroundTint="#DBEAFE" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/codeClientLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Code Client"
+                    app:boxStrokeColor="#1D4ED8"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="3dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/codeClient"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#DBEAFE" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFF7ED"
+                android:orientation="vertical"
+                android:layout_marginTop="2dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📍 GÉOLOCALISATION GPS"
+                    android:textColor="#C2410C"
+                    android:textSize="12.5sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="3dp"
+                    android:paddingStart="2dp" />
+
+                <LinearLayout
+                    android:id="@+id/indicatorLayout"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:weightSum="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="3dp">
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:weightSum="10"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/img_statusIndicator"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_status_red" />
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_weight="9"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/txtv_latitude"
+                                android:text="0"
+                                android:layout_weight="2"
+                                android:textSize="10dp"
+                                android:textColor="@color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/txtv_longitude"
+                                android:text="0"
+                                android:layout_weight="2"
+                                android:textSize="10dp"
+                                android:textColor="@color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:gravity="center_vertical|end"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_distance" />
+
+                        <TextView
+                            android:id="@+id/txtv_distance_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Distance : " />
+
+                        <TextView
+                            android:id="@+id/txtv_distance_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/blue"
+                            android:textStyle="bold"
+                            android:text="0 km" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/img_mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/static_map_no_location"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="3dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ECFDF5"
+                android:orientation="vertical"
+                android:layout_marginTop="2dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📝 OBSERVATION"
+                    android:textColor="#047857"
+                    android:textSize="12.5sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="3dp"
+                    android:paddingStart="2dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/observationLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Observation"
+                    app:boxStrokeColor="#047857"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="3dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/observation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:backgroundTint="#D1FAE5" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:weightSum="2"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="10dp"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/observationLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="end">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:minHeight="52dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 android:text="Annuler"
-                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                android:background="@drawable/bg_web_button_secondary"
+                android:textColor="#0F172A"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                style="@style/Widget.MaterialComponents.Button.TextButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:minHeight="52dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 android:text="Valider"
-                style="@style/Widget.MaterialComponents.Button"/>
+                android:background="@drawable/bg_web_button_primary"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                style="@style/Widget.MaterialComponents.Button" />
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </ScrollView>

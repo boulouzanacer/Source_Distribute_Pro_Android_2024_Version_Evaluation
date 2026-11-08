@@ -9,12 +9,15 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -57,6 +60,12 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     SharedPreferences prefs;
     private NumberFormat nf;
     private SearchView searchView;
+    private TextView btn_pill_all;
+    private TextView btn_pill_valid;
+    private TextView btn_pill_pending;
+    private TextView btn_pill_transferred;
+    private TextView btn_pill_cancelled;
+    private String currentFilter = "ALL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +116,76 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
         recyclerView = findViewById(R.id.recycler_view_vente);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+
+        btn_pill_all = findViewById(R.id.btn_pill_all);
+        btn_pill_valid = findViewById(R.id.btn_pill_valid);
+        btn_pill_pending = findViewById(R.id.btn_pill_pending);
+        btn_pill_transferred = findViewById(R.id.btn_pill_transferred);
+        btn_pill_cancelled = findViewById(R.id.btn_pill_cancelled);
+
+        if (btn_pill_transferred != null) btn_pill_transferred.setVisibility(View.GONE);
+        if (btn_pill_cancelled != null) btn_pill_cancelled.setVisibility(View.GONE);
+        LinearLayout filterSegmentBar = findViewById(R.id.filter_segment_bar);
+        if (filterSegmentBar != null) filterSegmentBar.setWeightSum(3);
+
+        View.OnClickListener pillClickListener = v -> {
+            int id = v.getId();
+            if (id == R.id.btn_pill_all) {
+                currentFilter = "ALL";
+            } else if (id == R.id.btn_pill_valid) {
+                currentFilter = "VALID";
+            } else if (id == R.id.btn_pill_pending) {
+                currentFilter = "PENDING";
+            }
+            updateFilterPillsUI();
+            String query = (searchView != null && searchView.getQuery() != null) ? searchView.getQuery().toString() : "";
+            setRecycle(query, !query.isEmpty());
+        };
+
+        btn_pill_all.setOnClickListener(pillClickListener);
+        btn_pill_valid.setOnClickListener(pillClickListener);
+        btn_pill_pending.setOnClickListener(pillClickListener);
+        if (btn_pill_transferred != null) btn_pill_transferred.setOnClickListener(pillClickListener);
+        if (btn_pill_cancelled != null) btn_pill_cancelled.setOnClickListener(pillClickListener);
+
+        if (SOURCE_EXPORT != null && SOURCE_EXPORT.equals("EXPORTED")) {
+            View filterContainer = findViewById(R.id.filter_bar_container);
+            if (filterContainer != null) filterContainer.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateFilterPillsUI() {
+        btn_pill_all.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_all.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_all.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_valid.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_valid.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_valid.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_pending.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_pending.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_pending.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        if ("ALL".equals(currentFilter)) {
+            btn_pill_all.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_all.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_all.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("VALID".equals(currentFilter)) {
+            btn_pill_valid.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_valid.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_valid.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("PENDING".equals(currentFilter)) {
+            btn_pill_pending.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_pending.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_pending.setTypeface(null, android.graphics.Typeface.BOLD);
+        }
     }
 
     @Override
     protected void onStart() {
 
+        updateFilterPillsUI();
         setRecycle("", false);
 
         SharedPreferences prefs1 = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -134,6 +208,9 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
     public ArrayList<PostData_Achat1> getItems(String text_search, Boolean isSearch) {
         achat1s = new ArrayList<>();
+
+        // 🔥 Escape simple des apostrophes (cause principale de SQLiteException)
+        text_search = (text_search == null) ? "" : text_search.replace("'", "''");
 
         String querry = "SELECT " +
                 "ACHAT1.RECORDID, " +
@@ -166,10 +243,18 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
 
 
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            querry = querry + " WHERE IS_EXPORTED = 0 AND (ACHAT1.DATE_BON LIKE '%" + text_search + "%' OR ACHAT1.MODE_RG LIKE '%" + text_search + "%' OR FOURNIS.FOURNIS LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(ACHAT1.DATE_BON, 7, 4) || '-' || SUBSTR(ACHAT1.DATE_BON, 4, 2) || '-' || SUBSTR(ACHAT1.DATE_BON, 1, 2)) DESC ";
+            querry = querry + " WHERE IS_EXPORTED = 0 ";
         } else {
-            querry = querry + " WHERE IS_EXPORTED = 1 AND (ACHAT1.DATE_BON LIKE '%" + text_search + "%' OR ACHAT1.MODE_RG LIKE '%" + text_search + "%' OR FOURNIS.FOURNIS LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(ACHAT1.DATE_BON, 7, 4) || '-' || SUBSTR(ACHAT1.DATE_BON, 4, 2) || '-' || SUBSTR(ACHAT1.DATE_BON, 1, 2)) DESC ";
+            querry = querry + " WHERE IS_EXPORTED = 1 ";
         }
+
+        if ("VALID".equals(currentFilter)) {
+            querry = querry + " AND ACHAT1.BLOCAGE = 'F' ";
+        } else if ("PENDING".equals(currentFilter)) {
+            querry = querry + " AND ACHAT1.BLOCAGE != 'F' ";
+        }
+
+        querry = querry + " AND (ACHAT1.DATE_BON LIKE '%" + text_search + "%' OR ACHAT1.MODE_RG LIKE '%" + text_search + "%' OR FOURNIS.FOURNIS LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(ACHAT1.DATE_BON, 7, 4) || '-' || SUBSTR(ACHAT1.DATE_BON, 4, 2) || '-' || SUBSTR(ACHAT1.DATE_BON, 1, 2)) DESC ";
 
         achat1s = controller.select_all_achat1_from_database(querry);
 
@@ -371,6 +456,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
             }
 
             @Override
+            @SuppressWarnings("deprecation")
             public boolean onQueryTextSubmit(final String query) {
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -379,7 +465,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
                 Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
-                Handler handler = new Handler();
+                Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         //=======
@@ -399,7 +485,7 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         } else if (item.getItemId() == R.id.new_sale) {
             if (!prefs.getBoolean("APP_ACTIVATED", false) && !achat1s.isEmpty()) {
                 new SweetAlertDialog(ActivityAchats.this, SweetAlertDialog.ERROR_TYPE)
@@ -420,12 +506,5 @@ public class ActivityAchats extends AppCompatActivity implements RecyclerAdapter
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
 
 }

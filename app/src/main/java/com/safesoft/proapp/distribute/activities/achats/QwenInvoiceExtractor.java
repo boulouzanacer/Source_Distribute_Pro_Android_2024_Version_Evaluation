@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
  * Extends AsyncTask as requested (Note: AsyncTask is deprecated in modern Android,
  * consider using ExecutorService or Coroutines for production apps).
  */
+@SuppressWarnings("deprecation")
 public class QwenInvoiceExtractor extends AsyncTask<byte[], Void, String> {
 
     private static final String TAG = "QwenInvoiceExtractor";

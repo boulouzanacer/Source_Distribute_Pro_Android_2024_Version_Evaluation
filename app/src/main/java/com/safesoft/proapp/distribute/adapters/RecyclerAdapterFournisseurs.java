@@ -3,10 +3,13 @@ package com.safesoft.proapp.distribute.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -27,6 +30,7 @@ import java.util.List;
 public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAdapterFournisseurs.MyViewHolder> {
 
     private final List<PostData_Fournisseur> fournisList;
+    private final Context mContext;
     private int color = 0;
     private ItemClick itemClick;
     private ItemLongClick itemLongClick;
@@ -34,6 +38,11 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
 
     private String PREFS = "ALL_PREFS";
     private SharedPreferences prefs;
+
+    private static String fmtDA(double v) {
+        return String.format(java.util.Locale.FRANCE, "%,.2f DA", v);
+    }
+
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView FournisseurN;
@@ -41,18 +50,26 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
         ImageView image;
         ImageView img_pos_fournisseur;
         TextView Tel_fournisseurN;
+        TextView Code_fournisseur_row;
         TextView Achats_fournisseurN;
         TextView Verser_fournisseurN;
         TextView Sold_fournisseurN;
+        TextView Achats_cell;
+        TextView Vers_cell;
+        LinearLayout CellSoldeFournisseur;
 
         MyViewHolder(View view) {
             super(view);
             cardView = view.findViewById(R.id.item_root);
             FournisseurN = view.findViewById(R.id.fournisseur);
             Tel_fournisseurN = view.findViewById(R.id.tel_fournisseur);
+            Code_fournisseur_row = view.findViewById(R.id.code_fournisseur_row);
             Achats_fournisseurN = view.findViewById(R.id.achat_fournisseur);
             Verser_fournisseurN = view.findViewById(R.id.verser_fournisseur);
             Sold_fournisseurN = view.findViewById(R.id.sold_fournisseur);
+            Achats_cell = view.findViewById(R.id.achats_fournisseur_cell);
+            Vers_cell = view.findViewById(R.id.verser_fournisseur_cell);
+            CellSoldeFournisseur = view.findViewById(R.id.cell_solde_fournisseur);
             image = view.findViewById(R.id.imageId);
             img_pos_fournisseur = view.findViewById(R.id.img_pos_fournisseur);
 
@@ -61,6 +78,7 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
 
 
     public RecyclerAdapterFournisseurs(Context mContext, List<PostData_Fournisseur> itemList) {
+        this.mContext = mContext;
         this.fournisList = itemList;
         if (color == 0)
             generator = ColorGeneratorModified.MATERIAL;
@@ -90,24 +108,58 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
 
         holder.Tel_fournisseurN.setText("TEL : " + item.tel);
 
-        holder.Achats_fournisseurN.setTypeface(null, Typeface.BOLD);
-        holder.Verser_fournisseurN.setTypeface(null, Typeface.BOLD);
-        holder.Sold_fournisseurN.setTypeface(null, Typeface.BOLD);
-        //holder.Sld_fournisseurN.setText("Solde : "+item.solde_montant);
+        holder.Code_fournisseur_row.setText(item.code_frs != null ? item.code_frs : "-");
 
-        holder.Achats_fournisseurN.setText("Achats :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.achat_montant)));
-        holder.Verser_fournisseurN.setText("Verser :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_montant)));
-
-        if (prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true)) {
-            holder.Sold_fournisseurN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_montant)));
-        } else {
-            holder.Sold_fournisseurN.setText("********");
+        try {
+            holder.Achats_cell.setText(fmtDA(item.achat_montant));
+            holder.Vers_cell.setText(fmtDA(item.verser_montant));
+        } catch (Exception e) {
+            holder.Achats_cell.setText("0,00 DA");
+            holder.Vers_cell.setText("0,00 DA");
         }
 
-        if (item.latitude == 0.0) {
-            holder.img_pos_fournisseur.setImageResource(R.drawable.ic_baseline_wrong_location_24);
-        }else{
-            holder.img_pos_fournisseur.setImageResource(R.drawable.ic_baseline_location_on_24);
+        if (prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true)) {
+            try {
+                double solde = item.solde_montant;
+                holder.Sold_fournisseurN.setText(fmtDA(solde));
+
+                int bgResId;
+                int textColor;
+                if (solde >= 0.001) {
+                    bgResId = R.drawable.bg_cell_red;
+                    textColor = ContextCompat.getColor(mContext, R.color.solde_debiteur_text);
+                } else if (solde <= -0.001) {
+                    bgResId = R.drawable.bg_cell_emerald;
+                    textColor = ContextCompat.getColor(mContext, R.color.solde_crediteur_text);
+                } else {
+                    bgResId = R.drawable.bg_cell_blue;
+                    textColor = ContextCompat.getColor(mContext, R.color.solde_zero_text);
+                }
+                holder.CellSoldeFournisseur.setBackgroundResource(bgResId);
+                holder.Sold_fournisseurN.setTextColor(textColor);
+                if (holder.CellSoldeFournisseur.getChildCount() > 0 && holder.CellSoldeFournisseur.getChildAt(0) instanceof TextView) {
+                    ((TextView) holder.CellSoldeFournisseur.getChildAt(0)).setTextColor(textColor);
+                }
+                try {
+                    GradientDrawable gd = (GradientDrawable) holder.CellSoldeFournisseur.getBackground();
+                    if (solde >= 0.001) {
+                        gd.setStroke((int) (1 * mContext.getResources().getDisplayMetrics().density),
+                                ContextCompat.getColor(mContext, R.color.solde_debiteur_stroke));
+                    } else if (solde <= -0.001) {
+                        gd.setStroke((int) (1 * mContext.getResources().getDisplayMetrics().density),
+                                ContextCompat.getColor(mContext, R.color.solde_crediteur_stroke));
+                    } else {
+                        gd.setStroke((int) (1 * mContext.getResources().getDisplayMetrics().density),
+                                ContextCompat.getColor(mContext, R.color.solde_zero_stroke));
+                    }
+                } catch (Exception ignore) {}
+            } catch (Exception e) {
+                holder.Sold_fournisseurN.setText("0,00 DA");
+            }
+        } else {
+            holder.Achats_cell.setText("**** DA");
+            holder.Vers_cell.setText("**** DA");
+            holder.Sold_fournisseurN.setText("******** DA");
         }
 
 

@@ -4,13 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +26,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,8 +39,6 @@ import com.safesoft.proapp.distribute.postData.PostData_StockError;
 import com.safesoft.proapp.distribute.printing.Printing;
 import com.safesoft.proapp.distribute.utils.Env;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,7 +51,6 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivityOrdersClient extends AppCompatActivity implements RecyclerAdapterBon1.ItemClick, RecyclerAdapterBon1.ItemLongClick {
 
-
     RecyclerView recyclerView;
     RecyclerAdapterBon1 adapter;
     ArrayList<PostData_Bon1> bon1s_temp;
@@ -64,15 +61,18 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     private final String PREFS = "ALL_PREFS";
     private SharedPreferences prefs;
     private String SOURCE_EXPORT = "";
-    private NumberFormat nf;
     private SearchView searchView;
     private String CODE_DEPOT;
+    private TextView btn_pill_all;
+    private TextView btn_pill_valid;
+    private TextView btn_pill_pending;
+    private TextView btn_pill_transferred;
+    private TextView btn_pill_cancelled;
+    private String currentFilter = "ALL";
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat date_format;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat heure_format;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +81,16 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         setContentView(R.layout.activity_ventes);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().getInsetsController().hide(WindowInsetsController.BEHAVIOR_DEFAULT);
-            getWindow().getInsetsController().setSystemBarsAppearance(
-                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-            );
-        }else {
-            //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+            WindowInsetsController insetsController = getWindow().getInsetsController();
+            if (insetsController != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
+                }
+                insetsController.setSystemBarsAppearance(
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                );
+            }
         }
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
@@ -96,7 +99,6 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             getSupportActionBar().setTitle("Bons de commandes");
             getSupportActionBar().setSubtitle("Client");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
         controller = new DATABASE(this);
@@ -107,8 +109,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
         initViews();
 
-        date_format = new SimpleDateFormat("dd/MM/yyyy");
-        heure_format = new SimpleDateFormat("HH:mm:ss");
+        date_format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        heure_format = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
@@ -123,37 +125,110 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     }
 
     private void initViews() {
-
         recyclerView = findViewById(R.id.recycler_view_vente);
         list_bon_total = findViewById(R.id.list_bon_total);
 
+        btn_pill_all = findViewById(R.id.btn_pill_all);
+        btn_pill_valid = findViewById(R.id.btn_pill_valid);
+        btn_pill_pending = findViewById(R.id.btn_pill_pending);
+        btn_pill_transferred = findViewById(R.id.btn_pill_transferred);
+        btn_pill_cancelled = findViewById(R.id.btn_pill_cancelled);
+
+        View.OnClickListener pillClickListener = v -> {
+            int id = v.getId();
+            if (id == R.id.btn_pill_all) {
+                currentFilter = "ALL";
+            } else if (id == R.id.btn_pill_valid) {
+                currentFilter = "VALID";
+            } else if (id == R.id.btn_pill_pending) {
+                currentFilter = "PENDING";
+            } else if (id == R.id.btn_pill_transferred) {
+                currentFilter = "TRANSFERRED";
+            } else if (id == R.id.btn_pill_cancelled) {
+                currentFilter = "CANCELLED";
+            }
+            updateFilterPillsUI();
+            String query = (searchView != null && searchView.getQuery() != null) ? searchView.getQuery().toString() : "";
+            setRecycle(query);
+        };
+
+        btn_pill_all.setOnClickListener(pillClickListener);
+        btn_pill_valid.setOnClickListener(pillClickListener);
+        btn_pill_pending.setOnClickListener(pillClickListener);
+        btn_pill_transferred.setOnClickListener(pillClickListener);
+        btn_pill_cancelled.setOnClickListener(pillClickListener);
+
+        if ("EXPORTED".equals(SOURCE_EXPORT)) {
+            View filterContainer = findViewById(R.id.filter_bar_container);
+            if (filterContainer != null) filterContainer.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateFilterPillsUI() {
+        btn_pill_all.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_all.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_all.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_valid.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_valid.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_valid.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_pending.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_pending.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_pending.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_transferred.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_transferred.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_transferred.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_cancelled.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_cancelled.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_cancelled.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        if ("ALL".equals(currentFilter)) {
+            btn_pill_all.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_all.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_all.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("VALID".equals(currentFilter)) {
+            btn_pill_valid.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_valid.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_valid.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("PENDING".equals(currentFilter)) {
+            btn_pill_pending.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_pending.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_pending.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("TRANSFERRED".equals(currentFilter)) {
+            btn_pill_transferred.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_transferred.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_transferred.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("CANCELLED".equals(currentFilter)) {
+            btn_pill_cancelled.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_cancelled.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_cancelled.setTypeface(null, android.graphics.Typeface.BOLD);
+        }
     }
 
     @Override
     protected void onStart() {
-
-        setRecycle("", false);
+        updateFilterPillsUI();
+        setRecycle("");
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-
-        // Declare US print format
-        nf = NumberFormat.getInstance(Locale.US);
-        ((DecimalFormat) nf).applyPattern("##,##0.00");
 
         super.onStart();
     }
 
-    private void setRecycle(String text_search, Boolean isSearch) {
+    @SuppressLint("SetTextI18n")
+    private void setRecycle(String text_search) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapterBon1(this, getItems(text_search, isSearch), "ORDER");
+        adapter = new RecyclerAdapterBon1(this, getItems(text_search), "ORDER");
         recyclerView.setAdapter(adapter);
 
-        list_bon_total.setText("Total bon : " + bon1s_temp.size());
+        list_bon_total.setText("Total bon : " + (bon1s_temp != null ? bon1s_temp.size() : 0));
     }
 
-
-    public ArrayList<PostData_Bon1> getItems(String text_search, Boolean isSearch) {
+    public ArrayList<PostData_Bon1> getItems(String text_search) {
         bon1s_temp = new ArrayList<>();
 
         String querry = "SELECT " +
@@ -214,18 +289,40 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 "FROM BON1_TEMP " +
                 "LEFT JOIN CLIENT ON BON1_TEMP.CODE_CLIENT = CLIENT.CODE_CLIENT";
 
+        // Escape simple des apostrophes (cause principale de SQLiteException)
+        text_search = (text_search == null) ? "" : text_search.replace("'", "''");
 
-        if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            querry = querry + " WHERE IS_EXPORTED = 0 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', substr(DATE_BON, 7, 4) || '-' || substr(DATE_BON, 4, 2) || '-' || substr(DATE_BON, 1, 2)) ASC, strftime('%H:%M:%S', BON1_TEMP.HEURE) ASC ";
+        if (!"EXPORTED".equals(SOURCE_EXPORT)) {
+            querry = querry + " WHERE IS_EXPORTED = 0 ";
         } else {
-            querry = querry + " WHERE IS_EXPORTED = 1 AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', substr(DATE_BON, 7, 4) || '-' || substr(DATE_BON, 4, 2) || '-' || substr(DATE_BON, 1, 2)) ASC, strftime('%H:%M:%S', BON1_TEMP.HEURE) ASC ";
+            querry = querry + " WHERE IS_EXPORTED = 1 ";
         }
+
+        if ("VALID".equals(currentFilter)) {
+            querry = querry + " AND BON1_TEMP.BLOCAGE = 'F' ";
+        } else if ("PENDING".equals(currentFilter)) {
+            querry = querry + " AND BON1_TEMP.BLOCAGE = 'M' ";
+        } else if ("TRANSFERRED".equals(currentFilter)) {
+            querry = querry + " AND BON1_TEMP.BLOCAGE = 'T' ";
+        } else if ("CANCELLED".equals(currentFilter)) {
+            querry = querry + " AND BON1_TEMP.BLOCAGE = 'A' ";
+        }
+
+        querry = querry + " AND (BON1_TEMP.DATE_BON LIKE '%" + text_search + "%' OR BON1_TEMP.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', substr(DATE_BON, 7, 4) || '-' || substr(DATE_BON, 4, 2) || '-' || substr(DATE_BON, 1, 2)) ASC, strftime('%H:%M:%S', BON1_TEMP.HEURE) ASC ";
 
         bon1s_temp = controller.select_all_bon1_from_database(querry);
 
         return bon1s_temp;
     }
 
+    @SuppressWarnings("deprecation")
+    private void applyActivityTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, R.anim.push_left_in, R.anim.push_left_out);
+        } else {
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        }
+    }
 
     @Override
     public void onClick(View v, int position) {
@@ -234,329 +331,277 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ORDER_CLIENT");
         editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
         startActivity(editIntent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        applyActivityTransition();
     }
-
 
     @Override
     public void onLongClick(View v, final int position) {
+        if ("F".equals(bon1s_temp.get(position).blocage)) {
+            showValidatedOrderDialog(v, position);
+        } else {
+            showPendingOrderDialog(v, position);
+        }
+    }
 
-        if (bon1s_temp.get(position).blocage.equals("F")) {
-            final CharSequence[] items = {"Supprimer", "Imprimer", "Transferer vers bon vente", "Itineraire client", "Commande annuler"};
+    private void showValidatedOrderDialog(View v, final int position) {
+        final CharSequence[] items = {"Supprimer", "Imprimer", "Transferer vers bon vente", "Itineraire client", "Commande annuler"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-            builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
-            builder.setItems(items, (dialog, item) -> {
-                switch (item) {
-                    /*case 0 -> {
-                        if (!SOURCE_EXPORT.equals("EXPORTED")) {
-                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Bon de commande")
-                                    .setContentText("Voulez-vous vraiment modifier ce bon ?!")
-                                    .setCancelText("Non")
-                                    .setConfirmText("Modifier")
-                                    .showCancelButton(true)
-                                    .setCancelClickListener(Dialog::dismiss)
-                                    .setConfirmClickListener(sDialog -> {
-
-                                        Sound(R.raw.beep);
-
-                                        Intent editIntent = new Intent(ActivityOrdersClient.this, ActivityOrderClient.class);
-                                        editIntent.putExtra("NUM_BON", bon1s_temp.get(position).num_bon);
-                                        editIntent.putExtra("TYPE_ACTIVITY", "EDIT_ORDER_CLIENT");
-                                        startActivity(editIntent);
-                                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                        sDialog.dismiss();
-                                    })
-                                    .show();
-                        } else {
-
-                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Ce bon est déja exporté")
-                                    .show();
-                        }
-                    }*/
-                    case 0 ->
-                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Suppression")
-                                    .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
-                                    .setCancelText("Anuuler")
-                                    .setConfirmText("Supprimer")
-                                    .showCancelButton(true)
-                                    .setCancelClickListener(Dialog::dismiss)
-                                    .setConfirmClickListener(sDialog -> {
-
-                                        controller.delete_bon_vente(true, bon1s_temp.get(position));
-                                        setRecycle("", false);
-
-                                        sDialog.dismiss();
-
-                                    })
-                                    .show();
-                    case 1 -> {
-                        if (!bon1s_temp.get(position).blocage.equals("F")) {
-                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Ce bon n'est pas encore validé")
-                                    .show();
-                            return;
-                        }
-
-                        final_panier = controller.select_bon2_from_database("SELECT " +
-                                "BON2_TEMP.RECORDID, " +
-                                "BON2_TEMP.CODE_BARRE, " +
-                                "BON2_TEMP.NUM_BON, " +
-                                "BON2_TEMP.PRODUIT, " +
-                                "BON2_TEMP.NBRE_COLIS, " +
-                                "BON2_TEMP.COLISSAGE, " +
-                                "BON2_TEMP.QTE, " +
-                                "BON2_TEMP.QTE_GRAT, " +
-                                "BON2_TEMP.PV_HT, " +
-                                "BON2_TEMP.PA_HT, " +
-                                "BON2_TEMP.TVA, " +
-                                "BON2_TEMP.CODE_DEPOT, " +
-                                "BON2_TEMP.DESTOCK_TYPE, " +
-                                "BON2_TEMP.DESTOCK_CODE_BARRE, " +
-                                "BON2_TEMP.DESTOCK_QTE, " +
-
-                                "PRODUIT.ISNEW, " +
-                                "PRODUIT.PV_LIMITE, " +
-                                "PRODUIT.STOCK, " +
-                                "PRODUIT.PROMO, " +
-                                "PRODUIT.QTE_PROMO, " +
-                                "PRODUIT.D1, " +
-                                "PRODUIT.D2, " +
-                                "PRODUIT.PP1_HT " +
-
-                                "FROM BON2_TEMP " +
-                                "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                                "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
-
-                        if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
-                            Activity bactivity;
-                            bactivity = ActivityOrdersClient.this;
-
-                            Printing printer = new Printing();
-
-                            try {
-                                printer.start_print_bon_vente(bactivity, "ORDER", final_panier, bon1s_temp.get(position));
-                            } catch (Exception e) {
-
-                                e.printStackTrace();
-
-                                if(e.getMessage().contains("android.bluetooth.BluetoothAdapter.getBondedDevices()")){
-                                    new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
-                                            .setTitleText("Erreur")
-                                            .setContentText("Le bluetooth n'est pas disponible.")
-                                            .show();
-                                }
-                            }
-                        } else {
-
-                            Intent html_intent = new Intent(this, ActivityHtmlView.class);
-                            html_intent.putExtra("TYPE_BON", "COMMANDE");
-                            html_intent.putExtra("BON1", bon1s_temp.get(position));
-                            html_intent.putExtra("BON2", final_panier);
-                            startActivity(html_intent);
-
-                        }
-
-                    }
-                    case 2 -> {
-                        String selectQuery = "SELECT MAX(NUM_BON) AS max_id FROM BON1 WHERE NUM_BON IS NOT NULL";
-                        String NUM_BON_BON1 = controller.select_max_num_bon(selectQuery);
-
-                        final_panier = controller.select_bon2_from_database("SELECT " +
-                                "BON2_TEMP.RECORDID, " +
-                                "BON2_TEMP.CODE_BARRE, " +
-                                "BON2_TEMP.NUM_BON, " +
-                                "BON2_TEMP.PRODUIT, " +
-                                "BON2_TEMP.NBRE_COLIS, " +
-                                "BON2_TEMP.COLISSAGE, " +
-                                "BON2_TEMP.QTE, " +
-                                "BON2_TEMP.QTE_GRAT, " +
-                                "BON2_TEMP.PV_HT, " +
-                                "BON2_TEMP.PA_HT, " +
-                                "BON2_TEMP.TVA, " +
-                                "BON2_TEMP.CODE_DEPOT, " +
-                                "BON2_TEMP.DESTOCK_TYPE, " +
-                                "BON2_TEMP.DESTOCK_CODE_BARRE, " +
-                                "BON2_TEMP.DESTOCK_QTE, " +
-
-                                "PRODUIT.ISNEW, " +
-                                "PRODUIT.PV_LIMITE, " +
-                                "PRODUIT.STOCK, " +
-                                "PRODUIT.PROMO, " +
-                                "PRODUIT.QTE_PROMO, " +
-                                "PRODUIT.D1, " +
-                                "PRODUIT.D2, " +
-                                "PRODUIT.PP1_HT " +
-
-                                "FROM BON2_TEMP " +
-                                "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
-                                "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
-
-
-                        if (!(prefs.getBoolean("STOCK_MOINS", false))) {
-                            // function to check availability of stock
-
-                            error_stock_messages = controller.check_stock_product(final_panier);
-                            if(!error_stock_messages.isEmpty()){
-
-                                //prepare message
-                                String message = "";
-                                message = "Stock insuffisant pour les produits suivants : \n";
-                                for (PostData_StockError e : error_stock_messages) {
-                                    message = message + e.produit + " / QTE: " + e.qte + " / STOCK: " + e.stock + "\n";
-                                }
-
-                                new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Attention!")
-                                        .setContentText(message)
-                                        .show();
-                                return;
-
-                            }
-                        }
-
-                        // get date and time
-                        Calendar c = Calendar.getInstance();
-                        String formattedDate_Show = date_format.format(c.getTime());
-                        String currentTime = heure_format.format(c.getTime());
-
-                        bon1s_temp.get(position).date_bon = formattedDate_Show;
-                        bon1s_temp.get(position).heure = currentTime;
-
-                        if (controller.Export_commande_to_ventes(bon1s_temp.get(position), final_panier, CODE_DEPOT, NUM_BON_BON1 )) {
-                            setRecycle("", false);
-                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.SUCCESS_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Bon de commande transféré avec succès")
-                                    .show();
-                        }else{
-                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText("Erreur!")
-                                    .setContentText("Probleme de transfère de bon de commande, Transfère annulé !")
-                                    .show();
-                        }
-
-                    }
-                    case 3 -> {
-                        try {
-
-                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + bon1s_temp.get(position).latitude_client + "," + bon1s_temp.get(position).longitude_client);
-                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                            mapIntent.setPackage("com.google.android.apps.maps");
-                            startActivity(mapIntent);
-
-                        }catch (Exception e){
-                            Crouton.makeText(ActivityOrdersClient.this, "Erreur de navigation : Position client non disponible", Style.ALERT).show();
-                        }
-
-                    }
-                    case 4 -> {
-                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Annulation!")
-                                .setContentText("Voulez-vous vraiment annuler cette commande " + bon1s_temp.get(position).num_bon + " ?, Opération non reversible!!!")
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        builder.setIcon(R.drawable.blue_circle_24);
+        builder.setTitle("Choisissez une action");
+        builder.setItems(items, (dialog, item) -> {
+            switch (item) {
+                case 0 ->
+                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
+                                .setTitleText("Suppression")
+                                .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
                                 .setCancelText("Anuuler")
-                                .setConfirmText("Confirmer")
+                                .setConfirmText("Supprimer")
                                 .showCancelButton(true)
                                 .setCancelClickListener(Dialog::dismiss)
                                 .setConfirmClickListener(sDialog -> {
-
-                                    controller.update_bon1_temp_commande_annuler(bon1s_temp.get(position));
-                                    setRecycle("", false);
-
+                                    controller.delete_bon_vente(true, bon1s_temp.get(position));
+                                    setRecycle("");
                                     sDialog.dismiss();
-
                                 })
                                 .show();
+                case 1 -> {
+                    if (!"F".equals(bon1s_temp.get(position).blocage)) {
+                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Ce bon n'est pas encore validé")
+                                .show();
+                        return;
+                    }
 
+                    final_panier = controller.select_bon2_from_database("SELECT " +
+                            "BON2_TEMP.RECORDID, " +
+                            "BON2_TEMP.CODE_BARRE, " +
+                            "BON2_TEMP.NUM_BON, " +
+                            "BON2_TEMP.PRODUIT, " +
+                            "BON2_TEMP.NBRE_COLIS, " +
+                            "BON2_TEMP.COLISSAGE, " +
+                            "BON2_TEMP.QTE, " +
+                            "BON2_TEMP.QTE_GRAT, " +
+                            "BON2_TEMP.PV_HT, " +
+                            "BON2_TEMP.PA_HT, " +
+                            "BON2_TEMP.TVA, " +
+                            "BON2_TEMP.CODE_DEPOT, " +
+                            "BON2_TEMP.DESTOCK_TYPE, " +
+                            "BON2_TEMP.DESTOCK_CODE_BARRE, " +
+                            "BON2_TEMP.DESTOCK_QTE, " +
+
+                            "PRODUIT.ISNEW, " +
+                            "PRODUIT.PV_LIMITE, " +
+                            "PRODUIT.STOCK, " +
+                            "PRODUIT.PROMO, " +
+                            "PRODUIT.QTE_PROMO, " +
+                            "PRODUIT.D1, " +
+                            "PRODUIT.D2, " +
+                            "PRODUIT.PP1_HT " +
+
+                            "FROM BON2_TEMP " +
+                            "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                            "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
+
+                    if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
+                        Activity bactivity = ActivityOrdersClient.this;
+                        Printing printer = new Printing();
+
+                        try {
+                            printer.start_print_bon_vente(bactivity, "ORDER", final_panier, bon1s_temp.get(position));
+                        } catch (Exception e) {
+                            Log.e("ActivityOrdersClient", "Error printing bon de commande", e);
+
+                            if (e.getMessage() != null && e.getMessage().contains("android.bluetooth.BluetoothAdapter.getBondedDevices()")) {
+                                new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Erreur")
+                                        .setContentText("Le bluetooth n'est pas disponible.")
+                                        .show();
+                            }
+                        }
+                    } else {
+                        Intent html_intent = new Intent(this, ActivityHtmlView.class);
+                        html_intent.putExtra("TYPE_BON", "COMMANDE");
+                        html_intent.putExtra("BON1", bon1s_temp.get(position));
+                        html_intent.putExtra("BON2", final_panier);
+                        startActivity(html_intent);
                     }
                 }
-            });
-            builder.show();
-        } else {
-            final CharSequence[] items = {"Supprimer"};
+                case 2 -> {
+                    String selectQuery = "SELECT MAX(NUM_BON) AS max_id FROM BON1 WHERE NUM_BON IS NOT NULL";
+                    String NUM_BON_BON1 = controller.select_max_num_bon(selectQuery);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-            builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
-            builder.setItems(items, (dialog, item) -> {
-                if (item == 0) {
-                    new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
-                            .setTitleText("Suppression")
-                            .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
+                    final_panier = controller.select_bon2_from_database("SELECT " +
+                            "BON2_TEMP.RECORDID, " +
+                            "BON2_TEMP.CODE_BARRE, " +
+                            "BON2_TEMP.NUM_BON, " +
+                            "BON2_TEMP.PRODUIT, " +
+                            "BON2_TEMP.NBRE_COLIS, " +
+                            "BON2_TEMP.COLISSAGE, " +
+                            "BON2_TEMP.QTE, " +
+                            "BON2_TEMP.QTE_GRAT, " +
+                            "BON2_TEMP.PV_HT, " +
+                            "BON2_TEMP.PA_HT, " +
+                            "BON2_TEMP.TVA, " +
+                            "BON2_TEMP.CODE_DEPOT, " +
+                            "BON2_TEMP.DESTOCK_TYPE, " +
+                            "BON2_TEMP.DESTOCK_CODE_BARRE, " +
+                            "BON2_TEMP.DESTOCK_QTE, " +
+
+                            "PRODUIT.ISNEW, " +
+                            "PRODUIT.PV_LIMITE, " +
+                            "PRODUIT.STOCK, " +
+                            "PRODUIT.PROMO, " +
+                            "PRODUIT.QTE_PROMO, " +
+                            "PRODUIT.D1, " +
+                            "PRODUIT.D2, " +
+                            "PRODUIT.PP1_HT " +
+
+                            "FROM BON2_TEMP " +
+                            "LEFT JOIN PRODUIT ON (BON2_TEMP.CODE_BARRE = PRODUIT.CODE_BARRE) " +
+                            "WHERE BON2_TEMP.NUM_BON = '" + bon1s_temp.get(position).num_bon + "'");
+
+                    if (!(prefs.getBoolean("STOCK_MOINS", false))) {
+                        // function to check availability of stock
+                        error_stock_messages = controller.check_stock_product(final_panier);
+                        if (!error_stock_messages.isEmpty()) {
+                            //prepare message
+                            StringBuilder message = new StringBuilder("Stock insuffisant pour les produits suivants : \n");
+                            for (PostData_StockError err : error_stock_messages) {
+                                message.append(err.produit).append(" / QTE: ").append(err.qte).append(" / STOCK: ").append(err.stock).append("\n");
+                            }
+
+                            new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Attention!")
+                                    .setContentText(message.toString())
+                                    .show();
+                            return;
+                        }
+                    }
+
+                    // get date and time
+                    Calendar c = Calendar.getInstance();
+                    String formattedDate_Show = date_format.format(c.getTime());
+                    String currentTime = heure_format.format(c.getTime());
+
+                    bon1s_temp.get(position).date_bon = formattedDate_Show;
+                    bon1s_temp.get(position).heure = currentTime;
+
+                    if (controller.Export_commande_to_ventes(bon1s_temp.get(position), final_panier, CODE_DEPOT, NUM_BON_BON1)) {
+                        setRecycle("");
+                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Bon de commande transféré avec succès")
+                                .show();
+                    } else {
+                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Erreur!")
+                                .setContentText("Probleme de transfère de bon de commande, Transfère annulé !")
+                                .show();
+                    }
+                }
+                case 3 -> {
+                    try {
+                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + bon1s_temp.get(position).latitude_client + "," + bon1s_temp.get(position).longitude_client);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    } catch (Exception e) {
+                        Crouton.makeText(ActivityOrdersClient.this, "Erreur de navigation : Position client non disponible", Style.ALERT).show();
+                    }
+                }
+                case 4 -> {
+                    if ("A".equals(bon1s_temp.get(position).blocage)) {
+                        new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Information!")
+                                .setContentText("Cette commande est déjà annulée.")
+                                .show();
+                        return;
+                    }
+                    new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Annulation!")
+                            .setContentText("Voulez-vous vraiment annuler cette commande " + bon1s_temp.get(position).num_bon + " ?, Opération non reversible!!!")
                             .setCancelText("Anuuler")
-                            .setConfirmText("Supprimer")
+                            .setConfirmText("Confirmer")
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
-
-                                controller.delete_bon_en_attente(true, bon1s_temp.get(position).num_bon);
-                                setRecycle("", false);
-
+                                controller.update_bon1_temp_commande_annuler(bon1s_temp.get(position));
+                                setRecycle("");
                                 sDialog.dismiss();
                             })
                             .show();
                 }
-            });
-            builder.show();
-        }
-
+            }
+        });
+        builder.show();
     }
 
+    private void showPendingOrderDialog(View v, final int position) {
+        final CharSequence[] items = {"Supprimer"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        builder.setIcon(R.drawable.blue_circle_24);
+        builder.setTitle("Choisissez une action");
+        builder.setItems(items, (dialog, item) -> {
+            if (item == 0) {
+                new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Suppression")
+                        .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
+                        .setCancelText("Anuuler")
+                        .setConfirmText("Supprimer")
+                        .showCancelButton(true)
+                        .setCancelClickListener(Dialog::dismiss)
+                        .setConfirmClickListener(sDialog -> {
+                            controller.delete_bon_en_attente(true, bon1s_temp.get(position).num_bon);
+                            setRecycle("");
+                            sDialog.dismiss();
+                        })
+                        .show();
+            }
+        });
+        builder.show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
 
-        if (!SOURCE_EXPORT.equals("EXPORTED")) {
+        if (!"EXPORTED".equals(SOURCE_EXPORT)) {
             inflater.inflate(R.menu.menu_ventes_not_exported, menu);
-        }else{
+        } else {
             inflater.inflate(R.menu.menu_ventes_exported, menu);
         }
-        searchView = new SearchView(getSupportActionBar().getThemedContext());
+        Context themedContext = getSupportActionBar() != null ? getSupportActionBar().getThemedContext() : this;
+        searchView = new SearchView(themedContext);
         searchView.setQueryHint("Rechercher");
-
-//////////////////////////////////////////////////////////////////////
-///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
-//////////////////////////////////////////////////////////////////////
 
         menu.add(Menu.NONE, Menu.NONE, 1, "Search")
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
-        // final Context cntx = this;
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                setRecycle(newText, true);
-
+                setRecycle(newText);
                 return false;
             }
 
             @Override
+            @SuppressWarnings("deprecation")
             public boolean onQueryTextSubmit(final String query) {
-
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+                if (imm != null && searchView != null) {
+                    imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+                }
 
                 Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        //=======
-                        setProgressBarIndeterminateVisibility(false);
-
-                    }
-                }, 2000);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(() -> setProgressBarIndeterminateVisibility(false), 2000);
 
                 return false;
             }
@@ -568,9 +613,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
+            return true;
         } else if (item.getItemId() == R.id.new_sale) {
-
             if (!prefs.getBoolean("APP_ACTIVATED", false) && !bon1s_temp.isEmpty()) {
                 new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Important !")
@@ -581,10 +626,10 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 editIntent.putExtra("TYPE_ACTIVITY", "NEW_ORDER_CLIENT");
                 editIntent.putExtra("SOURCE_EXPORT", SOURCE_EXPORT);
                 startActivity(editIntent);
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                applyActivityTransition();
             }
-
-        } else if(item.getItemId() == R.id.delete_all_bon){
+            return true;
+        } else if (item.getItemId() == R.id.delete_all_bon) {
             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
                     .setTitleText("Suppression")
                     .setContentText("Voulez-vous vraiment supprimer tous les bon exportés ?!")
@@ -593,21 +638,13 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
-
                         controller.delete_all_bon(true);
-                        setRecycle("", false);
-
+                        setRecycle("");
                         sDialog.dismiss();
                     })
                     .show();
-
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
 }

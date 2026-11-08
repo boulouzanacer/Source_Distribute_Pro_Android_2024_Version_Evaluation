@@ -1,14 +1,17 @@
 package com.safesoft.proapp.distribute.fragments;
 
 import android.os.Bundle;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.labo.kaji.swipeawaydialog.SwipeAwayDialogFragment;
+import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.adapters.ListViewAdapterListVendeur;
 import com.safesoft.proapp.distribute.postData.PostData_Vendeur;
@@ -50,6 +53,23 @@ public class FragmentSelectedVendeur extends SwipeAwayDialogFragment {
         listview = rootView.findViewById(R.id.listview_bon_t);
         title_list_bon = rootView.findViewById(R.id.title_list_bon);
         title_list_bon.setText(title);
+        TextView subtitle = rootView.findViewById(R.id.subtitle_list_label);
+        if (subtitle != null) subtitle.setText("LISTE DES VENDEURS");
+
+        MaterialFancyButton btnValid = rootView.findViewById(R.id.btn_connect);
+        MaterialFancyButton btnCancel = rootView.findViewById(R.id.btn_cancel);
+        LinearLayout footerBar = (LinearLayout) btnCancel != null ? (LinearLayout) btnCancel.getParent() : null;
+        if (btnValid != null) btnValid.setVisibility(View.GONE);
+        if (footerBar != null) footerBar.setWeightSum(1);
+        if (btnCancel != null) {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) btnCancel.getLayoutParams();
+            lp.weight = 1;
+            btnCancel.setLayoutParams(lp);
+            btnCancel.setBackgroundColor(Color.WHITE);
+            btnCancel.setTextColor(Color.parseColor("#0F172A"));
+            btnCancel.setOnClickListener(v -> finich_fragment());
+        }
+
         adapter = new ListViewAdapterListVendeur(getActivity(), list_vendeurs, FragmentSelectedVendeur.this);
         listview.setAdapter(adapter);
 

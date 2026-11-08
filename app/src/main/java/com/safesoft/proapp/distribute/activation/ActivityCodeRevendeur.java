@@ -26,6 +26,7 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
     private OtpTextView otpTextView;
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -39,11 +40,13 @@ public class ActivityCodeRevendeur extends AppCompatActivity {
             Intent intent = new Intent(ActivityCodeRevendeur.this, splashScreen.class);
             intent.putExtra("REVENDEUR", REVENDEUR);
             startActivity(intent);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left);
             } else {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
+
             finish();
         }
 

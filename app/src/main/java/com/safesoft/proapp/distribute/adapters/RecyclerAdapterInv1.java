@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.haozhang.lib.SlantedTextView;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Inv1;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
@@ -46,7 +45,7 @@ public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv
         TextView Date_inv;
         TextView Heure_inv;
         CardView cardView;
-        SlantedTextView blocage;
+        TextView blocage;
 
         MyViewHolder(View view) {
             super(view);
@@ -103,7 +102,8 @@ public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv
 
         holder.nbrProduit.setText(spannableString1);
 
-        holder.Date_inv.setText(item.date_inv + " " + item.heure_inv);
+        holder.Date_inv.setText(item.date_inv);
+        holder.Heure_inv.setText(item.heure_inv);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,21 +122,17 @@ public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv
 
 
         if (item.blocage.equals("F")) {
-            holder.blocage.setText("Fermé")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.GREEN)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+            holder.blocage.setText("Fermé");
+            holder.blocage.setTextColor(Color.WHITE);
+            holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
+            holder.blocage.setTextSize(14);
 
         } else {
 
-            holder.blocage.setText("Ouvert")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.RED)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+            holder.blocage.setText("Ouvert");
+            holder.blocage.setTextColor(Color.WHITE);
+            holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_red);
+            holder.blocage.setTextSize(14);
 
         }
 

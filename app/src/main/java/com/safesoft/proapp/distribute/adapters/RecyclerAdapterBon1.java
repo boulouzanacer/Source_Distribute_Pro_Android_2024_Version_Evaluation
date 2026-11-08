@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -15,10 +16,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.haozhang.lib.SlantedTextView;
+
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.postData.PostData_Bon1;
 import com.safesoft.proapp.distribute.utils.ColorGeneratorModified;
@@ -60,8 +62,11 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         TextView Versement;
         TextView Benifice;
         CardView cardView;
-        SlantedTextView blocage;
+        TextView blocage;
         LinearLayout lnr_versement;
+        LinearLayout lnr_benifice;
+        LinearLayout bgPanel;
+        ImageView icCalBon;
 
         MyViewHolder(View view) {
             super(view);
@@ -78,7 +83,9 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
             Benifice = view.findViewById(R.id.txt_benifice);
             blocage = view.findViewById(R.id.blocage);
             lnr_versement = view.findViewById(R.id.lnr_versement);
-            lnr_versement = view.findViewById(R.id.lnr_versement);
+            lnr_benifice = view.findViewById(R.id.lnr_benifice);
+            bgPanel = view.findViewById(R.id.item_bg_panel);
+            icCalBon = view.findViewById(R.id.ic_cal_bon);
         }
     }
 
@@ -121,14 +128,21 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
             holder.Versement.setText(new DecimalFormat("##,##0.00").format(item.verser) + " DA");
 
             if (prefs.getBoolean("AFFICHAGE_BENIFICE", false)) {
-                holder.Benifice.setVisibility(View.VISIBLE);
-                holder.Benifice.setText("Bénéfice : " + new DecimalFormat("##,##0.00").format(item.benifice_par_bon) + " DA");
+                holder.lnr_benifice.setVisibility(View.VISIBLE);
+                holder.Benifice.setText(new DecimalFormat("##,##0.00").format(item.benifice_par_bon) + " DA");
+
+                double beneficeValue = item.benifice_par_bon;
+                if (beneficeValue >= 0) {
+                    holder.Benifice.setTextColor(Color.parseColor("#065F46"));
+                } else {
+                    holder.Benifice.setTextColor(Color.parseColor("#B91C1C"));
+                }
             } else {
-                holder.Benifice.setVisibility(View.GONE);
+                holder.lnr_benifice.setVisibility(View.GONE);
             }
         } else if (SOURCE.equals("ORDER")) {
             holder.lnr_versement.setVisibility(View.GONE);
-            holder.Benifice.setVisibility(View.GONE);
+            holder.lnr_benifice.setVisibility(View.GONE);
         }
 
         holder.Montant.setText(new DecimalFormat("##,##0.00").format(item.montant_bon) + " DA");
@@ -160,51 +174,66 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         });
 
 
-        switch (item.blocage) {
+        String blocageValue = (item.blocage == null) ? "F" : item.blocage;
+        final int COLOR_VERT = Color.parseColor("#10B981");
+        final int COLOR_ORANGE = Color.parseColor("#F97316");
+        final int COLOR_ROUGE = Color.parseColor("#EF4444");
+        final int COLOR_BLEU = Color.parseColor("#3B82F6");
+        final int COLOR_VIOLET = Color.parseColor("#8B5CF6");
+
+        switch (blocageValue) {
             case "F" -> {
                 if (item.montant_bon < 0) {
-                    holder.blocage.setText("Retour")
-                            .setTextColor(Color.WHITE)
-                            .setSlantedBackgroundColor(Color.MAGENTA)
-                            .setTextSize(21)
-                            .setSlantedLength(80)
-                            .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-
+                    holder.blocage.setText("Retour");
+                    holder.blocage.setTextColor(Color.WHITE);
+                    holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_orange);
+                    holder.blocage.setTextSize(14);
                     holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
+                    holder.bgPanel.setBackgroundResource(R.drawable.bg_ribbon_retour_orange);
+                    if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_ORANGE, android.graphics.PorterDuff.Mode.SRC_IN);
                 } else {
-                    holder.blocage.setText("Validé")
-                            .setTextColor(Color.WHITE)
-                            .setSlantedBackgroundColor(Color.GREEN)
-                            .setTextSize(21)
-                            .setSlantedLength(80)
-                            .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-
+                    holder.blocage.setText("Validé");
+                    holder.blocage.setTextColor(Color.WHITE);
+                    holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
+                    holder.blocage.setTextSize(14);
                     holder.Diff_time.setText(getDateDifferenceFromNow((item.date_bon + " " + item.heure), (item.date_f + " " + item.heure_f)));
-
+                    holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_achat);
+                    if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_VERT, android.graphics.PorterDuff.Mode.SRC_IN);
                 }
             }
             case "M" -> {
-                holder.blocage.setText("En attente")
-                        .setTextColor(Color.WHITE)
-                        .setSlantedBackgroundColor(Color.RED)
-                        .setTextSize(21)
-                        .setSlantedLength(80)
-                        .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-
+                holder.blocage.setText("En attente");
+                holder.blocage.setTextColor(Color.WHITE);
+                holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_red);
+                holder.blocage.setTextSize(14);
                 holder.Diff_time.setText("");
+                holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_vente_pending_rouge);
+                if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_ROUGE, android.graphics.PorterDuff.Mode.SRC_IN);
             }
-            case "T" -> holder.blocage.setText("Transféré")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.BLUE)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
-            case "A" -> holder.blocage.setText("Annuler")
-                    .setTextColor(Color.WHITE)
-                    .setSlantedBackgroundColor(Color.MAGENTA)
-                    .setTextSize(21)
-                    .setSlantedLength(80)
-                    .setMode(SlantedTextView.MODE_RIGHT_BOTTOM);
+            case "T" -> {
+                holder.blocage.setText("Transféré");
+                holder.blocage.setTextColor(Color.WHITE);
+                holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_blue);
+                holder.blocage.setTextSize(14);
+                holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_vente_transfere_bleu);
+                if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_BLEU, android.graphics.PorterDuff.Mode.SRC_IN);
+            }
+            case "A" -> {
+                holder.blocage.setText("Annulé");
+                holder.blocage.setTextColor(Color.WHITE);
+                holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_violet);
+                holder.blocage.setTextSize(14);
+                holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_commande);
+                if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_VIOLET, android.graphics.PorterDuff.Mode.SRC_IN);
+            }
+            default -> {
+                holder.blocage.setText("Validé");
+                holder.blocage.setTextColor(Color.WHITE);
+                holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
+                holder.blocage.setTextSize(14);
+                holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_achat);
+                if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_VERT, android.graphics.PorterDuff.Mode.SRC_IN);
+            }
         }
 
 

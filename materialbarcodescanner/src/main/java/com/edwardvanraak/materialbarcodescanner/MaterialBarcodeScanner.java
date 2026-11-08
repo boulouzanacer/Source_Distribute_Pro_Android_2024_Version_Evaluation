@@ -65,10 +65,18 @@ public class MaterialBarcodeScanner {
      * This opens a new activity with the parameters provided by the MaterialBarcodeScannerBuilder
      */
     public void startScan(){
-        EventBus.getDefault().register(this);
+        // Le controle d'activite doit se faire AVANT l'inscription sur l'EventBus :
+        // onBarcodeScannerResult() appelle clean() qui remet mActivity a null. Un
+        // resultat de scan precedent reste sur le bus sous forme d'evenement sticky
+        // et etait donc remis immediatement pendant register(this), ce qui faisait
+        // echouer le controle ci-dessous avec une RuntimeException.
         if(mMaterialBarcodeScannerBuilder.getActivity() == null){
             throw new RuntimeException("Could not start scan: Activity reference lost (please rebuild the MaterialBarcodeScanner before calling startScan)");
         }
+        // Purge tout resultat de scan obsolete avant de s'inscrire.
+        EventBus.getDefault().removeStickyEvent(Barcode.class);
+
+        EventBus.getDefault().register(this);
         int mCameraPermission = ActivityCompat.checkSelfPermission(mMaterialBarcodeScannerBuilder.getActivity(), Manifest.permission.CAMERA);
         if (mCameraPermission != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();

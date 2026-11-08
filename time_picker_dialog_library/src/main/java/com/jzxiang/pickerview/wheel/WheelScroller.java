@@ -2,6 +2,7 @@ package com.jzxiang.pickerview.wheel;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -26,7 +27,7 @@ public class WheelScroller {
     private float lastTouchedY;
     private boolean isScrollingPerformed;
     // animation handler
-    private Handler animationHandler = new Handler() {
+    private Handler animationHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             scroller.computeScrollOffset();
             int currY = scroller.getCurrY();

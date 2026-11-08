@@ -37,13 +37,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/blue"
+                app:boxStrokeColor="@color/blue"
+                app:hintTextColor="@color/blue">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_password_old"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textPassword"
                     android:hint="Ancien mot de passe" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -53,13 +57,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/blue"
+                app:boxStrokeColor="@color/blue"
+                app:hintTextColor="@color/blue">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textPassword"
                     android:hint="Nouveau mot de passe" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,13 +77,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/blue"
+                app:boxStrokeColor="@color/blue"
+                app:hintTextColor="@color/blue">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_reEnterPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textPassword"
                     android:hint="Re-entrer mot de passe" />
             </com.google.android.material.textfield.TextInputLayout>
 

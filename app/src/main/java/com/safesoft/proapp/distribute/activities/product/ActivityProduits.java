@@ -149,7 +149,7 @@ public class ActivityProduits extends AppCompatActivity implements
 
         ArrayList<String> familles;
         familles = controller.select_familles_from_database("SELECT * FROM FAMILLES");
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.dropdown_famille_item, familles);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.dropdown_famille_item, familles);
         famille_dropdown.setAdapter(adapter);
 
         famille_dropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -249,7 +249,8 @@ public class ActivityProduits extends AppCompatActivity implements
 
         // Add condition for selected family
         if (!selected_famile.equals("Toutes")) {
-            conditions.add("FAMILLE = '" + selected_famile + "'");
+            // 🔥 Escape simple des apostrophes (une famille du type "EAU D'OR" casserait la requete)
+            conditions.add("FAMILLE = '" + selected_famile.replace("'", "''") + "'");
         }
 
         // Add conditions based on hide_stock_moins and isScan

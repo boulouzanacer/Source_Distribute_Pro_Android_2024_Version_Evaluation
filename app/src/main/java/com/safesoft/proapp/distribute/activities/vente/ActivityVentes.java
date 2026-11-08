@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,12 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
     private SharedPreferences prefs;
     private NumberFormat nf;
     private SearchView searchView;
+    private TextView btn_pill_all;
+    private TextView btn_pill_valid;
+    private TextView btn_pill_pending;
+    private TextView btn_pill_transferred;
+    private TextView btn_pill_cancelled;
+    private String currentFilter = "ALL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +86,10 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
             //  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         }
 
+        if (getIntent() != null) {
+            SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
+        }
+
         initViews();
 
         Toolbar toolbar = findViewById(R.id.myToolbar);
@@ -93,10 +104,6 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
         controller = new DATABASE(this);
 
-        if (getIntent() != null) {
-            SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
-        }
-
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.remove("FILTRE_SEARCH_VALUE");
         editor.remove("FILTRE_SEARCH_FAMILLE");
@@ -110,6 +117,72 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         list_bon_total = findViewById(R.id.list_bon_total);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         prefs.edit().putInt("LAST_CLICKED_POSITION", 0).apply();
+
+        btn_pill_all = findViewById(R.id.btn_pill_all);
+        btn_pill_valid = findViewById(R.id.btn_pill_valid);
+        btn_pill_pending = findViewById(R.id.btn_pill_pending);
+        btn_pill_transferred = findViewById(R.id.btn_pill_transferred);
+        btn_pill_cancelled = findViewById(R.id.btn_pill_cancelled);
+
+        if (btn_pill_transferred != null) btn_pill_transferred.setVisibility(View.GONE);
+        if (btn_pill_cancelled != null) btn_pill_cancelled.setVisibility(View.GONE);
+        LinearLayout filterSegmentBar = findViewById(R.id.filter_segment_bar);
+        if (filterSegmentBar != null) filterSegmentBar.setWeightSum(3);
+
+        View.OnClickListener pillClickListener = v -> {
+            int id = v.getId();
+            if (id == R.id.btn_pill_all) {
+                currentFilter = "ALL";
+            } else if (id == R.id.btn_pill_valid) {
+                currentFilter = "VALID";
+            } else if (id == R.id.btn_pill_pending) {
+                currentFilter = "PENDING";
+            }
+            updateFilterPillsUI();
+            String query = (searchView != null && searchView.getQuery() != null) ? searchView.getQuery().toString() : "";
+            setRecycle(query, !query.isEmpty());
+        };
+
+        btn_pill_all.setOnClickListener(pillClickListener);
+        btn_pill_valid.setOnClickListener(pillClickListener);
+        btn_pill_pending.setOnClickListener(pillClickListener);
+        if (btn_pill_transferred != null) btn_pill_transferred.setOnClickListener(pillClickListener);
+        if (btn_pill_cancelled != null) btn_pill_cancelled.setOnClickListener(pillClickListener);
+
+        if (SOURCE_EXPORT != null && SOURCE_EXPORT.equals("EXPORTED")) {
+            View filterContainer = findViewById(R.id.filter_bar_container);
+            if (filterContainer != null) filterContainer.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateFilterPillsUI() {
+        // reset all
+        btn_pill_all.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_all.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_all.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_valid.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_valid.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_valid.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        btn_pill_pending.setBackgroundResource(R.drawable.bg_filter_pill_unselected);
+        btn_pill_pending.setTextColor(android.graphics.Color.parseColor("#475569"));
+        btn_pill_pending.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+        // active
+        if ("ALL".equals(currentFilter)) {
+            btn_pill_all.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_all.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_all.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("VALID".equals(currentFilter)) {
+            btn_pill_valid.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_valid.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_valid.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else if ("PENDING".equals(currentFilter)) {
+            btn_pill_pending.setBackgroundResource(R.drawable.bg_filter_pill_selected);
+            btn_pill_pending.setTextColor(android.graphics.Color.parseColor("#0F172A"));
+            btn_pill_pending.setTypeface(null, android.graphics.Typeface.BOLD);
+        }
     }
 
     @Override
@@ -200,10 +273,22 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         so you'll need to transform it into a format that SQLite can work with (e.g., yyyy-MM-dd or as Julian days).*/
 
         if (!SOURCE_EXPORT.equals("EXPORTED")) {
-            querry = querry + " WHERE IS_EXPORTED = 0 AND (BON1.DATE_BON LIKE '%" + text_search + "%' OR BON1.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1.DATE_BON, 7, 4) || '-' || SUBSTR(BON1.DATE_BON, 4, 2) || '-' || SUBSTR(BON1.DATE_BON, 1, 2)) DESC ";
+            querry = querry + " WHERE IS_EXPORTED = 0 ";
         } else {
-            querry = querry + " WHERE IS_EXPORTED = 1 AND (BON1.DATE_BON LIKE '%" + text_search + "%' OR BON1.MODE_RG LIKE '%" + text_search + "%' OR CLIENT.CLIENT LIKE '%" + text_search + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1.DATE_BON, 7, 4) || '-' || SUBSTR(BON1.DATE_BON, 4, 2) || '-' || SUBSTR(BON1.DATE_BON, 1, 2)) DESC ";
+            querry = querry + " WHERE IS_EXPORTED = 1 ";
         }
+
+        if ("VALID".equals(currentFilter)) {
+            querry = querry + " AND BON1.BLOCAGE = 'F' ";
+        } else if ("PENDING".equals(currentFilter)) {
+            querry = querry + " AND BON1.BLOCAGE != 'F' ";
+        }
+
+        // Une apostrophe saisie par l'utilisateur casserait le litteral SQL : on double
+        // les quotes pour conserver une requete valide (et eviter toute injection).
+        String text_search_esc = text_search == null ? "" : text_search.replace("'", "''");
+
+        querry = querry + " AND (BON1.DATE_BON LIKE '%" + text_search_esc + "%' OR BON1.MODE_RG LIKE '%" + text_search_esc + "%' OR CLIENT.CLIENT LIKE '%" + text_search_esc + "%') ORDER BY strftime('%Y-%m-%d', SUBSTR(BON1.DATE_BON, 7, 4) || '-' || SUBSTR(BON1.DATE_BON, 4, 2) || '-' || SUBSTR(BON1.DATE_BON, 1, 2)) DESC ";
 
         bon1s = controller.select_all_bon1_from_database(querry);
 
