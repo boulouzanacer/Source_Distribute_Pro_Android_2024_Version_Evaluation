@@ -60,7 +60,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="💶 SOLDE + VERSEMENT FOURNISSEUR"
+                    android:text="@string/l2_solde_versement_fournisseur"
                     android:textColor="#1D4ED8"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -186,7 +186,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📝 OBSERVATION"
+                    android:text="@string/l2_observation"
                     android:textColor="#047857"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -268,7 +268,7 @@
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:minHeight="52dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"

@@ -37,7 +37,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Export commandes"
+                    android:contentDescription="@string/a11y_export_commandes"
                     android:src="@drawable/exportation_24" />
             </LinearLayout>
 
@@ -52,7 +52,7 @@
                     android:id="@+id/exportt_commande"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportation commandes (Réseaux IP)"
+                    android:text="@string/l2_exportation_commandes_reseaux_ip"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -62,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'exporter les bons de commandes vers le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_exporter_les_bons_de_co"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -98,7 +98,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Export commandes FTP"
+                    android:contentDescription="@string/a11y_export_commandes_ftp"
                     android:src="@drawable/exportation_ftp_24" />
             </LinearLayout>
 
@@ -113,7 +113,7 @@
                     android:id="@+id/exportt_commande_ftp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportation commandes (Serveur FTP)"
+                    android:text="@string/l2_exportation_commandes_serveur_ftp"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -123,7 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Vous permet d'exporter les bons de commandes et les versements clients vers le serveur FTP"
+                    android:text="@string/l2_vous_permet_d_exporter_les_bons_de_comma"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -159,7 +159,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Import commandes"
+                    android:contentDescription="@string/a11y_import_commandes"
                     android:src="@drawable/importation_command_24" />
             </LinearLayout>
 
@@ -174,7 +174,7 @@
                     android:id="@+id/importt_commande"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Importation commandes (Réseaux IP)"
+                    android:text="@string/l2_importation_commandes_reseaux_ip"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -184,7 +184,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer les bons de commandes client depuis le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_importer_les_bons_de_co"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -220,7 +220,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Commandes exportées"
+                    android:contentDescription="@string/a11y_commandes_exportees"
                     android:src="@drawable/bon_exporte_24" />
             </LinearLayout>
 
@@ -235,7 +235,7 @@
                     android:id="@+id/exportted_commande"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Bons de commandes exportés"
+                    android:text="@string/l2_bons_de_commandes_exportes"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -245,7 +245,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'afficher les bons de commandes déja exportés avec la possibilité de suppression"
+                    android:text="@string/l2_ca_vous_permet_d_afficher_les_bons_de_co"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -281,7 +281,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="État commande"
+                    android:contentDescription="@string/a11y_etat_commande"
                     android:src="@drawable/etat_vente_24" />
             </LinearLayout>
 
@@ -296,7 +296,7 @@
                     android:id="@+id/etat_c"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Etat de commande"
+                    android:text="@string/l2_etat_de_commande"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -306,7 +306,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet de consulter la quantité des produits commandés entre deux date données ansi que le montant total, remise total, ...."
+                    android:text="@string/l2_ca_vous_permet_de_consulter_la_quantite_2"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"

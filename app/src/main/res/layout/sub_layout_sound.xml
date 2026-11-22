@@ -16,7 +16,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres d'activer ou désactiver le son dans l'application" />
+        android:text="@string/l2_parametres_d_activer_ou_desactiver_le_so" />
 
     <View
         android:layout_width="match_parent"

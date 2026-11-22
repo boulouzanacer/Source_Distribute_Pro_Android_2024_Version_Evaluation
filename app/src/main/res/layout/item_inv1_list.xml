@@ -65,7 +65,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_badge_pill_emerald"
                     android:gravity="center"
-                    android:text="Fermé"
+                    android:text="@string/l2_ferme"
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -85,7 +85,7 @@
                     android:layout_height="18dp"
                     android:src="@drawable/ic_baseline_calendar_today_24"
                     app:tint="#F59E0B"
-                    android:contentDescription="Date" />
+                    android:contentDescription="@string/a11y_date" />
 
                 <TextView
                     android:id="@+id/date_inv"
@@ -118,7 +118,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Inventaire N° "
+                    android:text="@string/l2_inventaire_n"
                     android:textColor="#6B7280"
                     android:textSize="13.5sp"
                     tools:ignore="HardcodedText" />

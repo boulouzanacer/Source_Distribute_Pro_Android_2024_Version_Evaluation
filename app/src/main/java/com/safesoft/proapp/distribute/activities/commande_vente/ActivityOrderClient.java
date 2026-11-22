@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import static com.safesoft.proapp.distribute.R.id.timbre;
 
 import android.Manifest;
@@ -104,7 +106,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityOrderClient extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick {
+public class ActivityOrderClient extends BaseLocaleActivity implements RecyclerAdapterCheckProducts.ItemClick {
 
 
     ////////////////////////////////////////
@@ -215,7 +217,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         } else {
-            Crouton.makeText(ActivityOrderClient.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
@@ -359,13 +361,13 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
 
         } else {
-            Crouton.makeText(ActivityOrderClient.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
 
         if (NUM_BON != null) {
-            getSupportActionBar().setTitle("Commande N°: " + NUM_BON);
+            getSupportActionBar().setTitle(getString(R.string.l3_commande_n_2) + NUM_BON);
         }
         getSupportActionBar().setSubtitle(date_time_sub_title);
         validate_theme();
@@ -377,7 +379,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
         checkBox_timbre.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (client_selected == null) {
-                Toast.makeText(ActivityOrderClient.this, "Veuilez sélectionner un Client", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityOrderClient.this, getString(R.string.l3_veuilez_selectionner_un_client), Toast.LENGTH_SHORT).show();
                 checkBox_timbre.setChecked(false);
             } else {
                 checkBox_timbre.setChecked(isChecked);
@@ -474,7 +476,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
             if (bon1_temp.client.isEmpty()) {
 
-                Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_vous_devez_selectionner_client_abord), Style.ALERT).show();
                 return;
             }
 
@@ -566,13 +568,13 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             }
             if (bon1_temp.client.isEmpty()) {
 
-                Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_vous_devez_selectionner_client_abord), Style.ALERT).show();
                 return;
             }
 
             if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
 
@@ -588,20 +590,20 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
             if (bon1_temp.client.isEmpty()) {
 
-                Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client", Style.ALERT).show();
+                Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_vous_devez_selectionner_client), Style.ALERT).show();
                 return;
             }
             if (final_panier.isEmpty()) {
                 new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
             if (bon1_temp.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
@@ -634,7 +636,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                     return;
                 }
                 if (bon1_temp.client.isEmpty()) {
-                    Crouton.makeText(ActivityOrderClient.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                    Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_vous_devez_selectionner_client_abord), Style.ALERT).show();
                     return;
                 }
 
@@ -648,17 +650,17 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             if (!SOURCE_EXPORT.equals("EXPORTED")) {
                 if (!bon1_temp.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon n'est pas encore validé")
+                            .setTitleText(getString(R.string.l3_information_4))
+                            .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                             .show();
                     return;
 
                 } else {
                     new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Modification")
-                            .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
-                            .setCancelText("Non")
-                            .setConfirmText("Oui")
+                            .setTitleText(getString(R.string.l3_modification))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_ce_bon))
+                            .setCancelText(getString(R.string.l3_non))
+                            .setConfirmText(getString(R.string.l3_oui))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -671,8 +673,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                                 } catch (Exception e) {
 
                                     new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                                            .setTitleText("Attention!")
-                                            .setContentText("problème lors de Modification de Bon : " + e.getMessage())
+                                            .setTitleText(getString(R.string.l3_attention_4))
+                                            .setContentText(getString(R.string.l3_probleme_lors_de_modification_de_bon) + e.getMessage())
                                             .show();
                                 }
                                 sDialog.dismiss();
@@ -680,16 +682,16 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 }
             } else {
                 new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja exporté")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_exporte))
                         .show();
             }
 
         } else if (viewId == R.id.btn_imp_bon) {
             if (!bon1_temp.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas encore validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                         .show();
                 return;
             }
@@ -800,7 +802,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         }
 
         bon1_temp.mode_tarif = tarif;
-        btn_mode_tarif.setText("Tarif " + tarif);
+        btn_mode_tarif.setText(getString(R.string.l4_tarif_prefix) + tarif);
     }
 
     protected void initData() {
@@ -868,10 +870,10 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                 return true;
             }
             new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Suppression")
-                    .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Supprimer")
+                    .setTitleText(getString(R.string.l3_suppression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_produi_2))
+                    .setCancelText(getString(R.string.l3_anuuler))
+                    .setConfirmText(getString(R.string.l3_supprimer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -886,8 +888,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                         } catch (Exception e) {
 
                             new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!")
-                                    .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                    .setTitleText(getString(R.string.l3_attention_4))
+                                    .setContentText(getString(R.string.l3_probleme_lors_suppression_produits) + e.getMessage())
                                     .show();
                         }
 
@@ -911,8 +913,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             } catch (Exception e) {
 
                 new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Attention!")
-                        .setContentText("Error : " + e.getMessage())
+                        .setTitleText(getString(R.string.l3_attention_4))
+                        .setContentText(getString(R.string.l3_error) + e.getMessage())
                         .show();
             }
 
@@ -1043,8 +1045,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
 
             if (!bon1_temp.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_nest_pas_valide))
                         .show();
             } else {
                 Activity mActivity;
@@ -1223,7 +1225,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             }
 
         } catch (Exception e) {
-            Crouton.makeText(ActivityOrderClient.this, "Erreur : " + e.getMessage(), Style.ALERT).show();
+            Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_erreur_prefix_2) + e.getMessage(), Style.ALERT).show();
         }
 
 
@@ -1291,7 +1293,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
     private void showBonLockedAlert(boolean isAnnule) {
         String msg = isAnnule ? "Ce bon est annulé, aucune modification n'est autorisée." : "Ce bon est déja validé";
         new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Information!")
+                .setTitleText(getString(R.string.l3_information_4))
                 .setContentText(msg)
                 .show();
     }
@@ -1352,9 +1354,9 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), bon2_temp, last_price);
 
         } else if (produits.size() > 1) {
-            Crouton.makeText(ActivityOrderClient.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_attention_2_produits_meme_code), Style.ALERT).show();
         } else {
-            Crouton.makeText(ActivityOrderClient.this, "Produit introuvable !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderClient.this, getString(R.string.l4_produit_introuvable), Style.ALERT).show();
         }
     }
 
@@ -1362,8 +1364,8 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         ArrayList<DATABASE.NoteRow> notes = controller.selectNotes();
         if (notes == null || notes.isEmpty()) {
             new SweetAlertDialog(ActivityOrderClient.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Notes")
-                    .setContentText("Aucune note enregistrée")
+                    .setTitleText(getString(R.string.l3_notes))
+                    .setContentText(getString(R.string.l3_aucune_note_enregistree))
                     .show();
             return;
         }
@@ -1382,7 +1384,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         topBar.setPadding(padding16, padding12, padding16, padding12);
 
         TextView title = new TextView(ActivityOrderClient.this);
-        title.setText("Notes");
+        title.setText(getString(R.string.l4_notes));
         title.setTextColor(Color.WHITE);
         title.setTextSize(18);
         title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
@@ -1461,7 +1463,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
         header.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         TextView title = new TextView(ActivityOrderClient.this);
-        title.setText("Note");
+        title.setText(getString(R.string.l4_note));
         title.setTextColor(getResources().getColor(R.color.mainTextColor));
         title.setTextSize(16);
         title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
@@ -1547,7 +1549,7 @@ public class ActivityOrderClient extends AppCompatActivity implements RecyclerAd
                         bus.post(new ByteDataEvent(inputData));
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "An error occured!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.l3_an_error_occured), Toast.LENGTH_LONG).show();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

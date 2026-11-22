@@ -1,5 +1,8 @@
 package com.safesoft.proapp.distribute.appUpdate;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -37,7 +40,7 @@ public class UpdateApp extends AsyncTask<String, Integer, Integer> {
     @Override
     protected void onPreExecute() {
         mProgressDialog = new ProgressDialog(mActivity);
-        mProgressDialog.setTitle("Téléchargement de mise à jour en cours....");
+        mProgressDialog.setTitle(BaseApplication.instance.getString(R.string.l3_telechargement_de_mise_a_jour_en_cours));
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -118,7 +121,7 @@ public class UpdateApp extends AsyncTask<String, Integer, Integer> {
             context.startActivity(intent);
             //mActivity.finish();
         } else {
-            new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE).setTitleText("Update failed!").show();
+            new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE).setTitleText(BaseApplication.instance.getString(R.string.l3_update_failed)).show();
         }
     }
 }

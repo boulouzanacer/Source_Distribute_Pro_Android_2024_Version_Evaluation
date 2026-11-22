@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -116,7 +117,7 @@ public class RecyclerAdapterTournee1 extends RecyclerView.Adapter<RecyclerAdapte
        /* if (item.is_exported == 1) {
             holder.Date_create.setText(item.date_export_inv);
         } else {
-            holder.Date_create.setText("Pas encore exporté");
+            holder.Date_create.setText(BaseApplication.instance.getString(R.string.l4_pas_encore_exporte));
         }*/
 
     }

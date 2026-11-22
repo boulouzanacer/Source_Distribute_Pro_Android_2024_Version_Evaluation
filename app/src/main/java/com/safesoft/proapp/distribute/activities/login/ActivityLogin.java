@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.login;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -33,7 +35,7 @@ import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class ActivityLogin extends AppCompatActivity {
+public class ActivityLogin extends BaseLocaleActivity {
     private static final int REQUEST_SIGNUP = 0;
 
     private EditText _passwordText;
@@ -60,7 +62,7 @@ public class ActivityLogin extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Connexion paramètres");
+            getSupportActionBar().setTitle(getString(R.string.l3_connexion_parametres));
         }
 
         _passwordText = findViewById(R.id.input_password);
@@ -81,7 +83,7 @@ public class ActivityLogin extends AppCompatActivity {
 
         final ProgressDialog progressDialog = new ProgressDialog(ActivityLogin.this, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Connexion...");
+        progressDialog.setMessage(getString(R.string.l3_connexion));
         progressDialog.show();
 
         if (!validate()) {
@@ -127,7 +129,7 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Erreur accès au paramètres !!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getString(R.string.l3_erreur_acces_au_parametres), Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }
 
@@ -139,7 +141,7 @@ public class ActivityLogin extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("Entre 4 et 10 caractère");
+            _passwordText.setError(getString(R.string.l3_entre_4_et_10_caractere));
             valid = false;
         } else {
             _passwordText.setError(null);
@@ -151,7 +153,7 @@ public class ActivityLogin extends AppCompatActivity {
             _passwordText.setError(null);
         } else {
             valid = false;
-            _passwordText.setError("Mot de passe incorrect");
+            _passwordText.setError(getString(R.string.l3_mot_de_passe_incorrect));
         }
 
         return valid;

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -175,8 +177,8 @@ public class FragmentSelectClient {
         add_client.setOnClickListener(v -> {
             /*if(bon1.blocage.equals("F")){
                 new SweetAlertDialog(ActivityEditSale.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_information_4))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
@@ -205,7 +207,7 @@ public class FragmentSelectClient {
         }catch (Exception e){
 
             new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("Erreur. !")
+                    .setTitleText(BaseApplication.instance.getString(R.string.l3_erreur_3))
                     .setContentText("" + e.getMessage())
                     .show();
         }

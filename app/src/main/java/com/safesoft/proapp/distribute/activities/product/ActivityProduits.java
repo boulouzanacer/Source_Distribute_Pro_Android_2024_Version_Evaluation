@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.product;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -73,7 +75,7 @@ import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityProduits extends AppCompatActivity implements
+public class ActivityProduits extends BaseLocaleActivity implements
         RecyclerAdapterProduits.ItemClick,
         RecyclerAdapterProduits.ItemLongClick {
 
@@ -123,7 +125,7 @@ public class ActivityProduits extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("List Produits");
+            getSupportActionBar().setTitle(getString(R.string.l3_list_produits));
         }
 
         controller = new DATABASE(this);
@@ -185,9 +187,9 @@ public class ActivityProduits extends AppCompatActivity implements
             adapter = new RecyclerAdapterProduits(this, getItems(text_search, isscan), params, prix_revendeur);
             recyclerView.setAdapter(adapter);
 
-            nbr_produit.setText("Nombre de produit : " + produits.size());
+            nbr_produit.setText(getString(R.string.l4_nombre_produit_prefix) + produits.size());
             if (prefs.getBoolean("AFFICHAGE_PA_HT", false)) {
-                total_prix.setText("Total achats : " + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
+                total_prix.setText(getString(R.string.l4_total_achats_prefix) + new DecimalFormat("##,##0.00").format(calcule_total()) + " DA");
                 total_prix.setVisibility(View.VISIBLE);
             } else {
                 total_prix.setVisibility(View.GONE);
@@ -195,7 +197,7 @@ public class ActivityProduits extends AppCompatActivity implements
 
         }catch (Exception e){
             new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("Erreur. !")
+                    .setTitleText(getString(R.string.l3_erreur_3))
                     .setContentText("" + e.getMessage())
                     .show();
         }
@@ -332,16 +334,16 @@ public class ActivityProduits extends AppCompatActivity implements
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
-        builder.setTitle("Choisissez une action");
+        builder.setTitle(getString(R.string.l3_choisissez_une_action));
         builder.setItems(items, (dialog, item) -> {
             switch (item) {
                 case 0 -> {
 
                     new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
-                            .setTitleText("Modification")
-                            .setContentText("Voulez-vous vraiment modifier le produit :  " + produits.get(position).produit + " ?!")
-                            .setCancelText("Anuuler")
-                            .setConfirmText("Modifier")
+                            .setTitleText(getString(R.string.l3_modification))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_le_produit) + produits.get(position).produit + " ?!")
+                            .setCancelText(getString(R.string.l3_anuuler))
+                            .setConfirmText(getString(R.string.l3_modifier))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -363,15 +365,15 @@ public class ActivityProduits extends AppCompatActivity implements
                         if (controller.check_if_has_bon(querry_has_bon2) || controller.check_if_has_bon(querry_has_bon2_temp) || controller.check_if_has_bon(querry_has_achat2)) {
                             // you can't delete this client
                             new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention. !")
-                                    .setContentText("Il exist des bons créer avec ce produit, Suppression impossible")
+                                    .setTitleText(getString(R.string.l3_attention_6))
+                                    .setContentText(getString(R.string.l3_il_exist_des_bons_creer_avec_ce_produit))
                                     .show();
                         } else {
                             new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Suppression")
-                                    .setContentText("Voulez-vous vraiment supprimer le produit :  " + produits.get(position).produit + " ?!")
-                                    .setCancelText("Anuuler")
-                                    .setConfirmText("Supprimer")
+                                    .setTitleText(getString(R.string.l3_suppression))
+                                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_produi) + produits.get(position).produit + " ?!")
+                                    .setCancelText(getString(R.string.l3_anuuler))
+                                    .setConfirmText(getString(R.string.l3_supprimer))
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
@@ -386,8 +388,8 @@ public class ActivityProduits extends AppCompatActivity implements
                         }
                     } else {
                         new SweetAlertDialog(ActivityProduits.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Produit exist sur le serveur, Suppression impossible")
+                                .setTitleText(getString(R.string.l3_attention_6))
+                                .setContentText(getString(R.string.l3_produit_exist_sur_le_serveur_suppression))
                                 .show();
                     }
 
@@ -403,12 +405,12 @@ public class ActivityProduits extends AppCompatActivity implements
 
         searchView = new SearchView(Objects.requireNonNull(getSupportActionBar()).getThemedContext());
 
-        menu.add(Menu.NONE, Menu.NONE, 0, "Rechercher")
+        menu.add(Menu.NONE, Menu.NONE, 0, getString(R.string.l4_menu_rechercher))
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        searchView.setQueryHint("Rechercher");
+        searchView.setQueryHint(getString(R.string.l4_menu_rechercher));
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_products, menu);
@@ -437,7 +439,7 @@ public class ActivityProduits extends AppCompatActivity implements
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-                //Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), getString(R.string.l3_dummy_search), Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
                 Handler handler = new Handler();
@@ -485,7 +487,7 @@ public class ActivityProduits extends AppCompatActivity implements
             File csvFile = CsvExporter.exportProductsToCache(this, produits);
 
             if (csvFile != null) {
-                Toast.makeText(this, "CSV created: " + csvFile.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.l3_csv_created) + csvFile.getName(), Toast.LENGTH_SHORT).show();
 
                 Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", csvFile);
 
@@ -825,7 +827,7 @@ public class ActivityProduits extends AppCompatActivity implements
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error creating PDF: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_error_creating_pdf) + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

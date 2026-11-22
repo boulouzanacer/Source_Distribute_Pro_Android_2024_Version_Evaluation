@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -36,8 +37,8 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
     private OnEncaisserListener encaisserListener;
     private final String PREFS = "ALL_PREFS";
 
-    private static String fmtDA(double v) {
-        return String.format(java.util.Locale.FRANCE, "%,.2f DA", v);
+    private String fmtDA(double v) {
+        return mContext.getString(R.string.l4_montant_format, v);
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -102,24 +103,24 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
         holder.ClientN.setTypeface(null, Typeface.BOLD);
         holder.ClientN.setText(item.client);
 
-        holder.Tel_clientN.setText("TEL : " + item.tel);
+        holder.Tel_clientN.setText(BaseApplication.instance.getString(R.string.l4_tel_prefix) + item.tel);
 
         // —— ACHATS (contrôlé par SHOW_ACHAT_CLIENT) ——
         if (prefs.getBoolean("SHOW_ACHAT_CLIENT", false)) {
             try {
                 holder.Achats_clientN.setText(fmtDA(item.achat_client));
             } catch (Exception e) {
-                holder.Achats_clientN.setText("0,00 DA");
+                holder.Achats_clientN.setText(mContext.getString(R.string.l4_montant_zero));
             }
         } else {
-            holder.Achats_clientN.setText("**** DA");
+            holder.Achats_clientN.setText(mContext.getString(R.string.l4_montant_masque));
         }
 
         // —— VERSEMENTS : TOUJOURS AFFICHÉS ——
         try {
             holder.Vers_clientN.setText(fmtDA(item.verser_client));
         } catch (Exception e) {
-            holder.Vers_clientN.setText("0,00 DA");
+            holder.Vers_clientN.setText(mContext.getString(R.string.l4_montant_zero));
         }
 
         // —— SOLDE (contrôlé par AFFICHAGE_SOLDE_CLIENT) ——
@@ -159,10 +160,10 @@ public class RecyclerAdapterClients extends RecyclerView.Adapter<RecyclerAdapter
                     }
                 } catch (Exception ignore) {}
             } catch (Exception e) {
-                holder.Sld_clientN.setText("0,00 DA");
+                holder.Sld_clientN.setText(mContext.getString(R.string.l4_montant_zero));
             }
         } else {
-            holder.Sld_clientN.setText("******** DA");
+            holder.Sld_clientN.setText(mContext.getString(R.string.l4_montant_masque_total));
         }
 
         holder.img_pos_client.setImageResource(

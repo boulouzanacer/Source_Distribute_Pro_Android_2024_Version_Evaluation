@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.fournisseur;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -45,7 +47,7 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityFournisseurs extends AppCompatActivity implements RecyclerAdapterFournisseurs.ItemClick, RecyclerAdapterFournisseurs.ItemLongClick {
+public class ActivityFournisseurs extends BaseLocaleActivity implements RecyclerAdapterFournisseurs.ItemClick, RecyclerAdapterFournisseurs.ItemLongClick {
 
     RecyclerView recyclerView;
     private RecyclerAdapterFournisseurs adapter;
@@ -111,8 +113,8 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Liste Fournisseurs");
-            getSupportActionBar().setSubtitle("0 fournisseur");
+            getSupportActionBar().setTitle(getString(R.string.l3_liste_fournisseurs));
+            getSupportActionBar().setSubtitle(getString(R.string.l3_0_fournisseur));
         }
 
         initViews();
@@ -240,7 +242,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         recyclerView.setAdapter(adapter);
         int count = fournisseurs.size();
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(String.format(Locale.FRANCE, "%,d fournisseur%s", count, (count > 1 ? "s" : "")));
+            getSupportActionBar().setSubtitle(getResources().getQuantityString(R.plurals.l4_nb_fournisseurs, count, count));
         }
         refreshKpisPeriode();
     }
@@ -250,8 +252,8 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         String[] bounds = computeDateBounds(selectedPeriode);
         double totVersement = controller.getFournisseurTotalVersementsPeriode(bounds[0], bounds[1]);
         double totSolde = controller.getFournisseurTotalSoldesPeriode(bounds[0], bounds[1]);
-        kpi_total_versement.setText(String.format(Locale.FRANCE, "%,.2f DA", totVersement));
-        kpi_total_solde.setText(String.format(Locale.FRANCE, "%,.2f DA", totSolde));
+        kpi_total_versement.setText(getString(R.string.l4_montant_format, totVersement));
+        kpi_total_solde.setText(getString(R.string.l4_montant_format, totSolde));
     }
 
     public ArrayList<PostData_Fournisseur> getItems(String qqry) {
@@ -301,7 +303,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
+            builder.setTitle(getString(R.string.l3_choisissez_une_action));
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
                     case 0 -> {
@@ -311,8 +313,8 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                     case 1 -> {
                         if (fournisseurs.get(position).isImported == 1) {
                             new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention. !")
-                                    .setContentText("Fournisseur importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")
+                                    .setTitleText(getString(R.string.l3_attention_6))
+                                    .setContentText(getString(R.string.l3_fournisseur_importe_depuis_le_serveur_vo))
                                     .show();
                             return;
                         }
@@ -323,15 +325,15 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                         if (controller.check_if_has_bon(querry_has_bon1) || controller.check_if_has_bon(querry_has_bon1_temp)) {
                             // you can't delete this fournisseur
                             new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention. !")
-                                    .setContentText("Il exist des bons créer avec ce client")
+                                    .setTitleText(getString(R.string.l3_attention_6))
+                                    .setContentText(getString(R.string.l3_il_exist_des_bons_creer_avec_ce_client))
                                     .show();
                         } else {
                             new SweetAlertDialog(ActivityFournisseurs.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Suppression")
-                                    .setContentText("Voulez-vous vraiment supprimer le fournisseur " + fournisseurs.get(position).fournis + " ?!")
-                                    .setCancelText("Anuuler")
-                                    .setConfirmText("Supprimer")
+                                    .setTitleText(getString(R.string.l3_suppression))
+                                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_fourni) + fournisseurs.get(position).fournis + " ?!")
+                                    .setCancelText(getString(R.string.l3_anuuler))
+                                    .setConfirmText(getString(R.string.l3_supprimer))
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
@@ -358,13 +360,13 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
         inflater.inflate(R.menu.menu_fournisseur, menu);
 
         final SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
-        searchView.setQueryHint("Rechercher");
+        searchView.setQueryHint(getString(R.string.l4_menu_rechercher));
 
 //////////////////////////////////////////////////////////////////////
 ///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
 //////////////////////////////////////////////////////////////////////
 
-        menu.add(Menu.NONE, Menu.NONE, 0, "Search")
+        menu.add(Menu.NONE, Menu.NONE, 0, getString(R.string.l4_menu_rechercher))
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -385,7 +387,7 @@ public class ActivityFournisseurs extends AppCompatActivity implements RecyclerA
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getString(R.string.l3_dummy_search), Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
                 Handler handler = new Handler();

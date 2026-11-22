@@ -1,6 +1,8 @@
 package com.safesoft.proapp.distribute.printing;
 
 
+
+import com.safesoft.proapp.distribute.R;
 import static android.content.Context.MODE_PRIVATE;
 
 import static com.rt.printerlibrary.enumerate.BarcodeType.CODE128;
@@ -14,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
@@ -153,7 +156,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -215,7 +218,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -277,7 +280,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -342,7 +345,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -408,7 +411,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -470,7 +473,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -536,7 +539,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -602,7 +605,7 @@ public class Printing {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -628,7 +631,7 @@ public class Printing {
         public LongOperation(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
             this.bluetoothEdrConfigBean = bluetoothEdrConfigBean;
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Preparation...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_preparation));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setCancelable(true);
@@ -639,7 +642,7 @@ public class Printing {
         public LongOperation(WiFiConfigBean wiFiConfigBean) {
             this.wiFiConfigBean = wiFiConfigBean;
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Preparation...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_preparation));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setCancelable(true);
@@ -2802,7 +2805,7 @@ public class Printing {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Crouton.makeText(activity, "Aucune imprimante est connecté", Style.ALERT).show();
+                                Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
                             }
                         });
                     }
@@ -3281,13 +3284,13 @@ public class Printing {
                         files.clear();
 
                         for (int i = 0; i < 100; i++) {
-                            File chunk = new File(cacheDir, "webview_capture1_" + i + ".jpg");
+                            File chunk = new File(cacheDir, "webview_capture1_" + i + ".png");
                             if (!chunk.exists()) break;
                             files.add(chunk);
                         }
 
                         if (files.isEmpty()) {
-                            File single = new File(cacheDir, "webview_capture1.jpg");
+                            File single = new File(cacheDir, "webview_capture1.png");
                             if (single.exists()) files.add(single);
                         }
 
@@ -3300,41 +3303,65 @@ public class Printing {
                         return;
                     }
 
+                    // On decode TOUS les chunks puis on les concatene verticalement en UN
+                    // SEUL bitmap. Envoyer plusieurs getBitmapCmd() consecutifs
+                    // provoque un petit espace papier entre chaque image (le SG v 0 fait
+                    // avancer le papier de la hauteur du bitmap + interligne). Avec un
+                    // seul bitmap, le bon est imprime d'un seul tenant, sans vide.
+                    ArrayList<Bitmap> chunks = new ArrayList<>();
+                    int totalWidth = 0;
+                    int totalHeight = 0;
+
                     for (int i = 0; i < files.size(); i++) {
                         File file = files.get(i);
-
                         BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        options.inDither = true;
-                        bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-                        if (bitmap == null) continue;
-
-                        CmdFactory cmdFactory = new EscFactory();
-                        Cmd cmd = cmdFactory.create();
-                        cmd.append(cmd.getHeaderCmd());
-
-                        CommonSetting commonSetting = new CommonSetting();
-                        commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-                        cmd.append(cmd.getCommonSettingCmd(commonSetting));
-
-                        BitmapSetting bitmapSetting = new BitmapSetting();
-                        bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
-                        cmd.append(cmd.getBitmapCmd(bitmapSetting, bitmap));
-
-                        cmd.append(cmd.getLFCRCmd());
-                        cmd.append(cmd.getLFCRCmd());
-
-                        if (i == files.size() - 1) {
-                            print_espace_footer(cmd);
-                        }
-
-                        if (rtPrinter != null) {
-                            rtPrinter.writeMsg(cmd.getAppendCmds());
-                        }
-
-                        bitmap.recycle();
-                        bitmap = null;
+                        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                        options.inDither = false;
+                        Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                        if (bmp == null) continue;
+                        chunks.add(bmp);
+                        totalWidth = Math.max(totalWidth, bmp.getWidth());
+                        totalHeight += bmp.getHeight();
                     }
+
+                    if (chunks.isEmpty()) {
+                        hideProgressDialog();
+                        return;
+                    }
+
+                    Bitmap merged = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888);
+                    Canvas mergeCanvas = new Canvas(merged);
+                    int top = 0;
+                    for (Bitmap bmp : chunks) {
+                        mergeCanvas.drawBitmap(bmp, 0, top, null);
+                        top += bmp.getHeight();
+                        bmp.recycle();
+                    }
+                    bitmap = merged;
+
+                    // Une seule trame ESC pour tout le bon.
+                    CmdFactory cmdFactory = new EscFactory();
+                    Cmd cmd = cmdFactory.create();
+                    cmd.append(cmd.getHeaderCmd());
+
+                    CommonSetting commonSetting = new CommonSetting();
+                    commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                    cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                    BitmapSetting bitmapSetting = new BitmapSetting();
+                    bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+                    cmd.append(cmd.getBitmapCmd(bitmapSetting, bitmap));
+
+                    cmd.append(cmd.getLFCRCmd());
+                    cmd.append(cmd.getLFCRCmd());
+                    print_espace_footer(cmd);
+
+                    if (rtPrinter != null) {
+                        rtPrinter.writeMsg(cmd.getAppendCmds());
+                    }
+
+                    bitmap.recycle();
+                    bitmap = null;
 
                     hideProgressDialog();
 
@@ -3395,7 +3422,7 @@ public class Printing {
                 if (!TextUtils.isEmpty(str)) {
                     progressDialog.setMessage(str);
                 } else {
-                    progressDialog.setMessage("Impression...");
+                    progressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_impression_2));
                 }
                 progressDialog.show();
             }

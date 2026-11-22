@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.vente;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -65,7 +67,7 @@ import eu.inloop.simplerecycleradapter.ItemLongClickListener;
 import eu.inloop.simplerecycleradapter.SettableViewHolder;
 import eu.inloop.simplerecycleradapter.SimpleRecyclerAdapter;
 
-public class ActivityEtatV extends AppCompatActivity implements ItemClickListener<WrappedMyDataObject>, ItemLongClickListener<WrappedMyDataObject> {
+public class ActivityEtatV extends BaseLocaleActivity implements ItemClickListener<WrappedMyDataObject>, ItemLongClickListener<WrappedMyDataObject> {
 
     private RecyclerView mRecyclerView;
     private SimpleRecyclerAdapter<WrappedMyDataObject> mRecyclerAdapter;
@@ -131,7 +133,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Statistiques ventes");
+            getSupportActionBar().setTitle(getString(R.string.l3_statistiques_ventes));
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
@@ -172,7 +174,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                 fab.setOnTouchListener(null);
 
             }else{
-                Crouton.makeText(ActivityEtatV.this, "Aucun client versé dans la periode séléctionner !", Style.ALERT).show();
+                Crouton.makeText(ActivityEtatV.this, getString(R.string.l4_aucun_client_verse_periode), Style.ALERT).show();
             }
 
 
@@ -192,7 +194,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
         printer_mode_integrate = prefs1.getString("PRINTER_CONX", "INTEGRATE").equals("INTEGRATE");
 
 
-        txtv_etat_centre_status.setText("Etat de vente client...");
+        txtv_etat_centre_status.setText(getString(R.string.l4_etat_vente_client));
         super.onStart();
     }
 
@@ -379,10 +381,10 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
             String c = event.getCommune() == null ? "" : event.getCommune();
             String u = event.getUser() == null ? "%" : event.getUser();
 
-            txtv_debut.setText("De " + df);
-            txtv_fin.setText("Vers " + dt);
-            txtv_wilaya.setText("W : " + w);
-            txtv_commune.setText("Com : " + c);
+            txtv_debut.setText(getString(R.string.l4_de_prefix) + df);
+            txtv_fin.setText(getString(R.string.l4_vers_prefix) + dt);
+            txtv_wilaya.setText(getString(R.string.l4_w_prefix) + w);
+            txtv_commune.setText(getString(R.string.l4_com_prefix) + c);
 
             if (u.equals("%")) {
                 txtv_user.setText("Tous");
@@ -407,7 +409,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
         } catch (Exception e) {
             Log.v("TRACKKK", "ActivityEtatV getEventSelection: " + e.getMessage());
             new SweetAlertDialog(ActivityEtatV.this, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("Erreur")
+                    .setTitleText(getString(R.string.l3_erreur))
                     .setContentText(e.getMessage())
                     .show();
         }
@@ -585,7 +587,7 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                 Printing printer = new Printing();
                 printer.start_print_etat(bactivity, "ETAT_VENTE", result_etatzg, clientCode, userText, from_d, to_d);
             } else {
-                Crouton.makeText(ActivityEtatV.this, "Aucun état de vente à imprimer. Lancez d'abord la synchronisation.", Style.ALERT).show();
+                Crouton.makeText(ActivityEtatV.this, getString(R.string.l4_aucun_etat_vente_a_imprimer), Style.ALERT).show();
             }
 
         }
@@ -618,8 +620,8 @@ public class ActivityEtatV extends AppCompatActivity implements ItemClickListene
                             break;
                         case 2:
                             new SweetAlertDialog(ActivityEtatV.this, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText("Oops...")
-                                    .setContentText("Vous avez un problem au niveau de la requette SQL!: " + (errorMessage == null ? "" : errorMessage))
+                                    .setTitleText(getString(R.string.l3_oops))
+                                    .setContentText(getString(R.string.l3_vous_avez_un_problem_au_niveau_de_la_req_2) + (errorMessage == null ? "" : errorMessage))
                                     .show();
                             start_select_etatz(3);
                             break;

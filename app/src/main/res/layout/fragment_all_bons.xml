@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bons"
+                android:text="@string/l2_bons"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"
@@ -60,7 +60,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🔍 RECHERCHE + FILTRES"
+                    android:text="@string/l2_recherche_filtres"
                     android:textColor="#1D4ED8"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -126,7 +126,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📋 LISTE DES BONS / CLIENTS"
+                    android:text="@string/l2_liste_des_bons_clients"
                     android:textColor="#047857"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -161,8 +161,8 @@
                         android:dividerHeight="1dp" />
 
                     <LinearLayout
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:id="@+id/layout_footer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.map;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
@@ -64,7 +66,7 @@ import com.safesoft.proapp.distribute.utils.ConnectionDetector;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class ActivityMaps extends BaseLocaleActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap myMap;
     private ProgressDialog myProgress;
@@ -119,14 +121,14 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
         // Create Progress Bar.
         myProgress = new ProgressDialog(this);
-        myProgress.setTitle("Map");
-        myProgress.setMessage("Chargement...Attendez svp.");
+        myProgress.setTitle(getString(R.string.l3_map));
+        myProgress.setMessage(getString(R.string.l3_chargement_attendez_svp));
         myProgress.setCancelable(false);
 
         // Display Progress Bar.
         myProgress.show();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("List clients");
+        getSupportActionBar().setTitle(getString(R.string.l3_list_clients));
 
 
         ConnectionDetector = new ConnectionDetector(getApplicationContext());
@@ -197,7 +199,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 // permission denied, boo! Disable the
                 // functionality that depends on this permission.
-                Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.l3_permission_denied), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -221,7 +223,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         // IllegalArgumentException. Une assertion ne suffit pas, elles sont desactivees
         // a l'execution sur Android.
         if (bestProvider == null) {
-            Toast.makeText(this, "No location provider enabled!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_no_location_provider_enabled), Toast.LENGTH_LONG).show();
             Log.i(MYTAG, "No location provider enabled!");
             return null;
         }
@@ -229,7 +231,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         boolean enabled = locationManager.isProviderEnabled(bestProvider);
 
         if (!enabled) {
-            Toast.makeText(this, "No location provider enabled!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_no_location_provider_enabled), Toast.LENGTH_LONG).show();
             Log.i(MYTAG, "No location provider enabled!");
             return null;
         }
@@ -276,7 +278,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 Log.i(MYTAG, "Position non disponible!");
             }
         } else {
-            Crouton.makeText(ActivityMaps.this, "Pas de connexion internet", Style.ALERT).show();
+            Crouton.makeText(ActivityMaps.this, getString(R.string.l4_pas_de_connexion_internet), Style.ALERT).show();
         }
     }
 

@@ -172,9 +172,9 @@ public class FragmentNewEditProduct extends DialogFragment {
                                 launchCameraCapture();
                             } else if (!ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA)) {
                                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                                        .setTitleText("Caméra indisponible")
-                                        .setContentText("Vous avez refusé la permission caméra. Pour prendre la photo du produit, allez dans Paramètres > Applications > Distribute Pro > Autorisations et activez Caméra.")
-                                        .setConfirmText("Aller aux paramètres")
+                                        .setTitleText(getString(R.string.l3_camera_indisponible))
+                                        .setContentText(getString(R.string.l3_vous_avez_refuse_la_permission_camera_po))
+                                        .setConfirmText(getString(R.string.l3_aller_aux_parametres))
                                         .setConfirmClickListener(sweetAlertDialog -> {
                                             sweetAlertDialog.dismissWithAnimation();
                                             Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -182,7 +182,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                                             intent.setData(uri);
                                             mActivity.startActivity(intent);
                                         })
-                                        .setCancelText("Annuler")
+                                        .setCancelText(getString(R.string.l3_annuler))
                                         .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                                         .show();
                             }
@@ -556,18 +556,18 @@ public class FragmentNewEditProduct extends DialogFragment {
             CharSequence p1Cs = edt_prix1_ttc.getText();
 
             if (cbCs == null || cbCs.length() <= 0) {
-                edt_codebarre.setError("Code a barre est obligatoire!!");
+                edt_codebarre.setError(getString(R.string.l3_code_a_barre_est_obligatoire));
                 hasError = true;
             }
 
             if (rfCs == null || rfCs.length() <= 0) {
-                edt_reference.setError("Reference est obligatoire!!");
+                edt_reference.setError(getString(R.string.l3_reference_est_obligatoire));
                 hasError = true;
             }
 
             if (dsCs == null || dsCs.length() <= 0) {
 
-                edt_designation.setError("Nom de produit est obligatoire!!");
+                edt_designation.setError(getString(R.string.l3_nom_de_produit_est_obligatoire));
                 hasError = true;
             }
 
@@ -580,7 +580,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 try {
                     val_stock_ini = Double.parseDouble(stCs.toString());
                 } catch (NumberFormatException nfe) {
-                    edt_stock_ini.setError("Stock invalide");
+                    edt_stock_ini.setError(getString(R.string.l3_stock_invalide));
                     hasError = true;
                     val_stock_ini = 0;
                 }
@@ -593,7 +593,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 try {
                     val_colissage = Double.parseDouble(clCs.toString());
                 } catch (NumberFormatException nfe) {
-                    edt_colissage.setError("Colisage invalide");
+                    edt_colissage.setError(getString(R.string.l3_colisage_invalide));
                     hasError = true;
                     val_colissage = 0;
                 }
@@ -602,7 +602,7 @@ public class FragmentNewEditProduct extends DialogFragment {
             //===================================================================
 
             if (paCs == null || paCs.length() <= 0) {
-                edt_prix_achat_ttc.setError("Prix achat (TTC) est obligatoire!!");
+                edt_prix_achat_ttc.setError(getString(R.string.l3_prix_achat_ttc_est_obligatoire));
                 hasError = true;
             }
 
@@ -654,25 +654,25 @@ public class FragmentNewEditProduct extends DialogFragment {
             if (prefs.getBoolean("AFFICHAGE_HT", false)) {
                 CharSequence pahtCs = edt_prix_achat_ht.getText();
                 if (pahtCs == null || pahtCs.length() <= 0) {
-                    edt_prix_achat_ht.setError("Prix achat HT est obligatoire!!");
+                    edt_prix_achat_ht.setError(getString(R.string.l3_prix_achat_ht_est_obligatoire));
                     hasError = true;
                 }
 
                 /*if (edt_tva.getText().length() <= 0 ) {
-                    edt_tva.setError("TVA est obligatoire!!");
+                    edt_tva.setError(getString(R.string.l3_tva_est_obligatoire));
                     hasError = true;
                 }*/
 
                 CharSequence p1htCs = edt_prix1_ht.getText();
                 if (p1htCs == null || p1htCs.length() <= 0) {
-                    edt_prix1_ht.setError("Prix 1 HT est obligatoire!!");
+                    edt_prix1_ht.setError(getString(R.string.l3_prix_1_ht_est_obligatoire));
                     hasError = true;
                 }
 
                 if (params.prix_2 == 1) {
                     CharSequence cs = edt_prix2_ht.getText();
                     if (cs == null || cs.length() <= 0) {
-                        edt_prix2_ht.setError("Prix 2 HT est obligatoire!!");
+                        edt_prix2_ht.setError(getString(R.string.l3_prix_2_ht_est_obligatoire));
                         hasError = true;
                     }
                 }
@@ -680,7 +680,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 if (params.prix_3 == 1) {
                     CharSequence cs = edt_prix3_ht.getText();
                     if (cs == null || cs.length() <= 0) {
-                        edt_prix3_ht.setError("Prix 3 HT est obligatoire!!");
+                        edt_prix3_ht.setError(getString(R.string.l3_prix_3_ht_est_obligatoire));
                         hasError = true;
                     }
                 }
@@ -688,7 +688,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 if (params.prix_4 == 1) {
                     CharSequence cs = edt_prix4_ht.getText();
                     if (cs == null || cs.length() <= 0) {
-                        edt_prix4_ht.setError("Prix 4 HT est obligatoire!!");
+                        edt_prix4_ht.setError(getString(R.string.l3_prix_4_ht_est_obligatoire));
                         hasError = true;
                     }
                 }
@@ -696,7 +696,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 if (params.prix_5 == 1) {
                     CharSequence cs = edt_prix5_ht.getText();
                     if (cs == null || cs.length() <= 0) {
-                        edt_prix5_ht.setError("Prix 5 HT est obligatoire!!");
+                        edt_prix5_ht.setError(getString(R.string.l3_prix_5_ht_est_obligatoire));
                         hasError = true;
                     }
                 }
@@ -704,7 +704,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                 if (params.prix_6 == 1) {
                     CharSequence cs = edt_prix6_ht.getText();
                     if (cs == null || cs.length() <= 0) {
-                        edt_prix6_ht.setError("Prix 6 HT est obligatoire!!");
+                        edt_prix6_ht.setError(getString(R.string.l3_prix_6_ht_est_obligatoire));
                         hasError = true;
                     }
                 }
@@ -740,8 +740,8 @@ public class FragmentNewEditProduct extends DialogFragment {
                 }
                 if (hasError) {
                     new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention !")
-                            .setContentText("Vérifiez les prix (chiffres invalides)")
+                            .setTitleText(getString(R.string.l3_attention))
+                            .setContentText(getString(R.string.l3_verifiez_les_prix_chiffres_invalides))
                             .show();
                     return;
                 }
@@ -808,7 +808,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                     try {
                         //update client into database,
                         controller.update_into_produit(created_produit);
-                        Crouton.makeText(mActivity, "Produit bien modifier", Style.INFO).show();
+                        Crouton.makeText(mActivity, getString(R.string.l4_produit_bien_modifie), Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);
 
@@ -816,8 +816,8 @@ public class FragmentNewEditProduct extends DialogFragment {
 
                     }catch (Exception e){
                         new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Problème mise à jour produit : " + e.getMessage())
+                                .setTitleText(getString(R.string.l3_attention_6))
+                                .setContentText(getString(R.string.l3_probleme_mise_a_jour_produit) + e.getMessage())
                                 .show();
                     }
 
@@ -833,15 +833,15 @@ public class FragmentNewEditProduct extends DialogFragment {
                         //update client into database,
                         //controller.insert_into_produit(created_produit);
                         controller.ExecuteTransaction_product_codebarre(created_produit, created_codebarre);
-                        Crouton.makeText(mActivity, "Produit bien ajouté", Style.INFO).show();
+                        Crouton.makeText(mActivity, getString(R.string.l4_produit_bien_ajoute), Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);
 
                         dialog.dismiss();
                     }catch (Exception e){
                         new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Problème insertion : " + e.getMessage())
+                                .setTitleText(getString(R.string.l3_attention_6))
+                                .setContentText(getString(R.string.l3_probleme_insertion) + e.getMessage())
                                 .show();
                     }
 
@@ -1625,25 +1625,25 @@ public class FragmentNewEditProduct extends DialogFragment {
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA)) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Permission caméra requise")
-                        .setContentText("L'application a besoin d'accéder à la caméra pour scanner les codes-barres.")
-                        .setConfirmText("Autoriser")
+                        .setTitleText(getString(R.string.l3_permission_camera_requise))
+                        .setContentText(getString(R.string.l3_lapplication_a_besoin_dacceder_a_la_came_2))
+                        .setConfirmText(getString(R.string.l3_autoriser))
                         .setConfirmClickListener(sweetAlertDialog -> {
                             sweetAlertDialog.dismissWithAnimation();
                             ActivityCompat.requestPermissions(mActivity,
                                     new String[]{Manifest.permission.CAMERA},
                                     REQUEST_CAMERA_PERMISSION);
                         })
-                        .setCancelText("Annuler")
+                        .setCancelText(getString(R.string.l3_annuler))
                         .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                         .show();
             } else {
                 boolean deniedPermanently = !ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA);
                 if (deniedPermanently) {
                     new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Caméra indisponible")
-                            .setContentText("Vous avez refusé définitivement la permission caméra. Pour activer le scanner, allez dans Paramètres > Applications > Distribute Pro > Autorisations et activez Caméra.")
-                            .setConfirmText("Aller aux paramètres")
+                            .setTitleText(getString(R.string.l3_camera_indisponible))
+                            .setContentText(getString(R.string.l3_vous_avez_refuse_definitivement_la_permi))
+                            .setConfirmText(getString(R.string.l3_aller_aux_parametres))
                             .setConfirmClickListener(sweetAlertDialog -> {
                                 sweetAlertDialog.dismissWithAnimation();
                                 Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -1651,7 +1651,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                                 intent.setData(uri);
                                 mActivity.startActivity(intent);
                             })
-                            .setCancelText("Annuler")
+                            .setCancelText(getString(R.string.l3_annuler))
                             .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                             .show();
                 } else {
@@ -1679,7 +1679,7 @@ public class FragmentNewEditProduct extends DialogFragment {
                         if(!controller.check_product_if_exist(querry)){
                             edt_codebarre.setText(barcodeResult.rawValue);
                         }else {
-                            edt_codebarre.setHint("Produit / Codebarre exist ");
+                            edt_codebarre.setHint(getString(R.string.l3_produit_codebarre_exist));
                         }
                     } else if (view.getId() == R.id.scan_reference) {
                         edt_reference.setText(barcodeResult.rawValue);
@@ -1704,14 +1704,14 @@ public class FragmentNewEditProduct extends DialogFragment {
         // qu'elle soit accordee. Il faut donc la demander avant d'ouvrir l'appareil photo.
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Permission caméra requise")
-                    .setContentText("L'application a besoin d'accéder à la caméra pour prendre la photo du produit.")
-                    .setConfirmText("Autoriser")
+                    .setTitleText(getString(R.string.l3_permission_camera_requise))
+                    .setContentText(getString(R.string.l3_lapplication_a_besoin_dacceder_a_la_came))
+                    .setConfirmText(getString(R.string.l3_autoriser))
                     .setConfirmClickListener(sweetAlertDialog -> {
                         sweetAlertDialog.dismissWithAnimation();
                         cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
                     })
-                    .setCancelText("Annuler")
+                    .setCancelText(getString(R.string.l3_annuler))
                     .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                     .show();
             return;
@@ -1723,9 +1723,9 @@ public class FragmentNewEditProduct extends DialogFragment {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePicture.resolveActivity(mActivity.getPackageManager()) == null) {
             new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("Appareil photo indisponible")
-                    .setContentText("Aucune application appareil photo ne peut traiter cette action sur cet appareil.")
-                    .setConfirmText("Fermer")
+                    .setTitleText(getString(R.string.l3_appareil_photo_indisponible))
+                    .setContentText(getString(R.string.l3_aucune_application_appareil_photo_ne_peu))
+                    .setConfirmText(getString(R.string.l3_fermer))
                     .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation)
                     .show();
             return;
@@ -1734,9 +1734,9 @@ public class FragmentNewEditProduct extends DialogFragment {
             mActivity.startActivityForResult(takePicture, 3000);
         } catch (ActivityNotFoundException | SecurityException e) {
             new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("Ouverture de l'appareil photo impossible")
+                    .setTitleText(getString(R.string.l3_ouverture_de_lappareil_photo_impossible))
                     .setContentText(String.valueOf(e.getMessage()))
-                    .setConfirmText("Fermer")
+                    .setConfirmText(getString(R.string.l3_fermer))
                     .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation)
                     .show();
         }
@@ -1795,9 +1795,9 @@ public class FragmentNewEditProduct extends DialogFragment {
                 galleryFallbackLauncher.launch("image/*");
             } catch (SecurityException | ActivityNotFoundException e2) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Galerie indisponible")
+                        .setTitleText(getString(R.string.l3_galerie_indisponible))
                         .setContentText(String.valueOf(e2.getMessage()))
-                        .setConfirmText("Fermer")
+                        .setConfirmText(getString(R.string.l3_fermer))
                         .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation)
                         .show();
             }
@@ -1817,7 +1817,7 @@ public class FragmentNewEditProduct extends DialogFragment {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(mActivity, "Unable to load image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, getString(R.string.l3_unable_to_load_image), Toast.LENGTH_SHORT).show();
         }
     }
 

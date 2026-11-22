@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters.viewholder.advanced;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 
@@ -52,9 +53,9 @@ public class HeaderViewHolder extends SettableViewHolder<WrappedMyDataObject> {
         SpannableString spannableString2 = new SpannableString(TextUtils.concat(drawable4.toSpannable()));
         mMontant.setText(spannableString2);
         */
-        mTitle.setText("Produit");
-        mQuantite.setText("Qte");
-        mMontant.setText("Total");
+        mTitle.setText(BaseApplication.instance.getString(R.string.l4_produit));
+        mQuantite.setText(BaseApplication.instance.getString(R.string.l4_qte));
+        mMontant.setText(BaseApplication.instance.getString(R.string.l4_total));
     }
 
     @Override

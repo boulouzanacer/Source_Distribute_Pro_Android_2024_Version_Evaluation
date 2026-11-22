@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.inventaire;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -75,7 +77,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityInventaire extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick {
+public class ActivityInventaire extends BaseLocaleActivity implements RecyclerAdapterCheckProducts.ItemClick {
 
 
     ////////////////////////////////////////
@@ -166,7 +168,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         } else {
-            Crouton.makeText(ActivityInventaire.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
@@ -255,13 +257,13 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             calcule();
 
         } else {
-            Crouton.makeText(ActivityInventaire.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
 
         if (NUM_INV != null) {
-            getSupportActionBar().setTitle("Inventaire N°: " + NUM_INV);
+            getSupportActionBar().setTitle(getString(R.string.l3_inventaire_n) + NUM_INV);
         }
         getSupportActionBar().setSubtitle(date_time_sub_title);
         validate_theme();
@@ -318,24 +320,24 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         if (viewId == R.id.addProduct) {
             if (inv1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Cet inventaire est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_cet_inventaire_est_deja_valide))
                         .show();
                 return;
             }
 
             if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
-                Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_vous_devez_saisir_nom_inventaire), Style.ALERT).show();
                 return;
             }
             if (btn_nom_inv_state_isactive) {
-                Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_vous_devez_valider_nom_inventaire), Style.ALERT).show();
                 return;
             }
 
             /*if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
 
@@ -352,24 +354,24 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
             if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
 
-                Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_vous_devez_saisir_nom_inventaire), Style.ALERT).show();
                 return;
             }
             if (btn_nom_inv_state_isactive) {
-                Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_vous_devez_valider_nom_inventaire), Style.ALERT).show();
                 return;
             }
             if (final_panier.isEmpty()) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Cet inventaire est vide")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_cet_inventaire_est_vide))
                         .show();
                 return;
             }
             if (inv1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Cet inventaire est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_cet_inventaire_est_deja_valide))
                         .show();
                 return;
             }
@@ -386,18 +388,18 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             } else {
                 if (inv1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire est déja validé")
+                            .setTitleText(getString(R.string.l3_information_4))
+                            .setContentText(getString(R.string.l3_cet_inventaire_est_deja_valide))
                             .show();
                     return;
                 }
                 if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
 
-                    Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                    Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_vous_devez_saisir_nom_inventaire), Style.ALERT).show();
                     return;
                 }
                 if (btn_nom_inv_state_isactive) {
-                    Crouton.makeText(ActivityInventaire.this, "Vous devez valider le nom d'inventaire", Style.ALERT).show();
+                    Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_vous_devez_valider_nom_inventaire), Style.ALERT).show();
                     return;
                 }
                 startScanProduct();
@@ -407,24 +409,24 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             if (!SOURCE_EXPORT.equals("EXPORTED")) {
                 if (inv1.is_exported == 1) {
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire est déja exporté, modification impossible")
+                            .setTitleText(getString(R.string.l3_information_4))
+                            .setContentText(getString(R.string.l3_cet_inventaire_est_deja_exporte_modifica))
                             .show();
                     return;
                 }
                 if (!inv1.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Cet inventaire n'est pas encore validé")
+                            .setTitleText(getString(R.string.l3_information_4))
+                            .setContentText(getString(R.string.l3_cet_inventaire_nest_pas_encore_valide))
                             .show();
                     return;
 
                 } else {
                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Modification")
-                            .setContentText("Voulez-vous vraiment Modifier cet inventaire ?")
-                            .setCancelText("Non")
-                            .setConfirmText("Oui")
+                            .setTitleText(getString(R.string.l3_modification))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_cet_invent))
+                            .setCancelText(getString(R.string.l3_non))
+                            .setConfirmText(getString(R.string.l3_oui))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -440,8 +442,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                                 } catch (Exception e) {
 
                                     new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                            .setTitleText("Attention!")
-                                            .setContentText("problème lors de Modification d'inventaire : " + e.getMessage())
+                                            .setTitleText(getString(R.string.l3_attention_4))
+                                            .setContentText(getString(R.string.l3_probleme_lors_de_modification_dinventair) + e.getMessage())
                                             .show();
                                 }
                                 sDialog.dismiss();
@@ -449,16 +451,16 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                 }
             } else {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja exporté")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_exporte))
                         .show();
             }
 
         } else if (viewId == R.id.btn_imp_bon) {
             if (!inv1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Cet inventaire n'est pas encore validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_cet_inventaire_nest_pas_encore_valide))
                         .show();
                 return;
             }
@@ -472,14 +474,14 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
             if (inv1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Cet inventaire est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_cet_inventaire_est_deja_valide))
                         .show();
                 return;
             }
 
             if (Objects.requireNonNull(edt_nom_inventaire.getText()).length() < 1) {
-                Crouton.makeText(ActivityInventaire.this, "Vous devez saissir le nom d'inventaire", Style.ALERT).show();
+                Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_vous_devez_saisir_nom_inventaire), Style.ALERT).show();
                 return;
             }
 
@@ -578,16 +580,16 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         if (itemId == R.id.delete_produit) {
             if (inv1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Cet inventaire est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_cet_inventaire_est_deja_valide))
                         .show();
                 return true;
             }
             new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Suppression")
-                    .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Supprimer")
+                    .setTitleText(getString(R.string.l3_suppression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_produi_2))
+                    .setCancelText(getString(R.string.l3_anuuler))
+                    .setConfirmText(getString(R.string.l3_supprimer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -602,8 +604,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
                         } catch (Exception e) {
 
                             new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!")
-                                    .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                    .setTitleText(getString(R.string.l3_attention_4))
+                                    .setContentText(getString(R.string.l3_probleme_lors_suppression_produits) + e.getMessage())
                                     .show();
                         }
 
@@ -614,8 +616,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
         } else if (itemId == R.id.edit_produit) {
             if (inv1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Cet inventaire est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_cet_inventaire_est_deja_valide))
                         .show();
                 return true;
             }
@@ -629,8 +631,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             } catch (Exception e) {
 
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Attention!")
-                        .setContentText("Error : " + e.getMessage())
+                        .setTitleText(getString(R.string.l3_attention_4))
+                        .setContentText(getString(R.string.l3_error) + e.getMessage())
                         .show();
             }
 
@@ -766,8 +768,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
         if (checked_inv2 != null && !checked_inv2.num_inv.equals(inv2.num_inv)) {
             new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Attention !!")
-                    .setContentText("Produit déjà inséré dans le bon d'inventaire n° " + checked_inv2.num_inv +
+                    .setTitleText(getString(R.string.l3_attention_2))
+                    .setContentText(getString(R.string.l3_produit_deja_insere_dans_le_bon_dinventa) + checked_inv2.num_inv +
                             " avec une quantité de : " + checked_inv2.qte_physique +
                             ". Veuillez accéder au bon d'inventaire numéro : " + checked_inv2.num_inv +
                             " afin de modifier la quantité.")
@@ -799,7 +801,7 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             }
             initData();
         } catch (Exception e) {
-            Crouton.makeText(ActivityInventaire.this, "Erreur dans produit" + e.getMessage(), Style.ALERT).show();
+            Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_erreur_dans_produit) + e.getMessage(), Style.ALERT).show();
         }
     }
 
@@ -878,8 +880,8 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
 
             if (checked_inv2 != null && !checked_inv2.num_inv.equals(inv2.num_inv)) {
                 new SweetAlertDialog(ActivityInventaire.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !!")
-                        .setContentText("Produit déjà inséré dans le bon d'inventaire n° " + checked_inv2.num_inv +
+                        .setTitleText(getString(R.string.l3_attention_2))
+                        .setContentText(getString(R.string.l3_produit_deja_insere_dans_le_bon_dinventa) + checked_inv2.num_inv +
                                 " avec une quantité de : " + checked_inv2.qte_physique +
                                 ". Veuillez accéder au bon d'inventaire numéro : " + checked_inv2.num_inv +
                                 " afin de modifier la quantité.")
@@ -892,9 +894,9 @@ public class ActivityInventaire extends AppCompatActivity implements RecyclerAda
             fragmentqteinventaire.showDialogbox(SOURCE, activity, getBaseContext(), inv2, checked_inv2);
 
         } else if (produits.size() > 1) {
-            Crouton.makeText(ActivityInventaire.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
+            Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_attention_2_produits_meme_code), Style.ALERT).show();
         } else {
-            Crouton.makeText(ActivityInventaire.this, "Produit introuvable !", Style.ALERT).show();
+            Crouton.makeText(ActivityInventaire.this, getString(R.string.l4_produit_introuvable), Style.ALERT).show();
         }
     }
 

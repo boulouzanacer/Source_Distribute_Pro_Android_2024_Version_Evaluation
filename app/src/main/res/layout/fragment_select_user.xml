@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Sélection tournée / session"
+                android:text="@string/l2_selection_tournee_session"
                 android:textColor="#FFFFFF"
                 android:textSize="19.5sp"
                 android:textStyle="bold" />
@@ -43,7 +43,7 @@
                 android:layout_marginTop="4dp"
                 android:alpha="0.82"
                 android:gravity="center"
-                android:text="Définissez la période, le client et la localisation"
+                android:text="@string/l2_definissez_la_periode_le_client_et_la_lo"
                 android:textColor="#FFFFFF"
                 android:textSize="12.5sp" />
         </LinearLayout>
@@ -80,7 +80,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_calendar_today_24"
                         android:tint="#FFFFFF"
-                        android:contentDescription="periode" />
+                        android:contentDescription="@string/a11y_periode" />
                 </FrameLayout>
 
                 <TextView
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
-                    android:text="Période"
+                    android:text="@string/l2_periode"
                     android:textColor="#1E3A8A"
                     android:textSize="16.5sp"
                     android:textStyle="bold" />
@@ -115,7 +115,7 @@
                     android:id="@+id/beginsession_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Début session"
+                    android:hint="@string/l2_debut_session"
                     android:inputType="none"
                     android:focusable="false"
                     android:clickable="true"
@@ -145,7 +145,7 @@
                     android:id="@+id/endsession_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Fin session"
+                    android:hint="@string/l2_fin_session"
                     android:inputType="none"
                     android:focusable="false"
                     android:clickable="true"
@@ -188,7 +188,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_person_24"
                         android:tint="#FFFFFF"
-                        android:contentDescription="client" />
+                        android:contentDescription="@string/a11y_client" />
                 </FrameLayout>
 
                 <TextView
@@ -196,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
-                    android:text="Client"
+                    android:text="@string/l2_client_2"
                     android:textColor="#064E3B"
                     android:textSize="16.5sp"
                     android:textStyle="bold" />
@@ -223,7 +223,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textAutoComplete"
-                    android:hint="Sélectionner un client"
+                    android:hint="@string/l2_selectionner_un_client"
                     android:textSize="14.5sp"
                     android:textColor="#0F172A"
                     android:textColorHint="#64748B"
@@ -264,7 +264,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_location_on_24"
                         android:tint="#FFFFFF"
-                        android:contentDescription="localisation" />
+                        android:contentDescription="@string/a11y_localisation" />
                 </FrameLayout>
 
                 <TextView
@@ -272,7 +272,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
-                    android:text="Localisation"
+                    android:text="@string/l2_localisation"
                     android:textColor="#4C1D95"
                     android:textSize="16.5sp"
                     android:textStyle="bold" />
@@ -298,7 +298,7 @@
                     android:id="@+id/wilaya_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Wilaya"
+                    android:hint="@string/l2_wilaya_2"
                     android:inputType="textAutoComplete"
                     android:textSize="14.5sp"
                     android:textColor="#0F172A"
@@ -326,7 +326,7 @@
                     android:id="@+id/commune_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Commune"
+                    android:hint="@string/l2_commune_2"
                     android:inputType="textAutoComplete"
                     android:textSize="14.5sp"
                     android:textColor="#0F172A"
@@ -347,7 +347,7 @@
             android:layout_marginTop="18dp"
             android:layout_marginBottom="6dp"
             android:background="@drawable/bg_web_button_primary"
-            android:text="VALIDER"
+            android:text="@string/valider"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="16sp" />

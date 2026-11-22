@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.vente;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -49,7 +51,7 @@ import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityVentes extends AppCompatActivity implements RecyclerAdapterBon1.ItemClick, RecyclerAdapterBon1.ItemLongClick {
+public class ActivityVentes extends BaseLocaleActivity implements RecyclerAdapterBon1.ItemClick, RecyclerAdapterBon1.ItemLongClick {
 
 
     RecyclerView recyclerView;
@@ -95,8 +97,8 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Bons de livraison");
-            getSupportActionBar().setSubtitle("Client");
+            getSupportActionBar().setTitle(getString(R.string.l3_bons_de_livraison));
+            getSupportActionBar().setSubtitle(getString(R.string.l3_client));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -202,7 +204,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         adapter = new RecyclerAdapterBon1(this, getItems(text_search, isSearch), "SALE");
         recyclerView.setAdapter(adapter);
 
-        list_bon_total.setText("Total bon : " + bon1s.size());
+        list_bon_total.setText(getString(R.string.l4_total_bon_prefix) + bon1s.size());
     }
 
 
@@ -315,17 +317,17 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
+            builder.setTitle(getString(R.string.l3_choisissez_une_action));
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
                     /*case 0 -> {
                         if(prefs.getBoolean("AUTORISE_MODIFY_BON", true)){
                             if (!SOURCE_EXPORT.equals("EXPORTED")) {
                                 new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.NORMAL_TYPE)
-                                        .setTitleText("Bon de vente")
-                                        .setContentText("Voulez-vous vraiment modifier ce bon ?!")
-                                        .setCancelText("Non")
-                                        .setConfirmText("Modifier")
+                                        .setTitleText(getString(R.string.l3_bon_de_vente))
+                                        .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_ce_bon_2))
+                                        .setCancelText(getString(R.string.l3_non))
+                                        .setConfirmText(getString(R.string.l3_modifier))
                                         .showCancelButton(true)
                                         .setCancelClickListener(Dialog::dismiss)
                                         .setConfirmClickListener(sDialog -> {
@@ -343,14 +345,14 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                                         .show();
                             } else {
                                 new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Information!")
-                                        .setContentText("Ce bon est déja exporté")
+                                        .setTitleText(getString(R.string.l3_information_4))
+                                        .setContentText(getString(R.string.l3_ce_bon_est_deja_exporte))
                                         .show();
                             }
                         }else{
                             new SweetAlertDialog(ActivitySales.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!!")
-                                    .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
+                                    .setTitleText(getString(R.string.l3_attention_5))
+                                    .setContentText(getString(R.string.l3_vous_navez_pas_lautorisation_de_modifier))
                                     .show();
                         }
 
@@ -358,10 +360,10 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                     case 0 -> {
                         if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
                             new SweetAlertDialog(ActivityVentes.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Suppression")
-                                    .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
-                                    .setCancelText("Anuuler")
-                                    .setConfirmText("Supprimer")
+                                    .setTitleText(getString(R.string.l3_suppression))
+                                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_bon) + bon1s.get(position).num_bon + " ?!")
+                                    .setCancelText(getString(R.string.l3_anuuler))
+                                    .setConfirmText(getString(R.string.l3_supprimer))
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
@@ -375,16 +377,16 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                                     .show();
                         } else {
                             new SweetAlertDialog(ActivityVentes.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!!")
-                                    .setContentText("Vous n'avez pas l'autorisation de supprimer, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
+                                    .setTitleText(getString(R.string.l3_attention_5))
+                                    .setContentText(getString(R.string.l3_vous_navez_pas_lautorisation_de_supprime))
                                     .show();
                         }
                     }
                     case 1 -> {
                         if (!bon1s.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityVentes.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Ce bon n'est pas encore validé")
+                                    .setTitleText(getString(R.string.l3_information_4))
+                                    .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                                     .show();
                             return;
                         }
@@ -447,14 +449,14 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
+            builder.setTitle(getString(R.string.l3_choisissez_une_action));
             builder.setItems(items, (dialog, item) -> {
                 if (item == 0) {
                     new SweetAlertDialog(ActivityVentes.this, SweetAlertDialog.NORMAL_TYPE)
-                            .setTitleText("Suppression")
-                            .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s.get(position).num_bon + " ?!")
-                            .setCancelText("Anuuler")
-                            .setConfirmText("Supprimer")
+                            .setTitleText(getString(R.string.l3_suppression))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_bon) + bon1s.get(position).num_bon + " ?!")
+                            .setCancelText(getString(R.string.l3_anuuler))
+                            .setConfirmText(getString(R.string.l3_supprimer))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -484,13 +486,13 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         }
 
         searchView = new SearchView(getSupportActionBar().getThemedContext());
-        searchView.setQueryHint("Rechercher");
+        searchView.setQueryHint(getString(R.string.l4_menu_rechercher));
 
 //////////////////////////////////////////////////////////////////////
 ///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
 //////////////////////////////////////////////////////////////////////
 
-        menu.add(Menu.NONE, Menu.NONE, 1, "Search")
+        menu.add(Menu.NONE, Menu.NONE, 1, getString(R.string.l4_menu_rechercher))
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -511,7 +513,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getString(R.string.l3_dummy_search), Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
                 Handler handler = new Handler();
@@ -537,7 +539,7 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
         } else if (item.getItemId() == R.id.new_sale) {
             if (!prefs.getBoolean("APP_ACTIVATED", false) && (!bon1s.isEmpty())) {
                 new SweetAlertDialog(ActivityVentes.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
             } else {
@@ -550,10 +552,10 @@ public class ActivityVentes extends AppCompatActivity implements RecyclerAdapter
 
         }else if(item.getItemId() == R.id.delete_all_bon){
             new SweetAlertDialog(ActivityVentes.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Suppression")
-                    .setContentText("Voulez-vous vraiment supprimer tous les bon déjà exportés ?!")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Supprimer")
+                    .setTitleText(getString(R.string.l3_suppression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_tous_les))
+                    .setCancelText(getString(R.string.l3_anuuler))
+                    .setConfirmText(getString(R.string.l3_supprimer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {

@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="FR"
+                    android:text="@string/l2_fr"
                     android:textColor="#1D4ED8"
                     android:textStyle="bold"
                     android:textSize="15sp"
@@ -88,7 +88,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Code: "
+                        android:text="@string/l2_code"
                         android:textColor="#94A3B8"
                         android:textSize="11.5sp"
                         android:fontFamily="sans-serif-medium" />

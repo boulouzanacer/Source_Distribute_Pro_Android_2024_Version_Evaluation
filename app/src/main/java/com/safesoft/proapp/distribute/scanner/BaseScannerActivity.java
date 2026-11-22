@@ -1,10 +1,12 @@
 package com.safesoft.proapp.distribute.scanner;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.MenuItem;
 
-public class BaseScannerActivity extends AppCompatActivity {
+public class BaseScannerActivity extends BaseLocaleActivity {
     public void setupToolbar() {
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);

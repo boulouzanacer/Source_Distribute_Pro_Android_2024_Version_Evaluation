@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.client;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -50,7 +52,7 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityClients extends AppCompatActivity implements RecyclerAdapterClients.ItemClick, RecyclerAdapterClients.ItemLongClick, RecyclerAdapterClients.OnEncaisserListener {
+public class ActivityClients extends BaseLocaleActivity implements RecyclerAdapterClients.ItemClick, RecyclerAdapterClients.ItemLongClick, RecyclerAdapterClients.OnEncaisserListener {
 
     private static final int CAMERA_PERMISSION = 5;
     RecyclerView recyclerView;
@@ -101,8 +103,8 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Liste Clients");
-            getSupportActionBar().setSubtitle("0 client");
+            getSupportActionBar().setTitle(getString(R.string.l3_liste_clients));
+            getSupportActionBar().setSubtitle(getString(R.string.l3_0_client));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -237,7 +239,7 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
         int count = clients.size();
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(String.format(Locale.FRANCE, "%,d client%s", count, (count > 1 ? "s" : "")));
+            getSupportActionBar().setSubtitle(getResources().getQuantityString(R.plurals.l4_nb_clients, count, count));
         }
 
         refreshKpisPeriode();
@@ -248,8 +250,8 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         String[] bounds = computeDateBounds(selectedPeriode);
         double totVersement = controller.getClientTotalVersementsPeriode(bounds[0], bounds[1]);
         double totSolde = controller.getClientTotalSoldesPeriode(bounds[0], bounds[1]);
-        kpi_total_versement.setText(String.format(Locale.FRANCE, "%,.2f DA", totVersement));
-        kpi_total_solde.setText(String.format(Locale.FRANCE, "%,.2f DA", totSolde));
+        kpi_total_versement.setText(getString(R.string.l4_montant_format, totVersement));
+        kpi_total_solde.setText(getString(R.string.l4_montant_format, totSolde));
     }
 
     public ArrayList<PostData_Client> getItems(String qqry) {
@@ -319,14 +321,14 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
+            builder.setTitle(getString(R.string.l3_choisissez_une_action));
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
                     case 0 -> {
                         if (clients.get(position).isImported == 1) {
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention. !")
-                                    .setContentText("Client importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")
+                                    .setTitleText(getString(R.string.l3_attention_6))
+                                    .setContentText(getString(R.string.l3_client_importe_depuis_le_serveur_vous_na))
                                     .show();
                             return;
                         }
@@ -337,8 +339,8 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                     case 1 -> {
                         if (clients.get(position).isImported == 1) {
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention. !")
-                                    .setContentText("Client importé depuis le serveur, Vous n'avez pas le droit de le supprimer !")
+                                    .setTitleText(getString(R.string.l3_attention_6))
+                                    .setContentText(getString(R.string.l3_client_importe_depuis_le_serveur_vous_na))
                                     .show();
                             return;
                         }
@@ -348,15 +350,15 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
                         if (controller.check_if_has_bon(querry_has_bon1) || controller.check_if_has_bon(querry_has_bon1_temp)) {
                             // you can't delete this client
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention. !")
-                                    .setContentText("Il exist des bons créer avec ce client")
+                                    .setTitleText(getString(R.string.l3_attention_6))
+                                    .setContentText(getString(R.string.l3_il_exist_des_bons_creer_avec_ce_client))
                                     .show();
                         } else {
                             new SweetAlertDialog(ActivityClients.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Suppression")
-                                    .setContentText("Voulez-vous vraiment supprimer le client " + clients.get(position).client + " ?!")
-                                    .setCancelText("Anuuler")
-                                    .setConfirmText("Supprimer")
+                                    .setTitleText(getString(R.string.l3_suppression))
+                                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_client) + clients.get(position).client + " ?!")
+                                    .setCancelText(getString(R.string.l3_anuuler))
+                                    .setConfirmText(getString(R.string.l3_supprimer))
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
@@ -395,9 +397,9 @@ public class ActivityClients extends AppCompatActivity implements RecyclerAdapte
         inflater.inflate(R.menu.menu_clients, menu);
 
         searchView = new SearchView(getSupportActionBar() != null ? getSupportActionBar().getThemedContext() : this);
-        searchView.setQueryHint("Rechercher");
+        searchView.setQueryHint(getString(R.string.l4_menu_rechercher));
 
-        menu.add(Menu.NONE, Menu.NONE, 0, "Search")
+        menu.add(Menu.NONE, Menu.NONE, 0, getString(R.string.l4_menu_rechercher))
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);

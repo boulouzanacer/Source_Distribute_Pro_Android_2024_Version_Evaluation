@@ -4,7 +4,7 @@
     <item
         android:id="@+id/new_scanner"
         android:menuCategory="system"
-        android:title="Nouveau passage"
+        android:title="@string/l4_menu_nouveau_passage"
         android:icon="@drawable/ic_qrcode"
         app:showAsAction="always" />
 

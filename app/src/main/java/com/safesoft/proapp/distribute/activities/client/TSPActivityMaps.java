@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.client;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleFragmentActivity;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -71,7 +73,7 @@ import java.util.Scanner;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallback {
+public class TSPActivityMaps extends BaseLocaleFragmentActivity implements OnMapReadyCallback {
 
     ActivityTspmapsBinding binding;
     LocationManager locationManager;
@@ -247,7 +249,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
             dialog.setContentView(R.layout.progress_dialog_get_path);
             dialog.show();
         } else {
-            Crouton.makeText(TSPActivityMaps.this, "Routing list est vide", Style.INFO).show();
+            Crouton.makeText(TSPActivityMaps.this, getString(R.string.l4_routing_list_vide), Style.INFO).show();
         }
 
     }
@@ -344,7 +346,7 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
         boolean enabled = locationManager.isProviderEnabled(bestProvider);
 
         if (!enabled) {
-            Toast.makeText(this, "No location provider enabled!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_no_location_provider_enabled), Toast.LENGTH_LONG).show();
             Log.i(MYTAG, "No location provider enabled!");
             return null;
         }
@@ -425,10 +427,10 @@ public class TSPActivityMaps extends FragmentActivity implements OnMapReadyCallb
                     setPathValue();
 
                 } else {
-                    Crouton.makeText(TSPActivityMaps.this, "La réponse depuis le serveur est mal formater !", Style.ALERT).show();
+                    Crouton.makeText(TSPActivityMaps.this, getString(R.string.l4_reponse_serveur_mal_formatee), Style.ALERT).show();
                 }
             } else {
-                Crouton.makeText(TSPActivityMaps.this, "Aucune connexion avec le serveur !", Style.ALERT).show();
+                Crouton.makeText(TSPActivityMaps.this, getString(R.string.l4_aucune_connexion_serveur), Style.ALERT).show();
             }
 
             if (dialog != null)

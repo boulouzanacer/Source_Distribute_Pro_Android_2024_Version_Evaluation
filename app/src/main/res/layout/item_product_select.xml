@@ -37,7 +37,7 @@
                     android:textSize="16sp"
                     android:gravity="center"
                     android:layout_weight="2"
-                    android:text=" ezdfezf dfvredvrevre erfverfrefre erferferfre erferffdgdsgsd"
+                    android:text="@string/l2_ezdfezf_dfvredvrevre_erfverfrefre_erferf"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 

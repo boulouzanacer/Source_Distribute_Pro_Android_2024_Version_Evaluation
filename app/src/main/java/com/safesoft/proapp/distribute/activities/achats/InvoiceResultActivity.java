@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.achats;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowInsetsController;
@@ -19,7 +21,7 @@ import com.safesoft.proapp.distribute.postData.PostData_Invoice.InvoiceParser;
 
 import java.text.DecimalFormat;
 
-public class InvoiceResultActivity extends AppCompatActivity {
+public class InvoiceResultActivity extends BaseLocaleActivity {
 
     private TextView tvInvoiceNumber, tvInvoiceDate, tvDueDate, tvSellerName,
             tvBuyerName, tvBuyerPhone, tvCurrency,
@@ -49,8 +51,8 @@ public class InvoiceResultActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Information facture");
-            getSupportActionBar().setSubtitle("Fournisseur");
+            getSupportActionBar().setTitle(getString(R.string.l3_information_facture));
+            getSupportActionBar().setSubtitle(getString(R.string.l3_fournisseur));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -59,7 +61,7 @@ public class InvoiceResultActivity extends AppCompatActivity {
 
         String jsonResult = getIntent().getStringExtra("invoice_json");
         if (jsonResult == null || jsonResult.trim().isEmpty()) {
-            Toast.makeText(this, "JSON introuvable", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_json_introuvable), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -70,7 +72,7 @@ public class InvoiceResultActivity extends AppCompatActivity {
             bindRecycler(invoice);
             bindFooter(invoice);
         } catch (Exception e) {
-            Toast.makeText(this, "Erreur parsing JSON : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_erreur_parsing_json) + e.getMessage(), Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -91,13 +93,13 @@ public class InvoiceResultActivity extends AppCompatActivity {
     }
 
     private void bindHeader(InvoiceData invoice) {
-        tvInvoiceNumber.setText("Numéro : " + value(invoice.getInvoiceNumber()));
-        tvInvoiceDate.setText("Date facture : " + value(invoice.getInvoiceDate()));
-        tvDueDate.setText("Date échéance : " + value(invoice.getDueDate()));
-        tvSellerName.setText("Vendeur : " + value(invoice.getSellerName()));
-        tvBuyerName.setText("Client : " + value(invoice.getBuyerName()));
-        tvBuyerPhone.setText("Téléphone : " + value(invoice.getBuyerPhone()));
-        tvCurrency.setText("Devise : " + value(invoice.getCurrency()));
+        tvInvoiceNumber.setText(getString(R.string.l4_numero_prefix) + value(invoice.getInvoiceNumber()));
+        tvInvoiceDate.setText(getString(R.string.l4_date_facture_prefix) + value(invoice.getInvoiceDate()));
+        tvDueDate.setText(getString(R.string.l4_date_echeance_prefix) + value(invoice.getDueDate()));
+        tvSellerName.setText(getString(R.string.l4_vendeur_prefix) + value(invoice.getSellerName()));
+        tvBuyerName.setText(getString(R.string.l4_client_prefix) + value(invoice.getBuyerName()));
+        tvBuyerPhone.setText(getString(R.string.l4_telephone_prefix) + value(invoice.getBuyerPhone()));
+        tvCurrency.setText(getString(R.string.l4_devise_prefix) + value(invoice.getCurrency()));
     }
 
     private void bindRecycler(InvoiceData invoice) {
@@ -108,9 +110,9 @@ public class InvoiceResultActivity extends AppCompatActivity {
     private void bindFooter(InvoiceData invoice) {
         String currency = value(invoice.getCurrency());
 
-        tvSubtotal.setText("Sous-total : " + df.format(invoice.getSubtotal()) + " " + currency);
-        tvTaxTotal.setText("Taxe : " + df.format(invoice.getTaxTotal()) + " " + currency);
-        tvTotal.setText("Total : " + df.format(invoice.getTotal()) + " " + currency);
+        tvSubtotal.setText(getString(R.string.l4_sous_total_prefix) + df.format(invoice.getSubtotal()) + " " + currency);
+        tvTaxTotal.setText(getString(R.string.l4_taxe_prefix) + df.format(invoice.getTaxTotal()) + " " + currency);
+        tvTotal.setText(getString(R.string.l4_total_prefix) + df.format(invoice.getTotal()) + " " + currency);
     }
 
     private String value(String s) {

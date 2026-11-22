@@ -18,7 +18,7 @@
 
         <TextView
             android:id="@+id/txtv_status_gps_enabled"
-            android:text="GPS désactiver"
+            android:text="@string/l2_gps_desactiver"
             android:textColor="#64748B"
             android:textAlignment="center"
             android:textSize="12sp"

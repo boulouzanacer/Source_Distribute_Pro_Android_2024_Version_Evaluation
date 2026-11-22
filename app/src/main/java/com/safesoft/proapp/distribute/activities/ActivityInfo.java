@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,7 +18,7 @@ import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.R;
 
-public class ActivityInfo extends AppCompatActivity {
+public class ActivityInfo extends BaseLocaleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,7 @@ public class ActivityInfo extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Info mise à jour");
+            getSupportActionBar().setTitle(getString(R.string.l3_info_mise_a_jour));
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 

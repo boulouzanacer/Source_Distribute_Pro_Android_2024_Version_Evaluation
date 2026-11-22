@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
@@ -112,7 +114,7 @@ public class FragmentRemise {
                 dialog.dismiss();
 
             } else {
-                montant_avant_remise.setError("Montant obligatoire!!");
+                montant_avant_remise.setError(BaseApplication.instance.getString(R.string.l3_montant_obligatoire_2));
             }
         });
 

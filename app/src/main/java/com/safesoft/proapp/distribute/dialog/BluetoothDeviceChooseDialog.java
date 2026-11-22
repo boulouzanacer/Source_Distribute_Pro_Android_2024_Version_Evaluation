@@ -165,11 +165,11 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
                 if (isHidePairedDevlist) {//当前是隐藏
                     isHidePairedDevlist = false;
                     lvPairedDevices.setVisibility(View.VISIBLE);
-                    btn_hide.setText("Hide_↑↑↑");
+                    btn_hide.setText(getString(R.string.l4_hide_arrows));
                 } else {//当前是可见
                     isHidePairedDevlist = true;
                     lvPairedDevices.setVisibility(View.GONE);
-                    btn_hide.setText("Show_↓↓↓");
+                    btn_hide.setText(getString(R.string.l4_show_arrows));
                 }
             }
         });

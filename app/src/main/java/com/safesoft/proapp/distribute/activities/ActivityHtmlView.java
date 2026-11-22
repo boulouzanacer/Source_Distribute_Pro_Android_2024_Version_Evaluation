@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,7 +34,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ActivityHtmlView extends AppCompatActivity {
+public class ActivityHtmlView extends BaseLocaleActivity {
 
     private String TYPE_BON;
     private PostData_Bon1 bon1;
@@ -43,6 +45,12 @@ public class ActivityHtmlView extends AppCompatActivity {
     SharedPreferences prefs;
     private final String PREFS = "ALL_PREFS";
     private String type_print;
+
+    // Largeur en points de la tete d'impression thermique (80mm @ 203dpi = 576 dots).
+    // On rastérise le WebView a cette largeur pour que 1 pixel capture = 1 point imprime :
+    // sans cela le rendu ecran (ex. 1080px) est reechantillonne par l'imprimante et le
+    // texte arabe sort flou.
+    private static final int PRINTER_DOT_WIDTH = 576;
 
     @Override
     @SuppressWarnings({"deprecation", "unchecked"})
@@ -64,8 +72,8 @@ public class ActivityHtmlView extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Bons de livraison");
-            getSupportActionBar().setSubtitle("Client");
+            getSupportActionBar().setTitle(getString(R.string.l3_bons_de_livraison));
+            getSupportActionBar().setSubtitle(getString(R.string.l3_client));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -83,7 +91,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 achat1 = (PostData_Achat1) getIntent().getSerializableExtra("ACHAT1");
                 type_print = "ACHAT";
                 final_panier_fournisseur = (ArrayList<PostData_Achat2>) getIntent().getSerializableExtra("ACHAT2");
-                Objects.requireNonNull(getSupportActionBar()).setTitle("BON ACHAT : " + achat1.num_bon);
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.l3_bon_achat) + achat1.num_bon);
                 if (prefs.getString("MODEL_TICKET_ARABE", "MODEL 3").equals("MODEL 3")) {
                     webview.loadDataWithBaseURL("file:///android_asset/html/", prepareAchatHtml_model1(), "text/html", "utf-8", null);
                 } else {
@@ -94,7 +102,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 bon1 = (PostData_Bon1) getIntent().getSerializableExtra("BON1");
                 type_print = "VENTE";
                 final_panier_client = (ArrayList<PostData_Bon2>) getIntent().getSerializableExtra("BON2");
-                getSupportActionBar().setTitle("BON VENTE : " + bon1.num_bon);
+                getSupportActionBar().setTitle(getString(R.string.l3_bon_vente) + bon1.num_bon);
                 if (prefs.getString("MODEL_TICKET_ARABE", "MODEL 3").equals("MODEL 3")) {
                     webview.loadDataWithBaseURL("file:///android_asset/html/", prepareSaleHtml_model1(), "text/html", "utf-8", null);
                 } else {
@@ -105,7 +113,7 @@ public class ActivityHtmlView extends AppCompatActivity {
                 bon1 = (PostData_Bon1) getIntent().getSerializableExtra("BON1");
                 type_print = "COMMANDE";
                 final_panier_client = (ArrayList<PostData_Bon2>) getIntent().getSerializableExtra("BON2");
-                getSupportActionBar().setTitle("BON COMMANDE : " + bon1.num_bon);
+                getSupportActionBar().setTitle(getString(R.string.l3_bon_commande) + bon1.num_bon);
                 if (prefs.getString("MODEL_TICKET_ARABE", "MODEL 3").equals("MODEL 3")) {
                     webview.loadDataWithBaseURL("file:///android_asset/html/", prepareSaleHtml_model1(), "text/html", "utf-8", null);
                 } else {
@@ -118,9 +126,10 @@ public class ActivityHtmlView extends AppCompatActivity {
 
     @SuppressWarnings("deprecation")
     public void takeScreenshot(Runnable onDone) {
+
         webview.post(() -> {
+
             try {
-                WebView.enableSlowWholeDocumentDraw();
                 deleteExistingCaptures();
 
                 int width = webview.getWidth();
@@ -132,10 +141,14 @@ public class ActivityHtmlView extends AppCompatActivity {
                     return;
                 }
 
+                // Rendu 1:1 avec la tete d'impression : les glyphes sont rastérises
+                // directement a la taille finale (pas de reechantillonnage -> texte net).
+                float scale = width > PRINTER_DOT_WIDTH ? PRINTER_DOT_WIDTH / (float) width : 1f;
+
                 int maxChunkHeight = 2048;
                 if (fullHeight <= maxChunkHeight) {
-                    File imageFile = new File(getExternalCacheDir(), "webview_capture1.jpg");
-                    writeWebViewBitmapChunkToFile(width, fullHeight, 0, imageFile);
+                    File imageFile = new File(getExternalCacheDir(), "webview_capture1.png");
+                    writeWebViewBitmapChunkToFile(width, fullHeight, 0, scale, imageFile);
                     if (onDone != null) onDone.run();
                     return;
                 }
@@ -143,8 +156,8 @@ public class ActivityHtmlView extends AppCompatActivity {
                 int chunkIndex = 0;
                 for (int top = 0; top < fullHeight; top += maxChunkHeight, chunkIndex++) {
                     int chunkHeight = Math.min(maxChunkHeight, fullHeight - top);
-                    File imageFile = new File(getExternalCacheDir(), "webview_capture1_" + chunkIndex + ".jpg");
-                    writeWebViewBitmapChunkToFile(width, chunkHeight, top, imageFile);
+                    File imageFile = new File(getExternalCacheDir(), "webview_capture1_" + chunkIndex + ".png");
+                    writeWebViewBitmapChunkToFile(width, chunkHeight, top, scale, imageFile);
                 }
 
                 if (onDone != null) onDone.run();
@@ -155,37 +168,48 @@ public class ActivityHtmlView extends AppCompatActivity {
         });
     }
 
-    private void writeWebViewBitmapChunkToFile(int width, int chunkHeight, int topOffset, File imageFile) {
-        Bitmap bitmap = Bitmap.createBitmap(width, chunkHeight, Bitmap.Config.RGB_565);
+    private void writeWebViewBitmapChunkToFile(int width, int chunkHeight, int topOffset, float scale, File imageFile) {
+        int outWidth = Math.max(1, Math.round(width * scale));
+        int outHeight = Math.max(1, Math.round(chunkHeight * scale));
+
+        Bitmap bitmap = Bitmap.createBitmap(outWidth, outHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
+        canvas.scale(scale, scale);
         canvas.translate(0, -topOffset);
         webview.draw(canvas);
 
         try (FileOutputStream fos = new FileOutputStream(imageFile)) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fos);
+            // PNG (sans perte) : conserve les contours du texte arabe nets, contrairement
+            // au JPEG 85 qui ajoutait des halos gris transformes en points parasites.
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
         } catch (IOException e) {
             Log.e("SCREENSHOT", "Error saving bitmap: " + e.getMessage());
         } finally {
             bitmap.recycle();
         }
+
     }
+
+
 
     private void deleteExistingCaptures() {
         File dir = getExternalCacheDir();
         if (dir == null) return;
 
-        File single = new File(dir, "webview_capture1.jpg");
-        if (single.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            single.delete();
-        }
+        for (String ext : new String[]{".png", ".jpg"}) {
+            File single = new File(dir, "webview_capture1" + ext);
+            if (single.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                single.delete();
+            }
 
-        for (int i = 0; i < 100; i++) {
-            File chunk = new File(dir, "webview_capture1_" + i + ".jpg");
-            if (!chunk.exists()) break;
-            //noinspection ResultOfMethodCallIgnored
-            chunk.delete();
+            for (int i = 0; i < 100; i++) {
+                File chunk = new File(dir, "webview_capture1_" + i + ext);
+                if (!chunk.exists()) break;
+                //noinspection ResultOfMethodCallIgnored
+                chunk.delete();
+            }
         }
     }
 
@@ -218,6 +242,7 @@ public class ActivityHtmlView extends AppCompatActivity {
             Log.e("eeeeee", e.getMessage());
         }
     }*/
+
 
 
     String prepareAchatHtml_model1() {
@@ -372,8 +397,9 @@ public class ActivityHtmlView extends AppCompatActivity {
             data.append("</div>");
             data.append("</div>");
 
-
         }
+
+
         data.append(addLine());
         data.append("</center>");
 
@@ -520,6 +546,7 @@ public class ActivityHtmlView extends AppCompatActivity {
         data.append("</body></HTML>");
 
         return data.toString();
+
     }
 
 

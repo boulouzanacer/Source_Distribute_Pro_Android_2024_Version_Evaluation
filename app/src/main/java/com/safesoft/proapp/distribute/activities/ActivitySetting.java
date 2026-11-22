@@ -316,7 +316,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         topBar.setPadding(padding16, padding12, padding16, padding12);
 
         TextView title = new TextView(this);
-        title.setText("Notes");
+        title.setText(getString(R.string.l4_notes));
         title.setTextColor(getResources().getColor(R.color.white));
         title.setTextSize(18);
         RelativeLayout.LayoutParams titleLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -347,10 +347,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             if (note == null) return;
 
             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Supprimer")
-                    .setContentText("Voulez-vous supprimer cette note ?")
-                    .setCancelText("Non")
-                    .setConfirmText("Oui")
+                    .setTitleText(getString(R.string.l3_supprimer))
+                    .setContentText(getString(R.string.l3_voulez_vous_supprimer_cette_note))
+                    .setCancelText(getString(R.string.l3_non))
+                    .setConfirmText(getString(R.string.l3_oui))
                     .showCancelButton(true)
                     .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                     .setConfirmClickListener(sDialog -> {
@@ -378,13 +378,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         EditText edtNote = new EditText(this);
         LinearLayout.LayoutParams edtLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         edtNote.setLayoutParams(edtLp);
-        edtNote.setHint("Ajouter une note");
+        edtNote.setHint(getString(R.string.l3_ajouter_une_note));
 
         Button btnAdd = new Button(this);
         LinearLayout.LayoutParams btnLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         btnLp.setMargins(padding12, 0, 0, 0);
         btnAdd.setLayoutParams(btnLp);
-        btnAdd.setText("Ajouter");
+        btnAdd.setText(getString(R.string.l4_ajouter));
 
         inputRow.addView(edtNote);
         inputRow.addView(btnAdd);
@@ -402,7 +402,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             String text = edtNote.getText() == null ? "" : edtNote.getText().toString().trim();
             if (text.isEmpty()) {
                 new Toaster.Builder(ActivitySetting.this)
-                        .setTitle("Notes")
+                        .setTitle(getString(R.string.l3_notes))
                         .setDescription("Veuillez saisir une note")
                         .setDuration(Toaster.LENGTH_LONG)
                         .setStatus(Toaster.Status.WARNING)
@@ -460,7 +460,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Paramétres");
+            getSupportActionBar().setTitle(getString(R.string.l3_parametres));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -656,10 +656,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
 
         btn_deconecte_cloud.setOnClickListener(v -> new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Compte cloud")
-                .setContentText("Voulez-vous vraiment déconecté le compte cloud maintenant ?")
-                .setCancelText("Non")
-                .setConfirmText("Oui")
+                .setTitleText(getString(R.string.l3_compte_cloud))
+                .setContentText(getString(R.string.l3_voulez_vous_vraiment_deconecte_le_compte))
+                .setCancelText(getString(R.string.l3_non))
+                .setConfirmText(getString(R.string.l3_oui))
                 .showCancelButton(true)
                 .setCancelClickListener(Dialog::dismiss)
                 .setConfirmClickListener(sDialog -> {
@@ -1078,7 +1078,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                    /* if (!prefs.getBoolean("APP_ACTIVATED", false)) {
                         new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Important !")
+                                .setTitleText(getString(R.string.l3_important))
                                 .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION2)
                                 .show();
 
@@ -1178,8 +1178,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             controller.update_ftp_params(params2);
 
             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                    .setTitleText("Success!")
-                    .setContentText("Paramètred FTP sauvegarder!")
+                    .setTitleText(getString(R.string.l3_success))
+                    .setContentText(getString(R.string.l3_parametred_ftp_sauvegarder))
                     .show();
 
         });
@@ -1193,8 +1193,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
 
             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                    .setTitleText("Success!")
-                    .setContentText("Montant objectif sauvegardé!")
+                    .setTitleText(getString(R.string.l3_success))
+                    .setContentText(getString(R.string.l3_montant_objectif_sauvegarde))
                     .show();
 
         });
@@ -1302,6 +1302,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_edit_solde_ini = findViewById(R.id.switch_edit_solde_ini);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switch_edit_designation = findViewById(R.id.switch_edit_designation);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_famille = findViewById(R.id.switch_famille);
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switch_filtre_recherche = findViewById(R.id.switch_filtre_recherche);
@@ -1364,6 +1366,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         switch_edit_prix.setChecked(prefs.getBoolean("CAN_EDIT_PRICE", false));
         switch_edit_stock_ini.setChecked(prefs.getBoolean("CAN_EDIT_STOCK_INI", false));
         switch_edit_solde_ini.setChecked(prefs.getBoolean("CAN_EDIT_SOLDE_INI", false));
+        switch_edit_designation.setChecked(prefs.getBoolean("CAN_EDIT_DESIGNATION", false));
         switch_famille.setChecked(prefs.getBoolean("MODE_FAMILLE", false));
         switch_filtre_recherche.setChecked(prefs.getBoolean("FILTRE_SEARCH", false));
 
@@ -1512,6 +1515,12 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             editor.apply();
         });
 
+        switch_edit_designation.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+            editor.putBoolean("CAN_EDIT_DESIGNATION", isChecked);
+            editor.apply();
+        });
+
         switch_famille.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putBoolean("MODE_FAMILLE", isChecked);
@@ -1546,22 +1555,22 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
-                txtv_status_gps_enabled.setText("GPS désactivé");
+                txtv_status_gps_enabled.setText(getString(R.string.l4_gps_desactive));
                 txtv_status_gps_enabled.setTextColor(getResources().getColor(R.color.red));
 
                 if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
 
                     new androidx.appcompat.app.AlertDialog.Builder(this)
-                            .setTitle("GPS désactivé")
-                            .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
-                            .setPositiveButton("Oui", (d, w) -> {
+                            .setTitle(getString(R.string.l3_gps_desactive))
+                            .setMessage(getString(R.string.l3_votre_gps_est_desactive_voulez_vous_l_ac))
+                            .setPositiveButton(getString(R.string.l3_oui), (d, w) -> {
                                 Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                 startActivity(i);
-                            }).setNegativeButton("Non", (d, w) -> d.dismiss()).show();
+                            }).setNegativeButton(getString(R.string.l3_non), (d, w) -> d.dismiss()).show();
                 }
 
             }else{
-                txtv_status_gps_enabled.setText("GPS activé");
+                txtv_status_gps_enabled.setText(getString(R.string.l4_gps_active));
                 txtv_status_gps_enabled.setTextColor(getResources().getColor(R.color.emerald));
             }
 
@@ -1579,13 +1588,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
                         runOnUiThread(() -> {
                             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Distribute pro batterie optimization")
+                                    .setTitleText(getString(R.string.l3_distribute_pro_batterie_optimization))
                                     .setContentText(
                                             "Le service de localisation est activé. Toutefois, l’optimisation de la batterie " +
                                                     "peut empêcher son bon fonctionnement. Souhaitez-vous l’autoriser ?"
                                     )
-                                    .setCancelText("Non")
-                                    .setConfirmText("Oui")
+                                    .setCancelText(getString(R.string.l3_non))
+                                    .setConfirmText(getString(R.string.l3_oui))
                                     .showCancelButton(true)
                                     .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                                     .setConfirmClickListener(sDialog -> {
@@ -1698,8 +1707,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         txtv_password_cloud.setText(event.getPassword());
 
         new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("Connecté.!!")
-                .setContentText("Vous êtes désormais connecté au service cloud de SAFESOFT !")
+                .setTitleText(getString(R.string.l3_connecte))
+                .setContentText(getString(R.string.l3_vous_etes_desormais_connecte_au_service))
                 .show();
 
         btn_login_cloud.setEnabled(false);
@@ -1711,15 +1720,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     }
 
     /**
-     * Applique la langue choisie via AppCompat. La locale (et le sens RTL pour
-     * l'arabe) est appliquée puis l'activité est recréée automatiquement afin
-     * de rafraîchir toute l'interface.
+     * Applique la langue choisie puis relance l'application afin que tous les
+     * écrans (et le sens RTL pour l'arabe) soient reconstruits avec la nouvelle
+     * langue, quel que soit le support du "per-app language" par le système.
      */
     private void changeLanguage(String code) {
         if (LocaleManager.normalize(code).equalsIgnoreCase(LocaleManager.getSavedLanguage(this))) {
             return;
         }
         LocaleManager.setLanguage(this, code);
+        LocaleManager.restartApp(this);
     }
 
     /**
@@ -2008,7 +2018,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         break;
                     case CommonEnum.CONNECT_STATE_INTERRUPTED:
 
-                        //tv_device_selected.setText("Aucune imprimante" +printerInterface.getConnectState().toString());
+                        //tv_device_selected.setText(getString(R.string.l4_aucune_imprimante_prefix) +printerInterface.getConnectState().toString());
                         //tv_device_selected.setTag(BaseEnum.NO_DEVICE);
                         setPrintEnable(false);
                         break;
@@ -2656,18 +2666,18 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         }
         String email = prefs.getString("EMAIL_CLOUD", "");
         if (email == null || email.trim().isEmpty()) {
-            txtv_auto_backup_status.setText("Compte cloud non connecté : connectez un compte pour activer la sauvegarde automatique.");
+            txtv_auto_backup_status.setText(getString(R.string.l4_compte_cloud_non_connecte));
             return;
         }
         SharedPreferences backupPrefs = BackupScheduler.prefs(this);
         boolean pending = backupPrefs.getBoolean(BackupScheduler.KEY_BACKUP_PENDING, false);
         String last = backupPrefs.getString(BackupScheduler.KEY_LAST_BACKUP_DATE, "");
         if (pending) {
-            txtv_auto_backup_status.setText("En attente de connexion — nouvelle tentative automatique dès le retour du réseau...");
+            txtv_auto_backup_status.setText(getString(R.string.l4_en_attente_connexion));
         } else if (last != null && !last.isEmpty()) {
-            txtv_auto_backup_status.setText("Dernière sauvegarde : " + last + "  •  Prochaine copie : dans 3 jours.");
+            txtv_auto_backup_status.setText(getString(R.string.l4_derniere_sauvegarde_prefix) + last + getString(R.string.l4_prochaine_copie));
         } else {
-            txtv_auto_backup_status.setText("Sauvegarde automatique planifiée (une copie chaque 3 jours).");
+            txtv_auto_backup_status.setText(getString(R.string.l4_sauvegarde_auto_planifiee));
         }
     }
 
@@ -2702,15 +2712,15 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
     private void restore_db() {
         //localBackup.performRestore(controller);
         /*new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.NORMAL_TYPE)
-                .setTitleText("Info...")
-                .setContentText("Cette operation necessite l'intervention de l'administrateur, Veuillez contacter le fournisseur !")
+                .setTitleText(getString(R.string.l3_info))
+                .setContentText(getString(R.string.l3_cette_operation_necessite_lintervention))
                 .show();*/
 
         new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Restoration de la base de données")
-                .setContentText("Vous etes responsable de cette opération si il y a des perdes des données, Voulez-vous vraiment restorer vos données ?")
-                .setCancelText("Non")
-                .setConfirmText("Oui")
+                .setTitleText(getString(R.string.l3_restoration_de_la_base_de_donnees))
+                .setContentText(getString(R.string.l3_vous_etes_responsable_de_cette_operation))
+                .setCancelText(getString(R.string.l3_non))
+                .setConfirmText(getString(R.string.l3_oui))
                 .showCancelButton(true)
                 .setCancelClickListener(Dialog::dismiss)
                 .setConfirmClickListener(sDialog -> {
@@ -2728,7 +2738,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPreExecute() {
             mProgressDialog = new ProgressDialog(ActivitySetting.this);
-            mProgressDialog.setMessage("Récupération list des bases de données ...");
+            mProgressDialog.setMessage(getString(R.string.l3_recuperation_list_des_bases_de_donnees));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -2756,16 +2766,16 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                    showListBackup(list_databases, "Sauvegarde list");
                }else{
                    new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.NORMAL_TYPE)
-                           .setTitleText("Info...")
-                           .setContentText("Aucune sauvegarde base de données disponible sur le serveur !")
+                           .setTitleText(getString(R.string.l3_info))
+                           .setContentText(getString(R.string.l3_aucune_sauvegarde_base_de_donnees_dispon))
                            .show();
                }
 
            } catch (Exception e) {
              Log.e("FetchFilesTask", "Error parsing JSON", e);
                new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                       .setTitleText("Erreur...")
-                       .setContentText("Probleme au moment du récuperation la liste des bases de donnees")
+                       .setTitleText(getString(R.string.l3_erreur_4))
+                       .setContentText(getString(R.string.l3_probleme_au_moment_du_recuperation_la_li))
                        .show();
            }
 
@@ -2779,7 +2789,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPreExecute() {
             mProgressDialog = new ProgressDialog(ActivitySetting.this);
-            mProgressDialog.setMessage("Téléchargement backup (bases de données)");
+            mProgressDialog.setMessage(getString(R.string.l3_telechargement_backup_bases_de_donnees));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -2819,9 +2829,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     handler.post(() -> {
                         if (success) {
                             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                                    .setTitleText("Succès...")
-                                    .setContentText("Restauration de la base de données terminée. L'application va redémarrer pour appliquer les données.")
-                                    .setConfirmText("OK")
+                                    .setTitleText(getString(R.string.l3_succes_2))
+                                    .setContentText(getString(R.string.l3_restauration_de_la_base_de_donnees_termi))
+                                    .setConfirmText(getString(R.string.l3_ok))
                                     .setConfirmClickListener(sDialog -> {
                                         sDialog.dismissWithAnimation();
                                         restartApp();
@@ -2829,9 +2839,9 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                     .show();
                         }else {
                             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Erreur...")
-                                    .setContentText("Base de données restaurée, erreur lors de la récupération de la configuration. L'application va redémarrer.")
-                                    .setConfirmText("OK")
+                                    .setTitleText(getString(R.string.l3_erreur_4))
+                                    .setContentText(getString(R.string.l3_base_de_donnees_restauree_erreur_lors_de))
+                                    .setConfirmText(getString(R.string.l3_ok))
                                     .setConfirmClickListener(sDialog -> {
                                         sDialog.dismissWithAnimation();
                                         restartApp();
@@ -2844,8 +2854,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
             }else{
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme au moment du téléchargement la base de données")
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_au_moment_du_telechargement_la))
                         .show();
             }
         }
@@ -2869,7 +2879,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         public void run() {
                             if (token == null || token.isEmpty()) {
                                 new Toaster.Builder(ActivitySetting.this)
-                                        .setTitle("Server Response")
+                                        .setTitle(getString(R.string.l3_server_response))
                                         .setDescription("Réponse vide !!")
                                         .setDuration(Toaster.LENGTH_LONG)
                                         .setStatus(Toaster.Status.WARNING)
@@ -2882,7 +2892,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                             if (parts.length < 2) {
                                 new Toaster.Builder(ActivitySetting.this)
-                                        .setTitle("Server Response")
+                                        .setTitle(getString(R.string.l3_server_response))
                                         .setDescription("Invalid format: " + token)
                                         .setDuration(Toaster.LENGTH_LONG)
                                         .setStatus(Toaster.Status.WARNING)
@@ -2896,7 +2906,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                 type = Integer.parseInt(parts[0]);
                             } catch (NumberFormatException e) {
                                 new Toaster.Builder(ActivitySetting.this)
-                                        .setTitle("Server Response")
+                                        .setTitle(getString(R.string.l3_server_response))
                                         .setDescription("Invalid type format: " + parts[0])
                                         .setDuration(Toaster.LENGTH_LONG)
                                         .setStatus(Toaster.Status.WARNING)
@@ -2925,7 +2935,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                         ).execute();
                                     } else {
                                         new Toaster.Builder(ActivitySetting.this)
-                                                .setTitle("Server Response")
+                                                .setTitle(getString(R.string.l3_server_response))
                                                 .setDescription("Invalid Type 1 format")
                                                 .setDuration(Toaster.LENGTH_LONG)
                                                 .setStatus(Toaster.Status.WARNING)
@@ -2938,7 +2948,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                     // Message response
                                     String message = parts[1];
                                     new Toaster.Builder(ActivitySetting.this)
-                                            .setTitle("Server Response")
+                                            .setTitle(getString(R.string.l3_server_response))
                                             .setDescription(message)
                                             .setDuration(Toaster.LENGTH_LONG)
                                             .setStatus(Toaster.Status.WARNING)
@@ -2948,7 +2958,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                                 default:
                                     new Toaster.Builder(ActivitySetting.this)
-                                            .setTitle("Server Response")
+                                            .setTitle(getString(R.string.l3_server_response))
                                             .setDescription("Unknown response type: " + type)
                                             .setDuration(Toaster.LENGTH_LONG)
                                             .setStatus(Toaster.Status.WARNING)
@@ -2970,7 +2980,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         Log.e("TRACKKK", e.getMessage());
 
                         new Toaster.Builder(ActivitySetting.this)
-                                .setTitle("Erreur")
+                                .setTitle(getString(R.string.l3_erreur))
                                 .setDescription("Problème au niveau de serveur")
                                 .setDuration(Toaster.LENGTH_LONG)
                                 .setStatus(Toaster.Status.ERROR)
@@ -3068,7 +3078,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     btn_get_all_depot.startAnimation(shake);
                     Sound(R.raw.error);
                     new Toaster.Builder(ActivitySetting.this)
-                            .setTitle("Erreur de connexion")
+                            .setTitle(getString(R.string.l3_erreur_de_connexion))
                             .setDescription(errorMessage)
                             .setDuration(Toaster.LENGTH_LONG)
                             .setStatus(Toaster.Status.ERROR)
@@ -3085,7 +3095,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     btn_get_all_vendeur.startAnimation(shake);
                     Sound(R.raw.error);
                     new Toaster.Builder(ActivitySetting.this)
-                            .setTitle("Erreur de connexion")
+                            .setTitle(getString(R.string.l3_erreur_de_connexion))
                             .setDescription(errorMessage)
                             .setDuration(Toaster.LENGTH_LONG)
                             .setStatus(Toaster.Status.ERROR)
@@ -3109,7 +3119,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                     btntest_connection.startAnimation(shake);
                     Sound(R.raw.error);
                     new Toaster.Builder(ActivitySetting.this)
-                            .setTitle("Erreur de connexion")
+                            .setTitle(getString(R.string.l3_erreur_de_connexion))
                             .setDescription(errorMessage)
                             .setDuration(Toaster.LENGTH_LONG)
                             .setStatus(Toaster.Status.ERROR)
@@ -3147,7 +3157,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         protected void onPreExecute() {
             super.onPreExecute();
             mProgressDialog_Free = new ProgressDialog(ActivitySetting.this);
-            mProgressDialog_Free.setMessage("Collection des informations ...");
+            mProgressDialog_Free.setMessage(getString(R.string.l3_collection_des_informations));
             mProgressDialog_Free.setCancelable(true);
             mProgressDialog_Free.show();
         }
@@ -3236,13 +3246,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 }
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_de_connexion_verifier_les_param_2) + messageError)
                         .show();
             } else {
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_fatal_2) + messageError)
                         .show();
             }
             super.onPostExecute(integer);
@@ -3274,7 +3284,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         protected void onPreExecute() {
             super.onPreExecute();
             mProgressDialog_Free = new ProgressDialog(ActivitySetting.this);
-            mProgressDialog_Free.setMessage("Collection des informations ...");
+            mProgressDialog_Free.setMessage(getString(R.string.l3_collection_des_informations));
             mProgressDialog_Free.setCancelable(true);
             mProgressDialog_Free.show();
         }
@@ -3368,13 +3378,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                 }
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_de_connexion_verifier_les_param_2) + messageError)
                         .show();
             } else {
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_fatal_2) + messageError)
                         .show();
             }
             super.onPostExecute(integer);
@@ -3452,10 +3462,10 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             txtv_password_cloud.setText(event.getPaswordCloud());
 
             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Compte cloud")
-                    .setContentText("Compte cloud bien crée, Voulez-vous vraiment faire un backup cloud maintenant ?")
-                    .setCancelText("Non")
-                    .setConfirmText("Oui")
+                    .setTitleText(getString(R.string.l3_compte_cloud))
+                    .setContentText(getString(R.string.l3_compte_cloud_bien_cree_voulez_vous_vraim))
+                    .setCancelText(getString(R.string.l3_non))
+                    .setConfirmText(getString(R.string.l3_oui))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -3496,8 +3506,8 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
         }else{
             new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("Erreur")
-                    .setContentText("Erreur lors de l'ajout du compte cloud : " + event.getMessage())
+                    .setTitleText(getString(R.string.l3_erreur))
+                    .setContentText(getString(R.string.l3_erreur_lors_de_lajout_du_compte_cloud) + event.getMessage())
                     .show();
         }
     }
@@ -3508,7 +3518,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPreExecute() {
             mProgressDialog = new ProgressDialog(ActivitySetting.this);
-            mProgressDialog.setMessage("Sauvegarde base de données cloud ...");
+            mProgressDialog.setMessage(getString(R.string.l3_sauvegarde_base_de_donnees_cloud));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -3553,13 +3563,13 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                         handler.post(() -> {
                             if (success) {
                                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.SUCCESS_TYPE)
-                                        .setTitleText("Information...")
-                                        .setContentText("Configuration uploaded")
+                                        .setTitleText(getString(R.string.l3_information_6))
+                                        .setContentText(getString(R.string.l3_configuration_uploaded))
                                         .show();
                             } else {
                                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                                        .setTitleText("Erreur...")
-                                        .setContentText("Upload failed")
+                                        .setTitleText(getString(R.string.l3_erreur_4))
+                                        .setContentText(getString(R.string.l3_upload_failed))
                                         .show();
                             }
                         });
@@ -3567,7 +3577,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
 
                 }else{
                     new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Erreur...")
+                            .setTitleText(getString(R.string.l3_erreur_4))
                             .setContentText(jsonObject.getString("message"))
                             .show();
                 }
@@ -3575,7 +3585,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
             } catch (Exception e) {
                 e.printStackTrace();
                 new SweetAlertDialog(ActivitySetting.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Error...")
+                        .setTitleText(getString(R.string.l3_error_2))
                         .setContentText(e.getMessage())
                         .show();
             }
@@ -3685,20 +3695,20 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                                     Log.d("LocationServer", "Success: " + responseCode + " - " + responseMessage);
 
                                     if (responseCode == 200) {
-                                        //Crouton.makeText(ActivitySetting.this, "Service localisation connecté", Style.CONFIRM).show();
+                                        //Crouton.makeText(ActivitySetting.this, getString(R.string.l4_service_localisation_connecte), Style.CONFIRM).show();
                                         View customView = getLayoutInflater().inflate(R.layout.cruton_style_loca_connected, null);
                                         Crouton.show(ActivitySetting.this, customView);
 
 
 
                                     } else if (responseCode == 401) {
-                                        Crouton.makeText(ActivitySetting.this, "Compte n'exist pas ou mot de passe incorrect!", Style.ALERT).show();
+                                        Crouton.makeText(ActivitySetting.this, getString(R.string.l4_compte_inexistant_mot_de_passe), Style.ALERT).show();
 
                                     } else if (responseCode == 403) {
-                                        Crouton.makeText(ActivitySetting.this, "Ce téléphone est associé à un autre utilisateur.", Style.ALERT).show();
+                                        Crouton.makeText(ActivitySetting.this, getString(R.string.l4_telephone_associe_autre_utilisateur), Style.ALERT).show();
 
                                     } else {
-                                        Crouton.makeText(ActivitySetting.this, "Problème de lancement du service localisation!", Style.ALERT).show();
+                                        Crouton.makeText(ActivitySetting.this, getString(R.string.l4_probleme_lancement_service_localisation), Style.ALERT).show();
                                     }
                                 });
                             }
@@ -3707,7 +3717,7 @@ public class ActivitySetting extends BaseActivity implements View.OnClickListene
                             public void onError(Exception e) {
                                 runOnUiThread(() -> {
                                     Log.e("LocationServer", "Error", e);
-                                    Crouton.makeText(ActivitySetting.this, "Error: " + e.getMessage(), Style.ALERT).show();
+                                    Crouton.makeText(ActivitySetting.this, getString(R.string.l4_error_prefix) + e.getMessage(), Style.ALERT).show();
                                 });
                             }
                         }

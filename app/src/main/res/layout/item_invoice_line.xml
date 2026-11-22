@@ -12,37 +12,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Description" />
+        android:text="@string/l2_description" />
 
     <TextView
         android:id="@+id/tvCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Code :" />
+        android:text="@string/l2_code_2" />
 
     <TextView
         android:id="@+id/tvBarcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Code-barres :" />
+        android:text="@string/l2_code_barres" />
 
     <TextView
         android:id="@+id/tvQty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Qté :" />
+        android:text="@string/l2_qte" />
 
     <TextView
         android:id="@+id/tvUnitPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="P.U :" />
+        android:text="@string/l2_p_u" />
 
     <TextView
         android:id="@+id/tvLineTotal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Total ligne :" />
+        android:text="@string/l2_total_ligne" />
 
 </LinearLayout>

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.login;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
@@ -22,7 +24,7 @@ import android.widget.Toast;
 import com.safesoft.proapp.distribute.R;
 
 
-public class ActivityChangePwd extends AppCompatActivity {
+public class ActivityChangePwd extends BaseLocaleActivity {
 
     private static final String TAG = "ActivityChangePwd";
     private final String PREFS = "ALL_PREFS";
@@ -52,7 +54,7 @@ public class ActivityChangePwd extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Changement mot de passe");
+            getSupportActionBar().setTitle(getString(R.string.l3_changement_mot_de_passe));
         }
 
         _oldpasswordText = findViewById(R.id.input_password_old);
@@ -73,7 +75,7 @@ public class ActivityChangePwd extends AppCompatActivity {
 
         final ProgressDialog progressDialog = new ProgressDialog(ActivityChangePwd.this, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Changement de mot de passe ...");
+        progressDialog.setMessage(getString(R.string.l3_changement_de_mot_de_passe));
         progressDialog.show();
 
 
@@ -112,7 +114,7 @@ public class ActivityChangePwd extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Erreur changement mot de passe !", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getString(R.string.l3_erreur_changement_mot_de_passe), Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }
@@ -128,27 +130,27 @@ public class ActivityChangePwd extends AppCompatActivity {
 
         if (!(prefs_login.getString("PASSWORD", "0000").equals(oldpassword)) || oldpassword.equals("793155")) {
             valid = false;
-            _oldpasswordText.setError("Remettre l'ancien mot de passe");
+            _oldpasswordText.setError(getString(R.string.l3_remettre_lancien_mot_de_passe));
         } else {
             _oldpasswordText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("Entre 4 et 10 alphanumeric characters");
+            _passwordText.setError(getString(R.string.l3_entre_4_et_10_alphanumeric_characters));
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
         if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10) {
-            _reEnterPasswordText.setError("Entre 4 et 10 alphanumeric characters");
+            _reEnterPasswordText.setError(getString(R.string.l3_entre_4_et_10_alphanumeric_characters));
             valid = false;
         } else {
             _reEnterPasswordText.setError(null);
         }
 
         if (!(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("Les deux mots de passe sont pas identiques");
+            _reEnterPasswordText.setError(getString(R.string.l3_les_deux_mots_de_passe_sont_pas_identiqu));
             valid = false;
         } else {
             _reEnterPasswordText.setError(null);

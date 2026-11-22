@@ -44,7 +44,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Saisie de vente"
+                        android:text="@string/l2_saisie_de_vente"
                         android:textSize="12sp"
                         android:textColor="#BFDBFE"
                         android:fontFamily="sans-serif-medium"
@@ -54,7 +54,7 @@
                         android:id="@+id/produit_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1/2 BENTOUMIA"
+                        android:text="@string/l2_1_2_bentoumia"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -94,6 +94,32 @@
                 android:paddingTop="12dp"
                 android:paddingBottom="8dp">
 
+                <!-- SECTION 0 : DÉSIGNATION (modifiable à l'insertion dans le bon si l'option est activée) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/designationLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginBottom="10dp"
+                    app:boxStrokeColor="#1D4ED8"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:hint="@string/l4_designation_produit"
+                    app:expandedHintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_designation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName|textCapSentences"
+                        android:textColor="#0F172A"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <!-- SECTION 1 : STOCK DISPONIBLE -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -118,7 +144,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="📦 STOCK DISPONIBLE"
+                            android:text="@string/l2_stock_disponible"
                             android:textColor="#1D4ED8"
                             android:textSize="10sp"
                             android:textStyle="bold"
@@ -235,7 +261,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="🧮 QUANTITÉS À VENDRE"
+                            android:text="@string/l2_quantites_a_vendre"
                             android:textColor="#C2410C"
                             android:textSize="10sp"
                             android:textStyle="bold"
@@ -400,7 +426,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="💲 TARIFICATION"
+                            android:text="@string/l2_tarification"
                             android:textColor="#047857"
                             android:textSize="10sp"
                             android:textStyle="bold"
@@ -425,7 +451,7 @@
                                 app:boxCornerRadiusBottomStart="12dp"
                                 app:boxCornerRadiusBottomEnd="12dp"
                                 android:visibility="visible"
-                                android:hint="Prix HT"
+                                android:hint="@string/l2_prix_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_marginStart="2dp"
                                 android:layout_marginEnd="2dp"
@@ -455,7 +481,7 @@
                                 app:boxCornerRadiusTopEnd="12dp"
                                 app:boxCornerRadiusBottomStart="12dp"
                                 app:boxCornerRadiusBottomEnd="12dp"
-                                android:hint="Tva"
+                                android:hint="@string/l2_tva_2"
                                 android:visibility="visible"
                                 app:expandedHintEnabled="false"
                                 android:layout_marginStart="2dp"
@@ -485,7 +511,7 @@
                                 app:boxCornerRadiusTopEnd="12dp"
                                 app:boxCornerRadiusBottomStart="12dp"
                                 app:boxCornerRadiusBottomEnd="12dp"
-                                android:hint="Prix TTC"
+                                android:hint="@string/l2_prix_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_marginStart="2dp"
                                 android:layout_marginEnd="2dp"
@@ -534,7 +560,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="🎯 STOCK APRÈS VENTE"
+                            android:text="@string/l2_stock_apres_vente"
                             android:textColor="#6D28D9"
                             android:textSize="10sp"
                             android:textStyle="bold"
@@ -651,7 +677,7 @@
                             android:src="@drawable/ic_baseline_payments_24"
                             android:tint="#FFFFFF"
                             android:layout_marginEnd="8dp"
-                            android:contentDescription="last_price" />
+                            android:contentDescription="@string/a11y_last_price" />
 
                         <TextView
                             android:id="@+id/txv_last_price"
@@ -701,7 +727,7 @@
                     android:layout_width="0dp"
                     android:layout_height="52dp"
                     android:minHeight="52dp"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"

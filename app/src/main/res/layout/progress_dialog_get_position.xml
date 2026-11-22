@@ -41,7 +41,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="15dp"
-            android:text="Récupération de mon position"
+            android:text="@string/l2_recuperation_de_mon_position"
             android:textSize="17dp"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"

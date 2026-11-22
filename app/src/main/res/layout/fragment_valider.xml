@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📊 SOLDES ACTUELS"
+                    android:text="@string/l2_soldes_actuels"
                     android:textColor="#1D4ED8"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -192,7 +192,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="💸 CHARGE MONTANT BON"
+                    android:text="@string/l2_charge_montant_bon"
                     android:textColor="#C2410C"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -207,7 +207,7 @@
 
                     <TextView
                         android:id="@+id/charge_montant_bon"
-                        android:text="Montant Bon -&gt;"
+                        android:text="@string/l2_montant_bon_gt"
                         android:textColor="@color/blue"
                         android:layout_marginEnd="8dp"
                         android:gravity="end|bottom"
@@ -269,7 +269,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="💚 NOUVEAU SOLDE"
+                    android:text="@string/l2_nouveau_solde"
                     android:textColor="#047857"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -345,7 +345,7 @@
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:minHeight="52dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"

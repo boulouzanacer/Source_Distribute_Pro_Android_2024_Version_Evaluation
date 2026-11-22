@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView1"
             android:layout_alignStart="@+id/textView1"
-            android:text="Paramètres sauvegardé, vous pouvez synchronisez vos produit, client, fournisseur ... depuis votre Serveur" />
+            android:text="@string/l2_parametres_sauvegarde_vous_pouvez_synchr" />
 
         <TextView
             android:id="@+id/textView1"
@@ -33,7 +33,7 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/imageView1"
             android:layout_marginStart="10dp"
-            android:text="Connecté"
+            android:text="@string/l2_connecte"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </RelativeLayout>

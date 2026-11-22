@@ -27,7 +27,7 @@
 
             <TextView
                 android:id="@+id/produit_title"
-                android:text="1/2 BENTOUMIA"
+                android:text="@string/l2_1_2_bentoumia"
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:textSize="22sp"
@@ -69,7 +69,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📦 STOCK DISPONIBLE"
+                    android:text="@string/l2_stock_disponible"
                     android:textColor="#1D4ED8"
                     android:textSize="10sp"
                     android:textStyle="bold"
@@ -173,7 +173,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🧮 QUANTITÉS INVENTAIRE"
+                    android:text="@string/l2_quantites_inventaire"
                     android:textColor="#C2410C"
                     android:textSize="10sp"
                     android:textStyle="bold"
@@ -292,7 +292,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🎯 ÉCART INVENTAIRE"
+                    android:text="@string/l2_ecart_inventaire"
                     android:textColor="#6D28D9"
                     android:textSize="10sp"
                     android:textStyle="bold"
@@ -415,7 +415,7 @@
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:minHeight="52dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"

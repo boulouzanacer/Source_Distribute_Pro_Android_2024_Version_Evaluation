@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activation;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,7 +17,7 @@ import com.safesoft.proapp.distribute.activities.splashscreen.splashScreen;
 import in.aabhasjindal.otptextview.OTPListener;
 import in.aabhasjindal.otptextview.OtpTextView;
 
-public class ActivityCodeRevendeur extends AppCompatActivity {
+public class ActivityCodeRevendeur extends BaseLocaleActivity {
 
     private final String PREFS = "ALL_PREFS";
 

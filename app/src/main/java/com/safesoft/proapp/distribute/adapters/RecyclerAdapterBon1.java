@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -184,7 +185,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
         switch (blocageValue) {
             case "F" -> {
                 if (item.montant_bon < 0) {
-                    holder.blocage.setText("Retour");
+                    holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_retour));
                     holder.blocage.setTextColor(Color.WHITE);
                     holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_orange);
                     holder.blocage.setTextSize(14);
@@ -192,7 +193,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                     holder.bgPanel.setBackgroundResource(R.drawable.bg_ribbon_retour_orange);
                     if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_ORANGE, android.graphics.PorterDuff.Mode.SRC_IN);
                 } else {
-                    holder.blocage.setText("Validé");
+                    holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_valide));
                     holder.blocage.setTextColor(Color.WHITE);
                     holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
                     holder.blocage.setTextSize(14);
@@ -202,7 +203,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                 }
             }
             case "M" -> {
-                holder.blocage.setText("En attente");
+                holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_en_attente));
                 holder.blocage.setTextColor(Color.WHITE);
                 holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_red);
                 holder.blocage.setTextSize(14);
@@ -211,7 +212,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                 if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_ROUGE, android.graphics.PorterDuff.Mode.SRC_IN);
             }
             case "T" -> {
-                holder.blocage.setText("Transféré");
+                holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_transfere));
                 holder.blocage.setTextColor(Color.WHITE);
                 holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_blue);
                 holder.blocage.setTextSize(14);
@@ -219,7 +220,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                 if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_BLEU, android.graphics.PorterDuff.Mode.SRC_IN);
             }
             case "A" -> {
-                holder.blocage.setText("Annulé");
+                holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_annule));
                 holder.blocage.setTextColor(Color.WHITE);
                 holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_violet);
                 holder.blocage.setTextSize(14);
@@ -227,7 +228,7 @@ public class RecyclerAdapterBon1 extends RecyclerView.Adapter<RecyclerAdapterBon
                 if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_VIOLET, android.graphics.PorterDuff.Mode.SRC_IN);
             }
             default -> {
-                holder.blocage.setText("Validé");
+                holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_valide));
                 holder.blocage.setTextColor(Color.WHITE);
                 holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
                 holder.blocage.setTextSize(14);

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
@@ -159,16 +161,16 @@ public class FragmentAdminGps {
                 launcheLocationService();
 
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Succès ...!!")
-                        .setContentText("Système de localisation activé !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_succes))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_systeme_de_localisation_active))
                         .show();
 
                 broadcastActionBaz(mActivity,true);
             }else{
 
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention ...!!")
-                        .setContentText("Votre system de localisation n'est pas activé !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_attention_3))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_votre_system_de_localisation_nest_pas_ac))
                         .show();
 
                 broadcastActionBaz(mActivity,false);
@@ -199,17 +201,17 @@ public class FragmentAdminGps {
     private void checkAndRequestPermissions() {
 
         if (edt_device_name.getText().toString().isEmpty()) {
-            edt_device_name.setError("Ce champ est obligatoire");
+            edt_device_name.setError(BaseApplication.instance.getString(R.string.l3_ce_champ_est_obligatoire));
             return;
         }
 
         if (edt_email.getText().toString().isEmpty()) {
-            edt_email.setError("Ce champ est obligatoire");
+            edt_email.setError(BaseApplication.instance.getString(R.string.l3_ce_champ_est_obligatoire));
             return;
         }
 
         if (edt_password.getText().toString().isEmpty()) {
-            edt_password.setError("Ce champ est obligatoire");
+            edt_password.setError(BaseApplication.instance.getString(R.string.l3_ce_champ_est_obligatoire));
             return;
         }
 
@@ -217,7 +219,7 @@ public class FragmentAdminGps {
         // SHOW PROGRESS DIALOG HERE
         // -------------------------
         progressDialog = new ProgressDialog(mActivity);
-        progressDialog.setMessage("Veuillez patienter...");
+        progressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_veuillez_patienter));
         progressDialog.setCancelable(false);
         progressDialog.show();
         // -------------------------
@@ -254,15 +256,15 @@ public class FragmentAdminGps {
 
                             } else if (responseCode == 401) {
                                 mActivity.runOnUiThread(() -> {
-                                    Crouton.makeText(mActivity, "Compte n'exist pas ou mot de passe incorrect!", Style.ALERT).show();
+                                    Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_compte_inexistant_mot_de_passe), Style.ALERT).show();
                                 });
                             } else if (responseCode == 403) {
                                 mActivity.runOnUiThread(() -> {
-                                    Crouton.makeText(mActivity, "Ce téléphone est associé à un autre utilisateur.", Style.ALERT).show();
+                                    Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_telephone_associe_autre_utilisateur), Style.ALERT).show();
                                 });
                             } else {
                                 mActivity.runOnUiThread(() -> {
-                                    Crouton.makeText(mActivity, "Problème de lancement du service localisation!", Style.ALERT).show();
+                                    Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_probleme_lancement_service_localisation), Style.ALERT).show();
                                 });
                             }
                     }
@@ -273,7 +275,7 @@ public class FragmentAdminGps {
                         progressDialog.dismiss();  // HIDE PROGRESS
                         Log.e("LocationServer", "Error", e);
                         mActivity.runOnUiThread(() -> {
-                            Crouton.makeText(mActivity, "Erreur: " + e.getMessage(), Style.ALERT).show();
+                            Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_erreur_prefix) + e.getMessage(), Style.ALERT).show();
                         });
 
                     }
@@ -288,13 +290,13 @@ public class FragmentAdminGps {
 
             mActivity.runOnUiThread(() -> {
                 new androidx.appcompat.app.AlertDialog.Builder(mActivity)
-                        .setTitle("GPS désactivé")
-                        .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
-                        .setPositiveButton("Oui", (d, w) -> {
+                        .setTitle(BaseApplication.instance.getString(R.string.l3_gps_desactive))
+                        .setMessage(BaseApplication.instance.getString(R.string.l3_votre_gps_est_desactive_voulez_vous_l_ac))
+                        .setPositiveButton(BaseApplication.instance.getString(R.string.l3_oui), (d, w) -> {
                             Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             mActivity.startActivity(i);
                         })
-                        .setNegativeButton("Non", (d, w) -> d.dismiss())
+                        .setNegativeButton(BaseApplication.instance.getString(R.string.l3_non), (d, w) -> d.dismiss())
                         .show();
             });
             return;
@@ -307,13 +309,13 @@ public class FragmentAdminGps {
             if (!ignoring) {
                 mActivity.runOnUiThread(() -> {
                     new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Distribute pro batterie optimization")
+                            .setTitleText(BaseApplication.instance.getString(R.string.l3_distribute_pro_batterie_optimization))
                             .setContentText(
                                     "Le service de localisation est activé. Toutefois, l’optimisation de la batterie " +
                                             "peut empêcher son bon fonctionnement. Souhaitez-vous l’autoriser ?"
                             )
-                            .setCancelText("Non")
-                            .setConfirmText("Oui")
+                            .setCancelText(BaseApplication.instance.getString(R.string.l3_non))
+                            .setConfirmText(BaseApplication.instance.getString(R.string.l3_oui))
                             .showCancelButton(true)
                             .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                             .setConfirmClickListener(sDialog -> {

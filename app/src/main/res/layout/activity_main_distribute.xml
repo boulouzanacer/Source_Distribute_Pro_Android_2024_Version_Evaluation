@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:background="#10B981"
             android:orientation="vertical"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:paddingTop="10dp"
             android:paddingBottom="100dp"
             android:gravity="center_horizontal">
@@ -76,7 +76,7 @@
                                 android:id="@+id/header_label_depot"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Dépôt"
+                                android:text="@string/l2_depot"
                                 android:textColor="#FFFFFF"
                                 android:alpha="0.7"
                                 android:textStyle="bold"
@@ -139,7 +139,7 @@
                                 android:id="@+id/header_label_vendeur"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Vendeur"
+                                android:text="@string/l2_vendeur_2"
                                 android:textColor="#FFFFFF"
                                 android:alpha="0.7"
                                 android:textStyle="bold"
@@ -175,7 +175,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_settings_24"
-                        android:contentDescription="Paramètres" />
+                        android:contentDescription="@string/a11y_parametres" />
 
                 </FrameLayout>
             </LinearLayout>
@@ -195,11 +195,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="26dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
                 android:gravity="start"
-                android:text="Modules"
+                android:text="@string/l2_modules"
                 android:textColor="#111827"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -208,9 +208,9 @@
                 android:id="@+id/lnr_vente_commande"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="18dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -233,7 +233,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:contentDescription="Clients"
+                            android:contentDescription="@string/a11y_clients"
                             android:foreground="@android:color/transparent"
                             android:scaleType="fitCenter" />
 
@@ -265,7 +265,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="16dp"
-                                android:text="Clients"
+                                android:text="@string/l2_clients"
                                 android:textColor="#111827"
                                 android:textSize="17sp"
                                 android:textStyle="bold" />
@@ -274,7 +274,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="Gestion portefeuille"
+                                android:text="@string/l2_gestion_portefeuille"
                                 android:textColor="#6B7280"
                                 android:textSize="13.5sp" />
                         </LinearLayout>
@@ -296,7 +296,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:contentDescription="Ventes"
+                            android:contentDescription="@string/a11y_ventes"
                             android:foreground="@android:color/transparent"
                             android:scaleType="fitCenter" />
 
@@ -328,7 +328,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="16dp"
-                                android:text="Ventes"
+                                android:text="@string/l2_ventes"
                                 android:textColor="#111827"
                                 android:textSize="17sp"
                                 android:textStyle="bold" />
@@ -337,7 +337,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="Bons de livraison"
+                                android:text="@string/l2_bons_de_livraison"
                                 android:textColor="#6B7280"
                                 android:textSize="13.5sp" />
                         </LinearLayout>
@@ -349,9 +349,9 @@
                 android:id="@+id/lnr_achat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -374,7 +374,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:contentDescription="Fournisseurs"
+                            android:contentDescription="@string/a11y_fournisseurs"
                             android:foreground="@android:color/transparent"
                             android:scaleType="fitCenter" />
 
@@ -406,7 +406,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="16dp"
-                                android:text="Fournisseurs"
+                                android:text="@string/l2_fournisseurs"
                                 android:textColor="#111827"
                                 android:textSize="17sp"
                                 android:textStyle="bold" />
@@ -415,7 +415,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="Carnet fournisseurs"
+                                android:text="@string/l2_carnet_fournisseurs"
                                 android:textColor="#6B7280"
                                 android:textSize="13.5sp" />
                         </LinearLayout>
@@ -437,7 +437,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:contentDescription="Achats"
+                            android:contentDescription="@string/a11y_achats"
                             android:foreground="@android:color/transparent"
                             android:scaleType="fitCenter" />
 
@@ -469,7 +469,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="16dp"
-                                android:text="Achats"
+                                android:text="@string/achats"
                                 android:textColor="#111827"
                                 android:textSize="17sp"
                                 android:textStyle="bold" />
@@ -478,7 +478,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="Bons d'achat"
+                                android:text="@string/l2_bons_d_achat"
                                 android:textColor="#6B7280"
                                 android:textSize="13.5sp" />
                         </LinearLayout>
@@ -496,7 +496,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:contentDescription="Commandes Fournisseurs"
+                        android:contentDescription="@string/a11y_commandes_fournisseurs"
                         android:foreground="@android:color/transparent"
                         android:scaleType="fitCenter"
                         android:visibility="gone" />
@@ -530,7 +530,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Cde Fourn."
+                            android:text="@string/l2_cde_fourn"
                             android:textColor="#111827"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -539,7 +539,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Commandes fournisseurs"
+                            android:text="@string/l2_commandes_fournisseurs"
                             android:textColor="#6B7280"
                             android:textSize="13.5sp" />
                     </LinearLayout>
@@ -550,9 +550,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
                 android:baselineAligned="false"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -568,7 +568,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:contentDescription="Commandes Clients"
+                        android:contentDescription="@string/a11y_commandes_clients"
                         android:foreground="@android:color/transparent"
                         android:scaleType="fitCenter" />
 
@@ -600,7 +600,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Commandes"
+                            android:text="@string/l2_commandes"
                             android:textColor="#111827"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -609,7 +609,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Commandes clients"
+                            android:text="@string/l2_commandes_clients"
                             android:textColor="#6B7280"
                             android:textSize="13.5sp" />
                     </LinearLayout>
@@ -631,7 +631,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:contentDescription="Produits"
+                        android:contentDescription="@string/a11y_produits"
                         android:foreground="@android:color/transparent"
                         android:scaleType="fitCenter" />
 
@@ -663,7 +663,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Produits"
+                            android:text="@string/produits"
                             android:textColor="#111827"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -672,7 +672,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Catalogue produits"
+                            android:text="@string/l2_catalogue_produits"
                             android:textColor="#6B7280"
                             android:textSize="13.5sp" />
                     </LinearLayout>
@@ -683,9 +683,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
                 android:baselineAligned="false"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -701,7 +701,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:contentDescription="Synchronisation"
+                        android:contentDescription="@string/a11y_synchronisation"
                         android:foreground="@android:color/transparent"
                         android:scaleType="fitCenter" />
 
@@ -733,7 +733,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Sync"
+                            android:text="@string/l2_sync"
                             android:textColor="#111827"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -742,7 +742,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Import / Export"
+                            android:text="@string/l2_import_export"
                             android:textColor="#6B7280"
                             android:textSize="13.5sp" />
                     </LinearLayout>
@@ -764,7 +764,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:contentDescription="Inventaires"
+                        android:contentDescription="@string/a11y_inventaires"
                         android:foreground="@android:color/transparent"
                         android:scaleType="fitCenter" />
 
@@ -796,7 +796,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Inventaires"
+                            android:text="@string/l2_inventaires"
                             android:textColor="#111827"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -805,7 +805,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Stock et inventaire"
+                            android:text="@string/l2_stock_et_inventaire"
                             android:textColor="#6B7280"
                             android:textSize="13.5sp" />
                     </LinearLayout>
@@ -816,9 +816,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
                 android:baselineAligned="false"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -835,7 +835,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:contentDescription="Tournées"
+                        android:contentDescription="@string/a11y_tournees"
                         android:foreground="@android:color/transparent"
                         android:scaleType="fitCenter" />
 
@@ -868,7 +868,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Tournées"
+                            android:text="@string/l2_tournees"
                             android:textColor="#111827"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -877,7 +877,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Planification routes"
+                            android:text="@string/l2_planification_routes"
                             android:textColor="#6B7280"
                             android:textSize="13.5sp" />
                     </LinearLayout>
@@ -899,7 +899,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:contentDescription="Paramètres"
+                        android:contentDescription="@string/a11y_parametres"
                         android:foreground="@android:color/transparent"
                         android:scaleType="fitCenter" />
 
@@ -932,7 +932,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Paramètres"
+                            android:text="@string/l2_parametres"
                             android:textColor="#111827"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -941,7 +941,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Configuration app"
+                            android:text="@string/l2_configuration_app"
                             android:textColor="#6B7280"
                             android:textSize="13.5sp" />
                     </LinearLayout>

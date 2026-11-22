@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -130,10 +131,10 @@ public class ListViewAdapterListFournisseur extends BaseAdapter {
         String achatTxt = df.format(current.achat_montant);
         String verserTxt = df.format(current.verser_montant);
         if (holder.txtv_achats_frs != null) {
-            holder.txtv_achats_frs.setText("ACH: " + achatTxt);
+            holder.txtv_achats_frs.setText(BaseApplication.instance.getString(R.string.l4_ach_prefix) + achatTxt);
         }
         if (holder.txtv_versement_frs != null) {
-            holder.txtv_versement_frs.setText("VER: " + verserTxt);
+            holder.txtv_versement_frs.setText(BaseApplication.instance.getString(R.string.l4_ver_prefix) + verserTxt);
         }
         if (holder.txtv_tel != null) {
             String tel = (current.tel == null || current.tel.isEmpty()) ? "📞 —" : "📞 " + current.tel;

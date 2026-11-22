@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.achats;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -32,7 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Executor;
 
-public class CaptureInvoiceActivity extends AppCompatActivity {
+public class CaptureInvoiceActivity extends BaseLocaleActivity {
 
     private static final String TAG = "CaptureInvoiceActivity";
     private FrameLayout loadingOverlay;
@@ -45,7 +47,7 @@ public class CaptureInvoiceActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> cameraPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
                 if (granted) startCamera();
-                else Toast.makeText(this, "Permission caméra refusée", Toast.LENGTH_LONG).show();
+                else Toast.makeText(this, getString(R.string.l3_permission_camera_refusee), Toast.LENGTH_LONG).show();
             });
 
     @Override
@@ -93,7 +95,7 @@ public class CaptureInvoiceActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 Log.e(TAG, "startCamera failed", e);
-                Toast.makeText(this, "Erreur caméra: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.l3_erreur_camera) + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }, mainExecutor);
     }
@@ -101,7 +103,7 @@ public class CaptureInvoiceActivity extends AppCompatActivity {
     @SuppressWarnings("deprecation")
     private void captureAndSend() {
         if (imageCapture == null) {
-            Toast.makeText(this, "Caméra non prête", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.l3_camera_non_prete), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -128,7 +130,7 @@ public class CaptureInvoiceActivity extends AppCompatActivity {
                             intent.putExtra("invoice_json", jsonResult);
                             startActivity(intent);
 
-                            Toast.makeText(CaptureInvoiceActivity.this, "Extraction OK", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CaptureInvoiceActivity.this, getString(R.string.l3_extraction_ok), Toast.LENGTH_SHORT).show();
                             finish(); // ✅ Fermer la fenêtre
                         }
 
@@ -145,7 +147,7 @@ public class CaptureInvoiceActivity extends AppCompatActivity {
 
                 } catch (Exception e) {
                     showLoading(false);
-                    Toast.makeText(CaptureInvoiceActivity.this, "Erreur capture: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CaptureInvoiceActivity.this, getString(R.string.l3_erreur_capture) + e.getMessage(), Toast.LENGTH_LONG).show();
                     finish();
                 } finally {
                     image.close();
@@ -155,7 +157,7 @@ public class CaptureInvoiceActivity extends AppCompatActivity {
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
                 showLoading(false);
-                Toast.makeText(CaptureInvoiceActivity.this, "Capture échouée: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(CaptureInvoiceActivity.this, getString(R.string.l3_capture_echouee) + exception.getMessage(), Toast.LENGTH_LONG).show();
                 finish();
             }
         });

@@ -84,8 +84,8 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:id="@+id/layout_footer"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
@@ -95,7 +95,7 @@
 
             <Button
                 android:id="@+id/add_product"
-                android:text="Ajouter produit"
+                android:text="@string/l2_ajouter_produit"
                 android:textAllCaps="false"
                 android:backgroundTint="@color/gray"
                 android:textColor="@color/black"

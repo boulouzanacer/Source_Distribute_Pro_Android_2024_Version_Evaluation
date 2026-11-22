@@ -36,7 +36,7 @@
             android:id="@+id/switch_edit_stock_ini"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Autoriser / Empêcher la modification du stock initial"
+            android:text="@string/l2_autoriser_empecher_la_modification_du_st"
             android:textAlignment="textStart"
             android:checked="false"
             android:textSize="14sp"

@@ -1,6 +1,6 @@
 [versions]
 activity = "1.13.0"
-agp = "9.5.1"
+agp = "9.5.2"
 androidimagepopup = "1.2.2"
 annotation = "1.8.1"
 annotationExperimental = "1.4.1"

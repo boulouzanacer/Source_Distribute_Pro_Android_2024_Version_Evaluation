@@ -57,7 +57,7 @@
         <TextView
             android:id="@+id/list_produit_nbr_produit"
             android:layout_weight="1"
-            android:text="Nombre de prduit : "
+            android:text="@string/l2_nombre_de_prduit"
             android:gravity="center"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -67,7 +67,7 @@
         <TextView
             android:id="@+id/list_produit_total"
             android:layout_weight="1"
-            android:text="Total : "
+            android:text="@string/l2_total"
             android:gravity="center"
             android:textColor="@color/white"
             android:textStyle="bold"

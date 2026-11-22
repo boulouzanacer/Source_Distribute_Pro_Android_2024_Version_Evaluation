@@ -73,10 +73,10 @@ public class PasswordResetDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 if (mPassword.getText().toString().equalsIgnoreCase("0000")) {
                     new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Réinitialisation")
-                            .setContentText("Voulez-vous vraiment réinitialiser cette appareil, attention cette opération supprimera tous vos données?!")
-                            .setCancelText("Annuler")
-                            .setConfirmText("Continuer")
+                            .setTitleText(getString(R.string.l3_reinitialisation))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_reinitialiser_cette))
+                            .setCancelText(getString(R.string.l3_annuler))
+                            .setConfirmText(getString(R.string.l3_continuer))
                             .showCancelButton(true)
                             .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override

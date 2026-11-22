@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.pdf;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import static com.safesoft.proapp.distribute.activities.product.ActivityProduits.produits;
 
 import android.app.Activity;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 import com.github.barteksc.pdfviewer.PDFView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class PdfViewerActivity extends AppCompatActivity {
+public class PdfViewerActivity extends BaseLocaleActivity {
 
     private String selected_famile  = "";
 
@@ -50,7 +52,7 @@ public class PdfViewerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Etat de stock");
+            getSupportActionBar().setTitle(getString(R.string.l3_etat_de_stock));
         }
 
         PDFView  pdfView = findViewById(R.id.pdfView);
@@ -77,10 +79,10 @@ public class PdfViewerActivity extends AppCompatActivity {
             onBackPressed();
         }else if (item.getItemId() == R.id.print_stock) {
             new SweetAlertDialog(PdfViewerActivity.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Impression")
-                    .setContentText("Voulez-vous vraiment imprimer le stock de la séléction ?!")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Imprimer")
+                    .setTitleText(getString(R.string.l3_impression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_imprimer_le_stock_d))
+                    .setCancelText(getString(R.string.l3_anuuler))
+                    .setConfirmText(getString(R.string.l3_imprimer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {

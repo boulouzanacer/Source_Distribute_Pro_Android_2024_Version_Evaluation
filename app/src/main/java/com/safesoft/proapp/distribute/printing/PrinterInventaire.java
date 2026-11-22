@@ -1,6 +1,8 @@
 package com.safesoft.proapp.distribute.printing;
 
+
 
+import com.safesoft.proapp.distribute.R;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.Manifest;
@@ -138,7 +140,7 @@ public class PrinterInventaire {
                 }
             } else {
                 Log.v("PRINTER_CONX", "Device not found");
-                Crouton.makeText(mActivity, "Aucune imprimante est connecté", Style.ALERT).show();
+                Crouton.makeText(mActivity, BaseApplication.instance.getString(R.string.l4_aucune_imprimante_connectee), Style.ALERT).show();
             }
 
         } else if (Objects.equals(prefs.getString("PRINTER_CONX", "BLUETOOTH"), "WIFI")) {
@@ -160,7 +162,7 @@ public class PrinterInventaire {
         public LongOperation(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
             this.bluetoothEdrConfigBean = bluetoothEdrConfigBean;
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Preparation...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_preparation));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setCancelable(true);
@@ -170,7 +172,7 @@ public class PrinterInventaire {
         public LongOperation(WiFiConfigBean wiFiConfigBean) {
             this.wiFiConfigBean = wiFiConfigBean;
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Preparation...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_preparation));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setCancelable(true);
@@ -561,7 +563,7 @@ public class PrinterInventaire {
                 if (!TextUtils.isEmpty(str)) {
                     progressDialog.setMessage(str);
                 } else {
-                    progressDialog.setMessage("Impression...");
+                    progressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_impression_2));
                 }
                 progressDialog.show();
             }

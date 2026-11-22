@@ -39,7 +39,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Export ventes"
+                    android:contentDescription="@string/a11y_export_ventes"
                     android:src="@drawable/exportation_24" />
             </LinearLayout>
 
@@ -54,7 +54,7 @@
                     android:id="@+id/exportt_vente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportation ventes (Réseaux IP)"
+                    android:text="@string/l2_exportation_ventes_reseaux_ip"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -64,7 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Vous permet d'exporter les bons de ventes et les versements clients vers le serveur distant"
+                    android:text="@string/l2_vous_permet_d_exporter_les_bons_de_vente"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -101,7 +101,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Export ventes FTP"
+                    android:contentDescription="@string/a11y_export_ventes_ftp"
                     android:src="@drawable/exportation_ftp_24" />
             </LinearLayout>
 
@@ -116,7 +116,7 @@
                     android:id="@+id/exportt_vente_ftp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportation ventes (Serveur FTP)"
+                    android:text="@string/l2_exportation_ventes_serveur_ftp"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -126,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Vous permet d'exporter les bons de ventes et les versements clients vers le serveur FTP"
+                    android:text="@string/l2_vous_permet_d_exporter_les_bons_de_vente_2"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -162,7 +162,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Ventes exportées"
+                    android:contentDescription="@string/a11y_ventes_exportees"
                     android:src="@drawable/bon_exporte_24" />
             </LinearLayout>
 
@@ -177,7 +177,7 @@
                     android:id="@+id/exportted_vente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Bons de vente exportés"
+                    android:text="@string/l2_bons_de_vente_exportes"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -187,7 +187,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'afficher les bons de livraison exportés avec la possibilité de suppression"
+                    android:text="@string/l2_ca_vous_permet_d_afficher_les_bons_de_li"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -223,7 +223,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="État vente"
+                    android:contentDescription="@string/a11y_etat_vente"
                     android:src="@drawable/etat_vente_24" />
             </LinearLayout>
 
@@ -238,7 +238,7 @@
                     android:id="@+id/etat_v"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Etat de vente"
+                    android:text="@string/l2_etat_de_vente"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -248,7 +248,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet de consulter la quantité des produits vendu ansi que le montant total, remise total...entre deux date donné."
+                    android:text="@string/l2_ca_vous_permet_de_consulter_la_quantite_3"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"

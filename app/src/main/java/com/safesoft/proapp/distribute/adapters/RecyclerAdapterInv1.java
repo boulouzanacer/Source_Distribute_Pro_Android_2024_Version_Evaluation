@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -122,14 +123,14 @@ public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv
 
 
         if (item.blocage.equals("F")) {
-            holder.blocage.setText("Fermé");
+            holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_ferme));
             holder.blocage.setTextColor(Color.WHITE);
             holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
             holder.blocage.setTextSize(14);
 
         } else {
 
-            holder.blocage.setText("Ouvert");
+            holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_ouvert));
             holder.blocage.setTextColor(Color.WHITE);
             holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_red);
             holder.blocage.setTextSize(14);
@@ -139,7 +140,7 @@ public class RecyclerAdapterInv1 extends RecyclerView.Adapter<RecyclerAdapterInv
         if (item.is_exported == 1) {
             holder.Date_exp.setText(item.date_export_inv);
         } else {
-            holder.Date_exp.setText("Pas encore exporté");
+            holder.Date_exp.setText(BaseApplication.instance.getString(R.string.l4_pas_encore_exporte));
         }
 
     }

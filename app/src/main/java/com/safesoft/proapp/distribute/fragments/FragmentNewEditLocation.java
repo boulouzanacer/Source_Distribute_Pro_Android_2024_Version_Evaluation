@@ -1,5 +1,8 @@
 package com.safesoft.proapp.distribute.fragments;
 
+
+
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
@@ -132,8 +135,8 @@ public class FragmentNewEditLocation {
         created_passage.latitude = latitude;
         created_passage.longitude = longitude;
 
-        txtv_latitude.setText("Latitude   : " + created_passage.latitude);
-        txtv_longitude.setText("Longitude : " + created_passage.longitude);
+        txtv_latitude.setText(BaseApplication.instance.getString(R.string.l4_latitude_prefix) + created_passage.latitude);
+        txtv_longitude.setText(BaseApplication.instance.getString(R.string.l4_longitude_prefix) + created_passage.longitude);
 
         edt_num_tournee.setText(old_passage.num_tournee);
         edt_num_tournee.setEnabled(false);
@@ -201,18 +204,18 @@ public class FragmentNewEditLocation {
             boolean hasError = false;
 
             if (edt_observation.getText().length() <= 0) {
-                edt_observation.setError("Observation est obligatoire!!");
+                edt_observation.setError(BaseApplication.instance.getString(R.string.l3_observation_est_obligatoire));
                 hasError = true;
             }
 
             if (edt_date_passage.getText().length() <= 0) {
-                edt_date_passage.setError("Date de passage est est obligatoire!!");
+                edt_date_passage.setError(BaseApplication.instance.getString(R.string.l3_date_de_passage_est_est_obligatoire));
                 hasError = true;
             }
 
             if (edt_heure_passage.getText().length() <= 0) {
 
-                edt_heure_passage.setError("heure de passage est obligatoire!!");
+                edt_heure_passage.setError(BaseApplication.instance.getString(R.string.l3_heure_de_passage_est_obligatoire));
                 hasError = true;
             }
 
@@ -233,15 +236,15 @@ public class FragmentNewEditLocation {
 
                         //update client into database,
                         controller.update_into_tournee2(created_passage);
-                        Crouton.makeText(activity, "Produit bien modifier", Style.INFO).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_produit_bien_modifie), Style.INFO).show();
                         ProductEvent added_product_event = new ProductEvent(created_produit);
                         bus.post(added_product_event);
 
                         dialog.dismiss();
                     }catch (Exception e){
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Problème mise à jour produit : " + e.getMessage())
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_attention_6))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_mise_a_jour_produit) + e.getMessage())
                                 .show();
                     }*/
                 } else {
@@ -249,15 +252,15 @@ public class FragmentNewEditLocation {
                     try {
 
                         controller.insert_into_tournee2(created_passage);
-                        Crouton.makeText(activity, "Passage bien ajouté", Style.INFO).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_passage_bien_ajoute), Style.INFO).show();
                         PassageEvent added_passage_event = new PassageEvent(created_passage);
                         bus.post(added_passage_event);
 
                         dialog.dismiss();
                     }catch (Exception e){
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Problème insertion : " + e.getMessage())
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_attention_6))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_insertion) + e.getMessage())
                                 .show();
                     }
 
@@ -299,7 +302,7 @@ public class FragmentNewEditLocation {
                         if(!controller.check_product_if_exist(querry)){
                             //edt_codebarre.setText(barcodeResult.rawValue);
                         }else {
-                            //edt_codebarre.setHint("Produit / Codebarre exist ");
+                            //edt_codebarre.setHint(BaseApplication.instance.getString(R.string.l3_produit_codebarre_exist));
                         }
                     } else if (view.getId() == R.id.scan_reference) {
                         //edt_reference.setText(barcodeResult.rawValue);

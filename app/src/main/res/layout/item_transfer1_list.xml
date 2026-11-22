@@ -58,7 +58,7 @@
                         android:id="@+id/num_bon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Transfert N° 00001"
+                        android:text="@string/l2_transfert_n_00001"
                         android:textColor="#111827"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_badge_pill_violet"
                     android:gravity="center"
-                    android:text="Transféré"
+                    android:text="@string/l2_transfere"
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -88,7 +88,7 @@
                     android:layout_height="18dp"
                     android:src="@drawable/ic_baseline_calendar_today_24"
                     app:tint="#8B5CF6"
-                    android:contentDescription="Date" />
+                    android:contentDescription="@string/a11y_date" />
 
                 <TextView
                     android:id="@+id/date_bon"
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:drawablePadding="6dp"
-                android:text="Source : ALGER"
+                android:text="@string/l2_source_alger"
                 android:textColor="#6B7280"
                 android:textSize="13.5sp" />
 
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:drawablePadding="6dp"
-                android:text="Destination : ORAN"
+                android:text="@string/l2_destination_oran"
                 android:textColor="#6B7280"
                 android:textSize="13.5sp" />
         </LinearLayout>

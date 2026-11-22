@@ -16,7 +16,9 @@
  */
 
 package com.safesoft.proapp.distribute.databases.backup;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.net.Uri;
@@ -60,17 +62,17 @@ public class LocalBackup {
 
             if (db.backup(outFileName)) {
                 new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information !")
-                        .setContentText("Sauvegarde de base de données terminée avec succès !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_information_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_sauvegarde_de_base_de_donnees_terminee_a))
                         .show();
             } else {
                 new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Prblème d'importation de la base de données, Réessayer !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_attention))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_prbleme_dimportation_de_la_base_de_donne))
                         .show();
             }
         } else
-            Crouton.makeText(activity, "Problème de création du dossier. Réessayer", Style.ALERT).show();
+            Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_probleme_creation_dossier), Style.ALERT).show();
     }
 
     //ask to the user what backup to restore
@@ -88,28 +90,28 @@ public class LocalBackup {
                 arrayAdapter.add(file.getName());
 
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(activity);
-            builderSingle.setTitle("Restorer:");
-            builderSingle.setNegativeButton("annuler", (dialog, which) -> dialog.dismiss());
+            builderSingle.setTitle(BaseApplication.instance.getString(R.string.l3_restorer));
+            builderSingle.setNegativeButton(BaseApplication.instance.getString(R.string.l3_annuler), (dialog, which) -> dialog.dismiss());
             builderSingle.setAdapter(arrayAdapter, (dialog, which) -> {
                 try {
                     if (db.importDB(files[which].getPath())) {
                         new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Information !")
-                                .setContentText("Restauration terminée avec succès !")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_information_2))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_restauration_terminee_avec_succes))
                                 .show();
                     } else {
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention !")
-                                .setContentText("Prblème d'importation de la base de données, Réessayer !")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_attention))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_prbleme_dimportation_de_la_base_de_donne))
                                 .show();
                     }
                 } catch (Exception e) {
-                    Crouton.makeText(activity, "Problème de restauration. Réessayer", Style.ALERT).show();
+                    Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_probleme_restauration), Style.ALERT).show();
                 }
             });
             builderSingle.show();
         } else
-            Crouton.makeText(activity, "Dossier de sauvegarde absent..\nFaites une sauvegarde avant une restauration !", Style.ALERT).show();
+            Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_dossier_sauvegarde_absent), Style.ALERT).show();
     }
 
 

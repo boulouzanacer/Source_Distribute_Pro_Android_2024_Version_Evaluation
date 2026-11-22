@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.commande_achat;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import static com.safesoft.proapp.distribute.R.id.timbre;
 
 import android.Manifest;
@@ -76,7 +78,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityOrderFournisseur extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick {
+public class ActivityOrderFournisseur extends BaseLocaleActivity implements RecyclerAdapterCheckProducts.ItemClick {
 
     ////////////////////////////////////////
     private static final int ACCES_FINE_LOCATION = 2;
@@ -168,7 +170,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         } else {
-            Crouton.makeText(ActivityOrderFournisseur.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
@@ -274,13 +276,13 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             calcule();
 
         } else {
-            Crouton.makeText(ActivityOrderFournisseur.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
 
         if (NUM_BON != null) {
-            getSupportActionBar().setTitle("Commande N°: " + NUM_BON);
+            getSupportActionBar().setTitle(getString(R.string.l3_commande_n_2) + NUM_BON);
         }
 
         getSupportActionBar().setSubtitle(date_time_sub_title);
@@ -351,8 +353,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         if (viewId == R.id.btn_select_fournisseur) {
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
@@ -361,34 +363,34 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         } else if (viewId == R.id.btn_mode_tarif) {
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
 
             if (achat1_com.fournis.isEmpty()) {
-                Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
+                Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_vous_devez_selectionner_fournisseur_abord), Style.ALERT).show();
                 return;
             }
 
         } else if (viewId == R.id.addProduct) {
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
             if (achat1_com.fournis.isEmpty()) {
 
-                Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur tout d'abord", Style.ALERT).show();
+                Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_vous_devez_selectionner_fournisseur_abord), Style.ALERT).show();
                 return;
             }
 
             if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
 
@@ -403,20 +405,20 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
             if (achat1_com.fournis.isEmpty()) {
 
-                Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un fournisseur", Style.ALERT).show();
+                Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_vous_devez_selectionner_fournisseur), Style.ALERT).show();
                 return;
             }
             if (final_panier.isEmpty()) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
@@ -426,8 +428,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         } else if (viewId == R.id.txv_timbre_btn) {
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
@@ -435,8 +437,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         } else if (viewId == R.id.txv_remise_btn) {
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
@@ -453,15 +455,15 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             } else {
                 if (achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja validé")
+                            .setTitleText(getString(R.string.l3_information_4))
+                            .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                             .show();
                     return;
                 }
 
                 if (achat1_com.fournis.isEmpty()) {
 
-                    Crouton.makeText(ActivityOrderFournisseur.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                    Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_vous_devez_selectionner_client_abord), Style.ALERT).show();
                     return;
                 }
 
@@ -471,17 +473,17 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             if (!SOURCE_EXPORT.equals("EXPORTED")) {
                 if (!achat1_com.blocage.equals("F")) {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon n'est pas encore validé")
+                            .setTitleText(getString(R.string.l3_information_4))
+                            .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                             .show();
                     return;
 
                 } else {
                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Modification")
-                            .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
-                            .setCancelText("Non")
-                            .setConfirmText("Oui")
+                            .setTitleText(getString(R.string.l3_modification))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_ce_bon))
+                            .setCancelText(getString(R.string.l3_non))
+                            .setConfirmText(getString(R.string.l3_oui))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -494,8 +496,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                                 } catch (Exception e) {
 
                                     new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                            .setTitleText("Attention!")
-                                            .setContentText("problème lors de Modification de Bon : " + e.getMessage())
+                                            .setTitleText(getString(R.string.l3_attention_4))
+                                            .setContentText(getString(R.string.l3_probleme_lors_de_modification_de_bon) + e.getMessage())
                                             .show();
                                 }
                                 sDialog.dismiss();
@@ -503,16 +505,16 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                 }
             } else {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja exporté")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_exporte))
                         .show();
             }
 
         } else if (viewId == R.id.btn_imp_bon) {
             if (!achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas encore validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                         .show();
                 return;
             }
@@ -622,16 +624,16 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         if (itemId == R.id.delete_produit) {
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return true;
             }
             new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Suppression")
-                    .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Supprimer")
+                    .setTitleText(getString(R.string.l3_suppression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_produi_2))
+                    .setCancelText(getString(R.string.l3_anuuler))
+                    .setConfirmText(getString(R.string.l3_supprimer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -646,8 +648,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
                         } catch (Exception e) {
 
                             new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!")
-                                    .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                    .setTitleText(getString(R.string.l3_attention_4))
+                                    .setContentText(getString(R.string.l3_probleme_lors_suppression_produits) + e.getMessage())
                                     .show();
                         }
 
@@ -658,8 +660,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
         } else if (itemId == R.id.edit_produit) {
             if (achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return true;
             }
@@ -673,8 +675,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             } catch (Exception e) {
 
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Attention!")
-                        .setContentText("Error : " + e.getMessage())
+                        .setTitleText(getString(R.string.l3_attention_4))
+                        .setContentText(getString(R.string.l3_error) + e.getMessage())
                         .show();
             }
 
@@ -785,8 +787,8 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
 
             if (!achat1_com.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityOrderFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_nest_pas_valide))
                         .show();
             } else {
                 /*Activity mActivity;
@@ -924,7 +926,7 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             initData();
 
         } catch (Exception e) {
-            Crouton.makeText(ActivityOrderFournisseur.this, "Erreur in produit" + e.getMessage(), Style.ALERT).show();
+            Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_erreur_in_produit) + e.getMessage(), Style.ALERT).show();
         }
 
     }
@@ -1008,9 +1010,9 @@ public class ActivityOrderFournisseur extends AppCompatActivity implements Recyc
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), bon2_temp, 0);
 
         } else if (produits.size() > 1) {
-            Crouton.makeText(ActivityOrderFournisseur.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_attention_2_produits_meme_code), Style.ALERT).show();
         } else {
-            Crouton.makeText(ActivityOrderFournisseur.this, "Produit introuvable !", Style.ALERT).show();
+            Crouton.makeText(ActivityOrderFournisseur.this, getString(R.string.l4_produit_introuvable), Style.ALERT).show();
         }
     }
 }

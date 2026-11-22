@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.tournee_clients;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -48,7 +50,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public class ActivityTourneeClient extends AppCompatActivity {
+public class ActivityTourneeClient extends BaseLocaleActivity {
 
     private FusedLocationProviderClient fusedLocationClient;
     private String scannedClientCode;
@@ -83,7 +85,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Passage clients");
+            getSupportActionBar().setTitle(getString(R.string.l3_passage_clients));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -96,7 +98,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         } else {
-            Crouton.makeText(ActivityTourneeClient.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityTourneeClient.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
@@ -162,7 +164,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
             date_sub_title = tournee1.date_tournee;
 
         } else {
-            Crouton.makeText(ActivityTourneeClient.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityTourneeClient.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
@@ -208,11 +210,11 @@ public class ActivityTourneeClient extends AppCompatActivity {
         boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         if (!gpsEnabled && !networkEnabled) {
-            Toast.makeText(this, "Please enable location services.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.l3_please_enable_location_services), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Location is already enabled.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.l3_location_is_already_enabled), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -220,7 +222,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
         ActivityResultLauncher<String> requestPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                     if (!isGranted) {
-                        Toast.makeText(this, "Location permission is required.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.l3_location_permission_is_required), Toast.LENGTH_SHORT).show();
                     }
                 });
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -229,7 +231,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
     private void fetchCurrentLocation(String scannedClientCode) {
         this.scannedClientCode = scannedClientCode;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Location permission not granted.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.l3_location_permission_not_granted), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -238,7 +240,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
         client = controller.select_client_from_database(scannedClientCode);
         if (client == null) {
             //Toast.makeText(this, "Client not found.", Toast.LENGTH_SHORT).show();
-            Crouton.makeText(ActivityTourneeClient.this, "Client introuvable !", Style.ALERT).show();
+            Crouton.makeText(ActivityTourneeClient.this, getString(R.string.l4_client_introuvable), Style.ALERT).show();
             return;
         }
 
@@ -262,7 +264,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
             fragmentnewpassage.showDialogbox(ActivityTourneeClient.this, "NEW_PASSAGE", tournee2, location.getLatitude(),location.getLongitude());
             // Simulating saving to a database
             String message = "Client Code: " + clientCode + "\nLatitude: " + location.getLatitude() + "\nLongitude: " + location.getLongitude();
-            Toast.makeText(this, "Visit Saved:\n" + message, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_visit_saved_n) + message, Toast.LENGTH_LONG).show();
 
             Log.e("POSITIONS : ", clientCode);
             Log.e("POSITIONS : ", String.valueOf(location.getLatitude()));
@@ -271,7 +273,7 @@ public class ActivityTourneeClient extends AppCompatActivity {
         }else{
             FragmentNewEditLocation fragmentnewpassage = new FragmentNewEditLocation();
             fragmentnewpassage.showDialogbox(ActivityTourneeClient.this, "NEW_PASSAGE", tournee2,0,0);
-            Toast.makeText(ActivityTourneeClient.this, "Unable to retrieve location.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityTourneeClient.this, getString(R.string.l3_unable_to_retrieve_location), Toast.LENGTH_SHORT).show();
         }
 
 

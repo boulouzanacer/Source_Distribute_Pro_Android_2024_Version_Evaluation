@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.fournisseur;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
@@ -62,7 +64,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import mehdi.sakout.fancybuttons.FancyButton;
 
-public class ActivityFournisseurDetail extends AppCompatActivity implements RecyclerAdapter_Situation_fournisseur.ItemClick {
+public class ActivityFournisseurDetail extends BaseLocaleActivity implements RecyclerAdapter_Situation_fournisseur.ItemClick {
 
     private NumberFormat nf;
 
@@ -115,7 +117,7 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Situation Fournisseur");
+            getSupportActionBar().setTitle(getString(R.string.l3_situation_fournisseur));
         }
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -315,7 +317,7 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
         } else if (viewId == R.id.btnVerser) {
             if (is_app_synchronised_mode) {
-                Crouton.makeText(ActivityFournisseurDetail.this, "Versement fournisseur disponible seulement en mode Mono-Poste !", Style.ALERT).show();
+                Crouton.makeText(ActivityFournisseurDetail.this, getString(R.string.l4_versement_fournisseur_mono_poste), Style.ALERT).show();
             } else {
                 FragmentVersementFournisseur fragmentversementfournisseur = new FragmentVersementFournisseur();
                 fragmentversementfournisseur.showDialogbox(ActivityFournisseurDetail.this, fournisseur.solde_montant, fournisseur.verser_montant, 0, "", fournisseur.code_frs, false, "");
@@ -328,8 +330,8 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
             startService(intent_location);
 
             progress = new ProgressDialog(ActivityFournisseurDetail.this);
-            progress.setTitle("Position");
-            progress.setMessage("Recherche position...");
+            progress.setTitle(getString(R.string.l3_position));
+            progress.setMessage(getString(R.string.l3_recherche_position));
             progress.setIndeterminate(true);
             progress.setCancelable(true);
             progress.show();
@@ -361,7 +363,7 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
             if (selected_versement != null) {
                 Print_versement(selected_versement);
             } else {
-                Crouton.makeText(ActivityFournisseurDetail.this, "Vous devez séléctionner une versement au-dessous !", Style.ALERT).show();
+                Crouton.makeText(ActivityFournisseurDetail.this, getString(R.string.l4_vous_devez_selectionner_versement), Style.ALERT).show();
             }
 
         } else if (item.getItemId() == R.id.edit_client) {
@@ -478,18 +480,18 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
             if (carnet_f.is_exported != 0) {
                 new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Versement déjà exporté, Modification impossible !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_versement_deja_exporte_modification_impo))
                         .show();
                 return;
 
             }
             if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
                 new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Situation")
-                        .setContentText("Voulez-vous vraiment modifier cette situation?!")
-                        .setCancelText("Non")
-                        .setConfirmText("Modifier")
+                        .setTitleText(getString(R.string.l3_situation))
+                        .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_cette_situ))
+                        .setCancelText(getString(R.string.l3_non))
+                        .setConfirmText(getString(R.string.l3_modifier))
                         .showCancelButton(true)
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
@@ -501,8 +503,8 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
                         }).show();
             } else {
                 new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Vous n'êtes pas autorisé à modifier cette situation !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_vous_netes_pas_autorise_a_modifier_cette))
                         .show();
             }
 
@@ -510,8 +512,8 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
             if (carnet_f.is_exported != 0) {
                 new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Versement déjà exporté, Suppression impossible !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_versement_deja_exporte_suppression_impos))
                         .show();
                 return;
 
@@ -519,18 +521,18 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
 
             if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
                 new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Suppression")
-                        .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_f.recordid + " ?!")
-                        .setCancelText("Anuuler")
-                        .setConfirmText("Supprimer")
+                        .setTitleText(getString(R.string.l3_suppression))
+                        .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_la_situat) + carnet_f.recordid + " ?!")
+                        .setCancelText(getString(R.string.l3_anuuler))
+                        .setConfirmText(getString(R.string.l3_supprimer))
                         .showCancelButton(true)
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
 
                             if (controller.delete_versement_fournisseur(carnet_f, fournisseur.solde_montant + carnet_f.carnet_versement, fournisseur.verser_montant - carnet_f.carnet_versement)) {
-                                Crouton.makeText(ActivityFournisseurDetail.this, "Situation fournisseur supprimé !", Style.INFO).show();
+                                Crouton.makeText(ActivityFournisseurDetail.this, getString(R.string.l4_situation_fournisseur_supprimee), Style.INFO).show();
                             } else {
-                                Crouton.makeText(ActivityFournisseurDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
+                                Crouton.makeText(ActivityFournisseurDetail.this, getString(R.string.l4_probleme_suppression_situation), Style.ALERT).show();
                             }
                             Update_fournisseur_details();
 
@@ -539,8 +541,8 @@ public class ActivityFournisseurDetail extends AppCompatActivity implements Recy
                         }).show();
             } else {
                 new SweetAlertDialog(ActivityFournisseurDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Vous n'êtes pas autorisé à supprimer cette situation !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_vous_netes_pas_autorise_a_supprimer_cett))
                         .show();
             }
 

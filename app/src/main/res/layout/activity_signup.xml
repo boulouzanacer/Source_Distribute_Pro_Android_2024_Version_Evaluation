@@ -28,8 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp">
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
 
             <!-- Password Label -->
             <com.google.android.material.textfield.TextInputLayout
@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:hint="Ancien mot de passe" />
+                    android:hint="@string/l2_ancien_mot_de_passe" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Password Label -->
@@ -68,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:hint="Nouveau mot de passe" />
+                    android:hint="@string/l2_nouveau_mot_de_passe" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Password Re-enter Label -->
@@ -88,7 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:hint="Re-entrer mot de passe" />
+                    android:hint="@string/l2_re_entrer_mot_de_passe" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Signup Button -->
@@ -100,7 +100,7 @@
                 android:layout_marginBottom="24dp"
                 android:background="@color/blue"
                 android:padding="12dp"
-                android:text="Valider" />
+                android:text="@string/valider" />
 
 
         </LinearLayout>

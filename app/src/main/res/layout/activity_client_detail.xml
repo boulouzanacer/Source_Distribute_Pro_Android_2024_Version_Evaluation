@@ -70,7 +70,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Achat (DA)"
+                            android:text="@string/l2_achat_da"
                             android:textSize="12sp"
                             android:letterSpacing="0.05"
                             android:textColor="#DBEAFE"
@@ -107,7 +107,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Versement (DA)"
+                            android:text="@string/l2_versement_da"
                             android:textSize="12sp"
                             android:letterSpacing="0.05"
                             android:textColor="#DBEAFE"
@@ -144,7 +144,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Solde (DA)"
+                            android:text="@string/l2_solde_da"
                             android:textSize="12sp"
                             android:letterSpacing="0.05"
                             android:textColor="#DBEAFE"
@@ -183,7 +183,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="IDENTITÉ CLIENT"
+                    android:text="@string/l2_identite_client"
                     android:textSize="11.5sp"
                     android:textStyle="bold"
                     android:textColor="#64748B"
@@ -219,7 +219,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Nom / Prénom"
+                                android:text="@string/l2_nom_prenom"
                                 android:textSize="11sp"
                                 android:textColor="#94A3B8"
                                 android:layout_marginBottom="3dp"/>
@@ -228,7 +228,7 @@
                                 android:id="@+id/client_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="BOULOUZA NASSER"
+                                android:text="@string/l2_boulouza_nasser"
                                 android:textColor="#0F172A"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
@@ -247,7 +247,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Code client"
+                                android:text="@string/code_client"
                                 android:textSize="11sp"
                                 android:textColor="#94A3B8"
                                 android:layout_marginBottom="3dp"/>
@@ -276,7 +276,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mode de tarif"
+                                android:text="@string/l2_mode_de_tarif"
                                 android:textSize="11sp"
                                 android:textColor="#92400E"
                                 android:layout_marginBottom="3dp"/>
@@ -325,7 +325,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Téléphone"
+                                android:text="@string/l2_telephone"
                                 android:textSize="11sp"
                                 android:textColor="#065F46"
                                 android:layout_marginBottom="3dp"/>
@@ -377,7 +377,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Adresse"
+                        android:text="@string/adresse"
                         android:textSize="11sp"
                         android:textColor="#94A3B8"
                         android:layout_marginBottom="3dp"/>
@@ -386,7 +386,7 @@
                         android:id="@+id/adresse"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10500, Cité les HLM, Oran"
+                        android:text="@string/l2_10500_cite_les_hlm_oran"
                         android:textColor="#334155"
                         android:textSize="13sp"/>
 
@@ -408,7 +408,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LOCALISATION GPS"
+                    android:text="@string/l2_localisation_gps"
                     android:textSize="11.5sp"
                     android:textStyle="bold"
                     android:textColor="#64748B"
@@ -515,7 +515,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2.2"
-                        android:text="VERSEMENTS / SITUATION"
+                        android:text="@string/l2_versements_situation"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textColor="#64748B"
@@ -583,7 +583,7 @@
                         android:layout_weight="3"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
-                        android:text="Date" />
+                        android:text="@string/l2_date" />
 
                     <TextView
                         android:id="@+id/heure_versement_value1"
@@ -592,7 +592,7 @@
                         android:layout_weight="2"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
-                        android:text="Heure" />
+                        android:text="@string/l2_heure" />
 
                     <TextView
                         android:id="@+id/montant_versement_value1"
@@ -603,7 +603,7 @@
                         android:textStyle="bold"
                         android:gravity="end"
                         android:textColor="#FFFFFF"
-                        android:text="Montant" />
+                        android:text="@string/l2_montant" />
 
                     <ImageView
                         android:id="@+id/btn_edit_situation"
@@ -611,7 +611,7 @@
                         android:layout_weight="1"
                         android:layout_marginStart="10dp"
                         android:layout_height="wrap_content"
-                        android:contentDescription="Modifier"
+                        android:contentDescription="@string/a11y_modifier"
                         android:src="@drawable/ic_baseline_edit_24"
                         app:tint="#FFFFFF"
                         android:padding="2dp"/>
@@ -622,7 +622,7 @@
                         android:layout_weight="1"
                         android:layout_marginStart="4dp"
                         android:layout_height="wrap_content"
-                        android:contentDescription="Supprimer"
+                        android:contentDescription="@string/a11y_supprimer"
                         android:src="@drawable/ic_baseline_delete_24"
                         app:tint="#FFFFFF"
                         android:padding="2dp"/>

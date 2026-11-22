@@ -39,7 +39,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Jour"
+            android:text="@string/l2_jour"
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="#0F172A"
@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Semaine"
+            android:text="@string/l2_semaine"
             android:textSize="12sp"
             android:textColor="#64748B"
             android:background="@drawable/bg_chip_segmented_unselected"/>
@@ -62,7 +62,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Mois"
+            android:text="@string/l2_mois"
             android:textSize="12sp"
             android:textColor="#64748B"
             android:background="@drawable/bg_chip_segmented_unselected"/>
@@ -98,7 +98,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:contentDescription="Paiements encaissés"
+                    android:contentDescription="@string/a11y_paiements_encaisses"
                     android:src="@drawable/ic_baseline_backup_24"
                     tools:ignore="ContentDescription"/>
             </LinearLayout>
@@ -106,7 +106,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Total Versement"
+                android:text="@string/l2_total_versement"
                 android:textColor="#64748B"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -117,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="1 532 420,00 DA"
+                android:text="@string/l2_1_532_420_00_da"
                 android:textColor="#0F172A"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -144,7 +144,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:contentDescription="Solde total"
+                    android:contentDescription="@string/a11y_solde_total"
                     android:src="@drawable/ic_baseline_wallet_24"
                     tools:ignore="ContentDescription"/>
             </LinearLayout>
@@ -152,7 +152,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Total Solde"
+                android:text="@string/l2_total_solde"
                 android:textColor="#64748B"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="703 656,00 DA"
+                android:text="@string/l2_703_656_00_da"
                 android:textColor="#0F172A"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -189,7 +189,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tous les clients"
+            android:text="@string/l2_tous_les_clients"
             android:textColor="#0F172A"
             android:textSize="14sp"
             android:textStyle="bold"

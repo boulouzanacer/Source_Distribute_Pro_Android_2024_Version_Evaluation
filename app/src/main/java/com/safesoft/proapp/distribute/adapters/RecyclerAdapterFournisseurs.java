@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -39,8 +40,8 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
     private String PREFS = "ALL_PREFS";
     private SharedPreferences prefs;
 
-    private static String fmtDA(double v) {
-        return String.format(java.util.Locale.FRANCE, "%,.2f DA", v);
+    private String fmtDA(double v) {
+        return mContext.getString(R.string.l4_montant_format, v);
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -106,7 +107,7 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
         holder.FournisseurN.setTypeface(null, Typeface.BOLD);
         holder.FournisseurN.setText(item.fournis);
 
-        holder.Tel_fournisseurN.setText("TEL : " + item.tel);
+        holder.Tel_fournisseurN.setText(BaseApplication.instance.getString(R.string.l4_tel_prefix) + item.tel);
 
         holder.Code_fournisseur_row.setText(item.code_frs != null ? item.code_frs : "-");
 
@@ -114,8 +115,8 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
             holder.Achats_cell.setText(fmtDA(item.achat_montant));
             holder.Vers_cell.setText(fmtDA(item.verser_montant));
         } catch (Exception e) {
-            holder.Achats_cell.setText("0,00 DA");
-            holder.Vers_cell.setText("0,00 DA");
+            holder.Achats_cell.setText(mContext.getString(R.string.l4_montant_zero));
+            holder.Vers_cell.setText(mContext.getString(R.string.l4_montant_zero));
         }
 
         if (prefs.getBoolean("AFFICHAGE_SOLDE_FOURNISSEUR", true)) {
@@ -154,12 +155,12 @@ public class RecyclerAdapterFournisseurs extends RecyclerView.Adapter<RecyclerAd
                     }
                 } catch (Exception ignore) {}
             } catch (Exception e) {
-                holder.Sold_fournisseurN.setText("0,00 DA");
+                holder.Sold_fournisseurN.setText(mContext.getString(R.string.l4_montant_zero));
             }
         } else {
-            holder.Achats_cell.setText("**** DA");
-            holder.Vers_cell.setText("**** DA");
-            holder.Sold_fournisseurN.setText("******** DA");
+            holder.Achats_cell.setText(mContext.getString(R.string.l4_montant_masque));
+            holder.Vers_cell.setText(mContext.getString(R.string.l4_montant_masque));
+            holder.Sold_fournisseurN.setText(mContext.getString(R.string.l4_montant_masque_total));
         }
 
 

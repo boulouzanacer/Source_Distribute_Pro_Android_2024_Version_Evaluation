@@ -54,7 +54,7 @@ public class FragmentSelectedVendeur extends SwipeAwayDialogFragment {
         title_list_bon = rootView.findViewById(R.id.title_list_bon);
         title_list_bon.setText(title);
         TextView subtitle = rootView.findViewById(R.id.subtitle_list_label);
-        if (subtitle != null) subtitle.setText("LISTE DES VENDEURS");
+        if (subtitle != null) subtitle.setText(getString(R.string.l4_liste_vendeurs));
 
         MaterialFancyButton btnValid = rootView.findViewById(R.id.btn_connect);
         MaterialFancyButton btnCancel = rootView.findViewById(R.id.btn_cancel);

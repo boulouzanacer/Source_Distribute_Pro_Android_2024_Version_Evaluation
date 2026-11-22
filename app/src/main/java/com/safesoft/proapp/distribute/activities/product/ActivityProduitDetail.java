@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.product;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
@@ -52,7 +54,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class ActivityProduitDetail extends AppCompatActivity {
+public class ActivityProduitDetail extends BaseLocaleActivity {
 
     private PostData_Produit produit;
     private ImageView ImgProduit;
@@ -130,7 +132,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Détails produit");
+            getSupportActionBar().setTitle(getString(R.string.l3_details_produit));
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
         initViews();
@@ -245,7 +247,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
         TvTva.setText(nf.format(produit.tva) + " % ");
 
         TvStock.setText(new DecimalFormat("##,##0.##").format(Double.valueOf(produit.stock)));
-        Colissage.setText("Colissage : " + new DecimalFormat("##,##0.##").format(produit.colissage));
+        Colissage.setText(getString(R.string.l4_colissage_prefix) + new DecimalFormat("##,##0.##").format(produit.colissage));
 
         if (produit.description != null) {
             Description.setText(produit.description);
@@ -330,7 +332,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
                 if (pdf != null && pdf.exists()) {
                     sendToBarcode4(pdf);
                 } else {
-                    Toast.makeText(this, "PDF non genere", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.l3_pdf_non_genere), Toast.LENGTH_LONG).show();
                 }
             } else {
                 // Mode App SDK : demander le nombre de tickets avant d'imprimer.
@@ -374,8 +376,8 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
         final AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(view)
-                .setNegativeButton("Annuler", null)
-                .setPositiveButton("Imprimer", null)
+                .setNegativeButton(getString(R.string.l3_annuler), null)
+                .setPositiveButton(getString(R.string.l3_imprimer), null)
                 .create();
 
         // Validation manuelle : evite la fermeture automatique du dialogue.
@@ -420,7 +422,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
     )  {
         File externalDir = getExternalFilesDir(null);
         if (externalDir == null) {
-            Toast.makeText(this, "Dossier PDF indisponible", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_dossier_pdf_indisponible), Toast.LENGTH_LONG).show();
             return null;
         }
 
@@ -474,7 +476,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
             */
             Bitmap barcodeBitmap = generateBarcode(barcodeText);
             if (barcodeBitmap == null) {
-                Toast.makeText(this, "Generation du code-barres impossible", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.l3_generation_du_code_barres_impossible), Toast.LENGTH_LONG).show();
                 return null;
             }
 
@@ -539,7 +541,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
             }
 
             if (!pdfFile.exists() || pdfFile.length() == 0) {
-                Toast.makeText(this, "PDF vide non genere", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.l3_pdf_vide_non_genere), Toast.LENGTH_LONG).show();
                 return null;
             }
 
@@ -550,7 +552,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
                 //noinspection ResultOfMethodCallIgnored
                 pdfFile.delete();
             }
-            Toast.makeText(this, "Creation PDF impossible : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_creation_pdf_impossible) + e.getMessage(), Toast.LENGTH_LONG).show();
             return null;
         } finally {
             document.close();
@@ -559,7 +561,7 @@ public class ActivityProduitDetail extends AppCompatActivity {
 
     private void sendToBarcode4(File pdfFile){
         if (pdfFile == null || !pdfFile.exists()) {
-            Toast.makeText(this, "PDF introuvable", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_pdf_introuvable), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -587,11 +589,11 @@ public class ActivityProduitDetail extends AppCompatActivity {
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "4Barcode non installé", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.l3_4barcode_non_installe), Toast.LENGTH_LONG).show();
             }
         }
         catch(Exception e){
-            Toast.makeText(this, "Envoi vers 4Barcode impossible : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_envoi_vers_4barcode_impossible) + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
     }

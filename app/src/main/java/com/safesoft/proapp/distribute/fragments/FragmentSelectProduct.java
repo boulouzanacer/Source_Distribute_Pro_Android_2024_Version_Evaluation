@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.Manifest;
@@ -289,7 +291,7 @@ public class FragmentSelectProduct {
 
         }catch (Exception e){
             new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText("Erreur. !")
+                .setTitleText(BaseApplication.instance.getString(R.string.l3_erreur_3))
                 .setContentText("" + e.getMessage())
                 .show();
         }

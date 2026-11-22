@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 
@@ -378,7 +380,7 @@ public class FragmentNewEditClient {
 
         if(SOURCE_ACTIVITY.equals("NEW_CLIENT")){
 
-            title_client.setText("Nouveau client");
+            title_client.setText(BaseApplication.instance.getString(R.string.l4_nouveau_client));
             created_client.solde_client = created_client.solde_ini;
             if (CODE_DEPOT.equals("000000")) {
                 created_client.code_client = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "_" + CODE_VENDEUR;
@@ -396,7 +398,7 @@ public class FragmentNewEditClient {
 
         }else {
 
-            title_client.setText("Modifier client");
+            title_client.setText(BaseApplication.instance.getString(R.string.l4_modifier_client));
 
             edt_client_name.setText(old_client.client);
             edt_client_adress.setText(old_client.adresse);
@@ -478,17 +480,17 @@ public class FragmentNewEditClient {
 
             if (nomCs == null || nomCs.length() <= 0) {
 
-                edt_client_name.setError("Nom client est obligatoire!!");
+                edt_client_name.setError(BaseApplication.instance.getString(R.string.l3_nom_client_est_obligatoire));
                 hasError = true;
             }
 
             if (telCs == null || telCs.length() <= 0) {
-                edt_client_telephone.setError("Telephone est obligatoire!!");
+                edt_client_telephone.setError(BaseApplication.instance.getString(R.string.l3_telephone_est_obligatoire));
                 hasError = true;
             }
 
             if (soldeCs == null || soldeCs.length() <= 0) {
-                edt_client_solde_init.setError("Solde initial est obligatoire!!");
+                edt_client_solde_init.setError(BaseApplication.instance.getString(R.string.l3_solde_initial_est_obligatoire));
                 hasError = true;
             }
 
@@ -515,11 +517,11 @@ public class FragmentNewEditClient {
                             || communes.get(posC).commune.trim().isEmpty());
 
                     if (wilayaVide) {
-                        Crouton.makeText(activity, "Veuillez sélectionner une Wilaya (paramètre obligatoire activé)", Style.ALERT).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_veuillez_selectionner_wilaya), Style.ALERT).show();
                         hasError = true;
                     }
                     if (communeVide) {
-                        Crouton.makeText(activity, "Veuillez sélectionner une Commune (paramètre obligatoire activé)", Style.ALERT).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_veuillez_selectionner_commune), Style.ALERT).show();
                         hasError = true;
                     }
                 }
@@ -540,7 +542,7 @@ public class FragmentNewEditClient {
                     created_client.solde_ini = Double.parseDouble(soldeStr);
                 } catch (NumberFormatException nfe) {
                     created_client.solde_ini = 0.0;
-                    edt_client_solde_init.setError("Solde invalide");
+                    edt_client_solde_init.setError(BaseApplication.instance.getString(R.string.l3_solde_invalide));
                     return;
                 }
 
@@ -594,7 +596,7 @@ public class FragmentNewEditClient {
 
                         created_client.code_client = edt_client_code.getEditableText().toString();
                         controller.update_client(created_client, old_code_client);
-                        Crouton.makeText(activity, "Client bien modifier", Style.INFO).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_client_bien_modifie), Style.INFO).show();
                         SelectedClientEvent added_client = new SelectedClientEvent(created_client);
                         bus.post(added_client);
                         savedSuccessfully = true;
@@ -602,8 +604,8 @@ public class FragmentNewEditClient {
 
                     }catch (Exception e){
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Problème de mise à jour client : " + e.getMessage())
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_attention_6))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_de_mise_a_jour_client) + e.getMessage())
                                 .show();
                     }
                     //Insert client into database,
@@ -619,14 +621,14 @@ public class FragmentNewEditClient {
                          // Check if client exist in database
                          if(controller.checkClientExists(created_client.code_client)){
                              new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention. !")
-                                    .setContentText("Ce client existe déjà")
+                                    .setTitleText(BaseApplication.instance.getString(R.string.l3_attention_6))
+                                    .setContentText(BaseApplication.instance.getString(R.string.l3_ce_client_existe_deja))
                                     .show();
                              return;
                          }
                          //Insert client into database,
                          controller.insert_into_client(created_client);
-                         Crouton.makeText(activity, "Client bien ajouté", Style.INFO).show();
+                         Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_client_bien_ajoute), Style.INFO).show();
                          SelectedClientEvent added_client = new SelectedClientEvent(created_client);
                          bus.post(added_client);
                          savedSuccessfully = true;
@@ -634,8 +636,8 @@ public class FragmentNewEditClient {
 
                     }catch (Exception e){
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Problème insertion : " + e.getMessage())
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_attention_6))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_insertion) + e.getMessage())
                                 .show();
                     }
 
@@ -660,7 +662,7 @@ public class FragmentNewEditClient {
         ActivityCompat.requestPermissions(activity,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                 REQUEST_LOCATION_PERMISSION);
-        Toast.makeText(mContext, "Activez la permission Localisation puis réessayez", Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_activez_la_permission_localisation_puis), Toast.LENGTH_LONG).show();
     }
 
     private boolean isGpsEnabled() {
@@ -679,20 +681,20 @@ public class FragmentNewEditClient {
 
     private void showGpsEnableDialog() {
         new AlertDialog.Builder(activity)
-                .setTitle("Localisation désactivée")
-                .setMessage("Veuillez activer la localisation (GPS ou Réseau) pour récupérer votre position.")
+                .setTitle(BaseApplication.instance.getString(R.string.l3_localisation_desactivee))
+                .setMessage(BaseApplication.instance.getString(R.string.l3_veuillez_activer_la_localisation_gps_ou))
                 .setCancelable(false)
-                .setPositiveButton("Activer", (dlg, which) ->
+                .setPositiveButton(BaseApplication.instance.getString(R.string.l3_activer), (dlg, which) ->
                         activity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                .setNegativeButton("Annuler", (dlg, which) -> dlg.dismiss())
+                .setNegativeButton(BaseApplication.instance.getString(R.string.l3_annuler), (dlg, which) -> dlg.dismiss())
                 .show();
     }
 
     @SuppressWarnings({"MissingPermission", "deprecation"})
     private void getCurrentLocation() {
         progressGps = new ProgressDialog(activity);
-        progressGps.setTitle("Position GPS");
-        progressGps.setMessage("Récupération de la position en cours...");
+        progressGps.setTitle(BaseApplication.instance.getString(R.string.l3_position_gps));
+        progressGps.setMessage(BaseApplication.instance.getString(R.string.l3_recuperation_de_la_position_en_cours));
         progressGps.setIndeterminate(true);
         progressGps.setCancelable(true);
         progressGps.setOnCancelListener(dlg -> cleanupGpsResources());
@@ -711,7 +713,7 @@ public class FragmentNewEditClient {
                     .addOnFailureListener(activity, e -> requestNewLocation());
         } catch (SecurityException e) {
             dismissProgressGps();
-            Toast.makeText(mContext, "Permission localisation refusée", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_permission_localisation_refusee), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -731,7 +733,7 @@ public class FragmentNewEditClient {
                 if (location != null) {
                     applyLocation(location);
                 } else {
-                    Toast.makeText(mContext, "Position introuvable, réessayez.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_position_introuvable_reessayez), Toast.LENGTH_SHORT).show();
                 }
                 dismissProgressGps();
             }
@@ -741,7 +743,7 @@ public class FragmentNewEditClient {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, activity.getMainLooper());
         } catch (SecurityException e) {
             dismissProgressGps();
-            Toast.makeText(mContext, "Permission localisation refusée", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_permission_localisation_refusee), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -751,7 +753,7 @@ public class FragmentNewEditClient {
         edt_client_latitude.setText(coordFormat.format(created_client.latitude));
         edt_client_longitude.setText(coordFormat.format(created_client.longitude));
         refreshMapButtonState();
-        Crouton.makeText(activity, "Position récupérée avec succès !", Style.CONFIRM).show();
+        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_position_recuperee_succes), Style.CONFIRM).show();
     }
 
     private void refreshMapButtonState() {
@@ -782,7 +784,7 @@ public class FragmentNewEditClient {
                 activity.startActivity(fallback);
             }
         } catch (Exception e) {
-            Toast.makeText(mContext, "Impossible d'ouvrir la carte", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_impossible_douvrir_la_carte), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -809,25 +811,25 @@ public class FragmentNewEditClient {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA)) {
                 new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Permission caméra requise")
-                        .setContentText("L'application a besoin d'accéder à la caméra pour scanner les codes-barres.")
-                        .setConfirmText("Autoriser")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_permission_camera_requise))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_lapplication_a_besoin_dacceder_a_la_came_2))
+                        .setConfirmText(BaseApplication.instance.getString(R.string.l3_autoriser))
                         .setConfirmClickListener(sweetAlertDialog -> {
                             sweetAlertDialog.dismissWithAnimation();
                             ActivityCompat.requestPermissions(activity,
                                     new String[]{Manifest.permission.CAMERA},
                                     REQUEST_CAMERA_PERMISSION);
                         })
-                        .setCancelText("Annuler")
+                        .setCancelText(BaseApplication.instance.getString(R.string.l3_annuler))
                         .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                         .show();
             } else {
                 boolean deniedPermanently = !ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA);
                 if (deniedPermanently) {
                     new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Caméra indisponible")
-                            .setContentText("Vous avez refusé définitivement la permission caméra. Pour activer le scanner, allez dans Paramètres > Applications > Distribute Pro > Autorisations et activez Caméra.")
-                            .setConfirmText("Aller aux paramètres")
+                            .setTitleText(BaseApplication.instance.getString(R.string.l3_camera_indisponible))
+                            .setContentText(BaseApplication.instance.getString(R.string.l3_vous_avez_refuse_definitivement_la_permi))
+                            .setConfirmText(BaseApplication.instance.getString(R.string.l3_aller_aux_parametres))
                             .setConfirmClickListener(sweetAlertDialog -> {
                                 sweetAlertDialog.dismissWithAnimation();
                                 Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -835,7 +837,7 @@ public class FragmentNewEditClient {
                                 intent.setData(uri);
                                 activity.startActivity(intent);
                             })
-                            .setCancelText("Annuler")
+                            .setCancelText(BaseApplication.instance.getString(R.string.l3_annuler))
                             .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                             .show();
                 } else {

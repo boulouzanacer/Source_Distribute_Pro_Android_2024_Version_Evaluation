@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
@@ -130,16 +132,16 @@ public class FragmentNewEditFournisseur {
 
             if (edt_fournisseur_name.getText().length() <= 0) {
 
-                edt_fournisseur_name.setError("Nom obligatoire!!");
+                edt_fournisseur_name.setError(BaseApplication.instance.getString(R.string.l3_nom_obligatoire));
                 hasError = true;
             }
             if (edt_fournisseur_adress.getText().length() <= 0) {
-                edt_fournisseur_adress.setError("Adresse obligatoire!!");
+                edt_fournisseur_adress.setError(BaseApplication.instance.getString(R.string.l3_adresse_obligatoire));
                 hasError = true;
             }
 
             if (edt_fournisseur_telephone.getText().length() <= 0) {
-                edt_fournisseur_telephone.setError("Telephone obligatoire!!");
+                edt_fournisseur_telephone.setError(BaseApplication.instance.getString(R.string.l3_telephone_obligatoire));
                 hasError = true;
             }
 
@@ -168,7 +170,7 @@ public class FragmentNewEditFournisseur {
                     boolean state_insert_fournisseur = controller.update_fournisseur(created_fournisseur);
                     if (state_insert_fournisseur) {
 
-                        Crouton.makeText(activity, "Fournisseur bien modifier", Style.INFO).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_fournisseur_bien_modifie), Style.INFO).show();
 
                         SelectedFournisseurEvent added_fournisseur = new SelectedFournisseurEvent(created_fournisseur);
                         bus.post(added_fournisseur);
@@ -177,7 +179,7 @@ public class FragmentNewEditFournisseur {
                         dialog.dismiss();
 
                     } else {
-                        Crouton.makeText(activity, "Problème de mise à jour client", Style.ALERT).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_probleme_mise_a_jour_client), Style.ALERT).show();
                     }
                 } else {
 
@@ -192,7 +194,7 @@ public class FragmentNewEditFournisseur {
                     boolean state_update_client = controller.insert_into_fournisseur(created_fournisseur);
                     if (state_update_client) {
 
-                        Crouton.makeText(activity, "Fournisseur bien ajouté", Style.INFO).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_fournisseur_bien_ajoute), Style.INFO).show();
 
                         SelectedFournisseurEvent added_fournisseur = new SelectedFournisseurEvent(created_fournisseur);
                         bus.post(added_fournisseur);
@@ -201,7 +203,7 @@ public class FragmentNewEditFournisseur {
                         dialog.dismiss();
 
                     } else {
-                        Crouton.makeText(activity, "Problème insertion", Style.ALERT).show();
+                        Crouton.makeText(activity, BaseApplication.instance.getString(R.string.l4_probleme_insertion), Style.ALERT).show();
                     }
                 }
 

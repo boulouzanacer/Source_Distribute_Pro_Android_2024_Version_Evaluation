@@ -5,7 +5,7 @@
     <item
         android:id="@+id/print"
         android:orderInCategory="1"
-        android:title="Imprimer"
+        android:title="@string/l4_menu_imprimer"
         android:icon="@drawable/baseline_local_printshop_24"
         app:showAsAction="always"></item>
 

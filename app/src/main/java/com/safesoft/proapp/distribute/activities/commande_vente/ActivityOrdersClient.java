@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,7 +51,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityOrdersClient extends AppCompatActivity implements RecyclerAdapterBon1.ItemClick, RecyclerAdapterBon1.ItemLongClick {
+public class ActivityOrdersClient extends BaseLocaleActivity implements RecyclerAdapterBon1.ItemClick, RecyclerAdapterBon1.ItemLongClick {
 
     RecyclerView recyclerView;
     RecyclerAdapterBon1 adapter;
@@ -96,8 +98,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Bons de commandes");
-            getSupportActionBar().setSubtitle("Client");
+            getSupportActionBar().setTitle(getString(R.string.l3_bons_de_commandes));
+            getSupportActionBar().setSubtitle(getString(R.string.l3_client));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -225,7 +227,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         adapter = new RecyclerAdapterBon1(this, getItems(text_search), "ORDER");
         recyclerView.setAdapter(adapter);
 
-        list_bon_total.setText("Total bon : " + (bon1s_temp != null ? bon1s_temp.size() : 0));
+        list_bon_total.setText(getString(R.string.l4_total_bon_prefix) + (bon1s_temp != null ? bon1s_temp.size() : 0));
     }
 
     public ArrayList<PostData_Bon1> getItems(String text_search) {
@@ -348,15 +350,15 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
-        builder.setTitle("Choisissez une action");
+        builder.setTitle(getString(R.string.l3_choisissez_une_action));
         builder.setItems(items, (dialog, item) -> {
             switch (item) {
                 case 0 ->
                         new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Suppression")
-                                .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
-                                .setCancelText("Anuuler")
-                                .setConfirmText("Supprimer")
+                                .setTitleText(getString(R.string.l3_suppression))
+                                .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_bon) + bon1s_temp.get(position).num_bon + " ?!")
+                                .setCancelText(getString(R.string.l3_anuuler))
+                                .setConfirmText(getString(R.string.l3_supprimer))
                                 .showCancelButton(true)
                                 .setCancelClickListener(Dialog::dismiss)
                                 .setConfirmClickListener(sDialog -> {
@@ -368,8 +370,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                 case 1 -> {
                     if (!"F".equals(bon1s_temp.get(position).blocage)) {
                         new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Ce bon n'est pas encore validé")
+                                .setTitleText(getString(R.string.l3_information_4))
+                                .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                                 .show();
                         return;
                     }
@@ -415,8 +417,8 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
                             if (e.getMessage() != null && e.getMessage().contains("android.bluetooth.BluetoothAdapter.getBondedDevices()")) {
                                 new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
-                                        .setTitleText("Erreur")
-                                        .setContentText("Le bluetooth n'est pas disponible.")
+                                        .setTitleText(getString(R.string.l3_erreur))
+                                        .setContentText(getString(R.string.l3_le_bluetooth_nest_pas_disponible))
                                         .show();
                             }
                         }
@@ -473,7 +475,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                             }
 
                             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!")
+                                    .setTitleText(getString(R.string.l3_attention_4))
                                     .setContentText(message.toString())
                                     .show();
                             return;
@@ -491,13 +493,13 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                     if (controller.Export_commande_to_ventes(bon1s_temp.get(position), final_panier, CODE_DEPOT, NUM_BON_BON1)) {
                         setRecycle("");
                         new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Bon de commande transféré avec succès")
+                                .setTitleText(getString(R.string.l3_information_4))
+                                .setContentText(getString(R.string.l3_bon_de_commande_transfere_avec_succes))
                                 .show();
                     } else {
                         new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Erreur!")
-                                .setContentText("Probleme de transfère de bon de commande, Transfère annulé !")
+                                .setTitleText(getString(R.string.l3_erreur_2))
+                                .setContentText(getString(R.string.l3_probleme_de_transfere_de_bon_de_commande))
                                 .show();
                     }
                 }
@@ -508,22 +510,22 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                         mapIntent.setPackage("com.google.android.apps.maps");
                         startActivity(mapIntent);
                     } catch (Exception e) {
-                        Crouton.makeText(ActivityOrdersClient.this, "Erreur de navigation : Position client non disponible", Style.ALERT).show();
+                        Crouton.makeText(ActivityOrdersClient.this, getString(R.string.l4_erreur_navigation_position_client), Style.ALERT).show();
                     }
                 }
                 case 4 -> {
                     if ("A".equals(bon1s_temp.get(position).blocage)) {
                         new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Information!")
-                                .setContentText("Cette commande est déjà annulée.")
+                                .setTitleText(getString(R.string.l3_information_4))
+                                .setContentText(getString(R.string.l3_cette_commande_est_deja_annulee))
                                 .show();
                         return;
                     }
                     new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Annulation!")
-                            .setContentText("Voulez-vous vraiment annuler cette commande " + bon1s_temp.get(position).num_bon + " ?, Opération non reversible!!!")
-                            .setCancelText("Anuuler")
-                            .setConfirmText("Confirmer")
+                            .setTitleText(getString(R.string.l3_annulation))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_annuler_cette_comma) + bon1s_temp.get(position).num_bon + " ?, Opération non reversible!!!")
+                            .setCancelText(getString(R.string.l3_anuuler))
+                            .setConfirmText(getString(R.string.l3_confirmer))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -543,14 +545,14 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
-        builder.setTitle("Choisissez une action");
+        builder.setTitle(getString(R.string.l3_choisissez_une_action));
         builder.setItems(items, (dialog, item) -> {
             if (item == 0) {
                 new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Suppression")
-                        .setContentText("Voulez-vous vraiment supprimer le bon " + bon1s_temp.get(position).num_bon + " ?!")
-                        .setCancelText("Anuuler")
-                        .setConfirmText("Supprimer")
+                        .setTitleText(getString(R.string.l3_suppression))
+                        .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_bon) + bon1s_temp.get(position).num_bon + " ?!")
+                        .setCancelText(getString(R.string.l3_anuuler))
+                        .setConfirmText(getString(R.string.l3_supprimer))
                         .showCancelButton(true)
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
@@ -575,9 +577,9 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         }
         Context themedContext = getSupportActionBar() != null ? getSupportActionBar().getThemedContext() : this;
         searchView = new SearchView(themedContext);
-        searchView.setQueryHint("Rechercher");
+        searchView.setQueryHint(getString(R.string.l4_menu_rechercher));
 
-        menu.add(Menu.NONE, Menu.NONE, 1, "Search")
+        menu.add(Menu.NONE, Menu.NONE, 1, getString(R.string.l4_menu_rechercher))
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -597,7 +599,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
                     imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
                 }
 
-                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getString(R.string.l3_dummy_search), Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -618,7 +620,7 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
         } else if (item.getItemId() == R.id.new_sale) {
             if (!prefs.getBoolean("APP_ACTIVATED", false) && !bon1s_temp.isEmpty()) {
                 new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
             } else {
@@ -631,10 +633,10 @@ public class ActivityOrdersClient extends AppCompatActivity implements RecyclerA
             return true;
         } else if (item.getItemId() == R.id.delete_all_bon) {
             new SweetAlertDialog(ActivityOrdersClient.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Suppression")
-                    .setContentText("Voulez-vous vraiment supprimer tous les bon exportés ?!")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Supprimer")
+                    .setTitleText(getString(R.string.l3_suppression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_tous_les_2))
+                    .setCancelText(getString(R.string.l3_anuuler))
+                    .setConfirmText(getString(R.string.l3_supprimer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {

@@ -1,5 +1,8 @@
 package com.safesoft.proapp.distribute.gps.service_start;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.R;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -150,7 +153,7 @@ public class AutoStartService extends Service {
     private Notification createNotification() {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Distribute Pro")
-                .setContentText("Tache executes chaque 1 minute")
+                .setContentText(BaseApplication.instance.getString(R.string.l3_tache_executes_chaque_1_minute))
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
                 .setOngoing(true)
                 .build();

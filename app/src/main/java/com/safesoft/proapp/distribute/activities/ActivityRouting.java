@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -38,7 +40,7 @@ import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityRouting extends AppCompatActivity implements RecyclerAdapterRouting.ItemClick, RecyclerAdapterRouting.ItemLongClick {
+public class ActivityRouting extends BaseLocaleActivity implements RecyclerAdapterRouting.ItemClick, RecyclerAdapterRouting.ItemLongClick {
     RecyclerView recyclerView;
     RecyclerAdapterRouting adapter;
     ArrayList<PostData_Client> clients;
@@ -71,7 +73,7 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Clients à visité");
+            getSupportActionBar().setTitle(getString(R.string.l3_clients_a_visite));
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
@@ -180,10 +182,10 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
         if (v.getId() == R.id.item_root) {
 
             new SweetAlertDialog(ActivityRouting.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Suppression")
-                    .setContentText("Voulez-vous vraiment supprimer le client ( " + clients.get(position).client + " ) ?")
-                    .setCancelText("Non")
-                    .setConfirmText("Oui")
+                    .setTitleText(getString(R.string.l3_suppression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_client_2) + clients.get(position).client + " ) ?")
+                    .setCancelText(getString(R.string.l3_non))
+                    .setConfirmText(getString(R.string.l3_oui))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -196,8 +198,8 @@ public class ActivityRouting extends AppCompatActivity implements RecyclerAdapte
 
                         } catch (Exception e) {
                             new SweetAlertDialog(ActivityRouting.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!")
-                                    .setContentText("problème lors de suppression du client : " + e.getMessage())
+                                    .setTitleText(getString(R.string.l3_attention_4))
+                                    .setContentText(getString(R.string.l3_probleme_lors_de_suppression_du_client) + e.getMessage())
                                     .show();
                         }
                         sDialog.dismiss();

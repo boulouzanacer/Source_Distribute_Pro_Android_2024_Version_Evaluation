@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Connexion base de données"
+            android:text="@string/l2_connexion_base_de_donnees"
             android:textColor="#0F172A"
             android:textSize="14.5sp"
             android:textStyle="bold"
@@ -277,7 +277,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:contentDescription="Code dépôt"
+                    android:contentDescription="@string/a11y_code_depot"
                     android:src="@drawable/ic_baseline_home_24"/>
             </LinearLayout>
 
@@ -331,7 +331,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:contentDescription="Nom dépôt"
+                    android:contentDescription="@string/a11y_nom_depot"
                     android:src="@drawable/ic_baseline_done_24"/>
             </LinearLayout>
 
@@ -375,7 +375,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
-                android:text="Depots" />
+                android:text="@string/l2_depots" />
 
         </LinearLayout>
 
@@ -407,7 +407,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:contentDescription="Code vendeur"
+                    android:contentDescription="@string/a11y_code_vendeur"
                     android:src="@drawable/ic_baseline_person_24"/>
             </LinearLayout>
 
@@ -461,7 +461,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:contentDescription="Nom vendeur"
+                    android:contentDescription="@string/a11y_nom_vendeur"
                     android:src="@drawable/ic_baseline_check_24"/>
             </LinearLayout>
 
@@ -504,7 +504,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
-                android:text="Vendeurs" />
+                android:text="@string/l2_vendeurs" />
 
         </LinearLayout>
 

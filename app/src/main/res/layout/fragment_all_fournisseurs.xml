@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sélection du fournisseur"
+                    android:text="@string/l2_selection_du_fournisseur"
                     android:textSize="12sp"
                     android:textColor="#BFDBFE"
                     android:fontFamily="sans-serif-medium"
@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🏭 Fournisseurs"
+                    android:text="@string/l2_fournisseurs_2"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
@@ -59,7 +59,7 @@
 
             <Button
                 android:id="@+id/add_fournisseur"
-                android:text="Ajouter"
+                android:text="@string/l2_ajouter"
                 android:textAllCaps="false"
                 android:textColor="#0F4C81"
                 android:textStyle="bold"
@@ -106,7 +106,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🔍 Rechercher un fournisseur"
+                        android:text="@string/l2_rechercher_un_fournisseur"
                         android:textColor="#0F4C81"
                         android:textSize="11sp"
                         android:textStyle="bold"
@@ -128,7 +128,7 @@
                             android:layout_height="48dp"
                             android:minHeight="48dp"
                             android:ems="10"
-                            android:hint="Rechercher fournisseur"
+                            android:hint="@string/l2_rechercher_fournisseur"
                             android:textColorHint="#94A3B8"
                             android:textColor="#0F172A"
                             android:textSize="14.5sp"
@@ -203,7 +203,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Total"
+                                    android:text="@string/l2_total_2"
                                     android:textColor="#1E40AF"
                                     android:textSize="11sp"
                                     android:layout_marginTop="1dp"
@@ -239,7 +239,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="À payer"
+                                    android:text="@string/l2_a_payer"
                                     android:textColor="#991B1B"
                                     android:textSize="11sp"
                                     android:layout_marginTop="1dp"
@@ -275,7 +275,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Soldé"
+                                    android:text="@string/l2_solde"
                                     android:textColor="#065F46"
                                     android:textSize="11sp"
                                     android:layout_marginTop="1dp"
@@ -314,7 +314,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🏭 LISTE DES FOURNISSEURS"
+                    android:text="@string/l2_liste_des_fournisseurs"
                     android:textColor="#334155"
                     android:textSize="11sp"
                     android:textStyle="bold"

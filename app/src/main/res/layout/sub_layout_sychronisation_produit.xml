@@ -15,7 +15,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres sychrnisation tous les produit" />
+        android:text="@string/l2_parametres_sychrnisation_tous_les_produi" />
 
     <View
         android:layout_width="match_parent"

@@ -14,7 +14,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres notes" />
+        android:text="@string/l2_parametres_notes" />
 
     <View
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
         tools:ignore="RtlSymmetry">
 
         <TextView
-            android:text="Notes"
+            android:text="@string/l2_notes"
             android:layout_weight="8"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>

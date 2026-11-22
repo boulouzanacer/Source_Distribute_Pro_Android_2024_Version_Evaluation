@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="N.Colis"
+            android:text="@string/l2_n_colis"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Colis."
+            android:text="@string/colis"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textStyle="bold" />

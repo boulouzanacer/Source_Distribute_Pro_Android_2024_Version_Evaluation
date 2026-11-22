@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters.invoice_reader;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +36,11 @@ public class InvoiceItemAdapter extends RecyclerView.Adapter<InvoiceItemAdapter.
         InvoiceItem item = items.get(position);
 
         holder.tvDescription.setText(notEmpty(item.getDescription()));
-        holder.tvCode.setText("Code : " + notEmpty(item.getCode()));
-        holder.tvBarcode.setText("Code-barres : " + notEmpty(item.getCodebarre()));
-        holder.tvQty.setText("Qté : " + df.format(item.getQuantity()));
-        holder.tvUnitPrice.setText("P.U : " + df.format(item.getUnitPrice()));
-        holder.tvLineTotal.setText("Total ligne : " + df.format(item.getLineTotal()));
+        holder.tvCode.setText(BaseApplication.instance.getString(R.string.l4_code_prefix) + notEmpty(item.getCode()));
+        holder.tvBarcode.setText(BaseApplication.instance.getString(R.string.l4_code_barres_prefix) + notEmpty(item.getCodebarre()));
+        holder.tvQty.setText(BaseApplication.instance.getString(R.string.l4_qte_prefix) + df.format(item.getQuantity()));
+        holder.tvUnitPrice.setText(BaseApplication.instance.getString(R.string.l4_pu_prefix) + df.format(item.getUnitPrice()));
+        holder.tvLineTotal.setText(BaseApplication.instance.getString(R.string.l4_total_ligne_prefix) + df.format(item.getLineTotal()));
     }
 
     @Override

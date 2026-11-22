@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/print_versement"
-        android:title="Imprimer versement"
+        android:title="@string/l4_menu_imprimer_versement"
         android:icon="@drawable/ic_outline_print_24"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/edit_client"
-        android:title="Modifier"
+        android:title="@string/l4_menu_modifier"
         android:icon="@drawable/baseline_edit_24"
         app:showAsAction="always" />
 </menu>

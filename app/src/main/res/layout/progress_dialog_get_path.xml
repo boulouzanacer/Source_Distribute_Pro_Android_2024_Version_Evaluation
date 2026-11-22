@@ -41,7 +41,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="15dp"
-            android:text="Calculation de chemin"
+            android:text="@string/l2_calculation_de_chemin"
             android:textSize="17dp"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"

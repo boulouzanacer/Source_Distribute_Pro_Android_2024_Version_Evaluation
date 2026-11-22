@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.splashscreen;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -27,7 +29,7 @@ import java.util.TimerTask;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class splashScreen extends AppCompatActivity {
+public class splashScreen extends BaseLocaleActivity {
 
     private final String PREFS = "ALL_PREFS";
     //public static final String NUM_SERIE = "INFO_ACTIVATION";
@@ -92,10 +94,10 @@ public class splashScreen extends AppCompatActivity {
         saveData();
 
         sweetDialog =  new SweetAlertDialog(splashScreen.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Activation")
-                .setContentText("L'application DISTRIBUTE PRO n'est pas encore activé, Voulez-vous l'activer ? ")
-                .setCancelText("Demo")
-                .setConfirmText("Activer")
+                .setTitleText(getString(R.string.l3_activation))
+                .setContentText(getString(R.string.l3_lapplication_distribute_pro_nest_pas_enc))
+                .setCancelText(getString(R.string.l3_demo))
+                .setConfirmText(getString(R.string.l3_activer))
                 .showCancelButton(true)
 
                 .setCancelClickListener(sDialog -> {

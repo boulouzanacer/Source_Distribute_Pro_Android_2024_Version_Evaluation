@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -138,14 +139,14 @@ public class RecyclerAdapterAchat1 extends RecyclerView.Adapter<RecyclerAdapterA
 
         String blocageValue = (item.blocage == null) ? "M" : item.blocage;
         if (blocageValue.equals("F")) {
-            holder.blocage.setText("Validé");
+            holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_valide));
             holder.blocage.setTextColor(Color.WHITE);
             holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_emerald);
             holder.blocage.setTextSize(14);
             holder.bgPanel.setBackgroundResource(R.drawable.bg_listitem_task_achat);
             if (holder.icCalBon != null) holder.icCalBon.setColorFilter(COLOR_EMERAUDE, android.graphics.PorterDuff.Mode.SRC_IN);
         } else {
-            holder.blocage.setText("En attente");
+            holder.blocage.setText(BaseApplication.instance.getString(R.string.l4_en_attente));
             holder.blocage.setTextColor(Color.WHITE);
             holder.blocage.setBackgroundResource(R.drawable.bg_badge_pill_red);
             holder.blocage.setTextSize(14);

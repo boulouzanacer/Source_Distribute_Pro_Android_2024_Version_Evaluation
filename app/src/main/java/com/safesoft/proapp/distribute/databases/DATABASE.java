@@ -1,5 +1,8 @@
 package com.safesoft.proapp.distribute.databases;
 
+
+import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.R;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -3275,6 +3278,7 @@ public class DATABASE extends SQLiteOpenHelper {
 
                 ContentValues args1 = new ContentValues();
 
+                args1.put("PRODUIT", list_bon2.produit);
                 args1.put("NBRE_COLIS", list_bon2.nbr_colis);
                 args1.put("COLISSAGE", list_bon2.colissage);
                 args1.put("QTE", list_bon2.qte);
@@ -6193,12 +6197,12 @@ public class DATABASE extends SQLiteOpenHelper {
                 dst.transferFrom(src, 0, src.size());
                 src.close();
                 dst.close();
-                Toast.makeText(mContext, "Backup Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_backup_successful), Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(mContext, "Database does not exist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_database_does_not_exist), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(mContext, "Cannot write to external storage", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, BaseApplication.instance.getString(R.string.l3_cannot_write_to_external_storage), Toast.LENGTH_SHORT).show();
         }
     }
 

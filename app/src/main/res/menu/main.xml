@@ -5,21 +5,21 @@
     <item
         android:id="@+id/update"
         android:orderInCategory="100"
-        android:title="Mise a jour"
+        android:title="@string/l4_menu_mise_a_jour"
         android:icon="@drawable/baseline_system_update_alt_24"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/info"
         android:orderInCategory="100"
-        android:title="Info"
+        android:title="@string/l4_menu_info"
         android:icon="@drawable/baseline_info_24"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/show_seriel_number"
         android:orderInCategory="100"
-        android:title="Afficher numéro de série"
+        android:title="@string/l4_menu_afficher_numero_serie"
         android:icon="@drawable/baseline_info_24"
         app:showAsAction="never" />
 

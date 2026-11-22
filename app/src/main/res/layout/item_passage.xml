@@ -64,7 +64,7 @@
                 android:id="@+id/tv_location_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Localisation activée"
+                android:text="@string/l2_localisation_activee"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:layout_marginStart="8dp"/>
@@ -75,7 +75,7 @@
             android:id="@+id/tv_observation_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Observation"
+            android:text="@string/observation"
             android:textStyle="bold"
             android:textSize="14sp"
             android:textColor="@color/black"
@@ -85,7 +85,7 @@
             android:id="@+id/tv_observation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Client satisfait et prêt à renouveler l'achat."
+            android:text="@string/l2_client_satisfait_et_pret_a_renouveler_l"
             android:textSize="14sp"
             android:textColor="@color/gray"
             android:paddingTop="4dp"/>
@@ -102,7 +102,7 @@
                 android:id="@+id/tv_distance_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Distance"
+                android:text="@string/l2_distance_2"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:textColor="@color/black"/>
@@ -111,7 +111,7 @@
                 android:id="@+id/tv_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12.5 km"
+                android:text="@string/l2_12_5_km"
                 android:textSize="14sp"
                 android:textColor="@color/blue"/>
         </LinearLayout>

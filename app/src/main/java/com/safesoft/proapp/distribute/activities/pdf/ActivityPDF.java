@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.pdf;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,7 +31,7 @@ import com.safesoft.proapp.distribute.R;
 import java.io.File;
 import java.util.Objects;
 
-public class ActivityPDF extends AppCompatActivity {
+public class ActivityPDF extends BaseLocaleActivity {
 
     PDFView pdfView;
     String SOURCE;
@@ -67,13 +69,13 @@ public class ActivityPDF extends AppCompatActivity {
             assert SOURCE != null;
             switch (SOURCE) {
                 case "FROM_SALE" ->
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Vente N° " + NUM_BON);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.l3_vente_n) + NUM_BON);
                 case "FROM_ORDER" ->
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Commande N° " + NUM_BON);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.l3_commande_n) + NUM_BON);
                 case "FROM_ACHAT" ->
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Achat N° " + NUM_BON);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.l3_achat_n) + NUM_BON);
                 case "FROM_TICKET" ->
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("TICKET PRODUIT ");
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.l3_ticket_produit));
             }
 
             showPdfFromUri(SOURCE, NUM_BON);

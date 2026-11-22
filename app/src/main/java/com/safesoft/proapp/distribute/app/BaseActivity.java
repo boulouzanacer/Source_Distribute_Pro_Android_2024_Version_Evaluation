@@ -17,7 +17,7 @@ import com.safesoft.proapp.distribute.R;
  * Created by Tony on 2017/12/3.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends BaseLocaleActivity {
 
     private ProgressDialog progressDialog;
 
@@ -82,7 +82,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(str)) {
                     progressDialog.setMessage(str);
                 } else {
-                    progressDialog.setMessage("Loading...");
+                    progressDialog.setMessage(getString(R.string.l3_loading));
                 }
                 progressDialog.show();
             }

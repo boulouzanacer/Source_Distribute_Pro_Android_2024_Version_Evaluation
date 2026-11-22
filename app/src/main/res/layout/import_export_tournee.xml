@@ -38,7 +38,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Import tournées"
+                    android:contentDescription="@string/a11y_import_tournees"
                     android:src="@drawable/ic_baseline_route_24" />
             </LinearLayout>
 
@@ -53,7 +53,7 @@
                     android:id="@+id/importt_commande"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Importation tournees (Réseaux IP)"
+                    android:text="@string/l2_importation_tournees_reseaux_ip"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer list des tournees depuis le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_importer_list_des_tourn"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -99,7 +99,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Export tournées"
+                    android:contentDescription="@string/a11y_export_tournees"
                     android:src="@drawable/ic_baseline_route_24" />
             </LinearLayout>
 
@@ -114,7 +114,7 @@
                     android:id="@+id/exportt_commande"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportation tournees (Réseaux IP)"
+                    android:text="@string/l2_exportation_tournees_reseaux_ip"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -124,7 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'exporter les tournees vers le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_exporter_les_tournees_v"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -160,7 +160,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Tournées exportés"
+                    android:contentDescription="@string/a11y_tournees_exportes"
                     android:src="@drawable/ic_baseline_check_24" />
             </LinearLayout>
 
@@ -175,7 +175,7 @@
                     android:id="@+id/exportted_commande"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Les tournees exportés"
+                    android:text="@string/l2_les_tournees_exportes"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -185,7 +185,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet de consulter les tournees déja exportés avec la possibilité de suppression"
+                    android:text="@string/l2_ca_vous_permet_de_consulter_les_tournees"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"

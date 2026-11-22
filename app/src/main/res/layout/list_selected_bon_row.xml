@@ -14,9 +14,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
+            android:gravity="start"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="nom de client"
+            android:text="@string/l2_nom_de_client"
             android:textSize="25dp"
             android:id="@+id/bon" />
     </LinearLayout>

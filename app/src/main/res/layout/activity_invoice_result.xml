@@ -27,49 +27,49 @@
             android:id="@+id/tvInvoiceNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Numéro : " />
+            android:text="@string/l2_numero" />
 
         <TextView
             android:id="@+id/tvInvoiceDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date facture : " />
+            android:text="@string/l2_date_facture" />
 
         <TextView
             android:id="@+id/tvDueDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date échéance : " />
+            android:text="@string/l2_date_echeance" />
 
         <TextView
             android:id="@+id/tvSellerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vendeur : " />
+            android:text="@string/l2_vendeur" />
 
         <TextView
             android:id="@+id/tvBuyerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Client : " />
+            android:text="@string/l2_client" />
 
         <TextView
             android:id="@+id/tvBuyerPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Téléphone : " />
+            android:text="@string/l2_telephone_2" />
 
         <TextView
             android:id="@+id/tvCurrency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Devise : "
+            android:text="@string/l2_devise"
             android:paddingBottom="8dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Produits"
+            android:text="@string/produits"
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="18sp"
@@ -93,19 +93,19 @@
                 android:id="@+id/tvSubtotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sous-total : " />
+                android:text="@string/l2_sous_total" />
 
             <TextView
                 android:id="@+id/tvTaxTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Taxe : " />
+                android:text="@string/l2_taxe" />
 
             <TextView
                 android:id="@+id/tvTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Total : "
+                android:text="@string/l2_total"
                 android:textStyle="bold"
                 android:textSize="16sp" />
         </LinearLayout>

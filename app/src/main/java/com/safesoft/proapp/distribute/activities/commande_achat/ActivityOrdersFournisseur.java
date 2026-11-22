@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.commande_achat;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -40,7 +42,7 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityOrdersFournisseur extends AppCompatActivity implements RecyclerAdapterAchat1.ItemClick, RecyclerAdapterAchat1.ItemLongClick {
+public class ActivityOrdersFournisseur extends BaseLocaleActivity implements RecyclerAdapterAchat1.ItemClick, RecyclerAdapterAchat1.ItemLongClick {
 
 
     RecyclerView recyclerView;
@@ -74,8 +76,8 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Bons de commandes");
-            getSupportActionBar().setSubtitle("Fournisseur");
+            getSupportActionBar().setTitle(getString(R.string.l3_bons_de_commandes));
+            getSupportActionBar().setSubtitle(getString(R.string.l3_fournisseur));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -190,16 +192,16 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
+            builder.setTitle(getString(R.string.l3_choisissez_une_action));
             builder.setItems(items, (dialog, item) -> {
                 switch (item) {
                     case 0:
                         if (!SOURCE_EXPORT.equals("EXPORTED")) {
                             new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Bon de commande")
-                                    .setContentText("Voulez-vous vraiment modifier ce bon ?!")
-                                    .setCancelText("Non")
-                                    .setConfirmText("Modifier")
+                                    .setTitleText(getString(R.string.l3_bon_de_commande))
+                                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_ce_bon_2))
+                                    .setCancelText(getString(R.string.l3_non))
+                                    .setConfirmText(getString(R.string.l3_modifier))
                                     .showCancelButton(true)
                                     .setCancelClickListener(Dialog::dismiss)
                                     .setConfirmClickListener(sDialog -> {
@@ -215,8 +217,8 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                         } else {
 
                             new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Ce bon est déja exporté")
+                                    .setTitleText(getString(R.string.l3_information_4))
+                                    .setContentText(getString(R.string.l3_ce_bon_est_deja_exporte))
                                     .show();
                         }
 
@@ -224,10 +226,10 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                         break;
                     case 1:
                         new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Suppression")
-                                .setContentText("Voulez-vous vraiment supprimer le bon " + achat1s_com.get(position).num_bon + " ?!")
-                                .setCancelText("Anuuler")
-                                .setConfirmText("Supprimer")
+                                .setTitleText(getString(R.string.l3_suppression))
+                                .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_bon) + achat1s_com.get(position).num_bon + " ?!")
+                                .setCancelText(getString(R.string.l3_anuuler))
+                                .setConfirmText(getString(R.string.l3_supprimer))
                                 .showCancelButton(true)
                                 .setCancelClickListener(Dialog::dismiss)
                                 .setConfirmClickListener(sDialog -> {
@@ -245,8 +247,8 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
 
                         if (!achat1s_com.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Information!")
-                                    .setContentText("Ce bon n'est pas encore validé")
+                                    .setTitleText(getString(R.string.l3_information_4))
+                                    .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                                     .show();
                             return;
                         }
@@ -292,14 +294,14 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
 
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setIcon(R.drawable.blue_circle_24);
-            builder.setTitle("Choisissez une action");
+            builder.setTitle(getString(R.string.l3_choisissez_une_action));
             builder.setItems(items, (dialog, item) -> {
                 if (item == 0) {
                     new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.NORMAL_TYPE)
-                            .setTitleText("Suppression")
-                            .setContentText("Voulez-vous vraiment supprimer le bon " + achat1s_com.get(position).num_bon + " ?!")
-                            .setCancelText("Anuuler")
-                            .setConfirmText("Supprimer")
+                            .setTitleText(getString(R.string.l3_suppression))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_bon) + achat1s_com.get(position).num_bon + " ?!")
+                            .setCancelText(getString(R.string.l3_anuuler))
+                            .setConfirmText(getString(R.string.l3_supprimer))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -326,13 +328,13 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
             inflater.inflate(R.menu.menu_ventes_not_exported, menu);
         }
         searchView = new SearchView(getSupportActionBar().getThemedContext());
-        searchView.setQueryHint("Rechercher");
+        searchView.setQueryHint(getString(R.string.l4_menu_rechercher));
 
 //////////////////////////////////////////////////////////////////////
 ///    ENLEVER LES COMENTAIRES POUR ACTIVER L'OPTION DE RECHERCHE   ///
 //////////////////////////////////////////////////////////////////////
 
-        menu.add(Menu.NONE, Menu.NONE, 1, "Search")
+        menu.add(Menu.NONE, Menu.NONE, 1, getString(R.string.l4_menu_rechercher))
                 .setIcon(R.mipmap.ic_recherche)
                 .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -353,7 +355,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-                Toast.makeText(getBaseContext(), "dummy Search", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getString(R.string.l3_dummy_search), Toast.LENGTH_SHORT).show();
                 setProgressBarIndeterminateVisibility(true);
 
                 Handler handler = new Handler();
@@ -379,7 +381,7 @@ public class ActivityOrdersFournisseur extends AppCompatActivity implements Recy
         } else if (item.getItemId() == R.id.new_sale) {
             if (!prefs.getBoolean("APP_ACTIVATED", false) && !achat1s_com.isEmpty()) {
                 new SweetAlertDialog(ActivityOrdersFournisseur.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
             } else {

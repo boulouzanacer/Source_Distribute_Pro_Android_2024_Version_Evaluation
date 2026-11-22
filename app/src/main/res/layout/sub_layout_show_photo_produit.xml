@@ -15,7 +15,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Activer ou Désactiver l'affichage de photo produit" />
+        android:text="@string/l2_activer_ou_desactiver_l_affichage_de_pho" />
 
     <View
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:id="@+id/switch_show_photo_produit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Afficher / Cacher photo"
+            android:text="@string/l2_afficher_cacher_photo"
             android:textAlignment="textStart"
             android:checked="false"
             android:textSize="14sp"

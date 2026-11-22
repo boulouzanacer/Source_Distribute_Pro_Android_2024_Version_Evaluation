@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
@@ -161,7 +163,7 @@ public class FragmentQteAchat {
         }
 
         if (last_price != 0) {
-            txv_last_price.setText("Dernier prix vendu pour ce client : " + nf.format(last_price));
+            txv_last_price.setText(BaseApplication.instance.getString(R.string.l4_dernier_prix_vendu_client_prefix) + nf.format(last_price));
         }
 
         if (prefs.getBoolean("VENTE_WITH_QTE_GRAT", false)) {
@@ -222,7 +224,7 @@ public class FragmentQteAchat {
 
             if (checked_achat2 != null) {
                 if(prefs.getBoolean("GROUPE_PRODUCTS_BON", false)){
-                    txv_message.setText("Produit déja inseré avec quantité: " + nq.format(checked_achat2.qte));
+                    txv_message.setText(BaseApplication.instance.getString(R.string.l4_produit_deja_insere_quantite_prefix) + nq.format(checked_achat2.qte));
                     if_bon2_exist = true;
                     arrived_achat2 = checked_achat2;
                 }
@@ -340,17 +342,17 @@ public class FragmentQteAchat {
 
             if (edt_qte.getText().length() <= 0) {
 
-                edt_qte.setError("Quantité obligatoire!!");
+                edt_qte.setError(BaseApplication.instance.getString(R.string.l3_quantite_obligatoire));
                 hasError = true;
             }
 
             if (edt_prix_ht.getText().length() <= 0 && edt_prix_ht.getVisibility() == View.VISIBLE) {
-                edt_prix_ht.setError("Prix HT obligatoire!!");
+                edt_prix_ht.setError(BaseApplication.instance.getString(R.string.l3_prix_ht_obligatoire));
                 hasError = true;
             }
 
             if (edt_prix_ttc.getText().length() <= 0 && edt_prix_ttc.getVisibility() == View.VISIBLE) {
-                edt_prix_ttc.setError("Prix TTC obligatoire!!");
+                edt_prix_ttc.setError(BaseApplication.instance.getString(R.string.l3_prix_ttc_obligatoire));
                 hasError = true;
             }
 

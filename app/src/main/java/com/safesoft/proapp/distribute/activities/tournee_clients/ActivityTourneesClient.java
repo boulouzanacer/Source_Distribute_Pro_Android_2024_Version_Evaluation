@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.tournee_clients;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -47,7 +49,7 @@ import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityTourneesClient extends AppCompatActivity implements RecyclerAdapterTournee1.ItemClick, RecyclerAdapterTournee1.ItemLongClick {
+public class ActivityTourneesClient extends BaseLocaleActivity implements RecyclerAdapterTournee1.ItemClick, RecyclerAdapterTournee1.ItemLongClick {
 
     RecyclerView recyclerView;
     RecyclerAdapterTournee1 adapter;
@@ -84,7 +86,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Liste tournées");
+            getSupportActionBar().setTitle(getString(R.string.l3_liste_tournees));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -175,17 +177,17 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
-        builder.setTitle("Choisissez une action");
+        builder.setTitle(getString(R.string.l3_choisissez_une_action));
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 switch (item) {
                     case 0:
                         new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Suppression")
-                                .setContentText("Voulez-vous vraiment supprimer la tournee : " + tournee1s.get(position).num_tournee + " ?!")
-                                .setCancelText("Anuuler")
-                                .setConfirmText("Supprimer")
+                                .setTitleText(getString(R.string.l3_suppression))
+                                .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_la_tourne) + tournee1s.get(position).num_tournee + " ?!")
+                                .setCancelText(getString(R.string.l3_anuuler))
+                                .setConfirmText(getString(R.string.l3_supprimer))
                                 .showCancelButton(true)
                                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
@@ -199,8 +201,8 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
                                         if (!controller.delete_tournee_group(tournee1s.get(position).num_tournee)) {
                                             new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.ERROR_TYPE)
-                                                    .setTitleText("Erreur...")
-                                                    .setContentText("Erreur suppression de la tournee ! ")
+                                                    .setTitleText(getString(R.string.l3_erreur_4))
+                                                    .setContentText(getString(R.string.l3_erreur_suppression_de_la_tournee))
                                                     .show();
                                         }
 
@@ -216,10 +218,10 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
                     case 1:
                         /*if (tournee1s.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Exportation")
-                                    .setContentText("Voulez-vous vraiment exporter l'inventaire ( " + tournee1s.get(position).nom_inv + " ) ?!")
-                                    .setCancelText("Anuuler")
-                                    .setConfirmText("Exporter")
+                                    .setTitleText(getString(R.string.l3_exportation))
+                                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_exporter_linventair) + tournee1s.get(position).nom_inv + " ) ?!")
+                                    .setCancelText(getString(R.string.l3_anuuler))
+                                    .setConfirmText(getString(R.string.l3_exporter))
                                     .showCancelButton(true)
                                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
@@ -241,8 +243,8 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
                                     .show();
                         } else {
                             new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention...")
-                                    .setContentText("Cet inventaire n'est pas validé, Exportation impossible  ! ")
+                                    .setTitleText(getString(R.string.l3_attention_7))
+                                    .setContentText(getString(R.string.l3_cet_inventaire_nest_pas_valide_exportati))
                                     .show();
                         }*/
 
@@ -277,7 +279,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
         } else if (item.getItemId() == R.id.new_tournee) {
             if (prefs.getBoolean("APP_ACTIVATED", false) && !tournee1s.isEmpty()) {
                 new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
             } else {
@@ -317,7 +319,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
         protected void onPreExecute() {
             super.onPreExecute();
             mProgressDialog_Free = new ProgressDialog(ActivityTourneesClient.this);
-            mProgressDialog_Free.setMessage("Vérificaion de la connexion ...");
+            mProgressDialog_Free.setMessage(getString(R.string.l3_verificaion_de_la_connexion));
             mProgressDialog_Free.setCancelable(true);
             mProgressDialog_Free.show();
         }
@@ -377,10 +379,10 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
             } else if (integer == 2) {
                 mProgressDialog_Free.dismiss();
-                Toast.makeText(ActivityTourneesClient.this, "Problème de connexion, vérifier les parametres", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityTourneesClient.this, getString(R.string.l3_probleme_de_connexion_verifier_les_param), Toast.LENGTH_SHORT).show();
             } else {
                 mProgressDialog_Free.dismiss();
-                Toast.makeText(ActivityTourneesClient.this, "Probleme fatal", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityTourneesClient.this, getString(R.string.l3_probleme_fatal), Toast.LENGTH_SHORT).show();
             }
             super.onPostExecute(integer);
         }
@@ -410,7 +412,7 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
         protected void onPreExecute() {
             super.onPreExecute();
             mProgressDialog_Free = new ProgressDialog(ActivityTourneesClient.this);
-            mProgressDialog_Free.setMessage("Exportation inventaires...");
+            mProgressDialog_Free.setMessage(getString(R.string.l3_exportation_inventaires_2));
             mProgressDialog_Free.setIndeterminate(false);
             mProgressDialog_Free.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog_Free.setCancelable(true);
@@ -552,19 +554,19 @@ public class ActivityTourneesClient extends AppCompatActivity implements Recycle
 
             if (integer == 1) {
                 new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé")
+                        .setTitleText(getString(R.string.l3_exportation_2))
+                        .setContentText(getString(R.string.l3_exportation_termine))
                         .show();
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                         .show();
             } else if (integer == 3) {
                 //  if(ActivityImportsExport. != null)
                 new SweetAlertDialog(ActivityTourneesClient.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Erreur SQL : " + erreurMessage)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_erreur_sql) + erreurMessage)
                         .show();
             }
 

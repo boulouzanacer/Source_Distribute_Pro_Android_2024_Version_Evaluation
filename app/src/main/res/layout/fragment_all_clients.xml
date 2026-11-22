@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sélection du client"
+                    android:text="@string/l2_selection_du_client"
                     android:textSize="12sp"
                     android:textColor="#BFDBFE"
                     android:fontFamily="sans-serif-medium"
@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="👥 Clients"
+                    android:text="@string/l2_clients_2"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
@@ -59,7 +59,7 @@
 
             <Button
                 android:id="@+id/add_client"
-                android:text="Ajouter"
+                android:text="@string/l2_ajouter"
                 android:textAllCaps="false"
                 android:textColor="#0F4C81"
                 android:textStyle="bold"
@@ -106,7 +106,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🔍 Rechercher un client"
+                        android:text="@string/l2_rechercher_un_client"
                         android:textColor="#0F4C81"
                         android:textSize="11sp"
                         android:textStyle="bold"
@@ -200,7 +200,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Total"
+                                    android:text="@string/l2_total_2"
                                     android:textColor="#1E40AF"
                                     android:textSize="11sp"
                                     android:layout_marginTop="1dp"
@@ -236,7 +236,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="En dette"
+                                    android:text="@string/l2_en_dette"
                                     android:textColor="#991B1B"
                                     android:textSize="11sp"
                                     android:layout_marginTop="1dp"
@@ -271,7 +271,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="À crédit"
+                                    android:text="@string/l2_a_credit"
                                     android:textColor="#065F46"
                                     android:textSize="11sp"
                                     android:layout_marginTop="1dp"
@@ -310,7 +310,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="📋 LISTE DES CLIENTS"
+                    android:text="@string/l2_liste_des_clients"
                     android:textColor="#334155"
                     android:textSize="11sp"
                     android:textStyle="bold"

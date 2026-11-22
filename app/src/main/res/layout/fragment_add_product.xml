@@ -23,7 +23,7 @@
             android:paddingBottom="18dp">
 
             <TextView
-                android:text="Nouveau produit"
+                android:text="@string/l2_nouveau_produit"
                 android:textColor="#FFFFFF"
                 android:gravity="center_vertical"
                 android:textStyle="bold"
@@ -33,7 +33,7 @@
  />
 
             <TextView
-                android:text="📦 Catalogue Produits — manager"
+                android:text="@string/l2_catalogue_produits_manager"
                 android:textColor="#BFDBFE"
                 android:textSize="11sp"
                 android:layout_marginTop="3dp"
@@ -87,7 +87,7 @@
                             android:paddingBottom="10dp">
 
                                 <TextView
-                                    android:text="📸  PHOTO PRODUIT"
+                                    android:text="@string/l2_photo_produit"
                                     android:textColor="#92400E"
                                     android:textSize="11sp"
                                     android:textStyle="bold"
@@ -97,7 +97,7 @@
  />
 
                                 <TextView
-                                    android:text="Image galerie ou capture caméra"
+                                    android:text="@string/l2_image_galerie_ou_capture_camera"
                                     android:textColor="#B45309"
                                     android:textSize="10sp"
                                     android:layout_marginTop="1dp"
@@ -140,7 +140,7 @@
 
                                     <Button
                                         android:id="@+id/btn_select_from_gallery"
-                                        android:text="Gallery"
+                                        android:text="@string/l2_gallery"
                                         android:textStyle="bold"
                                         android:background="@drawable/bg_web_button_secondary"
                                         android:textColor="#0F172A"
@@ -154,7 +154,7 @@
                                         android:id="@+id/btn_select_from_camera"
                                         android:layout_marginTop="8dp"
                                         android:layout_gravity="center"
-                                        android:text="Camera"
+                                        android:text="@string/camera"
                                         android:textStyle="bold"
                                         android:textColor="@color/white"
                                         android:background="@drawable/bg_web_button_gps"
@@ -200,7 +200,7 @@
                             android:paddingBottom="10dp">
 
                                 <TextView
-                                    android:text="🏷️  IDENTITÉ"
+                                    android:text="@string/l2_identite_2"
                                     android:textColor="#1D4ED8"
                                     android:textSize="11sp"
                                     android:textStyle="bold"
@@ -210,7 +210,7 @@
  />
 
                                 <TextView
-                                    android:text="Code-barre, Référence, Désignation"
+                                    android:text="@string/l2_code_barre_reference_designation"
                                     android:textColor="#1E40AF"
                                     android:textSize="10.5sp"
                                     android:layout_marginTop="1dp"
@@ -267,7 +267,7 @@
                                 android:id="@+id/generate_codebarre"
                                 android:layout_weight="1"
                                 android:src="@drawable/baseline_generate_24"
-                                android:contentDescription="Générer"
+                                android:contentDescription="@string/a11y_generer"
                                 android:background="@drawable/bg_web_button_secondary"
                                 android:scaleType="fitCenter"
                                 android:padding="8dp"
@@ -279,7 +279,7 @@
                             <ImageButton
                                 android:id="@+id/scan_codebarre"
                                 android:layout_weight="1"
-                                android:contentDescription="Scanner"
+                                android:contentDescription="@string/a11y_scanner"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_codebarre_white_24"
                                 android:background="@drawable/bg_web_button_gps"
@@ -307,7 +307,7 @@
                                 app:errorMessage="@string/error_message_empty"
                                 app:errorType="empty"
                                 android:layout_weight="5"
-                                android:hint="Reference"
+                                android:hint="@string/l2_reference"
                                 app:boxCornerRadiusTopStart="10dp"
                                 app:boxCornerRadiusTopEnd="10dp"
                                 app:boxCornerRadiusBottomStart="10dp"
@@ -332,7 +332,7 @@
                             <ImageButton
                                 android:id="@+id/generate_reference"
                                 android:layout_weight="1"
-                                android:contentDescription="Générer"
+                                android:contentDescription="@string/a11y_generer"
                                 android:src="@drawable/baseline_generate_24"
                                 android:background="@drawable/bg_web_button_secondary"
                                 android:scaleType="fitCenter"
@@ -345,7 +345,7 @@
                             <ImageButton
                                 android:id="@+id/scan_reference"
                                 android:layout_weight="1"
-                                android:contentDescription="Scanner"
+                                android:contentDescription="@string/a11y_scanner"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_codebarre_white_24"
                                 android:background="@drawable/bg_web_button_map"
@@ -421,7 +421,7 @@
                             android:paddingBottom="10dp">
 
                                 <TextView
-                                    android:text="📦  STOCK &amp; COLISAGE"
+                                    android:text="@string/l2_stock_amp_colisage"
                                     android:textColor="#047857"
                                     android:textSize="11sp"
                                     android:textStyle="bold"
@@ -431,7 +431,7 @@
  />
 
                                 <TextView
-                                    android:text="Unités par colis &amp; stock initial"
+                                    android:text="@string/l2_unites_par_colis_amp_stock_initial"
                                     android:textColor="#065F46"
                                     android:textSize="10sp"
                                     android:layout_marginTop="1dp"
@@ -548,7 +548,7 @@
                             android:paddingBottom="10dp">
 
                                 <TextView
-                                    android:text="💳  PRIX D'ACHAT"
+                                    android:text="@string/l2_prix_d_achat_2"
                                     android:textColor="#4338CA"
                                     android:textSize="11.5sp"
                                     android:textStyle="bold"
@@ -558,7 +558,7 @@
  />
 
                                 <TextView
-                                    android:text="Prix HT, TVA, Prix TTC"
+                                    android:text="@string/l2_prix_ht_tva_prix_ttc"
                                     android:textColor="#4F46E5"
                                     android:textSize="10.5sp"
                                     android:layout_marginTop="1dp"
@@ -595,7 +595,7 @@
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
                                 android:visibility="visible"
-                                android:hint="P achat (HT)"
+                                android:hint="@string/l2_p_achat_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -625,7 +625,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Tva %"
+                                android:hint="@string/l2_tva"
                                 android:visibility="visible"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
@@ -656,7 +656,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="P achat (TTC)"
+                                android:hint="@string/l2_p_achat_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -708,7 +708,7 @@
                             android:paddingBottom="10dp">
 
                                 <TextView
-                                    android:text="💶  PRIX DE VENTE — TARIFS"
+                                    android:text="@string/l2_prix_de_vente_tarifs_2"
                                     android:textColor="#047857"
                                     android:textSize="11.5sp"
                                     android:textStyle="bold"
@@ -718,7 +718,7 @@
  />
 
                                 <TextView
-                                    android:text="6 niveaux de prix HT / TTC (Détail → Gros)"
+                                    android:text="@string/l2_6_niveaux_de_prix_ht_ttc_detail_gros"
                                     android:textColor="#065F46"
                                     android:textSize="10.5sp"
                                     android:layout_marginTop="1dp"
@@ -756,7 +756,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 1 (HT)"
+                                android:hint="@string/l2_prix_1_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -785,7 +785,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 1 (TTC)"
+                                android:hint="@string/l2_prix_1_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -827,7 +827,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 2 (HT)"
+                                android:hint="@string/l2_prix_2_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -856,7 +856,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 2 (TTC)"
+                                android:hint="@string/l2_prix_2_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -897,7 +897,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 3 (HT)"
+                                android:hint="@string/l2_prix_3_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -926,7 +926,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 3 (TTC)"
+                                android:hint="@string/l2_prix_3_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -967,7 +967,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 4 (HT)"
+                                android:hint="@string/l2_prix_4_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -996,7 +996,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 4 (TTC)"
+                                android:hint="@string/l2_prix_4_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -1037,7 +1037,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 5 (HT)"
+                                android:hint="@string/l2_prix_5_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -1066,7 +1066,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 5 (TTC)"
+                                android:hint="@string/l2_prix_5_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -1107,7 +1107,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 6 (HT)"
+                                android:hint="@string/l2_prix_6_ht"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 
@@ -1136,7 +1136,7 @@
                                 app:boxCornerRadiusBottomEnd="10dp"
                                 app:boxStrokeWidth="0.8dp"
                                 app:boxStrokeWidthFocused="1.2dp"
-                                android:hint="Prix 6 (TTC)"
+                                android:hint="@string/l2_prix_6_ttc"
                                 app:expandedHintEnabled="false"
                                 android:layout_height="wrap_content">
 

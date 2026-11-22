@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.inventaire;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -51,7 +53,7 @@ import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ActivityInventaires extends AppCompatActivity implements RecyclerAdapterInv1.ItemClick, RecyclerAdapterInv1.ItemLongClick {
+public class ActivityInventaires extends BaseLocaleActivity implements RecyclerAdapterInv1.ItemClick, RecyclerAdapterInv1.ItemLongClick {
 
     RecyclerView recyclerView;
     RecyclerAdapterInv1 adapter;
@@ -94,7 +96,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Liste inventaires");
+            getSupportActionBar().setTitle(getString(R.string.l3_liste_inventaires));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
@@ -193,17 +195,17 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setIcon(R.drawable.blue_circle_24);
-        builder.setTitle("Choisissez une action");
+        builder.setTitle(getString(R.string.l3_choisissez_une_action));
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 switch (item) {
                     case 0:
                         new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText("Suppression")
-                                .setContentText("Voulez-vous vraiment supprimer l'inventaire " + inv1s.get(position).nom_inv + " ?!")
-                                .setCancelText("Anuuler")
-                                .setConfirmText("Supprimer")
+                                .setTitleText(getString(R.string.l3_suppression))
+                                .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_linventai) + inv1s.get(position).nom_inv + " ?!")
+                                .setCancelText(getString(R.string.l3_anuuler))
+                                .setConfirmText(getString(R.string.l3_supprimer))
                                 .showCancelButton(true)
                                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
@@ -217,8 +219,8 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
                                         if (!controller.delete_inventaire_group(inv1s.get(position).num_inv)) {
                                             new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.ERROR_TYPE)
-                                                    .setTitleText("Erreur...")
-                                                    .setContentText("Erreur suprssion de l'inventaire ! ")
+                                                    .setTitleText(getString(R.string.l3_erreur_4))
+                                                    .setContentText(getString(R.string.l3_erreur_suprssion_de_linventaire))
                                                     .show();
                                         }
 
@@ -234,10 +236,10 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
                     case 1:
                         if (inv1s.get(position).blocage.equals("F")) {
                             new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.NORMAL_TYPE)
-                                    .setTitleText("Exportation")
-                                    .setContentText("Voulez-vous vraiment exporter l'inventaire ( " + inv1s.get(position).nom_inv + " ) ?!")
-                                    .setCancelText("Anuuler")
-                                    .setConfirmText("Exporter")
+                                    .setTitleText(getString(R.string.l3_exportation))
+                                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_exporter_linventair) + inv1s.get(position).nom_inv + " ) ?!")
+                                    .setCancelText(getString(R.string.l3_anuuler))
+                                    .setConfirmText(getString(R.string.l3_exporter))
                                     .showCancelButton(true)
                                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
@@ -266,8 +268,8 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
                                     .show();
                         } else {
                             new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention...")
-                                    .setContentText("Cet inventaire n'est pas validé, Exportation impossible  ! ")
+                                    .setTitleText(getString(R.string.l3_attention_7))
+                                    .setContentText(getString(R.string.l3_cet_inventaire_nest_pas_valide_exportati))
                                     .show();
                         }
 
@@ -309,7 +311,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
             /*if (!prefs.getBoolean("APP_ACTIVATED", false) && !inv1s.isEmpty()) {
                 new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
             } else {
@@ -354,7 +356,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
         protected void onPreExecute() {
             super.onPreExecute();
             mProgressDialog_Free = new ProgressDialog(ActivityInventaires.this);
-            mProgressDialog_Free.setMessage("Vérificaion de la connexion ...");
+            mProgressDialog_Free.setMessage(getString(R.string.l3_verificaion_de_la_connexion));
             mProgressDialog_Free.setCancelable(true);
             mProgressDialog_Free.show();
         }
@@ -414,10 +416,10 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
             } else if (integer == 2) {
                 mProgressDialog_Free.dismiss();
-                Toast.makeText(ActivityInventaires.this, "Problème de connexion, vérifier les parametres", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityInventaires.this, getString(R.string.l3_probleme_de_connexion_verifier_les_param), Toast.LENGTH_SHORT).show();
             } else {
                 mProgressDialog_Free.dismiss();
-                Toast.makeText(ActivityInventaires.this, "Probleme fatal", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityInventaires.this, getString(R.string.l3_probleme_fatal), Toast.LENGTH_SHORT).show();
             }
             super.onPostExecute(integer);
         }
@@ -447,7 +449,7 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
         protected void onPreExecute() {
             super.onPreExecute();
             mProgressDialog_Free = new ProgressDialog(ActivityInventaires.this);
-            mProgressDialog_Free.setMessage("Exportation inventaires...");
+            mProgressDialog_Free.setMessage(getString(R.string.l3_exportation_inventaires_2));
             mProgressDialog_Free.setIndeterminate(false);
             mProgressDialog_Free.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog_Free.setCancelable(true);
@@ -597,19 +599,19 @@ public class ActivityInventaires extends AppCompatActivity implements RecyclerAd
 
             if (integer == 1) {
                 new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation terminé")
+                        .setTitleText(getString(R.string.l3_exportation_2))
+                        .setContentText(getString(R.string.l3_exportation_termine))
                         .show();
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                         .show();
             } else if (integer == 3) {
                 //  if(ActivityImportsExport. != null)
                 new SweetAlertDialog(ActivityInventaires.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Erreur SQL : " + erreurMessage)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_erreur_sql) + erreurMessage)
                         .show();
             }
 

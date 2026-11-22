@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
@@ -119,7 +121,7 @@ public class FragmentValideBon {
 
                     if (!prefs.getBoolean("ALLOW_CREDIT_VENTE", true)) {
                         if (round2(val_versement) < round2(val_montant_bon)) {
-                            edt_versement.setError("Vous n'avez pas le droit de faire un credit !!");
+                            edt_versement.setError(BaseApplication.instance.getString(R.string.l3_vous_navez_pas_le_droit_de_faire_un_cred));
                             return;
                         }
                     }
@@ -134,7 +136,7 @@ public class FragmentValideBon {
                 dialog.dismiss();
 
             } else {
-                edt_versement.setError("Montant versement obligatoire!!");
+                edt_versement.setError(BaseApplication.instance.getString(R.string.l3_montant_versement_obligatoire));
             }
         });
 

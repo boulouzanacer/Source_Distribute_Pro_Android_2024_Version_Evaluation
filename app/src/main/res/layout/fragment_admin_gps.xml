@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Administration GPS"
+                android:text="@string/l2_administration_gps"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"
@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📱 INFORMATIONS APPAREIL"
+                    android:text="@string/l2_informations_appareil"
                     android:textColor="#1D4ED8"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -73,7 +73,7 @@
                     android:layout_marginBottom="4dp">
 
                     <TextView
-                        android:text="Terminal ID : "
+                        android:text="@string/l2_terminal_id"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -111,7 +111,7 @@
                     android:layout_marginBottom="3dp"
                     app:expandedHintEnabled="false"
                     app:helperText="   "
-                    android:hint="nom de telephone">
+                    android:hint="@string/l2_nom_de_telephone">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_device_name"
@@ -142,7 +142,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🔐 IDENTIFIANTS GPS CLOUD"
+                    android:text="@string/l2_identifiants_gps_cloud"
                     android:textColor="#C2410C"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -168,7 +168,7 @@
                     android:layout_marginBottom="3dp"
                     app:expandedHintEnabled="false"
                     app:helperText="   "
-                    android:hint="email">
+                    android:hint="@string/l2_email">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_email"
@@ -202,7 +202,7 @@
                     android:layout_marginBottom="3dp"
                     app:expandedHintEnabled="false"
                     app:helperText="   "
-                    android:hint="password">
+                    android:hint="@string/l2_password">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_password"
@@ -233,7 +233,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🌐 TEST CONNEXION + STATUT"
+                    android:text="@string/l2_test_connexion_statut"
                     android:textColor="#047857"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -253,7 +253,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
-                        android:text="Tester le service"
+                        android:text="@string/l2_tester_le_service"
                         android:backgroundTint="#047857"
                         android:textColor="#FFFFFF" />
 
@@ -270,7 +270,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Envoi position message"
+                        android:text="@string/l2_envoi_position_message"
                         android:textAlignment="center"
                         android:textStyle="italic"
                         android:textColor="@color/black" />
@@ -319,7 +319,7 @@
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:minHeight="52dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"

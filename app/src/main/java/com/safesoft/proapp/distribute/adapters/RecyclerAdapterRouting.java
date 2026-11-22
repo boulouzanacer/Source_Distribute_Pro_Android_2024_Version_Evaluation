@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -72,12 +73,12 @@ public class RecyclerAdapterRouting extends RecyclerView.Adapter<RecyclerAdapter
         holder.ClientN.setTypeface(null, Typeface.BOLD);
         holder.ClientN.setText(item.client);
 
-        holder.Tel_clientN.setText("TEL : " + item.tel);
+        holder.Tel_clientN.setText(BaseApplication.instance.getString(R.string.l4_tel_prefix) + item.tel);
 
         holder.Sld_clientN.setTypeface(null, Typeface.BOLD);
-        holder.Sld_clientN.setText("Solde : " + item.solde_client);
+        holder.Sld_clientN.setText(BaseApplication.instance.getString(R.string.l4_solde_prefix) + item.solde_client);
 
-        holder.Sld_clientN.setText("Solde :" + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_client)));
+        holder.Sld_clientN.setText(BaseApplication.instance.getString(R.string.l4_solde_prefix_2) + new DecimalFormat("##,##0.00").format(Double.valueOf(item.solde_client)));
 
         if (item.latitude == 0.0) {
             holder.img_client_location.setImageResource(R.drawable.ic_baseline_wrong_location_24);

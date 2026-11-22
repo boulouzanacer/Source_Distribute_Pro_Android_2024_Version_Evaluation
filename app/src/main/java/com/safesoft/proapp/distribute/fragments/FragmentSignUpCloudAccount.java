@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 import static com.safesoft.proapp.distribute.MainActivity.getAndroidID;
 
@@ -144,23 +146,23 @@ public class FragmentSignUpCloudAccount {
                 if (Objects.requireNonNull(edt_email.getText()).length() > 0) {
                     email = Objects.requireNonNull(edt_email.getText()).toString();
                 } else {
-                    edt_email.setError("Email est obligatoire!!");
+                    edt_email.setError(BaseApplication.instance.getString(R.string.l3_email_est_obligatoire));
                 }
 
                 if (Objects.requireNonNull(edt_password.getText()).length() > 0) {
                     password = Objects.requireNonNull(edt_password.getText()).toString();
                 } else {
-                    edt_password.setError("Mot de passe est obligatoire!!");
+                    edt_password.setError(BaseApplication.instance.getString(R.string.l3_mot_de_passe_est_obligatoire));
                 }
 
                 if (Objects.requireNonNull(edt_password_confirm.getText()).length() > 0) {
                     password_confirm = Objects.requireNonNull(edt_password_confirm.getText()).toString();
                 } else {
-                    edt_password_confirm.setError("Confirmation du mot de passe est obligatoire!!");
+                    edt_password_confirm.setError(BaseApplication.instance.getString(R.string.l3_confirmation_du_mot_de_passe_est_obligat));
                 }
 
                 if (!password.equals(password_confirm)) {
-                    edt_password_confirm.setError("Les mots de passe ne correspondent pas!!");
+                    edt_password_confirm.setError(BaseApplication.instance.getString(R.string.l3_les_mots_de_passe_ne_correspondent_pas));
                     return;
                 }
 
@@ -178,7 +180,7 @@ public class FragmentSignUpCloudAccount {
 
                 }else{
                     txtv_info_compte_cloud.setTextColor(activity.getResources().getColor(R.color.red));
-                    txtv_info_compte_cloud.setText("Code de confirmation incorrect");
+                    txtv_info_compte_cloud.setText(BaseApplication.instance.getString(R.string.l4_code_confirmation_incorrect));
                 }
             }
 

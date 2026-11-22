@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.vente;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -114,7 +116,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 import static com.safesoft.proapp.distribute.R.id.timbre;
 
-public class ActivityVente extends AppCompatActivity implements RecyclerAdapterCheckProducts.ItemClick {
+public class ActivityVente extends BaseLocaleActivity implements RecyclerAdapterCheckProducts.ItemClick {
 
 
     ////////////////////////////////////////
@@ -209,7 +211,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             TYPE_ACTIVITY = getIntent().getStringExtra("TYPE_ACTIVITY");
             SOURCE_EXPORT = getIntent().getStringExtra("SOURCE_EXPORT");
         } else {
-            Crouton.makeText(ActivityVente.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityVente.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
@@ -352,13 +354,13 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
 
         } else {
-            Crouton.makeText(ActivityVente.this, "Erreur séléction activity !", Style.ALERT).show();
+            Crouton.makeText(ActivityVente.this, getString(R.string.l4_erreur_selection_activity), Style.ALERT).show();
             return;
         }
 
 
         if (NUM_BON != null) {
-            getSupportActionBar().setTitle("Vente N°: " + NUM_BON);
+            getSupportActionBar().setTitle(getString(R.string.l3_vente_n_2) + NUM_BON);
         }
         getSupportActionBar().setSubtitle(date_time_sub_title);
         validate_theme();
@@ -373,14 +375,14 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             if (bon1.blocage.equals("F")) {
                 checkBox_timbre.setChecked(!isChecked);
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
 
             if (client_selected == null) {
-                Toast.makeText(ActivityVente.this, "Veuilez sélectionner un Client", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityVente.this, getString(R.string.l3_veuilez_selectionner_un_client), Toast.LENGTH_SHORT).show();
                 checkBox_timbre.setChecked(false);
             } else {
                 checkBox_timbre.setChecked(isChecked);
@@ -477,7 +479,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             }
 
             if (bon1.client.isEmpty()) {
-                Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                Crouton.makeText(ActivityVente.this, getString(R.string.l4_vous_devez_selectionner_client_abord), Style.ALERT).show();
                 return;
             }
 
@@ -565,13 +567,13 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             }
 
             if (bon1.client.isEmpty()) {
-                Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                Crouton.makeText(ActivityVente.this, getString(R.string.l4_vous_devez_selectionner_client_abord), Style.ALERT).show();
                 return;
             }
 
             if (!prefs.getBoolean("APP_ACTIVATED", false) && final_panier.size() >= 2) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Important !")
+                        .setTitleText(getString(R.string.l3_important))
                         .setContentText(Env.MESSAGE_DEMANDE_ACTIVITATION)
                         .show();
 
@@ -585,20 +587,20 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
         } else if (viewId == R.id.valide_facture) {
             if (bon1.client.isEmpty()) {
-                Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client", Style.ALERT).show();
+                Crouton.makeText(ActivityVente.this, getString(R.string.l4_vous_devez_selectionner_client), Style.ALERT).show();
                 return;
             }
             if (final_panier.isEmpty()) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
             if (bon1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon est déja validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_est_deja_valide))
                         .show();
                 return;
             }
@@ -631,7 +633,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                 }
                 if (bon1.client.isEmpty()) {
 
-                    Crouton.makeText(ActivityVente.this, "Vous devez Séléctionner un client tout d'abord", Style.ALERT).show();
+                    Crouton.makeText(ActivityVente.this, getString(R.string.l4_vous_devez_selectionner_client_abord), Style.ALERT).show();
                     return;
                 }
                 startScanProduct();
@@ -644,8 +646,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             }
             if (!bon1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas encore validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                         .show();
                 return;
 
@@ -654,10 +656,10 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                 if (!SOURCE_EXPORT.equals("EXPORTED")) {
 
                     new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Modification")
-                            .setContentText("Voulez-vous vraiment Modifier ce Bon ?")
-                            .setCancelText("Non")
-                            .setConfirmText("Oui")
+                            .setTitleText(getString(R.string.l3_modification))
+                            .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_ce_bon))
+                            .setCancelText(getString(R.string.l3_non))
+                            .setConfirmText(getString(R.string.l3_oui))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -673,34 +675,33 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                                 } catch (Exception e) {
 
                                     new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                                            .setTitleText("Attention!")
-                                            .setContentText("problème lors de Modification de Bon : " + e.getMessage())
+                                            .setTitleText(getString(R.string.l3_attention_4))
+                                            .setContentText(getString(R.string.l3_probleme_lors_de_modification_de_bon) + e.getMessage())
                                             .show();
                                 }
                                 sDialog.dismiss();
                             }).show();
                 } else {
                     new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Information!")
-                            .setContentText("Ce bon est déja exporté")
+                            .setTitleText(getString(R.string.l3_information_4))
+                            .setContentText(getString(R.string.l3_ce_bon_est_deja_exporte))
                             .show();
                 }
             } else {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention!!")
-                        .setContentText("Vous n'avez pas l'autorisation de modifier, Demandez depuis votre superieur ou ( Créer un bon de retour ) ")
+                        .setTitleText(getString(R.string.l3_attention_5))
+                        .setContentText(getString(R.string.l3_vous_navez_pas_lautorisation_de_modifier))
                         .show();
             }
 
         } else if (viewId == R.id.btn_imp_bon) {
             if (!bon1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas encore validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_nest_pas_encore_valide))
                         .show();
                 return;
-            }
-            if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
+            }if (Objects.equals(prefs.getString("LANGUE_TICKET", "LATIN"), "LATIN")) {
                 Activity bactivity;
                 bactivity = ActivityVente.this;
 
@@ -736,7 +737,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     public void onClientSelected(SelectedClientEvent clientEvent) {
         onClientSelected(clientEvent.getClient(), true);
     }
-
     @Subscribe
     public void onRemiseReceived(RemiseEvent remise) {
 
@@ -963,10 +963,10 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                 return true;
             }
             new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Suppression")
-                    .setContentText("Voulez-vous vraiment supprimer le produit sélectionner ?")
-                    .setCancelText("Anuuler")
-                    .setConfirmText("Supprimer")
+                    .setTitleText(getString(R.string.l3_suppression))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_le_produi_2))
+                    .setCancelText(getString(R.string.l3_anuuler))
+                    .setConfirmText(getString(R.string.l3_supprimer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -981,8 +981,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                         } catch (Exception e) {
 
                             new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Attention!")
-                                    .setContentText("problème lors suppression produits! : " + e.getMessage())
+                                    .setTitleText(getString(R.string.l3_attention_4))
+                                    .setContentText(getString(R.string.l3_probleme_lors_suppression_produits) + e.getMessage())
                                     .show();
                         }
 
@@ -1006,8 +1006,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             } catch (Exception e) {
 
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Attention!")
-                        .setContentText("Error : " + e.getMessage())
+                        .setTitleText(getString(R.string.l3_attention_4))
+                        .setContentText(getString(R.string.l3_error) + e.getMessage())
                         .show();
             }
             return true;
@@ -1138,8 +1138,8 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
             if (!bon1.blocage.equals("F")) {
                 new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Information!")
-                        .setContentText("Ce bon n'est pas validé")
+                        .setTitleText(getString(R.string.l3_information_4))
+                        .setContentText(getString(R.string.l3_ce_bon_nest_pas_valide))
                         .show();
             } else {
                 Activity mActivity;
@@ -1215,7 +1215,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         super.onSaveInstanceState(outState);
     }
 
-
     private void startScanProduct() {
 
         final MaterialBarcodeScanner materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
@@ -1233,7 +1232,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         materialBarcodeScanner.startScan();
     }
 
-
     @Override
     protected void onDestroy() {
         // Unregister
@@ -1245,7 +1243,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         }
         super.onDestroy();
     }
-
 
     @Override
     public void onClick(View v, int position, PostData_Produit item) throws ParseException {
@@ -1289,10 +1286,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         //save permanently
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         prefs.edit().putInt("LAST_CLICKED_POSITION", position).apply();
-
     }
-
-
     @Subscribe
     public void onItemPanierReceive(CheckedPanierEventBon2 item_panier) {
 
@@ -1319,11 +1313,10 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             }
 
         } catch (Exception e) {
-            Crouton.makeText(ActivityVente.this, "Erreur : " + e.getMessage(), Style.ALERT).show();
+            Crouton.makeText(ActivityVente.this, getString(R.string.l4_erreur_prefix_2) + e.getMessage(), Style.ALERT).show();
         }
         
     }
-
 
     @Subscribe
     public void onVersementReceived(ValidateFactureEvent versement) {
@@ -1348,7 +1341,6 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
 
         validate_theme();
     }
-
 
     public void validate_theme() {
         if (bon1.blocage.equals("F")) {
@@ -1389,7 +1381,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
     private void showBonLockedAlert(boolean isAnnule) {
         String msg = isAnnule ? "Ce bon est annulé, aucune modification n'est autorisée." : "Ce bon est déja validé";
         new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Information!")
+                .setTitleText(getString(R.string.l3_information_4))
                 .setContentText(msg)
                 .show();
     }
@@ -1454,9 +1446,9 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             fragmentqte.showDialogbox(SOURCE, activity, getBaseContext(), bon2, last_price);
 
         } else if (produits.size() > 1) {
-            Crouton.makeText(ActivityVente.this, "Attention il y a 2 produits avec le meme code !", Style.ALERT).show();
+            Crouton.makeText(ActivityVente.this, getString(R.string.l4_attention_2_produits_meme_code), Style.ALERT).show();
         } else {
-            Crouton.makeText(ActivityVente.this, "Produit introuvable !", Style.ALERT).show();
+            Crouton.makeText(ActivityVente.this, getString(R.string.l4_produit_introuvable), Style.ALERT).show();
         }
     }
 
@@ -1518,7 +1510,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         topBar.setPadding(padding16, padding12, padding16, padding12);
 
         TextView title = new TextView(ActivityVente.this);
-        title.setText("Notes");
+        title.setText(getString(R.string.l4_notes));
         title.setTextColor(Color.WHITE);
         title.setTextSize(18);
         title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
@@ -1543,7 +1535,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         editorWrap.setPadding(padding16, padding12, padding16, 0);
 
         TextInputLayout tilNew = new TextInputLayout(ActivityVente.this);
-        tilNew.setHint("Nouvelle note ou modifier une existante…");
+        tilNew.setHint(getString(R.string.l3_nouvelle_note_ou_modifier_une_existante));
         tilNew.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
         tilNew.setBoxCornerRadii(radius12, radius12, radius12, radius12);
         tilNew.setPadding(0, padding12, 0, 0);
@@ -1577,7 +1569,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         btnOutlinedBg.setStroke(Math.max(1, (int)(1.5 * density)), getResources().getColor(R.color.blue));
 
         Button btnUseDirect = new Button(ActivityVente.this);
-        btnUseDirect.setText("Utiliser");
+        btnUseDirect.setText(getString(R.string.l4_utiliser));
         btnUseDirect.setTextColor(getResources().getColor(R.color.blue));
         btnUseDirect.setTextSize(14);
         btnUseDirect.setTypeface(btnUseDirect.getTypeface(), android.graphics.Typeface.BOLD);
@@ -1592,7 +1584,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         btnSaveBg.setCornerRadius(radius12);
 
         Button btnSaveUse = new Button(ActivityVente.this);
-        btnSaveUse.setText("Enregistrer & choisir");
+        btnSaveUse.setText(getString(R.string.l4_enregistrer_choisir));
         btnSaveUse.setTextColor(Color.WHITE);
         btnSaveUse.setTextSize(14);
         btnSaveUse.setTypeface(btnSaveUse.getTypeface(), android.graphics.Typeface.BOLD);
@@ -1606,7 +1598,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         editorWrap.addView(btnRow);
 
         TextView tvSubList = new TextView(ActivityVente.this);
-        tvSubList.setText("Ou choisir parmi les notes enregistrées :");
+        tvSubList.setText(getString(R.string.l4_ou_choisir_notes));
         tvSubList.setTextColor(getResources().getColor(R.color.mainTextColor));
         tvSubList.setTextSize(13);
         LinearLayout.LayoutParams subLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1626,7 +1618,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         frameRv.addView(rv);
 
         TextView tvEmpty = new TextView(ActivityVente.this);
-        tvEmpty.setText("Aucune note enregistrée");
+        tvEmpty.setText(getString(R.string.l4_aucune_note_enregistree));
         tvEmpty.setTextColor(0xFF94A3B8);
         tvEmpty.setTextSize(14);
         tvEmpty.setGravity(Gravity.CENTER);
@@ -1650,9 +1642,9 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
             showSelectedNotePopup();
         }, (noteId, position) -> {
             new SweetAlertDialog(ActivityVente.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Supprimer la note ?")
-                    .setContentText("Cette action est irréversible.")
-                    .setConfirmText("Supprimer")
+                    .setTitleText(getString(R.string.l3_supprimer_la_note))
+                    .setContentText(getString(R.string.l3_cette_action_est_irreversible))
+                    .setConfirmText(getString(R.string.l3_supprimer))
                     .setConfirmClickListener(sDialog -> {
                         controller.deleteNote(noteId);
                         finalNotes.remove(position);
@@ -1663,7 +1655,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
                         }
                         sDialog.dismissWithAnimation();
                     })
-                    .setCancelText("Annuler")
+                    .setCancelText(getString(R.string.l3_annuler))
                     .setCancelClickListener(sd -> sd.dismissWithAnimation())
                     .show();
         });
@@ -1672,7 +1664,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         btnUseDirect.setOnClickListener(v -> {
             String txt = etNew.getText() == null ? "" : etNew.getText().toString().trim();
             if (txt.isEmpty()) {
-                Crouton.makeText(ActivityVente.this, "Saisissez une note ou choisissez-en une.", Style.ALERT).show();
+                Crouton.makeText(ActivityVente.this, getString(R.string.l4_saisissez_note_ou_choisissez), Style.ALERT).show();
                 return;
             }
             bon1.remarque = txt;
@@ -1686,7 +1678,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         btnSaveUse.setOnClickListener(v -> {
             String txt = etNew.getText() == null ? "" : etNew.getText().toString().trim();
             if (txt.isEmpty()) {
-                Crouton.makeText(ActivityVente.this, "Saisissez une note pour l'enregistrer.", Style.ALERT).show();
+                Crouton.makeText(ActivityVente.this, getString(R.string.l4_saisissez_note_pour_enregistrer), Style.ALERT).show();
                 return;
             }
             boolean alreadySaved = false;
@@ -1753,7 +1745,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         header.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         TextView title = new TextView(ActivityVente.this);
-        title.setText("Note");
+        title.setText(getString(R.string.l4_note));
         title.setTextColor(getResources().getColor(R.color.mainTextColor));
         title.setTextSize(16);
         title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
@@ -1801,7 +1793,7 @@ public class ActivityVente extends AppCompatActivity implements RecyclerAdapterC
         btnBg.setCornerRadius(radius12);
 
         Button btnEditDirect = new Button(ActivityVente.this);
-        btnEditDirect.setText("Modifier la note");
+        btnEditDirect.setText(getString(R.string.l4_modifier_note));
         btnEditDirect.setTextColor(Color.WHITE);
         btnEditDirect.setTextSize(14);
         btnEditDirect.setTypeface(btnEditDirect.getTypeface(), android.graphics.Typeface.BOLD);

@@ -22,15 +22,15 @@
                 android:clickable="true"
                 android:onClick="onRelativeClick"
                 android:background="@drawable/import_export_selector"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:paddingTop="15dp">
 
                 <TextView
                     android:id="@+id/exportted_vente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Inventaire"
+                    android:text="@string/inventaire"
                     android:textSize="18dp"
                     android:clickable="false"
                     android:textColor="@color/black_overlay"
@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cette rublique vous permet de faire des inventaires à l'aide d'un scanner code barre via bluetooth ou un scanner intégré avec l'appariel"
+                    android:text="@string/l2_cette_rublique_vous_permet_de_faire_des"
                     android:layout_below="@+id/exportted_vente"
                     android:textSize="12dp"
                     android:clickable="false"
@@ -57,15 +57,15 @@
                 android:visibility="visible"
                 android:onClick="onRelativeClick"
                 android:background="@drawable/import_export_selector"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:paddingTop="15dp">
 
                 <TextView
                     android:id="@+id/etat_v"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Achat"
+                    android:text="@string/l2_achat"
                     android:textSize="18dp"
                     android:clickable="false"
                     android:textColor="@color/black_overlay"
@@ -77,7 +77,7 @@
                     android:layout_below="@+id/etat_v"
                     android:layout_alignParentStart="true"
                     android:clickable="false"
-                    android:text="Cette rubrique vous permet de faire vos achats à l'aide d'un scanner code barre via bluetooth ou un scanner intégré avec l'appariel"
+                    android:text="@string/l2_cette_rubrique_vous_permet_de_faire_vos"
                     android:textColor="@color/gray"
                     android:textSize="12dp" />
 

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import static android.view.View.GONE;
 
 import android.app.Activity;
@@ -88,7 +90,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("deprecation")
-public class ActivityImportsExport extends AppCompatActivity {
+public class ActivityImportsExport extends BaseLocaleActivity {
     private String Server;
     private String Username, Password;
     private final String PREFS = "ALL_PREFS";
@@ -148,7 +150,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Import/Export");
+            getSupportActionBar().setTitle(getString(R.string.l3_import_export));
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
@@ -300,8 +302,8 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             if (controller.select_count_from_database(querry1) != 0) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Veuillez exporté les achats avant la synchronisations des fournissseurs")
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_veuillez_exporte_les_achats_avant_la_syn))
                         .show();
                 return;
             }
@@ -316,24 +318,24 @@ public class ActivityImportsExport extends AppCompatActivity {
             String querry3 = "SELECT RECORDID FROM BON1_TEMP WHERE IS_EXPORTED = 0";
             if (controller.select_count_from_database(querry1) != 0) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Veuillez exporté les ventes avant la synchronisations des clients")
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_veuillez_exporte_les_ventes_avant_la_syn))
                         .show();
                 return;
             }
 
             if (controller.select_count_from_database(querry2) != 0) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Veuillez exporté les versement avant la synchronisations des clients")
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_veuillez_exporte_les_versement_avant_la))
                         .show();
                 return;
             }
 
             if (controller.select_count_from_database(querry3) != 0) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Veuillez exporté les commandes avant la synchronisations des clients")
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_veuillez_exporte_les_commandes_avant_la))
                         .show();
                 return;
             }
@@ -347,24 +349,24 @@ public class ActivityImportsExport extends AppCompatActivity {
             String querry4 = "SELECT RECORDID FROM ACHAT1 WHERE IS_EXPORTED = 0";
             if (controller.select_count_from_database(querry1) != 0) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Veuillez exporté les ventes avant la synchronisations des produits")
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_veuillez_exporte_les_ventes_avant_la_syn_2))
                         .show();
                 return;
             }
 
             if (controller.select_count_from_database(querry3) != 0) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Veuillez exporté les commandes avant la synchronisations des produits")
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_veuillez_exporte_les_commandes_avant_la_2))
                         .show();
                 return;
             }
 
             if (controller.select_count_from_database(querry4) != 0) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention. !")
-                        .setContentText("Veuillez exporté les achats avant la synchronisations des produits")
+                        .setTitleText(getString(R.string.l3_attention_6))
+                        .setContentText(getString(R.string.l3_veuillez_exporte_les_achats_avant_la_syn_2))
                         .show();
                 return;
             }
@@ -373,8 +375,8 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         } else if (id == R.id.rlt_import_produit_ftp) {
             new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Important !")
-                    .setContentText(" Cette rubrique est en cours de développement !")
+                    .setTitleText(getString(R.string.l3_important))
+                    .setContentText(getString(R.string.l3_cette_rubrique_est_en_cours_de_developpe))
                     .show();
 
               /*  Activity pactivity;
@@ -401,8 +403,8 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         } else if (id == R.id.rlt_export_achats_ftp) {
             new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("Important !")
-                    .setContentText(" Cette rubrique est en cours de développement !")
+                    .setTitleText(getString(R.string.l3_important))
+                    .setContentText(getString(R.string.l3_cette_rubrique_est_en_cours_de_developpe))
                     .show();
 
                 /*Activity aactivity;
@@ -498,7 +500,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         private void progressDialogLiaisonServer() {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Liaison avec le serveur ...");
+            builder.setTitle(getString(R.string.l3_liaison_avec_le_serveur));
 
             View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout_indeterminate, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -565,13 +567,13 @@ public class ActivityImportsExport extends AppCompatActivity {
 
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention...")
-                        .setContentText("Probleme  : " + messageError)
+                        .setTitleText(getString(R.string.l3_attention_7))
+                        .setContentText(getString(R.string.l3_probleme) + messageError)
                         .show();
             } else if (integer == 3) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion : " + messageError)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_de_connexion) + messageError)
                         .show();
             }
             super.onPostExecute(integer);
@@ -608,7 +610,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
         private void progressDialogCheckConnection() {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Vérificaion de la connexion ...");
+            builder.setTitle(getString(R.string.l3_verificaion_de_la_connexion));
 
             View view = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout_indeterminate, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -707,10 +709,10 @@ public class ActivityImportsExport extends AppCompatActivity {
                         parametres_task.execute();
                     }
                     case "IMPORT_COMMANDE" -> new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attentions !!")
-                            .setContentText("Attention!! Cette opération vas supprimer les anciens bon de commande et charger les nouveaux bon de commandes, voulez-vous continuer ?")
-                            .setCancelText("Non")
-                            .setConfirmText("Oui")
+                            .setTitleText(getString(R.string.l3_attentions))
+                            .setContentText(getString(R.string.l3_attention_cette_operation_vas_supprimer))
+                            .setCancelText(getString(R.string.l3_non))
+                            .setConfirmText(getString(R.string.l3_oui))
                             .showCancelButton(true)
                             .setCancelClickListener(Dialog::dismiss)
                             .setConfirmClickListener(sDialog -> {
@@ -743,13 +745,13 @@ public class ActivityImportsExport extends AppCompatActivity {
                 }
             } else if (integer == 2) {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_de_connexion_verifier_les_param_2) + messageError)
                         .show();
             } else {
                 new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Erreur...")
-                        .setContentText("Probleme fatal : " + messageError)
+                        .setTitleText(getString(R.string.l3_erreur_4))
+                        .setContentText(getString(R.string.l3_probleme_fatal_2) + messageError)
                         .show();
             }
             super.onPostExecute(integer);
@@ -790,7 +792,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Exportation des données...");
+            builder.setTitle(getString(R.string.l3_exportation_des_donnees));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -1278,19 +1280,19 @@ public class ActivityImportsExport extends AppCompatActivity {
                         produit_error = "\nProblem exportation dans les produits : \n" + produit_error;
                     }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + produit_error + nums_bon_error + versement_error)
+                            .setTitleText(getString(R.string.l3_exportation_2))
+                            .setContentText(getString(R.string.l3_exportation_termine_n_nombre_de_bons_exp) + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + produit_error + nums_bon_error + versement_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                             .show();
                 } else if (integer == 3) {
                     //  if(ActivityImportsExport. != null)
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Erreur...")
-                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_erreur_4))
+                            .setContentText(getString(R.string.l3_erreur_sql) + erreurMessage)
                             .show();
                 }
             }
@@ -1331,7 +1333,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Exportation des données...");
+            builder.setTitle(getString(R.string.l3_exportation_des_donnees));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             ProgressBar progressBar = view.findViewById(R.id.progressBar);
@@ -1927,19 +1929,19 @@ public class ActivityImportsExport extends AppCompatActivity {
                         client_error = "\nProblem exportation dans les client : \n" + client_error;
                     }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé \n Nombre de bons exportés : " + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
+                            .setTitleText(getString(R.string.l3_exportation_2))
+                            .setContentText(getString(R.string.l3_exportation_termine_n_nombre_de_bons_exp) + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                             .show();
                 } else if (integer == 3) {
                     //  if(ActivityImportsExport. != null)
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Erreur...")
-                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_erreur_4))
+                            .setContentText(getString(R.string.l3_erreur_sql) + erreurMessage)
                             .show();
                 }
             }
@@ -1982,7 +1984,7 @@ public class ActivityImportsExport extends AppCompatActivity {
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Exportation des données...");
+            builder.setTitle(getString(R.string.l3_exportation_des_donnees));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             ProgressBar progressBar = view.findViewById(R.id.progressBar);
@@ -2549,19 +2551,19 @@ public class ActivityImportsExport extends AppCompatActivity {
                         client_error = "\nProblem exportation dans les client : \n" + client_error;
                     }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé \n Nombre de commandes exportés : " + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
+                            .setTitleText(getString(R.string.l3_exportation_2))
+                            .setContentText(getString(R.string.l3_exportation_termine_n_nombre_de_commande) + bon_inserted + "\n bons erronés : " + bon_erreur + "\n ==================" + "\n  Nombre de versements exportés : " + total_versement + "\n ==================" + client_error + produit_error + nums_bon_error + versement_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                             .show();
                 } else if (integer == 3) {
                     //  if(ActivityImportsExport. != null)
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Erreur...")
-                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_erreur_4))
+                            .setContentText(getString(R.string.l3_erreur_sql) + erreurMessage)
                             .show();
                 }
             }
@@ -2593,7 +2595,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Synchronisation des paramètres...");
+            builder.setTitle(getString(R.string.l3_synchronisation_des_parametres));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout_indeterminate, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -2825,18 +2827,18 @@ public class ActivityImportsExport extends AppCompatActivity {
                     if (integer == 1) {
                         // get all transfert bon of this depot
                         new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Information !...")
-                                .setContentText("Paramètres synchroniser avec succés")
+                                .setTitleText(getString(R.string.l3_information_3))
+                                .setContentText(getString(R.string.l3_parametres_synchroniser_avec_succes))
                                 .show();
                     } else if (integer == 2) {
                         new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Erreur...")
-                                .setContentText("Probleme de connexion, vérifier les parametres : " + messageError)
+                                .setTitleText(getString(R.string.l3_erreur_4))
+                                .setContentText(getString(R.string.l3_probleme_de_connexion_verifier_les_param_2) + messageError)
                                 .show();
                     } else {
                         new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Erreur...")
-                                .setContentText("Probleme recupération des données : " + messageError)
+                                .setTitleText(getString(R.string.l3_erreur_4))
+                                .setContentText(getString(R.string.l3_probleme_recuperation_des_donnees) + messageError)
                                 .show();
                     }
 
@@ -2876,7 +2878,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Importation fournisseurs...");
+            builder.setTitle(getString(R.string.l3_importation_fournisseurs));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -3003,7 +3005,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
             progressBar.setMax(allrows);
             progressBar.setProgress(values[0]);
-            progressText.setText("Progression : " + values[0] + " / " + allrows);
+            progressText.setText(getString(R.string.l4_progression_prefix) + values[0] + " / " + allrows);
         }
 
         @Override
@@ -3021,18 +3023,18 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 if (result == 1) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Information. !")
-                            .setContentText("Importation liste fournisseurs bien terminé")
+                            .setTitleText(getString(R.string.l3_information_5))
+                            .setContentText(getString(R.string.l3_importation_liste_fournisseurs_bien_term))
                             .show();
                 } else if (result == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                             .show();
                 } else if (result == 3) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_problem_au_niveau_de_la_requette_sql) + erreurMessage)
                             .show();
                 }
 
@@ -3071,7 +3073,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Importation clients...");
+            builder.setTitle(getString(R.string.l3_importation_clients));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -3230,7 +3232,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
             progressBar.setMax(allrows);
             progressBar.setProgress(values[0]);
-            progressText.setText("Progression : " + values[0] + " / " + allrows);
+            progressText.setText(getString(R.string.l4_progression_prefix) + values[0] + " / " + allrows);
         }
 
         @Override
@@ -3247,18 +3249,18 @@ public class ActivityImportsExport extends AppCompatActivity {
 
                 if (result == 1) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Information. !")
-                            .setContentText("Importation liste clients bien terminé")
+                            .setTitleText(getString(R.string.l3_information_5))
+                            .setContentText(getString(R.string.l3_importation_liste_clients_bien_termine))
                             .show();
                 } else if (result == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                             .show();
                 } else if (result == 3) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_problem_au_niveau_de_la_requette_sql) + erreurMessage)
                             .show();
                 }
             }
@@ -3295,7 +3297,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Importation produits...");
+            builder.setTitle(getString(R.string.l3_importation_produits));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -3665,7 +3667,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
             progressBar.setMax(allrows);
             progressBar.setProgress(values[0]);
-            progressText.setText("Progression : " + values[0] + " / " + allrows);
+            progressText.setText(getString(R.string.l4_progression_prefix) + values[0] + " / " + allrows);
         }
 
         @Override
@@ -3691,19 +3693,19 @@ public class ActivityImportsExport extends AppCompatActivity {
                         editor.apply();
 
                         new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Information. !")
-                                .setContentText("Importation liste produits bien terminé")
+                                .setTitleText(getString(R.string.l3_information_5))
+                                .setContentText(getString(R.string.l3_importation_liste_produits_bien_termine))
                                 .show();
 
                     } else if (result == 2) {
                         new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                                .setTitleText(getString(R.string.l3_attention_6))
+                                .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                                 .show();
                     } else if (result == 3) {
                         new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention. !")
-                                .setContentText("Problèm au niveau de la requette Sql : " + erreurMessage)
+                                .setTitleText(getString(R.string.l3_attention_6))
+                                .setContentText(getString(R.string.l3_problem_au_niveau_de_la_requette_sql) + erreurMessage)
                                 .show();
                     }
                 }catch (Exception e){
@@ -3899,7 +3901,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Importation bons de commandes clients...");
+            builder.setTitle(getString(R.string.l3_importation_bons_de_commandes_clients));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -4061,7 +4063,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
             progressBar.setMax(allrows);
             progressBar.setProgress(values[0]);
-            progressText.setText("Progression : " + values[0] + " / " + allrows);
+            progressText.setText(getString(R.string.l4_progression_prefix) + values[0] + " / " + allrows);
         }
 
         public static String convertDateFormat(String dateStr) {
@@ -4106,7 +4108,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 };
 
                 new SweetAlertDialog(activity, alertType)
-                        .setTitleText("Information")
+                        .setTitleText(getString(R.string.l3_information))
                         .setContentText(message)
                         .show();
 
@@ -4148,7 +4150,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Importation tournees clients...");
+            builder.setTitle(getString(R.string.l3_importation_tournees_clients));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             progressBar = view.findViewById(R.id.progressBar);
@@ -4301,7 +4303,7 @@ public class ActivityImportsExport extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
             progressBar.setMax(allrows);
             progressBar.setProgress(values[0]);
-            progressText.setText("Progression : " + values[0] + " / " + allrows);
+            progressText.setText(getString(R.string.l4_progression_prefix) + values[0] + " / " + allrows);
         }
 
         public static String convertDateFormat(String dateStr) {
@@ -4341,7 +4343,7 @@ public class ActivityImportsExport extends AppCompatActivity {
                 };
 
                 new SweetAlertDialog(activity, alertType)
-                        .setTitleText("Information")
+                        .setTitleText(getString(R.string.l3_information))
                         .setContentText(message)
                         .show();
 
@@ -4390,7 +4392,7 @@ public class ActivityImportsExport extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Exportation inventaires...");
+            builder.setTitle(getString(R.string.l3_exportation_inventaires_2));
 
             View view = LayoutInflater.from(activity).inflate(R.layout.progress_dialog_layout, null);
             ProgressBar progressBar = view.findViewById(R.id.progressBar);
@@ -4661,19 +4663,19 @@ public class ActivityImportsExport extends AppCompatActivity {
                         nums_inv_error = "\nProbleme exportation dans les inventaires : \n" + nums_inv_error;
                     }
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Exportation...")
-                            .setContentText("Exportation terminé, Total inventaire : " + total_inventaire + "\n bons inserés : " + inventaire_inserer + "\n bons exists : " + inventaire_exist + "\n bons erronés : " + inventaire_erreur + nums_inv_error)
+                            .setTitleText(getString(R.string.l3_exportation_2))
+                            .setContentText(getString(R.string.l3_exportation_termine_total_inventaire) + total_inventaire + "\n bons inserés : " + inventaire_inserer + "\n bons exists : " + inventaire_exist + "\n bons erronés : " + inventaire_erreur + nums_inv_error)
                             .show();
                 } else if (integer == 2) {
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Attention. !")
-                            .setContentText("Connexion perdu, vérifier la connexion avec le serveur : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_attention_6))
+                            .setContentText(getString(R.string.l3_connexion_perdu_verifier_la_connexion_av) + erreurMessage)
                             .show();
                 } else if (integer == 3) {
                     //  if(ActivityImportsExport. != null)
                     new SweetAlertDialog(ActivityImportsExport.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Erreur...")
-                            .setContentText("Erreur SQL : " + erreurMessage)
+                            .setTitleText(getString(R.string.l3_erreur_4))
+                            .setContentText(getString(R.string.l3_erreur_sql) + erreurMessage)
                             .show();
                 }
             }

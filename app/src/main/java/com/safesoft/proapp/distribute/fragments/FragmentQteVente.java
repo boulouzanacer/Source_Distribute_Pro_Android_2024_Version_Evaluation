@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static android.content.Context.MODE_PRIVATE;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
@@ -45,9 +47,9 @@ public class FragmentQteVente {
     private DATABASE controller;
     MaterialFancyButton btn_valider, btn_cancel;
     TextView txv_produit, txv_message, txv_promotion, txv_last_price;
-    TextInputLayout stockavantLayout_colis, stockapresLayout_colis, prixhtLayout, tvaLayout, ugLayout;
+    TextInputLayout stockavantLayout_colis, stockapresLayout_colis, prixhtLayout, tvaLayout, ugLayout, designationLayout;
     LinearLayout ly_prix_ttc, part_3_qtevente_Layout;
-    TextInputEditText edt_colissage, edt_nbr_colis, edt_qte, edt_gratuit, edt_prix_ht, edt_tva, edt_prix_ttc, edt_stock_avant, edt_stock_avant_colis, edt_stock_apres, edt_stock_apres_colis;
+    TextInputEditText edt_colissage, edt_nbr_colis, edt_qte, edt_gratuit, edt_prix_ht, edt_tva, edt_prix_ttc, edt_stock_avant, edt_stock_avant_colis, edt_stock_apres, edt_stock_apres_colis, edt_designation;
     double val_nbr_colis, val_colissage, val_qte, val_gratuit, val_prix_ht, val_tva, val_prix_ttc, val_stock_avant, val_stock_avant_colis, val_stock_apres, val_stock_apres_colis, val_qte_old, val_gratuit_old;
     private Context mContext;
     EventBus bus = EventBus.getDefault();
@@ -125,6 +127,8 @@ public class FragmentQteVente {
         ly_prix_ttc = dialogview.findViewById(R.id.ly_prix);
         part_3_qtevente_Layout = dialogview.findViewById(R.id.part_3_qtevente_Layout);
         ugLayout = dialogview.findViewById(R.id.gratuitLayout);
+        designationLayout = dialogview.findViewById(R.id.designationLayout);
+        edt_designation = dialogview.findViewById(R.id.edt_designation);
 
 
         txv_produit = dialogview.findViewById(R.id.produit_title);
@@ -169,7 +173,7 @@ public class FragmentQteVente {
         }
 
         if (last_price != 0) {
-            txv_last_price.setText("Dernier prix vendu pour ce client : " + nf.format(last_price));
+            txv_last_price.setText(BaseApplication.instance.getString(R.string.l4_dernier_prix_vendu_client_prefix) + nf.format(last_price));
         }
 
         if (prefs.getBoolean("VENTE_WITH_QTE_GRAT", false)) {
@@ -239,7 +243,7 @@ public class FragmentQteVente {
 
             if (checked_bon2 != null) {
                 if(prefs.getBoolean("GROUPE_PRODUCTS_BON", false)){
-                    txv_message.setText("Produit déja inseré avec quantité: " + nq.format(checked_bon2.qte));
+                    txv_message.setText(BaseApplication.instance.getString(R.string.l4_produit_deja_insere_quantite_prefix) + nq.format(checked_bon2.qte));
                     if_bon2_exist = true;
                     arrived_bon2 = checked_bon2;
                 }
@@ -336,6 +340,13 @@ public class FragmentQteVente {
 
 
         txv_produit.setText(arrived_bon2.produit);
+
+        // Désignation modifiable à l'insertion dans le bon de vente / commande (option Paramètres > Divers)
+        if (prefs.getBoolean("CAN_EDIT_DESIGNATION", false) && SOURCE_LOCAL.startsWith("BON2")) {
+            designationLayout.setVisibility(View.VISIBLE);
+            edt_designation.setText(arrived_bon2.produit);
+        }
+
         edt_stock_avant.setText(nq.format(val_stock_avant));
         edt_stock_avant_colis.setText(nq.format(val_stock_avant_colis));
 
@@ -355,8 +366,8 @@ public class FragmentQteVente {
                 if (!(prefs.getBoolean("STOCK_MOINS", false))) {
                     if (val_qte > val_stock_avant) {
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Attention!")
-                                .setContentText("Stock produit insuffisant, insertion impossible! (Pour la désactiver Allez dans Paramètres -> Paramètres divers -> Cochez (Vente avec stock moins)")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_attention_4))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_stock_produit_insuffisant_insertion_impo))
                                 .show();
 
                         return;
@@ -367,7 +378,7 @@ public class FragmentQteVente {
             boolean hasError = false;
 
             if(val_prix_ttc < arrived_bon2.pv_limite){
-                txv_message.setText("Produit avec un prix limit : " + nf.format(arrived_bon2.pv_limite));
+                txv_message.setText(BaseApplication.instance.getString(R.string.l4_produit_prix_limit_prefix) + nf.format(arrived_bon2.pv_limite));
                 val_prix_ttc = arrived_bon2.pv_limite;
                 edt_prix_ttc.setText(nf.format(val_prix_ttc));
                 hasError = true;
@@ -375,21 +386,29 @@ public class FragmentQteVente {
 
             if (edt_qte.getText().length() <= 0) {
 
-                edt_qte.setError("Quantité obligatoire!!");
+                edt_qte.setError(BaseApplication.instance.getString(R.string.l3_quantite_obligatoire));
                 hasError = true;
             }
 
             if (edt_prix_ht.getText().length() <= 0 && edt_prix_ht.getVisibility() == View.VISIBLE) {
-                edt_prix_ht.setError("Prix HT obligatoire!!");
+                edt_prix_ht.setError(BaseApplication.instance.getString(R.string.l3_prix_ht_obligatoire));
                 hasError = true;
             }
 
             if (edt_prix_ttc.getText().length() <= 0 && edt_prix_ttc.getVisibility() == View.VISIBLE) {
-                edt_prix_ttc.setError("Prix TTC obligatoire!!");
+                edt_prix_ttc.setError(BaseApplication.instance.getString(R.string.l3_prix_ttc_obligatoire));
                 hasError = true;
             }
 
             if (!hasError) {
+
+                // Applique la désignation saisie par l'utilisateur (ligne du bon uniquement)
+                if (designationLayout.getVisibility() == View.VISIBLE) {
+                    String designation = edt_designation.getText() == null ? "" : edt_designation.getText().toString().trim();
+                    if (!designation.isEmpty()) {
+                        arrived_bon2.produit = designation;
+                    }
+                }
 
                 arrived_bon2.nbr_colis = val_nbr_colis;
                 arrived_bon2.colissage = val_colissage;
@@ -751,7 +770,7 @@ public class FragmentQteVente {
                 if (d1.getTime() == d2.getTime()) {
                     if (d1.before(today)) {
                         val_prix_ht = arrived_bon2.pp1_ht;
-                        txv_promotion.setText("Produit en promotion");
+                        txv_promotion.setText(BaseApplication.instance.getString(R.string.l4_produit_en_promotion));
                         startBlinkanimation(txv_promotion);
                     } else {
                         val_prix_ht = arrived_bon2.pv_ht;
@@ -759,7 +778,7 @@ public class FragmentQteVente {
                     }
                 } else if (d1.getTime() <= today.getTime() && today.getTime() <= d2.getTime()) {
                     val_prix_ht = arrived_bon2.pp1_ht;
-                    txv_promotion.setText("Produit en promotion");
+                    txv_promotion.setText(BaseApplication.instance.getString(R.string.l4_produit_en_promotion));
                     startBlinkanimation(txv_promotion);
                 } else {
                     val_prix_ht = arrived_bon2.pv_ht;

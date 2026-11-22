@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.webkit.WebView;
 
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.safesoft.proapp.distribute.BuildConfig;
@@ -47,6 +48,17 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        // Active le rendu integral du document WebView. Ce flag est STATIQUE et n'a
+        // d'effet que sur les WebView instanciees APRES l'appel : il doit donc etre
+        // positionne ici, avant toute creation de WebView. Sans cela, webview.draw()
+        // ne rend que la portion visible a l'ecran et les bons longs (arabe) sont
+        // imprimes tronques (seule la 1ere page ou la page affichee sort).
+        try {
+            WebView.enableSlowWholeDocumentDraw();
+        } catch (Throwable t) {
+            Log.v("TRACKKK", "enableSlowWholeDocumentDraw fail: " + t.getMessage());
+        }
 
         // Applique la langue enregistrée (français par défaut) avant la création de
         // toute activité afin que la locale et le sens RTL (arabe) soient corrects
@@ -131,8 +143,7 @@ public class BaseApplication extends Application {
         try {
             if (BackupScheduler.isEnabled(this)) {
                 BackupScheduler.schedulePeriodic(this);
-                if (BackupScheduler.prefs(this)
-                        .getBoolean(BackupScheduler.KEY_BACKUP_PENDING, false)) {
+                if (BackupScheduler.prefs(this).getBoolean(BackupScheduler.KEY_BACKUP_PENDING, false)) {
                     BackupScheduler.scheduleImmediate(this);
                 }
             }
@@ -190,9 +201,11 @@ public class BaseApplication extends Application {
      * on API 26-29.
      */
     public static void applyImmersiveToWindow(Window window) {
+
         if (window == null) {
             return;
         }
+
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 WindowInsetsController controller = window.getInsetsController();
@@ -207,6 +220,7 @@ public class BaseApplication extends Application {
         } catch (Throwable t) {
             Log.v("TRACKKK", "applyImmersiveToWindow fail: " + t.getMessage());
         }
+
     }
 
     /**

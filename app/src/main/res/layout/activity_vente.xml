@@ -61,7 +61,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/violet"
                 android:onClick="onClickEvent"
-                android:text="Tarif 1"
+                android:text="@string/l2_tarif_1"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="11sp"
@@ -194,8 +194,8 @@
                     android:textStyle="bold"
                     android:gravity="end"
                     android:layout_weight="1"
-                    android:layout_marginRight="15dp"
-                    android:paddingLeft="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:paddingStart="10dp"
                     tools:ignore="RtlHardcoded,RtlSymmetry" />
 
             </TableRow>
@@ -275,8 +275,8 @@
                     android:textStyle="bold"
                     android:gravity="end"
                     android:layout_weight="1"
-                    android:layout_marginRight="15dp"
-                    android:paddingLeft="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:paddingStart="10dp"
                     tools:ignore="RtlHardcoded,RtlSymmetry" />
 
             </TableRow>

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
@@ -122,7 +124,7 @@ public class FragmentQteInventaire {
         //********************************************************************
         if (SOURCE_LOCAL.equals("INV2_INSERT")) {
             if (checked_result_inv2 != null) {
-                txv_message.setText("Produit déja inseré avec une quantité : " + checked_result_inv2.qte_physique);
+                txv_message.setText(BaseApplication.instance.getString(R.string.l4_produit_deja_insere_quantite2_prefix) + checked_result_inv2.qte_physique);
                 if_inv2_exist = true;
                 arrived_inv2 = checked_result_inv2;
             }
@@ -206,7 +208,7 @@ public class FragmentQteInventaire {
 
             if (Objects.requireNonNull(edt_qte_physique.getText()).length() <= 0) {
 
-                edt_qte_physique.setError("Quantité obligatoire!!");
+                edt_qte_physique.setError(BaseApplication.instance.getString(R.string.l3_quantite_obligatoire));
                 hasError = true;
             }
 

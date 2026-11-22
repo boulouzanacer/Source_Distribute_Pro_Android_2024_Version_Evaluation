@@ -19,7 +19,7 @@
             android:layout_width="180sp"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="Title"
+            android:text="@string/l2_title"
             android:maxLines="2"
             tools:minTextSize="16sp" />
 

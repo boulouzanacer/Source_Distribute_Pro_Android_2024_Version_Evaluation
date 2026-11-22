@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -77,10 +78,10 @@ public class RecyclerAdapterClientsVersement extends RecyclerView.Adapter<Recycl
         holder.ClientN.setTypeface(null, Typeface.BOLD);
         holder.ClientN.setText(item.client);
 
-        holder.Tel_clientN.setText("TEL : " + item.tel);
+        holder.Tel_clientN.setText(BaseApplication.instance.getString(R.string.l4_tel_prefix) + item.tel);
 
         holder.Total_versement.setTypeface(null, Typeface.BOLD);
-        holder.Total_versement.setText("Versement : " + new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_client)));
+        holder.Total_versement.setText(BaseApplication.instance.getString(R.string.l4_versement_prefix) + new DecimalFormat("##,##0.00").format(Double.valueOf(item.verser_client)));
 
         String firstChar = "NO";
         if (item.client != null) {

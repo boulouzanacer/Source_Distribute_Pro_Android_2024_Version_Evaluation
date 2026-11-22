@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.adapters;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -176,13 +178,13 @@ public class ListViewAdapterListClient extends BaseAdapter {
                         //dialog.dismiss();
 
                         new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Route...")
-                                .setContentText("Client bien ajouté dans la liste de route")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_route))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_client_bien_ajoute_dans_la_liste_de_rout))
                                 .show();
                     } else {
                         new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Route...")
-                                .setContentText("Client n'a pas une position géographique, Veuillez introduisez une dans Client -> Détails client")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_route))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_client_na_pas_une_position_geographique))
                                 .show();
                     }
                 } else {

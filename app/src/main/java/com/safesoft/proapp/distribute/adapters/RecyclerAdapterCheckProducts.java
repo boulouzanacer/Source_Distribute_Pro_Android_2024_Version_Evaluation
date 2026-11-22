@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -151,14 +152,14 @@ public class RecyclerAdapterCheckProducts extends RecyclerView.Adapter<RecyclerA
             holder.Colissage_title.setText("");
         } else {
             holder.Colissage.setText(new DecimalFormat("##,##0.##").format(item.colissage));
-            holder.Colissage_title.setText("Colis.");
+            holder.Colissage_title.setText(BaseApplication.instance.getString(R.string.l4_colis_point));
         }
         if (item.stock_colis == 0) {
             holder.Stock_colis.setText("");
             holder.Stock_colis_title.setText("");
         } else {
             holder.Stock_colis.setText(new DecimalFormat("##,##0.##").format(item.stock_colis));
-            holder.Stock_colis_title.setText("Stock colis");
+            holder.Stock_colis_title.setText(BaseApplication.instance.getString(R.string.l4_stock_colis));
         }
         holder.Qte_r.setText(new DecimalFormat("##,##0.##").format(item.stock));
 

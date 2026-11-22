@@ -16,7 +16,7 @@
         android:maxLines="2"
         android:lines="2"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres activation achats, vente,\n commande, inventaire" />
+        android:text="@string/l2_parametres_activation_achats_vente_n_com" />
 
     <View
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:id="@+id/switch_module_achat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Activer module achats"
+            android:text="@string/l2_activer_module_achats"
             android:textAlignment="textStart"
             android:checked="true"
             android:textSize="14sp"
@@ -61,7 +61,7 @@
             android:id="@+id/switch_module_vente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Activer module ventes"
+            android:text="@string/l2_activer_module_ventes"
             android:textAlignment="textStart"
             android:checked="true"
             android:textSize="14sp"
@@ -84,7 +84,7 @@
             android:id="@+id/switch_module_commande"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Activer module commandes"
+            android:text="@string/l2_activer_module_commandes"
             android:textAlignment="textStart"
             android:checked="true"
             android:textSize="14sp"
@@ -107,7 +107,7 @@
             android:id="@+id/switch_module_inventaire"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Activer module inventaire"
+            android:text="@string/l2_activer_module_inventaire"
             android:textAlignment="textStart"
             android:checked="true"
             android:textSize="14sp"

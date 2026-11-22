@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Passage tournée"
+                android:text="@string/l2_passage_tournee"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"
@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📋 INFORMATIONS PASSAGE"
+                    android:text="@string/l2_informations_passage"
                     android:textColor="#1D4ED8"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -71,7 +71,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Numéro Tournée"
+                    android:hint="@string/l2_numero_tournee"
                     app:boxStrokeColor="#1D4ED8"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -94,7 +94,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Date Passage"
+                    android:hint="@string/l2_date_passage"
                     app:boxStrokeColor="#1D4ED8"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -118,7 +118,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Heure Passage"
+                    android:hint="@string/l2_heure_passage"
                     app:boxStrokeColor="#1D4ED8"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -142,7 +142,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Code Client"
+                    android:hint="@string/code_client"
                     app:boxStrokeColor="#1D4ED8"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -175,7 +175,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📍 GÉOLOCALISATION GPS"
+                    android:text="@string/l2_geolocalisation_gps"
                     android:textColor="#C2410C"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -251,7 +251,7 @@
                             android:id="@+id/txtv_distance_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Distance : " />
+                            android:text="@string/l2_distance" />
 
                         <TextView
                             android:id="@+id/txtv_distance_value"
@@ -259,7 +259,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/blue"
                             android:textStyle="bold"
-                            android:text="0 km" />
+                            android:text="@string/l2_0_km" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -291,7 +291,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📝 OBSERVATION"
+                    android:text="@string/l2_observation"
                     android:textColor="#047857"
                     android:textSize="12.5sp"
                     android:textStyle="bold"
@@ -304,7 +304,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Observation"
+                    android:hint="@string/observation"
                     app:boxStrokeColor="#047857"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -345,7 +345,7 @@
                 android:minHeight="52dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:text="Annuler"
+                android:text="@string/l2_annuler"
                 android:background="@drawable/bg_web_button_secondary"
                 android:textColor="#0F172A"
                 android:textStyle="bold"
@@ -360,7 +360,7 @@
                 android:minHeight="52dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:text="Valider"
+                android:text="@string/valider"
                 android:background="@drawable/bg_web_button_primary"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"

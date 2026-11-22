@@ -14,7 +14,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres affichage prix achat produit" />
+        android:text="@string/l2_parametres_affichage_prix_achat_produit" />
 
     <View
         android:layout_width="match_parent"

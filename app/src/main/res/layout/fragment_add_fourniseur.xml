@@ -23,7 +23,7 @@
             android:paddingBottom="18dp">
 
             <TextView
-                android:text="Nouveau fournisseur"
+                android:text="@string/l2_nouveau_fournisseur"
                 android:textColor="@color/white"
                 android:gravity="center_vertical"
                 android:textStyle="bold"
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:text="Remplissez les informations du fournisseur"
+                android:text="@string/l2_remplissez_les_informations_du_fournisse"
                 android:textColor="#C6E0F7"
                 android:textSize="13sp"
                 android:layout_marginTop="3dp"
@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="IDENTITÉ"
+                            android:text="@string/l2_identite"
                             android:textColor="#64748B"
                             android:textSize="11.5sp"
                             android:textStyle="bold"
@@ -136,7 +136,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="LOCALISATION"
+                            android:text="@string/l2_localisation"
                             android:textColor="#64748B"
                             android:textSize="11.5sp"
                             android:textStyle="bold"
@@ -226,7 +226,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="INFORMATIONS FISCALES"
+                            android:text="@string/l2_informations_fiscales"
                             android:textColor="#64748B"
                             android:textSize="11.5sp"
                             android:textStyle="bold"

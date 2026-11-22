@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:padding="16dp"
-        android:text="Choisissez usb périphérique"
+        android:text="@string/l2_choisissez_usb_peripherique"
         android:textColor="@color/orange"
         android:textSize="24sp" />
 
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="Insérez usb périphérique svp"
+        android:text="@string/l2_inserez_usb_peripherique_svp"
         android:textColor="@color/gray"
         android:textSize="@dimen/text_size_small"
         android:visibility="gone" />

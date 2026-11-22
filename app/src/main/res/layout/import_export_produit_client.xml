@@ -37,7 +37,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Bons"
+                    android:contentDescription="@string/a11y_bons"
                     android:src="@drawable/ic_baseline_storage_24" />
             </LinearLayout>
 
@@ -52,7 +52,7 @@
                     android:id="@+id/importt_bon_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Importation bons transfers"
+                    android:text="@string/l2_importation_bons_transfers"
                     android:textColor="#0F172A"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_importer_les_bons_de_tr"
                     android:textSize="12.5sp"
                     android:textColor="#64748B"
                     android:lineSpacingExtra="1dp"
@@ -99,7 +99,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Bons de retour"
+                    android:contentDescription="@string/a11y_bons_de_retour"
                     android:src="@drawable/ic_baseline_edit_note_24" />
             </LinearLayout>
 
@@ -114,7 +114,7 @@
                     android:id="@+id/importt_bon_txt_retour"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Importation bons de retour"
+                    android:text="@string/l2_importation_bons_de_retour"
                     android:textColor="#0F172A"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -125,7 +125,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer les bons de transfert depuis le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_importer_les_bons_de_tr"
                     android:textSize="12.5sp"
                     android:textColor="#64748B"
                     android:lineSpacingExtra="1dp"
@@ -161,7 +161,7 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:contentDescription="Synchronisation fournisseurs"
+                    android:contentDescription="@string/a11y_synchronisation_fournisseurs"
                     android:src="@drawable/synch_fournisseur_24" />
 
             </LinearLayout>
@@ -177,7 +177,7 @@
                     android:id="@+id/importt_fournisseur_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Synchronisation fournisseurs"
+                    android:text="@string/l2_synchronisation_fournisseurs"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -187,7 +187,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer la liste des fournisseurs depuis le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_importer_la_liste_des_f"
                     android:textSize="11sp"
                     android:textColor="#64748B"
                     android:lineSpacingExtra="1dp"
@@ -223,7 +223,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Clients"
+                    android:contentDescription="@string/a11y_clients"
                     android:src="@drawable/synch_client_24" />
 
             </LinearLayout>
@@ -239,7 +239,7 @@
                     android:id="@+id/importt_client_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Synchronisation clients"
+                    android:text="@string/l2_synchronisation_clients"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -249,7 +249,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer la liste des clients depuis le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_importer_la_liste_des_c"
                     android:textSize="11sp"
                     android:textColor="#64748B"
                     android:lineSpacingExtra="1dp"
@@ -285,7 +285,7 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:contentDescription="Synchronisation des produits"
+                    android:contentDescription="@string/a11y_synchronisation_des_produits"
                     android:src="@drawable/synch_produit_24" />
 
             </LinearLayout>
@@ -301,7 +301,7 @@
                     android:id="@+id/importt_produit_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Synchronisation des produits"
+                    android:text="@string/l2_synchronisation_des_produits"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -311,7 +311,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer la liste des produits depuis le serveur distant (Local)"
+                    android:text="@string/l2_ca_vous_permet_d_importer_la_liste_des_p"
                     android:textSize="11sp"
                     android:textColor="#64748B"
                     android:lineSpacingExtra="1dp"
@@ -347,7 +347,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Produits FTP"
+                    android:contentDescription="@string/a11y_produits_ftp"
                     android:tint="#1F2937"
                     android:src="@drawable/ic_baseline_inventory_2_24" />
             </LinearLayout>
@@ -363,7 +363,7 @@
                     android:id="@+id/importt_produit_txt_ftp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Synchronisation des produits depuis serveur (FTP)"
+                    android:text="@string/l2_synchronisation_des_produits_depuis_serv"
                     android:textColor="#0F172A"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -373,7 +373,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'importer la liste des produits depuis le serveur distant (FTP)"
+                    android:text="@string/l2_ca_vous_permet_d_importer_la_liste_des_p_2"
                     android:textSize="12.5sp"
                     android:textColor="#64748B"
                     android:lineSpacingExtra="1dp"
@@ -409,7 +409,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Paramètres"
+                    android:contentDescription="@string/a11y_parametres"
                     android:src="@drawable/synch_setting_24" />
 
             </LinearLayout>

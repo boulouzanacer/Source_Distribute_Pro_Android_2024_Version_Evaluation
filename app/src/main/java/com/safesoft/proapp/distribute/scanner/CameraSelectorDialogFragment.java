@@ -69,7 +69,7 @@ public class CameraSelectorDialogFragment extends DialogFragment {
                             }
                         })
                 // Set the action buttons
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.l3_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK, so save the mSelectedIndices results somewhere
@@ -79,7 +79,7 @@ public class CameraSelectorDialogFragment extends DialogFragment {
                         }
                     }
                 })
-                .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.l3_annuler), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.commande_vente;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -63,7 +65,7 @@ import eu.inloop.simplerecycleradapter.ItemLongClickListener;
 import eu.inloop.simplerecycleradapter.SettableViewHolder;
 import eu.inloop.simplerecycleradapter.SimpleRecyclerAdapter;
 
-public class ActivityEtatC extends AppCompatActivity implements ItemClickListener<WrappedMyDataObject>, ItemLongClickListener<WrappedMyDataObject> {
+public class ActivityEtatC extends BaseLocaleActivity implements ItemClickListener<WrappedMyDataObject>, ItemLongClickListener<WrappedMyDataObject> {
 
     private RecyclerView mRecyclerView;
     private SimpleRecyclerAdapter<WrappedMyDataObject> mRecyclerAdapter;
@@ -134,7 +136,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Statistiques commandes");
+            getSupportActionBar().setTitle(getString(R.string.l3_statistiques_commandes));
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         }
 
@@ -172,7 +174,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
                 fab.setOnTouchListener(null);
 
             }else{
-                Crouton.makeText(ActivityEtatC.this, "Aucun client versé dans la periode séléctionner !", Style.ALERT).show();
+                Crouton.makeText(ActivityEtatC.this, getString(R.string.l4_aucun_client_verse_periode), Style.ALERT).show();
             }
 
 
@@ -188,7 +190,7 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
         });
 
 
-        txtv_etat_centre_status.setText("Etat de commande client...");
+        txtv_etat_centre_status.setText(getString(R.string.l4_etat_commande_client));
 
         super.onStart();
     }
@@ -346,8 +348,8 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
     public void getEventSelection(EtatZSelection_Event event) {
 
         event_selection = event;
-        debut.setText("De " + event_selection.getDate_f());
-        fin.setText("Vers " + event_selection.getDate_t());
+        debut.setText(getString(R.string.l4_de_prefix) + event_selection.getDate_f());
+        fin.setText(getString(R.string.l4_vers_prefix) + event_selection.getDate_t());
         if (event.getUser().equals("%")) {
             txtv_user.setText("Tous");
         } else {
@@ -565,8 +567,8 @@ public class ActivityEtatC extends AppCompatActivity implements ItemClickListene
                             break;
                         case 2:
                             new SweetAlertDialog(ActivityEtatC.this, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText("Oops...")
-                                    .setContentText("Vous avez un problem au niveau de la requette SQL! : " + errorMessage)
+                                    .setTitleText(getString(R.string.l3_oops))
+                                    .setContentText(getString(R.string.l3_vous_avez_un_problem_au_niveau_de_la_req) + errorMessage)
                                     .show();
                             start_select_etatz(3);
                             break;

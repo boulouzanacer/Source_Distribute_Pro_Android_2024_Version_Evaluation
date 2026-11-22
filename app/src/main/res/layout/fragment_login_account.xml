@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Compte cloud"
+                android:text="@string/l2_compte_cloud"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -40,7 +40,7 @@
                 android:id="@+id/txtv_info_compte_cloud"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="message"
+                android:text="@string/l2_message"
                 android:gravity="center"
                 android:textSize="13sp"
                 android:textAlignment="center"
@@ -71,7 +71,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🔐 IDENTIFIANTS"
+                    android:text="@string/l2_identifiants"
                     android:textColor="#1D4ED8"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -91,7 +91,7 @@
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:errorMessage="@string/error_message_empty"
                     app:errorType="empty"
-                    android:hint="Email"
+                    android:hint="@string/l2_email"
                     android:layout_marginStart="2dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginBottom="3dp"
@@ -131,7 +131,7 @@
                     android:layout_marginBottom="3dp"
                     app:expandedHintEnabled="false"
                     app:helperText="   "
-                    android:hint="Mot de passe">
+                    android:hint="@string/l2_mot_de_passe">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_password"
@@ -180,7 +180,7 @@
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:minHeight="52dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"

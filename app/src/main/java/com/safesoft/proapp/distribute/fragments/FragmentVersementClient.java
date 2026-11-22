@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 
 import android.app.Activity;
@@ -122,11 +124,11 @@ public class FragmentVersementClient {
             String str_versement = Objects.requireNonNull(edt_versement.getText()).toString().trim();
 
             if (str_versement.isEmpty()) {
-                edt_versement.setError("Montant obligatoire !");
+                edt_versement.setError(BaseApplication.instance.getString(R.string.l3_montant_obligatoire));
                 edt_versement.requestFocus();
                 new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Montant invalide")
-                        .setContentText("Veuillez saisir un montant de versement.")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_montant_invalide))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_veuillez_saisir_un_montant_de_versement))
                         .show();
                 return;
             }
@@ -135,21 +137,21 @@ public class FragmentVersementClient {
             try {
                 val_versement = Double.parseDouble(str_parse);
             } catch (NumberFormatException nfe) {
-                edt_versement.setError("Format numérique invalide !");
+                edt_versement.setError(BaseApplication.instance.getString(R.string.l3_format_numerique_invalide));
                 edt_versement.requestFocus();
                 new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Montant invalide")
-                        .setContentText("Le format du montant saisi est incorrect.")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_montant_invalide))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_le_format_du_montant_saisi_est_incorrect))
                         .show();
                 return;
             }
 
             if (val_versement <= 0) {
-                edt_versement.setError("Le montant doit être supérieur à 0 !");
+                edt_versement.setError(BaseApplication.instance.getString(R.string.l3_le_montant_doit_etre_superieur_a_0));
                 edt_versement.requestFocus();
                 new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Montant invalide")
-                        .setContentText("Vous ne pouvez pas enregistrer un versement nul ou négatif.")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_montant_invalide))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_vous_ne_pouvez_pas_enregistrer_un_versem))
                         .show();
                 return;
             }
@@ -182,8 +184,8 @@ public class FragmentVersementClient {
                     if (controller.insert_into_carnet_c(carnet_c, val_nouveau_solde, val_nouveau_versement)) {
 
                         new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Success!")
-                                .setContentText(" Versement Ajouté! ")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_success))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_versement_ajoute))
                                 .show();
 
                         if (activity instanceof ActivityClientDetail) {
@@ -196,8 +198,8 @@ public class FragmentVersementClient {
                     } else {
                         // message erreur
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Opss!")
-                                .setContentText(" Erreur d'insertion versement! ")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_opss))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_erreur_dinsertion_versement))
                                 .show();
                     }
                 } else {
@@ -205,8 +207,8 @@ public class FragmentVersementClient {
                     if (controller.update_versement_client(carnet_c, val_nouveau_solde, val_nouveau_versement)) {
 
                         new SweetAlertDialog(activity, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Success!")
-                                .setContentText(" Versement Modifié! ")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_success))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_versement_modifie))
                                 .show();
 
                         if (activity instanceof ActivityClientDetail) {
@@ -219,8 +221,8 @@ public class FragmentVersementClient {
                     } else {
                         // message erreur
                         new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Opss!")
-                                .setContentText(" Erreur modification versement! ")
+                                .setTitleText(BaseApplication.instance.getString(R.string.l3_opss))
+                                .setContentText(BaseApplication.instance.getString(R.string.l3_erreur_modification_versement))
                                 .show();
                     }
                 }

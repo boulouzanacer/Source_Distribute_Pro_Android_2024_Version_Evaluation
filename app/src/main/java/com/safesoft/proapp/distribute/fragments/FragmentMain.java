@@ -170,8 +170,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
         } else if (viewId == R.id.btn_ventes) {
             if (CODE_DEPOT.equals("000000") || CODE_DEPOT.equals("")) {
                 new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Important !")
-                        .setContentText("Veuillez régler les paramètres de VAN ( code, nom depot ) !")
+                        .setTitleText(getString(R.string.l3_important))
+                        .setContentText(getString(R.string.l3_veuillez_regler_les_parametres_de_van_co))
                         .show();
             } else {
                 startActivity(ActivityVentes.class, 2);
@@ -180,8 +180,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener {
         } else if (viewId == R.id.btn_commande_client) {
             if (CODE_VENDEUR.equals("000000") && CODE_DEPOT.equals("000000")) {
                 new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Important !")
-                        .setContentText(" Veuillez régler les paramètres de VENDEUR ( code, nom vendeur ) !")
+                        .setTitleText(getString(R.string.l3_important))
+                        .setContentText(getString(R.string.l3_veuillez_regler_les_parametres_de_vendeu))
                         .show();
             } else {
                 startActivity(ActivityOrdersClient.class, 3);

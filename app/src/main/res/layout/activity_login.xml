@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
 
 
         <!--  Password Label -->
@@ -47,7 +47,7 @@
                 android:textColor="@color/black"
                 android:text=""
                 android:inputType="textPassword"
-                android:hint="Password" />
+                android:hint="@string/l2_password" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,7 +59,7 @@
             android:layout_marginBottom="24dp"
             android:background="@color/blue"
             android:padding="12dp"
-            android:text="Entrer" />
+            android:text="@string/l2_entrer" />
 
     </LinearLayout>
 </LinearLayout>

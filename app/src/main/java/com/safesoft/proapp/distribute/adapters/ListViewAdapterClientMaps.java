@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -36,7 +37,7 @@ public class ListViewAdapterClientMaps extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         clientName.setText(items.get(cursor.getPosition()).client);
-        clientCode.setText("Code client : " + items.get(cursor.getPosition()).code_client);
+        clientCode.setText(BaseApplication.instance.getString(R.string.l4_code_client_prefix) + items.get(cursor.getPosition()).code_client);
 
     }
 

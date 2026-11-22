@@ -15,7 +15,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Grouper ou détailler les produits dans le bon." />
+        android:text="@string/l2_grouper_ou_detailler_les_produits_dans_l" />
 
     <View
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:id="@+id/switch_groupe_details_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Grouper les produits."
+            android:text="@string/l2_grouper_les_produits"
             android:textAlignment="textStart"
             android:checked="true"
             android:textSize="14sp"

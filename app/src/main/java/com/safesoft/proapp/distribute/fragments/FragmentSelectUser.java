@@ -91,7 +91,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
         code_user = new PostData_Client();
 
         mContext = getActivity();
-        getDialog().setTitle("Sélectionner");
+        getDialog().setTitle(getString(R.string.l3_selectionner));
         valid = rootView.findViewById(R.id.valid);
 
         controller = DATABASE.getInstance(getActivity());
@@ -223,7 +223,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
                     }
                     if (code_user == null) {
                         code_client = null;
-                        Crouton.makeText(getActivity(), "Client introuvable, sélectionnez-en un autre.", Style.ALERT).show();
+                        Crouton.makeText(getActivity(), getString(R.string.l4_client_introuvable_selectionnez), Style.ALERT).show();
                         return;
                     }
                     code_client = code_user.code_client;
@@ -239,7 +239,7 @@ public class FragmentSelectUser extends DialogFragment implements OnDateSetListe
                 if (getDialog() != null) getDialog().dismiss();
             } catch (Exception e) {
                 Log.v("TRACKKK", "FragmentSelectUser valid onClick: " + e.getMessage());
-                Crouton.makeText(getActivity(), "Erreur validation : " + e.getMessage(), Style.ALERT).show();
+                Crouton.makeText(getActivity(), getString(R.string.l4_erreur_validation) + e.getMessage(), Style.ALERT).show();
             }
 
         });

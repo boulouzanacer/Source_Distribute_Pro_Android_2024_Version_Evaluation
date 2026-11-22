@@ -1,6 +1,9 @@
 package com.safesoft.proapp.distribute.ftp;
 
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.R;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
@@ -1260,7 +1263,7 @@ public class Ftp_export {
         public LongOperationAchat() {
 
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_connexion_serveur_ftp));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -1285,7 +1288,7 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation des BA ..." + finalCount_vente + "/" + F_SQL_LIST_VENTE.size());
+                                    mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_exportation_des_ba) + finalCount_vente + "/" + F_SQL_LIST_VENTE.size());
                                 }
                             });
 
@@ -1311,7 +1314,7 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation des STC ..." + finalCount_situation + "/" + F_SQL_LIST_SITUATION.size());
+                                    mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_exportation_des_stc) + finalCount_situation + "/" + F_SQL_LIST_SITUATION.size());
                                 }
                             });
                             s = new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/SITUATION-CLIENT", mProgressDialog);
@@ -1341,23 +1344,23 @@ public class Ftp_export {
             mProgressDialog.dismiss();
             if (result == 0) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation ftp terminé. \n Total bon Vente : " + F_SQL_LIST_VENTE.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_exportation_ftp_termine_n_total_bon_vent) + F_SQL_LIST_VENTE.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
                         .show();
             } else if (result == 1) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problème au niveau de creation du fichier")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_au_niveau_de_creation_du_fichie))
                         .show();
             } else if (result == 2) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problem de connexion serveur ftp")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_de_connexion_serveur_ftp))
                         .show();
             }else if (result == 3) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problème d’accès à l’exportation des fichiers vers le serveur !!")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_d_acces_a_l_exportation_des_fic))
                         .show();
             }
         }
@@ -1374,7 +1377,7 @@ public class Ftp_export {
         public LongOperationSale() {
 
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_connexion_serveur_ftp));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -1398,7 +1401,7 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation des BL ..." + finalCount_vente + "/" + F_SQL_LIST_VENTE.size());
+                                    mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_exportation_des_bl) + finalCount_vente + "/" + F_SQL_LIST_VENTE.size());
                                 }
                             });
 
@@ -1424,7 +1427,7 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation des STC ..." + finalCount_situation + "/" + F_SQL_LIST_SITUATION.size());
+                                    mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_exportation_des_stc) + finalCount_situation + "/" + F_SQL_LIST_SITUATION.size());
                                 }
                             });
                             s = new UploadToFtp().ftpUpload1(mActivity, map.getKey().toString(), ftp_imp_def, con, nom_depot, "/SITUATION-CLIENT", mProgressDialog);
@@ -1465,18 +1468,18 @@ public class Ftp_export {
             mProgressDialog.dismiss();
             if (result == 0) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation ftp terminé. \n Total bon Vente : " + F_SQL_LIST_VENTE.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_exportation_ftp_termine_n_total_bon_vent) + F_SQL_LIST_VENTE.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
                         .show();
             } else if (result == 1) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problème au niveau de creation du fichier")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_au_niveau_de_creation_du_fichie))
                         .show();
             } else if (result == 2) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problem de connexion serveur ftp")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_de_connexion_serveur_ftp))
                         .show();
             }
         }
@@ -1492,7 +1495,7 @@ public class Ftp_export {
         public LongOperationOrder() {
 
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_connexion_serveur_ftp));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -1517,7 +1520,7 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation des commandes ..." + finalCount_commande + "/" + F_SQL_LIST_COMMAND.size());
+                                    mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_exportation_des_commandes) + finalCount_commande + "/" + F_SQL_LIST_COMMAND.size());
                                 }
                             });
                             if (code_depot.equals("000000") || code_depot.equals("")) {
@@ -1560,7 +1563,7 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation des STC ..." + finalCount_situation + "/" + F_SQL_LIST_SITUATION.size());
+                                    mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_exportation_des_stc) + finalCount_situation + "/" + F_SQL_LIST_SITUATION.size());
                                 }
                             });
                             if (code_depot.equals("000000") || code_depot.equals("")) {
@@ -1623,23 +1626,23 @@ public class Ftp_export {
             mProgressDialog.dismiss();
             if (result == 0) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation ftp terminé. \n Total bons commandes : " + F_SQL_LIST_COMMAND.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_exportation_ftp_termine_n_total_bons_com) + F_SQL_LIST_COMMAND.size() + "\n Total versements : " + F_SQL_LIST_SITUATION.size())
                         .show();
             } else if (result == 1) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problème au niveau de creation du fichier")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_au_niveau_de_creation_du_fichie))
                         .show();
             } else if (result == 2) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problem de connexion serveur ftp")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_de_connexion_serveur_ftp))
                         .show();
             } else if (result == 3) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problem au moment de traitement du fichier !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_au_moment_de_traitement_du_fichi))
                         .show();
             }
         }
@@ -1653,7 +1656,7 @@ public class Ftp_export {
         public LongOperationInventaire() {
 
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_connexion_serveur_ftp));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -1677,7 +1680,7 @@ public class Ftp_export {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Exportation inventaires ..." + finalCount_inventaire + "/" + F_SQL_LIST_INVENTAIRE.size());
+                                    mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_exportation_inventaires) + finalCount_inventaire + "/" + F_SQL_LIST_INVENTAIRE.size());
                                 }
                             });
 
@@ -1714,23 +1717,23 @@ public class Ftp_export {
             mProgressDialog.dismiss();
             if (result == 0) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Exportation ftp terminé. \n Total bons inventaires : " + F_SQL_LIST_INVENTAIRE.size())
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_exportation_ftp_termine_n_total_bons_inv) + F_SQL_LIST_INVENTAIRE.size())
                         .show();
             } else if (result == 1) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problème au niveau de creation du fichier")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_au_niveau_de_creation_du_fichie))
                         .show();
             } else if (result == 2) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Exportation...")
-                        .setContentText("Problem de connexion serveur ftp")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_exportation_2))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_de_connexion_serveur_ftp))
                         .show();
             } else if (result == 3) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problem au moment de traitement du fichier !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_au_moment_de_traitement_du_fichi))
                         .show();
             }
         }
@@ -1744,7 +1747,7 @@ public class Ftp_export {
         public LongOperationGetListBon() {
 
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_connexion_serveur_ftp));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -1779,18 +1782,18 @@ public class Ftp_export {
                 fragmentSelectBon.showDialogbox(mActivity, mActivity.getBaseContext(), listFile);
             } else if (result == 1) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problème au niveau de creation du fichier")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_au_niveau_de_creation_du_fichie))
                         .show();
             } else if (result == 2) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problem de connexion serveur ftp")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_de_connexion_serveur_ftp))
                         .show();
             } else if (result == 3) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problem au moment de traitement du fichier !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_au_moment_de_traitement_du_fichi))
                         .show();
             }
         }
@@ -1806,7 +1809,7 @@ public class Ftp_export {
             this.nom_bon = nom_bon;
 
             mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setMessage("Connexion serveur FTP ...");
+            mProgressDialog.setMessage(BaseApplication.instance.getString(R.string.l3_connexion_serveur_ftp));
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
@@ -1840,23 +1843,23 @@ public class Ftp_export {
             mProgressDialog.dismiss();
             if (result == 0) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Le bon de transfert a été bien traité !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_le_bon_de_transfert_a_ete_bien_traite))
                         .show();
             } else if (result == 1) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problème au moment d'importation du fichier depuis le serveur FTP")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_probleme_au_moment_dimportation_du_fichi))
                         .show();
             } else if (result == 2) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problem de connexion serveur ftp")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_de_connexion_serveur_ftp))
                         .show();
             } else if (result == 3) {
                 new SweetAlertDialog(mActivity, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Importation...")
-                        .setContentText("Problem au moment de traitement du fichier !")
+                        .setTitleText(BaseApplication.instance.getString(R.string.l3_importation))
+                        .setContentText(BaseApplication.instance.getString(R.string.l3_problem_au_moment_de_traitement_du_fichi))
                         .show();
             }
         }

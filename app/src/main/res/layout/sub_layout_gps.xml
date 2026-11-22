@@ -14,7 +14,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres localisation des bons" />
+        android:text="@string/l2_parametres_localisation_des_bons" />
 
     <View
         android:layout_width="match_parent"

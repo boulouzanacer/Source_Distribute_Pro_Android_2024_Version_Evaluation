@@ -36,7 +36,7 @@
             android:id="@+id/switch_edit_solde_ini"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Autoriser / Empêcher la modification du solde initial (client)"
+            android:text="@string/l2_autoriser_empecher_la_modification_du_so"
             android:textAlignment="textStart"
             android:checked="false"
             android:textSize="14sp"

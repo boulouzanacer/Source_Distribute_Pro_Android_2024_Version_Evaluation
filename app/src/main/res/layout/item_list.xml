@@ -57,7 +57,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:textSize="18sp"
-                    android:text="Produit"
+                    android:text="@string/produit_string"
                     android:gravity="center|start"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.map;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleFragmentActivity;
+
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.safesoft.proapp.distribute.R;
 
-public class ActivityItenerary extends FragmentActivity implements OnMapReadyCallback {
+public class ActivityItenerary extends BaseLocaleFragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private final String TAG = "so47492459";

@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.fragments;
+
 
+import com.safesoft.proapp.distribute.app.BaseApplication;
 import static com.rilixtech.materialfancybutton.MaterialFancyButton.POSITION_LEFT;
 import static com.safesoft.proapp.distribute.MainActivity.getAndroidID;
 
@@ -134,13 +136,13 @@ public class FragmentLoginAccount {
             if (Objects.requireNonNull(edt_email.getText()).length() > 0) {
                 email = Objects.requireNonNull(edt_email.getText()).toString();
             } else {
-                edt_email.setError("Email est obligatoire!!");
+                edt_email.setError(BaseApplication.instance.getString(R.string.l3_email_est_obligatoire));
             }
 
             if (Objects.requireNonNull(edt_password.getText()).length() > 0) {
                 password = Objects.requireNonNull(edt_password.getText()).toString();
             } else {
-                edt_password.setError("Mot de passe est obligatoire!!");
+                edt_password.setError(BaseApplication.instance.getString(R.string.l3_mot_de_passe_est_obligatoire));
             }
 
             // call and check validate account.

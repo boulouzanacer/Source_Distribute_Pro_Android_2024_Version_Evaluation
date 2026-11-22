@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/new_tournee"
-        android:title="Nouvelle tournee"
+        android:title="@string/l4_menu_nouvelle_tournee"
         android:icon="@drawable/ic_add_black_24dp"
         app:showAsAction="always" />
 </menu>

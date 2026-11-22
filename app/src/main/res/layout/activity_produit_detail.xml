@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="ÉTAT DU STOCK"
+                        android:text="@string/l2_etat_du_stock"
                         android:textColor="#C6E0F7"
                         android:textSize="10sp"
                         android:textStyle="bold"
@@ -76,7 +76,7 @@
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:text="Stock"
+                                android:text="@string/Stock_unite"
                                 android:textColor="#DBEAFE"
                                 android:textSize="10sp"
                                 android:layout_width="match_parent"
@@ -109,7 +109,7 @@
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:text="Colisage"
+                                android:text="@string/l2_colisage"
                                 android:textColor="#DBEAFE"
                                 android:textSize="10sp"
                                 android:layout_width="match_parent"
@@ -151,7 +151,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="IDENTITÉ PRODUIT"
+                        android:text="@string/l2_identite_produit"
                         android:textColor="#64748B"
                         android:textSize="10sp"
                         android:textStyle="bold"
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="PRIX D'ACHAT"
+                        android:text="@string/l2_prix_d_achat"
                         android:textColor="#64748B"
                         android:textSize="10sp"
                         android:textStyle="bold"
@@ -415,7 +415,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="PRIX DE VENTE (TARIFS)"
+                        android:text="@string/l2_prix_de_vente_tarifs"
                         android:textColor="#64748B"
                         android:textSize="10sp"
                         android:textStyle="bold"
@@ -685,7 +685,7 @@
                         android:gravity="center_vertical"
                         android:textSize="14.5sp"
                         android:textStyle="bold"
-                        android:text="Description" />
+                        android:text="@string/l2_description" />
 
                     <TextView
                         android:id="@+id/Description"

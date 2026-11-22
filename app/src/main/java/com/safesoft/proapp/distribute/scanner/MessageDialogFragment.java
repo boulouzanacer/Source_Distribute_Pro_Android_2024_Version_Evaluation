@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.scanner;
+import com.safesoft.proapp.distribute.R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,7 +36,7 @@ public class MessageDialogFragment extends DialogFragment {
         builder.setMessage(mMessage)
                 .setTitle(mTitle);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.l3_ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (mListener != null) {
                     mListener.onDialogPositiveClick(MessageDialogFragment.this);

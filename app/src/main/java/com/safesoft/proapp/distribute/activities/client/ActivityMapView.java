@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.client;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -26,7 +28,7 @@ import com.safesoft.proapp.distribute.fragments.FragmentNewEditClient;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityMapView extends AppCompatActivity implements OnMapReadyCallback {
+public class ActivityMapView extends BaseLocaleActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private double lat;

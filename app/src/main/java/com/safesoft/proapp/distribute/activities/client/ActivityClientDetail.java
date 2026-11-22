@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activities.client;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
@@ -71,7 +73,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import mehdi.sakout.fancybuttons.FancyButton;
 
-public class ActivityClientDetail extends AppCompatActivity implements RecyclerAdapter_Situation_client.ItemClick {
+public class ActivityClientDetail extends BaseLocaleActivity implements RecyclerAdapter_Situation_client.ItemClick {
 
     private NumberFormat nf;
 
@@ -122,7 +124,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Situation Client");
+            getSupportActionBar().setTitle(getString(R.string.l3_situation_client));
         }
 
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -217,7 +219,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 intent.putExtra("name", client.client);
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "Aucune position enregistrée pour ce client.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.l3_aucune_position_enregistree_pour_ce_clie), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -286,7 +288,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
         if (client.mode_tarif != null) {
             switch (client.mode_tarif) {
-                case "0" -> TvModeT.setText("LIBRE");
+                case "0" -> TvModeT.setText(getString(R.string.l4_libre));
                 case "1" -> TvModeT.setText("1");
                 case "2" -> TvModeT.setText("2");
                 case "3" -> TvModeT.setText("3");
@@ -300,18 +302,18 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
         if (prefs.getBoolean("SHOW_ACHAT_CLIENT", false)) {
             TvAchat.setVisibility(View.VISIBLE);
-            TvAchat.setText(String.format(Locale.FRANCE, "%,.2f DA", client.achat_client));
+            TvAchat.setText(getString(R.string.l4_montant_format, client.achat_client));
         } else {
             TvAchat.setVisibility(View.VISIBLE);
-            TvAchat.setText("**** DA");
+            TvAchat.setText(getString(R.string.l4_montant_masque));
         }
 
-        TvVerser.setText(String.format(Locale.FRANCE, "%,.2f DA", client.verser_client));
+        TvVerser.setText(getString(R.string.l4_montant_format, client.verser_client));
 
         if (prefs.getBoolean("AFFICHAGE_SOLDE_CLIENT", true)) {
-            TvSolde.setText(String.format(Locale.FRANCE, "%,.2f DA", client.solde_client));
+            TvSolde.setText(getString(R.string.l4_montant_format, client.solde_client));
         } else {
-            TvSolde.setText("******** DA");
+            TvSolde.setText(getString(R.string.l4_montant_masque_total));
         }
 
 
@@ -396,7 +398,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
             if (selected_versement != null) {
                 Print_versement(selected_versement);
             } else {
-                Crouton.makeText(ActivityClientDetail.this, "Vous devez séléctionner une versement au-dessous !", Style.ALERT).show();
+                Crouton.makeText(ActivityClientDetail.this, getString(R.string.l4_vous_devez_selectionner_versement), Style.ALERT).show();
             }
 
         } else if (item.getItemId() == R.id.edit_client) {
@@ -469,7 +471,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getCurrentLocation();
         } else {
-            Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.l3_permission_denied), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -483,14 +485,14 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
             new AlertDialog.Builder(this)
-                    .setTitle("GPS désactivé")
-                    .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
+                    .setTitle(getString(R.string.l3_gps_desactive))
+                    .setMessage(getString(R.string.l3_votre_gps_est_desactive_voulez_vous_l_ac))
                     .setCancelable(false)
-                    .setPositiveButton("Oui", (dialog, which) ->
+                    .setPositiveButton(getString(R.string.l3_oui), (dialog, which) ->
                             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                    .setNegativeButton("Non", (dialog, which) -> {
+                    .setNegativeButton(getString(R.string.l3_non), (dialog, which) -> {
                         dialog.dismiss();
-                        Toast.makeText(this, "Localisation annulée.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.l3_localisation_annulee), Toast.LENGTH_SHORT).show();
                     })
                     .show();
             return;
@@ -505,8 +507,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
         }
 
         progress = new ProgressDialog(ActivityClientDetail.this);
-        progress.setTitle("Position");
-        progress.setMessage("Recherche position en cours...");
+        progress.setTitle(getString(R.string.l3_position));
+        progress.setMessage(getString(R.string.l3_recherche_position_en_cours));
         progress.setIndeterminate(true);
         progress.setCancelable(false);
         progress.show();
@@ -525,7 +527,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 if (progress != null) progress.dismiss();
 
                 if (locationResult.getLastLocation() == null) {
-                    Toast.makeText(ActivityClientDetail.this, "Position introuvable, réessayez.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityClientDetail.this, getString(R.string.l3_position_introuvable_reessayez), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -534,7 +536,7 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                 client.longitude = location.getLongitude();
 
                 controller.update_position_client(client.latitude, client.longitude, client.code_client);
-                Toast.makeText(ActivityClientDetail.this, "Nouvelle position enregistrée : " + client.latitude + ", " + client.longitude, Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivityClientDetail.this, getString(R.string.l3_nouvelle_position_enregistree) + client.latitude + ", " + client.longitude, Toast.LENGTH_LONG).show();
 
                 setStaticMap(client.latitude, client.longitude);
             }
@@ -563,18 +565,18 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
             if (carnet_c.is_exported != 0) {
                 new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Versement déjà exporté, Modification impossible !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_versement_deja_exporte_modification_impo))
                         .show();
                 return;
 
             }
             if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
                 new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Situation")
-                        .setContentText("Voulez-vous vraiment modifier cette situation?!")
-                        .setCancelText("Non")
-                        .setConfirmText("Modifier")
+                        .setTitleText(getString(R.string.l3_situation))
+                        .setContentText(getString(R.string.l3_voulez_vous_vraiment_modifier_cette_situ))
+                        .setCancelText(getString(R.string.l3_non))
+                        .setConfirmText(getString(R.string.l3_modifier))
                         .showCancelButton(true)
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
@@ -586,8 +588,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                         }).show();
             } else {
                 new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Vous n'êtes pas autorisé à modifier cette situation !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_vous_netes_pas_autorise_a_modifier_cette))
                         .show();
             }
 
@@ -595,8 +597,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
             if (carnet_c.is_exported != 0) {
                 new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Versement déjà exporté, Suppression impossible !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_versement_deja_exporte_suppression_impos))
                         .show();
                 return;
 
@@ -604,18 +606,18 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
 
             if (prefs.getBoolean("AUTORISE_MODIFY_BON", true)) {
                 new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Suppression")
-                        .setContentText("Voulez-vous vraiment supprimer la situation " + carnet_c.recordid + " ?!")
-                        .setCancelText("Anuuler")
-                        .setConfirmText("Supprimer")
+                        .setTitleText(getString(R.string.l3_suppression))
+                        .setContentText(getString(R.string.l3_voulez_vous_vraiment_supprimer_la_situat) + carnet_c.recordid + " ?!")
+                        .setCancelText(getString(R.string.l3_anuuler))
+                        .setConfirmText(getString(R.string.l3_supprimer))
                         .showCancelButton(true)
                         .setCancelClickListener(Dialog::dismiss)
                         .setConfirmClickListener(sDialog -> {
 
                             if (controller.delete_versement_client(carnet_c, client.solde_client + carnet_c.carnet_versement, client.verser_client - carnet_c.carnet_versement)) {
-                                Crouton.makeText(ActivityClientDetail.this, "Situation supprimé !", Style.INFO).show();
+                                Crouton.makeText(ActivityClientDetail.this, getString(R.string.l4_situation_supprimee), Style.INFO).show();
                             } else {
-                                Crouton.makeText(ActivityClientDetail.this, "Problème au moment de suppression de la situation !", Style.ALERT).show();
+                                Crouton.makeText(ActivityClientDetail.this, getString(R.string.l4_probleme_suppression_situation), Style.ALERT).show();
                             }
                             Update_client_details();
 
@@ -624,8 +626,8 @@ public class ActivityClientDetail extends AppCompatActivity implements RecyclerA
                         }).show();
             } else {
                 new SweetAlertDialog(ActivityClientDetail.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Attention !")
-                        .setContentText("Vous n'êtes pas autorisé à supprimer cette situation !")
+                        .setTitleText(getString(R.string.l3_attention))
+                        .setContentText(getString(R.string.l3_vous_netes_pas_autorise_a_supprimer_cett))
                         .show();
             }
 

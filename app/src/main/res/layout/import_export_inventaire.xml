@@ -36,7 +36,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Export inventaires"
+                    android:contentDescription="@string/a11y_export_inventaires"
                     android:src="@drawable/exportation_24" />
             </LinearLayout>
 
@@ -51,7 +51,7 @@
                     android:id="@+id/exportt_inventaire"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportation inventaire (Réseaux IP)"
+                    android:text="@string/l2_exportation_inventaire_reseaux_ip"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'exporter tous les inventaires vers le serveur distant"
+                    android:text="@string/l2_ca_vous_permet_d_exporter_tous_les_inven"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -97,7 +97,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Export inventaires FTP"
+                    android:contentDescription="@string/a11y_export_inventaires_ftp"
                     android:tint="#1F2937"
                     android:src="@drawable/ic_baseline_storage_24" />
             </LinearLayout>
@@ -113,7 +113,7 @@
                     android:id="@+id/exportt_inventaire_ftp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportation inventaire (Serveur FTP)"
+                    android:text="@string/l2_exportation_inventaire_serveur_ftp"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -123,7 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Vous permet d'exporter les bons d'inventaire' vers le serveur FTP"
+                    android:text="@string/l2_vous_permet_d_exporter_les_bons_d_invent"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"
@@ -159,7 +159,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:contentDescription="Inventaires exportés"
+                    android:contentDescription="@string/a11y_inventaires_exportes"
                     android:src="@drawable/bon_exporte_24" />
             </LinearLayout>
 
@@ -174,7 +174,7 @@
                     android:id="@+id/exportted_inventaire"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Bons d'inventaire exportés"
+                    android:text="@string/l2_bons_d_inventaire_exportes"
                     android:textColor="#0F172A"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -184,7 +184,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="ça vous permet d'afficher les bons d'inventaires exportés avec la possibilité de suppression"
+                    android:text="@string/l2_ca_vous_permet_d_afficher_les_bons_d_inv"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:lineSpacingExtra="1dp"

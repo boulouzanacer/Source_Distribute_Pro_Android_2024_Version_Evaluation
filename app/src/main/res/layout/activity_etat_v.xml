@@ -36,7 +36,7 @@
                 android:padding="3dp"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:text="Tous"
+                android:text="@string/l2_tous"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -53,7 +53,7 @@
                     android:layout_weight="1"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:text="wilaya:"
+                    android:text="@string/l2_wilaya"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
@@ -64,7 +64,7 @@
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:layout_weight="1"
-                    android:text="commune:"
+                    android:text="@string/l2_commune"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -80,7 +80,7 @@
                     android:padding="3dp"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:text="de 10/10/2012 10:30"
+                    android:text="@string/l2_de_10_10_2012_10_30"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -90,7 +90,7 @@
                     android:padding="3dp"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:text="vers 05/02/2015 10:30"
+                    android:text="@string/l2_vers_05_02_2015_10_30"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -124,7 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/imageError"
-                    android:text="Probleme fatal, Ressayer"
+                    android:text="@string/l2_probleme_fatal_ressayer"
                     android:textAlignment="center" />
 
                 <ImageView
@@ -167,7 +167,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Patientez SVP ..."
+                    android:text="@string/l2_patientez_svp"
                     android:textSize="10sp"
                     android:textAlignment="center" />
             </com.victor.loading.book.BookLoading>
@@ -206,7 +206,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:text="Clients"
+                android:text="@string/l2_clients"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:layout_height="wrap_content"/>
@@ -235,7 +235,7 @@
         android:layout_margin="16dp"
         android:layout_gravity="bottom|end"
         android:src="@drawable/list_client_verser_24"
-        android:contentDescription="fab"
+        android:contentDescription="@string/a11y_fab"
         app:backgroundTint="@color/emerald"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

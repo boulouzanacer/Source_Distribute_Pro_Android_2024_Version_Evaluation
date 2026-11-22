@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Configuration Cloud"
+            android:text="@string/l2_configuration_cloud"
             android:textSize="14.5sp"
             android:textStyle="bold"
             android:textColor="#0F172A" />
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:textColor="#0F172A"
-                android:text="Email :"
+                android:text="@string/l2_email_2"
                 android:clickable="false"
                 android:textSize="14.5sp"
                 android:textStyle="bold" />
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
                 android:textColor="#64748B"
-                android:text="boulouza.nacer@gmail.com"
+                android:text="@string/l2_boulouza_nacer_gmail_com"
                 android:clickable="false"
                 android:textSize="12sp" />
 
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:textColor="#0F172A"
-                android:text="Password :"
+                android:text="@string/l2_password_2"
                 android:clickable="false"
                 android:textSize="14.5sp"
                 android:textStyle="bold" />
@@ -108,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Déconnexion" />
+            android:text="@string/l2_deconnexion" />
 
         <Button
             android:id="@+id/btn_login_cloud"
@@ -116,14 +116,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Connexion" />
+            android:text="@string/l2_connexion" />
 
         <Button
             android:id="@+id/btn_signup_cloud"
             style="@style/dialog_blue_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inscription" />
+            android:text="@string/l2_inscription" />
 
     </LinearLayout>
 
@@ -225,7 +225,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
-        android:text="ça vous permet d'afficher / masquer le button mise à jour dans le menu principale pour pouvoir mettre à jour l'application"
+        android:text="@string/l2_ca_vous_permet_d_afficher_masquer_le_but"
         android:textSize="12sp"
         android:textColor="#64748B" />
 </LinearLayout>

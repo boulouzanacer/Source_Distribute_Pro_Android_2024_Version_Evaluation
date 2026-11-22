@@ -14,7 +14,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Paramètres affichage, cacher achats client" />
+        android:text="@string/l2_parametres_affichage_cacher_achats_clien" />
 
     <View
         android:layout_width="match_parent"

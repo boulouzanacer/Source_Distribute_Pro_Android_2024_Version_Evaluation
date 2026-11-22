@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.scanner;
+
 
+import com.safesoft.proapp.distribute.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -64,7 +66,7 @@ public class FormatSelectorDialogFragment extends DialogFragment {
 
         // Création de la boîte de dialogue
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Choisir formats à scanner")
+        builder.setTitle(getString(R.string.l3_choisir_formats_a_scanner))
                 .setMultiChoiceItems(formatNames, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -78,13 +80,13 @@ public class FormatSelectorDialogFragment extends DialogFragment {
                         }
                     }
                 })
-                .setPositiveButton("✅ OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.l3_ok_2), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mListener.onFormatsSaved(mSelectedFormats);
                     }
                 })
-                .setNegativeButton("❌ Annuler", null);
+                .setNegativeButton(getString(R.string.l3_annuler_2), null);
 
         return builder.create();
     }

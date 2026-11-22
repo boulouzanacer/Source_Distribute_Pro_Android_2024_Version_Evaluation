@@ -1,4 +1,5 @@
 package com.safesoft.proapp.distribute.adapters.viewholder.advanced;
+import com.safesoft.proapp.distribute.app.BaseApplication;
 
 import android.content.Context;
 
@@ -50,7 +51,7 @@ public class AdvancedDataViewHolderObjectif extends SettableViewHolder<WrappedMy
     public void setData(@NonNull WrappedMyDataObject data) {
         MyDataObject dataObject = data.getDataObject();
 
-        mTitle.setText("Objectif : ");
+        mTitle.setText(BaseApplication.instance.getString(R.string.l4_objectif_prefix));
 
         if (dataObject.getQuantite() != 0) {
             final BadgeDrawable drawable4 =

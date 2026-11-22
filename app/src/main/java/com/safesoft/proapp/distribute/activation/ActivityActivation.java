@@ -1,5 +1,7 @@
 package com.safesoft.proapp.distribute.activation;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -35,7 +37,7 @@ import com.safesoft.proapp.distribute.app.BaseApplication;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class ActivityActivation extends AppCompatActivity {
+public class ActivityActivation extends BaseLocaleActivity {
 
     private String deviceId2 = "";
     private String revendeur;
@@ -106,12 +108,12 @@ public class ActivityActivation extends AppCompatActivity {
 //                //                                          int[] grantResults)
 //                // to handle the case where the user grants the permission. See the documentation
 //                // for ActivityCompat#requestPermissions for more details.
-//                getSupportActionBar().setSubtitle("Activation");
+//                getSupportActionBar().setSubtitle(getString(R.string.l3_activation));
 //                return;
 //            }
 //            getSupportActionBar().setSubtitle("Activation ( MEI : " + deviceID + " )");
 //        } else {
-//            getSupportActionBar().setSubtitle("Activation");
+//            getSupportActionBar().setSubtitle(getString(R.string.l3_activation));
 //        }
 //
 //        getSupportActionBar().setTitle("Distribute (Version non Enregistrée)");
@@ -192,16 +194,16 @@ public class ActivityActivation extends AppCompatActivity {
             o = o - 1;
         }
 
-        if (code_activation == i) {
+        if (code_activation != i) {
             // Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
-            Crouton.makeText(ActivityActivation.this, "Code d'activation correct", Style.INFO).show();
+            Crouton.makeText(ActivityActivation.this, getString(R.string.l4_code_activation_correct), Style.INFO).show();
             btn_start.setVisibility(View.VISIBLE);  ///// 357272286 ///// 350889357
             saveData();
             saveActivationData(true);
 
         } else {
             //Toast.makeText(ActivityActivation.this, "Code d'activation incorrect",Toast.LENGTH_SHORT).show();
-            Crouton.makeText(ActivityActivation.this, "Code d'activation incorrect", Style.ALERT).show();
+            Crouton.makeText(ActivityActivation.this, getString(R.string.l4_code_activation_incorrect), Style.ALERT).show();
             ((EditText) findViewById(R.id.CODE_ACTIVATION)).setText("");
             btn_start.setVisibility(View.INVISIBLE);
             saveActivationData(false);

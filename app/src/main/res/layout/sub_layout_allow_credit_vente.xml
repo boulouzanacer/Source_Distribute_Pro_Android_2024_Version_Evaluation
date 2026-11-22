@@ -15,7 +15,7 @@
         android:textSize="14sp"
         android:textColor="@color/black_overlay"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Permettre ou empêcher la réalisation d’une vente à crédit." />
+        android:text="@string/l2_permettre_ou_empecher_la_realisation_d_u" />
 
     <View
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:id="@+id/switch_allow_credit_in_vente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Autoriser / Interdire la vente à crédit."
+            android:text="@string/l2_autoriser_interdire_la_vente_a_credit"
             android:textAlignment="textStart"
             android:checked="true"
             android:textSize="14sp"

@@ -1,5 +1,10 @@
 package com.safesoft.proapp.distribute;
 
+import com.safesoft.proapp.distribute.app.BaseLocaleActivity;
+
+
+
+import com.safesoft.proapp.distribute.R;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -64,7 +69,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class MainActivity extends AppCompatActivity implements PrinterObserver {
+public class MainActivity extends BaseLocaleActivity implements PrinterObserver {
     Fragment objFrgment;
     FragmentManager fragmentManager;
     private RTPrinter rtPrinter = null;
@@ -94,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
         if (prefs.getBoolean("APP_ACTIVATED", false)) {
             toolbar.setSubtitle(Env.APP_VERION_LABEL);
         } else {
-            toolbar.setSubtitle(Env.APP_VERION_LABEL + " (Version évaluation)");
+            toolbar.setSubtitle(Env.APP_VERION_LABEL + getString(R.string.l4_version_evaluation));
         }
 
         setSupportActionBar(toolbar);
@@ -155,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
                 switch (state) {
                     case CommonEnum.CONNECT_STATE_SUCCESS -> {
                         Toast.makeText(MainActivity.this, printerInterface.getConfigObject().toString() + " Connecté", Toast.LENGTH_SHORT).show();
-                        //Crouton.makeText(MainActivity.this, "Connecté", Style.CONFIRM).show();
+                        //Crouton.makeText(MainActivity.this, getString(R.string.l4_connecte), Style.CONFIRM).show();
                         BaseApplication.getInstance().setIsConnected(true);
                         rtPrinter.setPrinterInterface(printerInterface);
                         BaseApplication.getInstance().setRtPrinter(rtPrinter);
@@ -200,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
         } else if(item.getItemId() == R.id.show_seriel_number){
             new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Numéro de série")
+                    .setTitleText(getString(R.string.l3_numero_de_serie))
                     .setContentText(prefs.getString("NUM_SERIE", "0"))
                     .show();
         } else if (item.getItemId() == R.id.update) {
@@ -320,10 +325,10 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
         if (doanload_hash.equalsIgnoreCase(server_hash)) {
             new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Mise a jour disponible")
-                    .setContentText("Voulez-vous vraiment Installer la mise à jour " + dowloaded_version + " ?")
-                    .setCancelText("Non")
-                    .setConfirmText("Installer")
+                    .setTitleText(getString(R.string.l3_mise_a_jour_disponible))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_installer_la_mise_a) + dowloaded_version + " ?")
+                    .setCancelText(getString(R.string.l3_non))
+                    .setConfirmText(getString(R.string.l3_installer))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -349,10 +354,10 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
         if (event.getCode() == 200) {
 
             new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Mise a jour disponible")
-                    .setContentText("Voulez-vous vraiment Télécharger la mise à jour " + event.getVersion() + " ?")
-                    .setCancelText("Non")
-                    .setConfirmText("Télécharger")
+                    .setTitleText(getString(R.string.l3_mise_a_jour_disponible))
+                    .setContentText(getString(R.string.l3_voulez_vous_vraiment_telecharger_la_mise) + event.getVersion() + " ?")
+                    .setCancelText(getString(R.string.l3_non))
+                    .setConfirmText(getString(R.string.l3_telecharger))
                     .showCancelButton(true)
                     .setCancelClickListener(Dialog::dismiss)
                     .setConfirmClickListener(sDialog -> {
@@ -406,12 +411,12 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
 
                     runOnUiThread(() -> {
                         new androidx.appcompat.app.AlertDialog.Builder(this)
-                                .setTitle("GPS désactivé")
-                                .setMessage("Votre GPS est désactivé. Voulez-vous l’activer ?")
-                                .setPositiveButton("Oui", (d, w) -> {
+                                .setTitle(getString(R.string.l3_gps_desactive))
+                                .setMessage(getString(R.string.l3_votre_gps_est_desactive_voulez_vous_l_ac))
+                                .setPositiveButton(getString(R.string.l3_oui), (d, w) -> {
                                     Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                     startActivity(i);
-                                }).setNegativeButton("Non", (d, w) -> d.dismiss()).show();
+                                }).setNegativeButton(getString(R.string.l3_non), (d, w) -> d.dismiss()).show();
                     });
 
                 }
@@ -430,13 +435,13 @@ public class MainActivity extends AppCompatActivity implements PrinterObserver {
                 if(prefs.getBoolean("PHONE_LOCATION_SERVICE", false)){
                     runOnUiThread(() -> {
                         new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Distribute pro batterie optimization")
+                                .setTitleText(getString(R.string.l3_distribute_pro_batterie_optimization))
                                 .setContentText(
                                         "Le service de localisation est activé. Toutefois, l’optimisation de la batterie " +
                                                 "peut empêcher son bon fonctionnement. Souhaitez-vous l’autoriser ?"
                                 )
-                                .setCancelText("Non")
-                                .setConfirmText("Oui")
+                                .setCancelText(getString(R.string.l3_non))
+                                .setConfirmText(getString(R.string.l3_oui))
                                 .showCancelButton(true)
                                 .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
                                 .setConfirmClickListener(sDialog -> {
