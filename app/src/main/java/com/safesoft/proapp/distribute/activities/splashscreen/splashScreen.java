@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.activation.ActivityActivation;
+import com.safesoft.proapp.distribute.devicecheck.DeviceCheckScheduler;
 import com.safesoft.proapp.distribute.R;
 
 import java.util.Timer;
@@ -140,6 +141,8 @@ public class splashScreen extends BaseLocaleActivity {
                     if (codeactivation == code_activation) {
 
                         saveActivationData(true);
+                        // Envoie immediatement le code d'activation a l'application web.
+                        DeviceCheckScheduler.scheduleImmediate(splashScreen.this);
                         startActivity(new Intent(splashScreen.this, MainActivity.class));
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         finish();

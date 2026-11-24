@@ -2,6 +2,7 @@ package com.safesoft.proapp.distribute.app;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.webkit.WebView;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.safesoft.proapp.distribute.BuildConfig;
 import com.safesoft.proapp.distribute.cloud.BackupScheduler;
+import com.safesoft.proapp.distribute.devicecheck.DeviceCheckScheduler;
 import com.safesoft.proapp.distribute.databases.DATABASE;
 import com.safesoft.proapp.distribute.utils.BaseEnum;
 import com.safesoft.proapp.distribute.utils.LocaleManager;
@@ -33,6 +35,9 @@ public class BaseApplication extends Application {
     private RTPrinter rtPrinter;
     private boolean isConnected = false;
     private final boolean isAppActivated = false;
+
+    /** Nombre d'activites actuellement demarrees : 0 -> 1 = retour au premier plan. */
+    private int startedActivityCount = 0;
 
     @BaseEnum.CmdType
     private int currentCmdType = BaseEnum.CMD_ESC;//默认为针打
@@ -114,6 +119,12 @@ public class BaseApplication extends Application {
 
             @Override
             public void onActivityStarted(Activity activity) {
+                startedActivityCount++;
+                if (startedActivityCount == 1) {
+                    // L'application passe (ou repasse) au premier plan : c'est le
+                    // seul declencheur du device check.
+                    triggerDeviceCheck(activity);
+                }
             }
 
             @Override
@@ -128,6 +139,9 @@ public class BaseApplication extends Application {
 
             @Override
             public void onActivityStopped(Activity activity) {
+                if (startedActivityCount > 0) {
+                    startedActivityCount--;
+                }
             }
 
             @Override
@@ -150,10 +164,33 @@ public class BaseApplication extends Application {
         } catch (Throwable t) {
             Log.v("TRACKKK", "Cloud backup schedule fail: " + t.getMessage());
         }
+
+        // Device Checker : la verification n'est plus periodique. Elle est
+        // declenchee uniquement au lancement de l'application ou au retour au
+        // premier plan (voir onActivityStarted ci-dessous). On annule ici
+        // l'ancien travail periodique (6 h) eventuellement encore planifie par
+        // une version precedente.
+        try {
+            DeviceCheckScheduler.cancelPeriodic(this);
+        } catch (Throwable t) {
+            Log.v("TRACKKK", "Device check cancel fail: " + t.getMessage());
+        }
     }
 
     private static final String PREFS_NAME = "ALL_PREFS";
     private static final String KEY_HIDE_NAV_BAR = "HIDE_NAV_BAR";
+
+    /**
+     * Declenche la verification du device aupres du Device Checker. Appele
+     * uniquement lorsque l'application est lancee ou revient au premier plan.
+     */
+    private void triggerDeviceCheck(Context context) {
+        try {
+            DeviceCheckScheduler.scheduleImmediate(context);
+        } catch (Throwable t) {
+            Log.v("TRACKKK", "Device check trigger fail: " + t.getMessage());
+        }
+    }
 
     /**
      * Registers a window focus change listener on the activity's decor view so that

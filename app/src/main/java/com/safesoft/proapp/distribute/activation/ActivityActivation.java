@@ -33,6 +33,7 @@ import com.safesoft.proapp.distribute.MainActivity;
 import com.safesoft.proapp.distribute.R;
 import com.safesoft.proapp.distribute.activities.splashscreen.splashScreen;
 import com.safesoft.proapp.distribute.app.BaseApplication;
+import com.safesoft.proapp.distribute.devicecheck.DeviceCheckScheduler;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -200,6 +201,8 @@ public class ActivityActivation extends BaseLocaleActivity {
             btn_start.setVisibility(View.VISIBLE);  ///// 357272286 ///// 350889357
             saveData();
             saveActivationData(true);
+            // Envoie immediatement le code d'activation a l'application web.
+            DeviceCheckScheduler.scheduleImmediate(this);
 
         } else {
             //Toast.makeText(ActivityActivation.this, "Code d'activation incorrect",Toast.LENGTH_SHORT).show();
