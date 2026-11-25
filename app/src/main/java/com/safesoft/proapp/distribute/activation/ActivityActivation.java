@@ -195,14 +195,15 @@ public class ActivityActivation extends BaseLocaleActivity {
             o = o - 1;
         }
 
-        if (code_activation != i) {
+        if (code_activation == i) {
             // Toast.makeText(ActivityActivation.this, "Code d'activation correct",Toast.LENGTH_SHORT).show();
             Crouton.makeText(ActivityActivation.this, getString(R.string.l4_code_activation_correct), Style.INFO).show();
             btn_start.setVisibility(View.VISIBLE);  ///// 357272286 ///// 350889357
             saveData();
             saveActivationData(true);
-            // Envoie immediatement le code d'activation a l'application web.
-            DeviceCheckScheduler.scheduleImmediate(this);
+            // Activation reussie : leve un eventuel blocage puis reprend la
+            // presence (verification immediate + heartbeat).
+            DeviceCheckScheduler.onActivated(this);
 
         } else {
             //Toast.makeText(ActivityActivation.this, "Code d'activation incorrect",Toast.LENGTH_SHORT).show();
