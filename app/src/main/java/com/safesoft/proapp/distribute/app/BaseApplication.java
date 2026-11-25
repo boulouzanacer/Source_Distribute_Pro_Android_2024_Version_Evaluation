@@ -121,9 +121,13 @@ public class BaseApplication extends Application {
             public void onActivityStarted(Activity activity) {
                 startedActivityCount++;
                 if (startedActivityCount == 1) {
-                    // L'application passe (ou repasse) au premier plan : c'est le
-                    // seul declencheur du device check.
-                    triggerDeviceCheck(activity);
+                    // L'application passe (ou repasse) au premier plan : enregistrement
+                    // immediat du device puis heartbeat tant que l'app reste visible.
+                    try {
+                        DeviceCheckScheduler.onForeground(activity);
+                    } catch (Throwable t) {
+                        Log.v("TRACKKK", "Device check foreground fail: " + t.getMessage());
+                    }
                 }
             }
 
@@ -141,6 +145,15 @@ public class BaseApplication extends Application {
             public void onActivityStopped(Activity activity) {
                 if (startedActivityCount > 0) {
                     startedActivityCount--;
+                }
+                if (startedActivityCount == 0) {
+                    // L'application n'est plus visible : signal de sortie immediat
+                    // (last_disconnect) et arret du heartbeat.
+                    try {
+                        DeviceCheckScheduler.onBackground(activity);
+                    } catch (Throwable t) {
+                        Log.v("TRACKKK", "Device check background fail: " + t.getMessage());
+                    }
                 }
             }
 
@@ -179,18 +192,6 @@ public class BaseApplication extends Application {
 
     private static final String PREFS_NAME = "ALL_PREFS";
     private static final String KEY_HIDE_NAV_BAR = "HIDE_NAV_BAR";
-
-    /**
-     * Declenche la verification du device aupres du Device Checker. Appele
-     * uniquement lorsque l'application est lancee ou revient au premier plan.
-     */
-    private void triggerDeviceCheck(Context context) {
-        try {
-            DeviceCheckScheduler.scheduleImmediate(context);
-        } catch (Throwable t) {
-            Log.v("TRACKKK", "Device check trigger fail: " + t.getMessage());
-        }
-    }
 
     /**
      * Registers a window focus change listener on the activity's decor view so that

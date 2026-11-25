@@ -38,6 +38,10 @@ public class DeviceCheckWorker extends Worker {
     private static final String KEY_APP_ACTIVATED = "APP_ACTIVATED";
     private static final String KEY_CODE_ACTIVATION = "CODE_ACTIVATION";
 
+    // Action demandee au worker (voir DeviceCheckScheduler).
+    private static final String KEY_ACTION = "action";
+    private static final String ACTION_DISCONNECT = "disconnect";
+
     public DeviceCheckWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
@@ -48,6 +52,17 @@ public class DeviceCheckWorker extends Worker {
         Context context = getApplicationContext();
         SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
+        // Deux actions possibles : "check" (enregistrement / heartbeat, par defaut)
+        // et "disconnect" (signal de sortie lorsque l'app n'est plus au premier plan).
+        String action = getInputData().getString(KEY_ACTION);
+        if (ACTION_DISCONNECT.equals(action)) {
+            return reportDisconnect(context, prefs);
+        }
+        return reportPresence(context, prefs);
+    }
+
+    /** Enregistre le device (1ere fois) ou pointe sa presence (heartbeat). */
+    private Result reportPresence(Context context, SharedPreferences prefs) {
         String deviceId = prefs.getString(KEY_NUM_SERIE, "");
         if (deviceId == null || deviceId.trim().isEmpty()) {
             // Pas encore de device ID (splashScreen n'a pas encore tourne).
@@ -119,6 +134,50 @@ public class DeviceCheckWorker extends Worker {
             // Reseau indisponible ou serveur injoignable : on retente plus tard.
             return Result.retry();
         }
+    }
+
+    /**
+     * Signale la sortie de l'application (arriere-plan / fermeture) en mettant a
+     * jour last_disconnect cote serveur.
+     *
+     * Requete volontairement "best effort" : en cas d'echec reseau, le signal de
+     * sortie n'est PAS rejoue afin qu'il ne puisse pas arriver apres un nouveau
+     * heartbeat et basculer a tort le device hors ligne. Le heartbeat et la
+     * fenetre "en ligne" du serveur (1 min) assurent la bascule si ce signal est
+     * perdu (application tuee).
+     */
+    private Result reportDisconnect(Context context, SharedPreferences prefs) {
+        String deviceId = prefs.getString(KEY_NUM_SERIE, "");
+        if (deviceId == null || deviceId.trim().isEmpty()) {
+            // Aucun device connu : rien a signaler (ex: activation effacee).
+            Log.i(TAG, "Deconnexion ignoree : aucun NUM_SERIE en SharedPreferences.");
+            return Result.success();
+        }
+
+        String apiUrl = DeviceCheckClient.getApiUrl(context);
+        String token = DeviceCheckClient.getApiToken(context);
+
+        try {
+            Log.i(TAG, "==> Device disconnect : POST " + apiUrl + "devices/disconnect");
+            Log.i(TAG, "    device=" + deviceId);
+
+            long startTime = System.currentTimeMillis();
+
+            Response<Void> response = DeviceCheckClient.getApi(context)
+                    .disconnectDevice("Bearer " + token,
+                            new DeviceCheckClient.DeviceDisconnectRequest(deviceId))
+                    .execute();
+
+            long duration = System.currentTimeMillis() - startTime;
+
+            Log.i(TAG, "<== Deconnexion HTTP " + response.code() + " en " + duration + " ms"
+                    + (response.isSuccessful() ? "" : readErrorBody(response)));
+        } catch (Exception e) {
+            Log.w(TAG, "Deconnexion non transmise (best effort, sans retry) : "
+                    + e.getClass().getSimpleName() + " - " + e.getMessage());
+        }
+
+        return Result.success();
     }
 
     /** Lit le corps d'erreur de la reponse (tronque) pour faciliter le diagnostic. */

@@ -76,6 +76,11 @@ public class DeviceCheckClient {
         Call<DeviceCheckResponse> checkDevice(
                 @Header("Authorization") String authHeader,
                 @Body DeviceCheckRequest request);
+
+        @POST("devices/disconnect")
+        Call<Void> disconnectDevice(
+                @Header("Authorization") String authHeader,
+                @Body DeviceDisconnectRequest request);
     }
 
     /** Corps de la requete envoyee au Device Checker. */
@@ -132,6 +137,17 @@ public class DeviceCheckClient {
 
         public boolean isBlocked() {
             return "blocked".equalsIgnoreCase(status);
+        }
+    }
+
+    /** Corps de la requete de deconnexion envoyee au Device Checker. */
+    public static class DeviceDisconnectRequest {
+
+        @SerializedName("device_id")
+        public String deviceId;
+
+        public DeviceDisconnectRequest(String deviceId) {
+            this.deviceId = deviceId;
         }
     }
 
