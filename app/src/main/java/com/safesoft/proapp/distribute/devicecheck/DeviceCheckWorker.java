@@ -63,13 +63,6 @@ public class DeviceCheckWorker extends Worker {
 
     /** Enregistre le device (1ere fois) ou pointe sa presence (heartbeat). */
     private Result reportPresence(Context context, SharedPreferences prefs) {
-        // Device en liste noire : on n'envoie plus rien. Le heartbeat est de
-        // toute facon arrete (voir DeviceCheckActions.applyBlocked).
-        if (DeviceCheckActions.isBlocked(context)) {
-            Log.i(TAG, "Device en liste noire : check ignore.");
-            return Result.success();
-        }
-
         String deviceId = prefs.getString(KEY_NUM_SERIE, "");
         if (deviceId == null || deviceId.trim().isEmpty()) {
             // Pas encore de device ID (splashScreen n'a pas encore tourne).

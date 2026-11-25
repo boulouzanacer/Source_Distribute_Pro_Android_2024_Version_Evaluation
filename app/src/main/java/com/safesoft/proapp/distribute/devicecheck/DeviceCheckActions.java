@@ -58,7 +58,7 @@ public class DeviceCheckActions {
         try {
             SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
-            if (prefs.getBoolean(KEY_BLOCKED, false)) {
+            if (isBlocked(context)) {
                 Log.i(TAG, "Device deja bloque : aucune nouvelle bascule.");
                 return;
             }
@@ -72,9 +72,10 @@ public class DeviceCheckActions {
 
             Log.w(TAG, "Device bloque par Device Checker. Donnees d'activation effacees.");
 
-            // Stoppe le heartbeat et les verifications en attente : plus aucun
-            // appel API tant que le device reste bloque.
-            DeviceCheckScheduler.onBlocked(context);
+            // Le heartbeat continue volontairement : le device reste visible
+            // (online/offline) dans l'interface web. La bascule n'etant
+            // appliquee qu'une fois (marqueur KEY_BLOCKED), l'ecran d'evaluation
+            // n'est plus relance en boucle a chaque heartbeat.
 
             Intent intent = new Intent(context, splashScreen.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

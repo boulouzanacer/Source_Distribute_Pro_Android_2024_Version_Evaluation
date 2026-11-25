@@ -74,12 +74,10 @@ public class DeviceCheckScheduler {
      * le device immediatement puis maintient un heartbeat tant qu'elle est visible.
      */
     public static void onForeground(Context context) {
-        // Tant que le device est en liste noire, aucune verification n'est
-        // envoyee : le heartbeat reste arrete jusqu'a une nouvelle activation.
-        if (DeviceCheckActions.isBlocked(context)) {
-            Log.i(TAG, "Device en liste noire : verification suspendue.");
-            return;
-        }
+        // Le heartbeat tourne aussi lorsque le device est bloque : il permet a
+        // l'interface web de connaitre son etat online/offline. La relance de
+        // l'ecran d'evaluation est empechee par le marqueur idempotent de
+        // DeviceCheckActions (aucune boucle).
         scheduleImmediate(context);
         startHeartbeat(context);
     }
@@ -91,18 +89,6 @@ public class DeviceCheckScheduler {
     public static void onActivated(Context context) {
         DeviceCheckActions.clearBlocked(context);
         onForeground(context);
-    }
-
-    /**
-     * Arrete toute verification lorsque le device vient d'etre bloque : heartbeat
-     * et travaux en attente. Aucun appel API ne sera emis tant que le device
-     * reste en liste noire.
-     */
-    public static void onBlocked(Context context) {
-        stopHeartbeat();
-        WorkManager.getInstance(context).cancelUniqueWork(IMMEDIATE_WORK_NAME);
-        WorkManager.getInstance(context).cancelUniqueWork(DISCONNECT_WORK_NAME);
-        Log.w(TAG, "Device bloque : heartbeat et verifications arretes.");
     }
 
     /**
